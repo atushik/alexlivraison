@@ -1,71 +1,63 @@
-// ===== Alex Livraison API =====
-import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
+// ==== Alex Livraison API ====
+const express = require("express");
+const fetch = require("node-fetch");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
-app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3000;
 
-// === Test route ===
+// --- Test route ---
 app.get("/", (req, res) => {
   res.send("✅ Alex Livraison API est en ligne 🚀");
 });
 
-// === WhatsApp Notification ===
+// --- WhatsApp Notification ---
 app.post("/api/notify-whatsapp", async (req, res) => {
   try {
     const { to, de, a, distance_km, prix_eur, heure, payment_method } = req.body;
 
-    // Message WhatsApp à envoyer
     const msg = `🚴 Nouvelle commande Alex Livraison !
 📍 De : ${de}
 🎯 À : ${a}
 📏 Distance : ${distance_km} km
 💶 Prix : ${prix_eur} €
-⏰ Heure : ${heure}
 💳 Paiement : ${payment_method}
-——————————————
-💜 Nous livrons vos commandes jusqu’à votre porte 💜`;
+⏰ Heure : ${heure}`;
 
-    // Appel Twilio API
-    const twilioRes = await fetch(
-      "https://api.twilio.com/2010-04-01/Accounts/ACf3295da30ea7398a45a4c66c09132071/Messages.json",
-      {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Basic " +
-            Buffer.from(
-              "ACf3295da30ea7398a45a4c66c09132071:74be117ca8cd030f91f285e98b7d7aac"
-            ).toString("base64"),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          To: `whatsapp:${to}`,
-          From: "whatsapp:+14155238886",
-          Body: msg,
-        }),
-      }
-    );
+    const response = await fetch("https://api.twilio.com/2010-04-01/Accounts/" + process.env.TWILIO_ACCOUNT_SID + "/Messages.json", {
+      method: "POST",
+      headers: {
+        Authorization:
+          "Basic " +
+          Buffer.from(process.env.TWILIO_ACCOUNT_SID + ":" + process.env.TWILIO_AUTH_TOKEN).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        To: `whatsapp:${to}`,
+        From: `whatsapp:+14155238886`, // numéro officiel de Twilio Sandbox
+        Body: msg,
+      }),
+    });
 
-    const data = await twilioRes.json();
-    if (!twilioRes.ok) {
-      console.error("Twilio error:", data);
-      throw new Error(data.message || "Erreur Twilio");
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Erreur Twilio:", text);
+      return res.status(500).send("Erreur d'envoi WhatsApp.");
     }
 
-    console.log("✅ WhatsApp envoyé avec succès :", data.sid);
-    res.json({ success: true, sid: data.sid });
+    console.log("✅ Message envoyé à", to);
+    res.send("WhatsApp envoyé avec succès !");
   } catch (err) {
-    console.error("❌ Erreur serveur:", err);
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).send("Erreur interne serveur.");
   }
 });
 
-// === Lancer le serveur ===
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+  console.log(`🚀 Serveur en ligne sur le port ${PORT}`);
 });
