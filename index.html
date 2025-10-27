@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alex Livraison 🚗🚴‍♂️</title>
   <style>
     body {
@@ -11,17 +11,29 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
+      margin: 0;
     }
+
     .container {
       background: white;
       color: black;
       border-radius: 20px;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      padding: 25px 15px;
+      max-width: 420px;
+      margin: 30px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
-    input, select, button {
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: left;
+      width: 90%;
+      margin-left: 5%;
+    }
+
+    input, select {
       width: 90%;
       padding: 10px;
       margin: 8px 0;
@@ -29,51 +41,89 @@
       border: 1px solid #ccc;
       font-size: 15px;
     }
+
     button {
-      background: #6b00ff;
-      color: white;
+      width: 90%;
+      padding: 12px;
+      border-radius: 12px;
       border: none;
-      cursor: pointer;
+      color: white;
+      background-color: #6b00ff;
       font-weight: bold;
+      font-size: 16px;
+      margin: 8px 0;
+      cursor: pointer;
       transition: 0.3s;
     }
+
     button:hover {
-      background: #5200cc;
+      background-color: #5200cc;
     }
+
+    #calc {
+      background-color: #7a3ef7;
+    }
+
+    #pay-card {
+      background-color: #a327ff;
+    }
+
+    #pay-cash {
+      background-color: #009bff;
+    }
+
+    #calc:hover { background-color: #5d24d6; }
+    #pay-card:hover { background-color: #8500cc; }
+    #pay-cash:hover { background-color: #007acc; }
+
     .footer {
       margin-top: 20px;
       font-size: 13px;
       color: #eee;
+      line-height: 1.4;
     }
+
     .success {
       color: #00c851;
       font-weight: bold;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    #result {
+      font-size: 15px;
+      color: #222;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px auto;
+      width: 90%;
     }
   </style>
 </head>
+
 <body>
   <h1>Alex Livraison 🚗🚴‍♂️</h1>
 
   <div class="container">
-    <label>Adresse de départ</label><br>
-    <input id="start" placeholder="Entrez l’adresse de départ" type="text" /><br>
+    <label>Adresse de départ</label>
+    <input id="start" type="text" placeholder="Entrez l’adresse de départ" />
 
-    <label>Adresse de destination</label><br>
-    <input id="end" placeholder="Entrez l’adresse de destination" type="text" /><br>
+    <label>Adresse de destination</label>
+    <input id="end" type="text" placeholder="Entrez l’adresse de destination" />
 
-    <label>Taille du colis 📦</label><br>
+    <label>Taille du colis 📦</label>
     <select id="size">
       <option value="S">Petit (S)</option>
       <option value="M">Moyen (M)</option>
       <option value="L">Grand (L)</option>
       <option value="XL">Très grand (XL)</option>
-    </select><br>
+    </select>
 
-    <label>Heure de livraison souhaitée</label><br>
-    <input id="time" type="datetime-local" /><br>
+    <label>Heure de livraison souhaitée</label>
+    <input id="time" type="datetime-local" />
 
-    <button id="calc">Calculer le prix</button>
-
+    <button id="calc">📏 Calculer le prix</button>
     <p id="result"></p>
 
     <button id="pay-card">💳 Paiement par carte (Revolut)</button>
@@ -83,7 +133,7 @@
   </div>
 
   <div class="footer">
-    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)  
+    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)
     <br>💜 © 2025 Alex Livraison
   </div>
 
@@ -97,7 +147,6 @@
     let distanceKm = 0;
     let price = 0;
 
-    // Fonction pour calculer la distance et le prix
     calcBtn.addEventListener("click", () => {
       const start = document.getElementById("start").value;
       const end = document.getElementById("end").value;
@@ -125,20 +174,17 @@
           const element = response.rows[0].elements[0];
           distanceKm = element.distance.value / 1000;
 
-          // Calcul du prix selon la taille
-          let base = 0.9; // prix de base au km
+          let base = 0.9;
           if (size === "M") base = 1.1;
           if (size === "L") base = 1.3;
           if (size === "XL") base = 1.6;
 
           price = (distanceKm * base + 3).toFixed(2);
-
           result.innerHTML = 🚚 Distance estimée : <b>${distanceKm.toFixed(2)} km</b><br>💰 Prix estimé : <b>${price} €</b>;
         }
       );
     });
 
-    // Paiement par carte (Revolut)
     payCard.addEventListener("click", () => {
       if (price === 0) {
         result.textContent = "⚠️ Veuillez d’abord calculer le prix.";
@@ -148,13 +194,11 @@
       statusMsg.textContent = "✅ Commande activée ! Merci pour votre confiance.";
     });
 
-    // Paiement en espèces
     payCash.addEventListener("click", () => {
       statusMsg.textContent = "✅ Commande activée ! Merci pour votre confiance.";
     });
   </script>
 
-  <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places"></script>
   <script>
     function initAutocomplete() {
