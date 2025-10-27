@@ -1,53 +1,58 @@
 import express from "express";
+import cors from "cors";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 import twilio from "twilio";
 
+dotenv.config();
+
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
-// Twilio credentials (loaded from Render environment variables)
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
+// === Twilio credentials (you can also set them in Render environment variables) ===
+const ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "ACf3295da30ea7398a45a4c66c09132071";
+const AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || "74be117ca8cd030f91f285e98b7d7aac";
+const FROM_WHATSAPP = "whatsapp:+14155238886"; // Twilio sandbox number
 
-// === Endpoint: Receive delivery data and send WhatsApp notification ===
+// === ROUTE: test ===
+app.get("/", (req, res) => {
+  res.send("🚀 Alex Livraison API en ligne !");
+});
+
+// === ROUTE: send WhatsApp notification ===
 app.post("/api/notify-whatsapp", async (req, res) => {
   try {
-    const { de, a, distance_km, prix_eur, heure, payment_method } = req.body;
+    const client = twilio(ACCOUNT_SID, AUTH_TOKEN);
 
-    const message = `
-🚴 New Alex Livraison Order!
-📍 From: ${de}
-🎯 To: ${a}
-📏 Distance: ${distance_km} km
-💶 Price: ${prix_eur} €
-⏰ Time: ${heure}
-💳 Payment: ${payment_method}
-`;
+    const { to, de, a, distance_km, prix_eur, heure, payment_method } = req.body;
+    if (!to || !de || !a) {
+      return res.status(400).json({ error: "Champs manquants" });
+    }
+
+    const messageText = `
+🚴 Nouvelle commande Alex Livraison !
+📍 De : ${de}
+🎯 À : ${a}
+📏 Distance : ${distance_km} km
+💶 Prix : ${prix_eur} €
+⏰ Heure : ${heure}
+💳 Paiement : ${payment_method}
+    `.trim();
 
     await client.messages.create({
-      from: "whatsapp:+14155238886", // Twilio Sandbox number
-      to: "whatsapp:+33677171188",   // Your WhatsApp number
-      body: message,
+      from: FROM_WHATSAPP,
+      to: `whatsapp:${to}`,
+      body: messageText,
     });
 
-    console.log("✅ WhatsApp message sent successfully");
-    res.json({ success: true });
-  } catch (error) {
-    console.error("❌ Error sending WhatsApp message:", error.message);
-    res.status(500).json({ success: false, error: error.message });
+    res.json({ success: true, message: "Message WhatsApp envoyé avec succès" });
+  } catch (err) {
+    console.error("Erreur Twilio:", err);
+    res.status(500).json({ error: "Erreur d'envoi WhatsApp", details: err.message });
   }
 });
 
-// Simple health check route
-app.get("/", (req, res) => {
-  res.send("🚀 Alex Livraison WhatsApp API is live");
-});
-
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+// === Start Server ===
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`✅ Serveur actif sur le port ${PORT}`));
