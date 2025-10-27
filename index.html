@@ -1,80 +1,80 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>🚗 AlexLivraison 🚴🏻‍♂️</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🚗 AlexLivraison 🚴🏻‍♂️</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <style>
-    :root {
-      --bg1: #2c006e;
-      --bg2: #6b22cc;
-      --card: #fff;
-      --accent: #6b22cc;
-    }
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(160deg, var(--bg1), var(--bg2));
-      color: #222;
-      min-height: 100vh;
-    }
-    .container { max-width: 700px; margin: 0 auto; padding: 24px 16px; }
-    h1 {
-      text-align: center;
-      color: white;
-      font-size: 42px;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
-    }
-    .label { font-weight: 700; margin: 10px 0 6px; }
-    input, select {
-      width: 100%;
-      height: 50px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      padding: 0 12px;
-      font-size: 16px;
-    }
-    .btn {
-      width: 100%;
-      height: 54px;
-      border-radius: 12px;
-      background: var(--accent);
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-      border: none;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    .btn:hover { background: #5418a3; }
-    .btn-secondary { background: #ddd; color: #222; }
-    .result {
-      display: none;
-      background: #f3ebff;
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 10px;
-      line-height: 1.5;
-      font-weight: 600;
-    }
-    #map { display: none; height: 300px; border-radius: 14px; margin-top: 14px; }
-    .footer { text-align: center; color: #eee; margin-top: 16px; }
-  </style>
+<style>
+  :root{
+    --bg1:#2c006e; --bg2:#6b22cc; --card:#ffffff; --accent:#6b22cc;
+    --ink:#1f1f1f; --muted:#6b6b6b; --ok:#0ea35a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink);
+    min-height:100vh; overflow-x:hidden;
+    background:
+      radial-gradient(1000px 700px at 15% -10%, rgba(255,255,255,.06), transparent 60%),
+      linear-gradient(160deg, var(--bg1), var(--bg2)) fixed;
+  }
+  /* SVG illustration overlay (courier & city) */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      url("data:image/svg+xml,%3Csvg width='1600' height='900' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%23ffffff' stop-opacity='.12'/%3E%3Cstop stop-color='%23ffffff' stop-opacity='.03' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23g)'/%3E%3Cpath d='M0 720 Q400 680 800 720 T1600 720' fill='none' stroke='%23ffffff' stroke-opacity='.08' stroke-width='6'/%3E%3Ccircle cx='240' cy='640' r='44' fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='6'/%3E%3Cpath d='M210 640 h60 M240 612 v56' stroke='%23ffffff' stroke-opacity='.18' stroke-width='6'/%3E%3Cpath d='M1080 620 h180 a20 20 0 0 1 20 20 v70 h-240 v-50 a40 40 0 0 1 40-40z' fill='%23ffffff' fill-opacity='.09'/%3E%3Cpath d='M1180 610 l50 -80 20 10 -48 82 z' fill='%23ffffff' fill-opacity='.09'/%3E%3Cpath d='M420 630 q40 -60 100 -40 l40 14 40 -8 q40 -8 50 24 l-20 10 -30 -4 -36 10 10 26 -16 6 -18 -26 -44 14 -16 -22 -40 -4z' fill='none' stroke='%23ffffff' stroke-opacity='.25' stroke-width='6'/%3E%3C/svg%3E") center/cover no-repeat;
+  }
+
+  .container{max-width:720px; margin:0 auto; padding:28px 16px 90px}
+  /* Animated brand title */
+  .title{display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 16px}
+  .title h1{
+    color:#fff; font-size:44px; font-weight:900; letter-spacing:.3px; margin:0; display:flex; gap:8px; align-items:center;
+    text-shadow:0 10px 40px rgba(0,0,0,.35);
+  }
+  .car,.bike{opacity:0; display:inline-block}
+  .car{transform:translateX(-32px); animation:carIn .7s ease .15s forwards}
+  .bike{transform:translateX(32px);  animation:bikeIn .7s ease .35s forwards}
+  @keyframes carIn{to{opacity:1; transform:translateX(0)}}
+  @keyframes bikeIn{to{opacity:1; transform:translateX(0)}}
+  .subtitle{color:#f0e9ff; text-align:center; margin:-6px 0 14px; font-weight:600}
+
+  .card{
+    background:rgba(255,255,255,.96); border-radius:22px; padding:22px;
+    box-shadow:0 22px 60px rgba(0,0,0,.28);
+  }
+  .label{font-weight:800; color:#342a6e; margin:10px 0 6px}
+  input,select{width:100%; height:52px; border:1px solid #e6e1ff; border-radius:14px; padding:0 14px; font-size:16px; outline:none}
+  input:focus,select:focus{box-shadow:0 0 0 3px rgba(123,86,233,.18); border-color:#d6ccff}
+  .row{margin:8px 0 10px}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:640px){ .two{grid-template-columns:1fr} }
+
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 4px}
+  .opt{display:flex; align-items:center; gap:10px; background:#faf8ff; border:1px solid #eadeff; border-radius:12px; padding:10px 12px; font-weight:600}
+  .opt input{width:18px; height:18px}
+
+  .btn{
+    width:100%; height:56px; border-radius:14px; border:none; cursor:pointer;
+    color:#fff; background:linear-gradient(135deg,#7a3cf6,#6b22cc); font-weight:900; font-size:18px;
+    box-shadow:0 14px 30px rgba(95,15,182,.35); margin-top:10px; transition:transform .05s ease, filter .2s;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.secondary{background:#eef; color:#241a63; border:1px solid #dad5ff; box-shadow:none}
+
+  .result{display:none; background:#f7f6ff; border:1px dashed #cbbaff; border-radius:14px; padding:12px; font-weight:800; color:#2a195e; margin-top:12px}
+  #map{display:none; height:320px; border-radius:16px; overflow:hidden; border:1px solid #eee; margin-top:14px}
+  .footer{color:#eee; text-align:center; margin-top:16px; font-size:14px}
+  .ok{color:var(--ok)}
+</style>
 </head>
 <body>
   <div class="container">
-    <h1>🚗AlexLivraison🚴🏻‍♂️</h1>
+    <div class="title"><h1><span class="car">🚗</span><span>AlexLivraison</span><span class="bike">🚴🏻‍♂️</span></h1></div>
+    <p class="subtitle">Livraison 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules…)</p>
 
     <div class="card">
       <div class="label">Adresse de départ</div>
@@ -83,154 +83,226 @@
       <div class="label">Adresse de destination</div>
       <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer">
 
-      <div class="label">Taille du colis 📦</div>
-      <select id="size">
-        <option value="S">Petit (S)</option>
-        <option value="M">Moyen (M)</option>
-        <option value="L">Grand (L)</option>
-        <option value="XL">Très grand (XL)</option>
-      </select>
+      <div class="two">
+        <div>
+          <div class="label">Taille du colis 📦</div>
+          <select id="size">
+            <option value="S">Petit (S)</option>
+            <option value="M" selected>Moyen (M)</option>
+            <option value="L">Grand (L)</option>
+            <option value="XL">Très grand (XL)</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">Étage (optionnel)</div>
+          <select id="floor">
+            <option value="0">RDC / 1ᵉʳ (0 €)</option>
+            <option value="1">2ᵉ (+2 €)</option>
+            <option value="2">3ᵉ–5ᵉ (+2,5 €)</option>
+            <option value="3">6ᵉ–15ᵉ (+3 €)</option>
+          </select>
+        </div>
+      </div>
 
-      <div class="label">Étage de livraison (optionnel)</div>
-      <select id="floor">
-        <option value="0">Rez-de-chaussée</option>
-        <option value="1">1er–2e étage (+2€)</option>
-        <option value="2">3e–5e étage (+2.5€)</option>
-        <option value="3">6e–15e étage (+3€)</option>
-      </select>
+      <div class="label">Services additionnels</div>
+      <div class="options">
+        <label class="opt"><input type="checkbox" id="fragile"> Colis fragile (+2 €)</label>
+        <label class="opt"><input type="checkbox" id="urgent"> Livraison urgente (+3 €)</label>
+        <label class="opt"><input type="checkbox" id="wait5"> Attente 5 min (+1 €)</label>
+        <label class="opt"><input type="checkbox" id="wait10"> Attente 10 min (+2 €)</label>
+      </div>
 
       <div class="label">Heure de livraison souhaitée</div>
       <select id="time"></select>
 
       <button id="calc" class="btn">🧮 Calculer le prix</button>
-      <button id="payCard" class="btn">💳 Paiement par carte</button>
-      <button id="payCash" class="btn btn-secondary">💶 Paiement en espèces</button>
-
       <div id="result" class="result"></div>
       <div id="map"></div>
+
+      <div class="two">
+        <button id="payCard" class="btn">💳 Paiement par carte</button>
+        <button id="payCash" class="btn secondary">💶 Paiement en espèces</button>
+      </div>
+      <div id="status" style="margin-top:8px;font-size:14px;"></div>
     </div>
 
-    <p class="footer">🚲 Livraison locale 24h/24 et 7j/7 — Toulon, La Seyne, Ollioules, etc.<br>💜 © 2025 AlexLivraison</p>
+    <p class="footer">💜 Nous livrons vos commandes jusqu'à votre porte 💜<br>© 2025 Alex Livraison</p>
   </div>
 
-  <script>
-    // --- CONFIGURATION ---
-    const PRICE_PER_KM = 0.9;
-    const SIZE_MULTIPLIER = { S:1, M:1.15, L:1.3, XL:1.5 };
-    const FLOOR_EXTRA = { "0":0, "1":2, "2":2.5, "3":3 };
+<script>
+  // ---- Config tarifs ----
+  const PRICE_PER_KM = 0.9;
+  const SIZE_MULT = { S:1.00, M:1.15, L:1.30, XL:1.50 };
+  const FLOOR_EXTRA = { "0":0, "1":2.0, "2":2.5, "3":3.0 };
+  const EXTRA = { fragile:2.0, urgent:3.0, wait5:1.0, wait10:2.0 };
+  const MIN_PRICE = 3.0;
 
-    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-    const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-    const TG_CHAT_ID = "7129872491";
+  // ---- Intégrations ----
+  const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+  const TG_CHAT_ID = "7129872491";
+  const API_BASE = "https://alexlivraison-api.onrender.com"; // backend sécurisé
+  // Backend attendu: POST /api/revolut/create-checkout {amount_cents, currency, description}
+  // -> {checkout_url}
 
-    const $ = s => document.querySelector(s);
-    const euro = n => n.toFixed(2).replace('.', ',') + ' €';
+  // ---- Helpers ----
+  const $ = s => document.querySelector(s);
+  const euro = n => (Math.round(n*100)/100).toFixed(2).replace(".",",")+" €";
 
-    // Remplir les horaires
-    (function() {
-      const sel = $("#time");
-      const now = new Date();
-      for (let i = 0; i < 36; i++) {
-        const t = new Date(now.getTime() + i * 30 * 60000);
-        const label = t.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
-        const opt = document.createElement("option");
-        opt.value = label;
-        opt.textContent = label;
-        sel.appendChild(opt);
-      }
-    })();
+  // Remplir heures (30 min, +18h)
+  (function(){
+    const sel = $("#time"), now = new Date();
+    for(let i=0;i<36;i++){
+      const t = new Date(now.getTime()+i*30*60000);
+      const label = t.toLocaleString("fr-FR",{dateStyle:"short", timeStyle:"short"});
+      const opt = document.createElement("option"); opt.value=label; opt.textContent=label; sel.appendChild(opt);
+    }
+  })();
 
-    async function geocode(addr) {
-      const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(addr);
-      const res = await fetch(url, { headers: { "Accept-Language": "fr" } });
+  async function geocode(addr){
+    const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(addr);
+    const res = await fetch(url, {headers:{"Accept-Language":"fr"}});
+    const data = await res.json();
+    if(!data.length) throw new Error("Adresse non trouvée");
+    return {lat: +data[0].lat, lon: +data[0].lon};
+  }
+  async function getRoute(aLat,aLon,bLat,bLon){
+    const url = "https://router.project-osrm.org/route/v1/driving/"+aLon+","+aLat+";"+bLon+","+bLat+"?overview=full&geometries=geojson";
+    const res = await fetch(url);
+    const data = await res.json();
+    const r = data.routes && data.routes[0];
+    if(!r) throw new Error("Itinéraire introuvable");
+    return {km: r.distance/1000, geo: r.geometry};
+  }
+  function ensureMap(geo, A, B){
+    if(!window.map){
+      window.map = L.map("map");
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    }else{
+      map.eachLayer(l=>l.remove());
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    }
+    L.geoJSON(geo,{style:{color:"#7f56d9",weight:6,opacity:.9}}).addTo(map);
+    map.fitBounds([[A.lat,A.lon],[B.lat,B.lon]]);
+    $("#map").style.display = "block";
+  }
+  async function notifyTelegram(text){
+    try{
+      await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{
+        method:"POST",
+        body:new URLSearchParams({chat_id:TG_CHAT_ID, text})
+      });
+    }catch(e){}
+  }
+
+  let last=null;
+
+  $("#calc").addEventListener("click", async ()=>{
+    const from = $("#from").value.trim();
+    const to   = $("#to").value.trim();
+    const size = $("#size").value;
+    const floor= $("#floor").value;
+    const when = $("#time").value;
+    const fragile = $("#fragile").checked;
+    const urgent  = $("#urgent").checked;
+    const wait5   = $("#wait5").checked;
+    const wait10  = $("#wait10").checked;
+
+    if(!from || !to){ alert("Veuillez entrer les deux adresses."); return; }
+
+    const box = $("#result");
+    box.style.display="block";
+    box.textContent="Calcul en cours…";
+
+    try{
+      const A = await geocode(from);
+      const B = await geocode(to);
+      const r = await getRoute(A.lat,A.lon,B.lat,B.lon);
+
+      const km = Math.max(1, Math.round(r.km*100)/100);
+      let price = km * PRICE_PER_KM * (SIZE_MULT[size]||1);
+      price += FLOOR_EXTRA[floor]||0;
+      if(fragile) price += EXTRA.fragile;
+      if(urgent)  price += EXTRA.urgent;
+      if(wait5)   price += EXTRA.wait5;
+      if(wait10)  price += EXTRA.wait10;
+      if(price < MIN_PRICE) price = MIN_PRICE;
+
+      last = {from,to,km,price,size,floor,when,fragile,urgent,wait5,wait10};
+
+      ensureMap(r.geo, A, B);
+
+      box.innerHTML =
+        "🚚 Distance : <b>"+km.toFixed(2)+" km</b><br>"+
+        "💶 Prix : <b>"+euro(price)+"</b><br>"+
+        "📦 Taille : "+size+
+        " — 🏢 Étage : "+(floor==="0"?"RDC/1ᵉʳ":floor)+
+        (fragile?" — ✅ Fragile":"")+
+        (urgent?" — ✅ Urgente":"")+
+        (wait5?" — ✅ Attente 5 min":"")+
+        (wait10?" — ✅ Attente 10 min":"")+
+        "<br>🕒 "+when;
+    }catch(e){
+      box.textContent="Erreur lors du calcul. Vérifiez les adresses.";
+    }
+  });
+
+  $("#payCash").addEventListener("click", async ()=>{
+    if(!last){ alert("Calculez d’abord le prix."); return; }
+    await notifyTelegram(
+      "🧾 Commande (Espèces)\n"+
+      "De: "+last.from+"\nÀ: "+last.to+"\n"+
+      "Distance: "+last.km.toFixed(2)+" km\nPrix: "+last.price.toFixed(2)+" €\n"+
+      "Taille: "+last.size+" | Étage: "+last.floor+
+      (last.fragile?" | Fragile":"")+(last.urgent?" | Urgente":"")+
+      (last.wait5?" | Attente 5m":"")+(last.wait10?" | Attente 10m":"")+
+      "\nHeure: "+last.when
+    );
+    $("#status").innerHTML = "<span class='ok'>✅ Commande activée (paiement en espèces).</span>";
+  });
+
+  // Paiement carte avec montant automatique via backend Revolut
+  $("#payCard").addEventListener("click", async ()=>{
+    if(!last){ alert("Calculez d’abord le prix."); return; }
+    const status = $("#status");
+    status.textContent = "Création du paiement sécurisé…";
+    const description = "AlexLivraison — "+last.from+" → "+last.to+" — "+last.km.toFixed(2)+" km — "+last.size;
+
+    try{
+      const res = await fetch(API_BASE+"/api/revolut/create-checkout",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({
+          amount_cents: Math.round(last.price*100),
+          currency: "EUR",
+          description: description
+        })
+      });
+      if(!res.ok){ throw new Error("HTTP "+res.status); }
       const data = await res.json();
-      if (!data.length) throw new Error("Adresse non trouvée");
-      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+      if(!data.checkout_url){ throw new Error("checkout_url manquant"); }
+
+      await notifyTelegram(
+        "💳 Commande (Carte)\n"+
+        "De: "+last.from+"\nÀ: "+last.to+"\n"+
+        "Distance: "+last.km.toFixed(2)+" km\nPrix: "+last.price.toFixed(2)+" €\n"+
+        "Taille: "+last.size+" | Étage: "+last.floor+
+        (last.fragile?" | Fragile":"")+(last.urgent?" | Urgente":"")+
+        (last.wait5?" | Attente 5m":"")+(last.wait10?" | Attente 10m":"")+
+        "\nHeure: "+last.when
+      );
+
+      status.innerHTML = "<span class='ok'>✅ Paiement généré. Redirection…</span>";
+      window.open(data.checkout_url, "_blank", "noopener");
+    }catch(err){
+      status.textContent = "Échec de création du paiement (backend).";
+      // Fallback: ouvrir lien général (sans montant auto)
+      window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27","_blank","noopener");
     }
+  });
 
-    async function getRoute(lat1, lon1, lat2, lon2) {
-      const url = "https://router.project-osrm.org/route/v1/driving/" + lon1 + "," + lat1 + ";" + lon2 + "," + lat2 + "?overview=full&geometries=geojson";
-      const res = await fetch(url);
-      const data = await res.json();
-      if (!data.routes || !data.routes.length) throw new Error("Itinéraire introuvable");
-      return { km: data.routes[0].distance / 1000, geo: data.routes[0].geometry };
-    }
-
-    async function notify(text) {
-      try {
-        await fetch("https://api.telegram.org/bot" + TG_TOKEN + "/sendMessage", {
-          method: "POST",
-          body: new URLSearchParams({ chat_id: TG_CHAT_ID, text })
-        });
-      } catch (e) {}
-    }
-
-    let map, layer, markerA, markerB, lastCalc = null;
-
-    $("#calc").addEventListener("click", async () => {
-      const from = $("#from").value.trim();
-      const to = $("#to").value.trim();
-      const size = $("#size").value;
-      const floor = $("#floor").value;
-      const when = $("#time").value;
-      const result = $("#result");
-
-      if (!from || !to) return alert("Veuillez entrer les deux adresses.");
-
-      result.style.display = "block";
-      result.textContent = "Calcul en cours...";
-
-      try {
-        const A = await geocode(from);
-        const B = await geocode(to);
-        const route = await getRoute(A.lat, A.lon, B.lat, B.lon);
-
-        const km = Math.max(1, Math.round(route.km * 100) / 100);
-        const price = Math.round((km * PRICE_PER_KM * SIZE_MULTIPLIER[size] + FLOOR_EXTRA[floor]) * 100) / 100;
-        lastCalc = { from, to, km, price, size, floor, when };
-
-        if (!map) {
-          map = L.map("map");
-          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-        }
-        if (layer) layer.remove();
-        if (markerA) markerA.remove();
-        if (markerB) markerB.remove();
-
-        layer = L.geoJSON(route.geo, { style: { color: "#6c3bd3", weight: 5 } }).addTo(map);
-        markerA = L.marker([A.lat, A.lon]).addTo(map);
-        markerB = L.marker([B.lat, B.lon]).addTo(map);
-        map.fitBounds([[A.lat, A.lon], [B.lat, B.lon]]);
-        $("#map").style.display = "block";
-
-        result.innerHTML =
-          "🚚 Distance : <b>" + km.toFixed(2) + " km</b><br>" +
-          "💶 Prix : <b>" + euro(price) + "</b><br>" +
-          "📦 Taille : " + size + " — 🏢 Étage : " + floor + "<br>" +
-          "🕒 " + when;
-      } catch (e) {
-        result.textContent = "Erreur : impossible de calculer le trajet.";
-      }
-    });
-
-    $("#payCash").addEventListener("click", async () => {
-      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
-      alert("Commande confirmée — paiement en espèces.");
-      const text = "🧾 Commande (Espèces)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.km + " km\nPrix: " + lastCalc.price + " €";
-      await notify(text);
-    });
-
-    $("#payCard").addEventListener("click", async () => {
-      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
-      alert("Redirection vers la page de paiement.");
-      const text = "🧾 Commande (Carte)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.km + " km\nPrix: " + lastCalc.price + " €";
-      await notify(text);
-      window.open(REVOLUT_LINK, "_blank", "noopener");
-    });
-
-    // Valeurs par défaut
-    $("#from").value = "2 Rue Beaussier, Toulon";
-    $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
-  </script>
+  // Valeurs de test
+  $("#from").value="2 Rue Beaussier, Toulon";
+  $("#to").value="241 Rue Le Corbusier, La Seyne-sur-Mer";
+</script>
 </body>
 </html>
