@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --violet:#5b15d6; --violet2:#6d2ae8; --bg:#3b0aa3; --card:#fff; --muted:#6b6b6b;
@@ -28,8 +29,7 @@
     label{font-size:14px; color:#444; font-weight:600}
     input, select{
       width:100%; border:1px solid #e7e7e7; border-radius:12px; padding:14px 14px;
-      font-size:16px; outline:none; transition: .2s border-color;
-      background:#fff;
+      font-size:16px; outline:none; transition: .2s border-color; background:#fff;
     }
     input:focus, select:focus{border-color:#b8a2ff}
     .btn{
@@ -54,20 +54,21 @@
     footer{color:#eee; font-size:14px; margin:0 16px 30px; text-align:center}
     .ok{color:var(--success); font-weight:700}
     .err{color:var(--danger); font-weight:700}
+    .disabled input, .disabled select, .disabled button { opacity:0.6; pointer-events:none; }
   </style>
 </head>
 <body>
   <h1>Alex Livraison 🚚🚴</h1>
 
-  <div class="card">
+  <div class="card" id="order-card">
     <div class="row">
       <label for="from">Adresse de départ</label>
-      <input id="from" placeholder="Saisir l'adresse d'enlèvement" autocomplete="off" />
+      <input id="from" placeholder="Adresse d'enlèvement" autocomplete="off" />
     </div>
 
     <div class="row">
       <label for="to">Adresse de destination</label>
-      <input id="to" placeholder="Saisir l'adresse de destination" autocomplete="off" />
+      <input id="to" placeholder="Adresse de destination" autocomplete="off" />
     </div>
 
     <div class="row">
@@ -97,150 +98,107 @@
     </div>
   </div>
 
-  <p class="note">
-    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)
-  </p>
-  <footer>
-    💜 Nous livrons vos commandes jusqu'à votre porte 💜<br/>© 2025 Alex Livraison
-  </footer>
+  <p class="note">🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)</p>
+  <footer>💜 Nous livrons vos commandes jusqu'à votre porte 💜<br/>© 2025 Alex Livraison</footer>
 
-  <!-- Google Maps JS (Autocomplete + DistanceMatrix) -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&language=fr" defer></script>
-
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&language=fr" defer></script>
 
   <script>
-    // ==== Price configuration ====
-    const PRICING = {
-      BASE_FEE: 3.0,
-      PER_KM: 0.80,
-      SIZE_MULT: { S:1.0, M:1.2, L:1.5, XL:1.8 },
-      MIN_PRICE: 5.0
-    };
+    const API_BASE = 'https://alexlivraison-api.onrender.com';
+    const REVOLUT_CHECKOUT_URL = 'https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27';
 
-    // ==== DOM elements ====
-    const $from = document.getElementById('from');
-    const $to = document.getElementById('to');
-    const $size = document.getElementById('size');
-    const $time = document.getElementById('time');
-    const $calc = document.getElementById('calc');
-    const $result = document.getElementById('result');
-    const $status = document.getElementById('send-status');
-    const $payCard = document.getElementById('pay-card');
-    const $payCash = document.getElementById('pay-cash');
+    const PRICING = { BASE_FEE:3.0, PER_KM:0.8, SIZE_MULT:{S:1,M:1.2,L:1.5,XL:1.8}, MIN_PRICE:5.0 };
 
-    // Prefill "now + 30min"
+    const $from=document.getElementById('from');
+    const $to=document.getElementById('to');
+    const $size=document.getElementById('size');
+    const $time=document.getElementById('time');
+    const $calc=document.getElementById('calc');
+    const $result=document.getElementById('result');
+    const $status=document.getElementById('send-status');
+    const $payCard=document.getElementById('pay-card');
+    const $payCash=document.getElementById('pay-cash');
+    const $card=document.getElementById('order-card');
+
     (function initTime(){
-      const dt = new Date(Date.now()+30*60000);
-      const pad = n => String(n).padStart(2,'0');
-      const local = dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate())+"T"+pad(dt.getHours())+":"+pad(dt.getMinutes());
-      $time.value = local;
+      const dt=new Date(Date.now()+30*60000);
+      const pad=n=>String(n).padStart(2,'0');
+      $time.value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
     })();
 
-    // ==== Google Places autocomplete ====
-    let placesLoaded = false;
-    window.addEventListener('load', () => {
-      if (window.google && google.maps && !placesLoaded) {
-        placesLoaded = true;
-        new google.maps.places.Autocomplete($from, { componentRestrictions:{country:"fr"} });
-        new google.maps.places.Autocomplete($to,   { componentRestrictions:{country:"fr"} });
+    window.addEventListener('load',()=>{
+      if(window.google && google.maps){
+        new google.maps.places.Autocomplete($from,{componentRestrictions:{country:"fr"}});
+        new google.maps.places.Autocomplete($to,{componentRestrictions:{country:"fr"}});
       }
     });
 
-    function euros(n){ return (Math.round(n*100)/100).toFixed(2); }
-
-    async function computeDistanceKm(origin, destination) {
-      return new Promise((resolve, reject) => {
-        const svc = new google.maps.DistanceMatrixService();
-        svc.getDistanceMatrix({
-          origins:[origin],
-          destinations:[destination],
-          travelMode: google.maps.TravelMode.BICYCLING,
-          unitSystem: google.maps.UnitSystem.METRIC
-        }, (res, status) => {
-          if (status !== 'OK' || !res.rows?.[0]?.elements?.[0]) {
-            reject(new Error('DistanceMatrix error: ' + status));
-            return;
-          }
-          const elem = res.rows[0].elements[0];
-          if (elem.status !== 'OK') {
-            reject(new Error('Distance element error: ' + elem.status));
-            return;
-          }
-          resolve(elem.distance.value / 1000.0);
-        });
+    const euros=n=>(Math.round(n*100)/100).toFixed(2);
+    const computeDistanceKm=(origin,dest)=>new Promise((res,rej)=>{
+      const svc=new google.maps.DistanceMatrixService();
+      svc.getDistanceMatrix({
+        origins:[origin],destinations:[dest],
+        travelMode:google.maps.TravelMode.BICYCLING,
+        unitSystem:google.maps.UnitSystem.METRIC
+      },(r,s)=>{
+        if(s!=="OK"||!r.rows?.[0]?.elements?.[0])return rej("Erreur DistanceMatrix");
+        const el=r.rows[0].elements[0];
+        if(el.status!=="OK")return rej("Élément invalide");
+        res(el.distance.value/1000.0);
       });
-    }
+    });
 
-    function calcPrice(distanceKm, sizeKey) {
-      const mult = PRICING.SIZE_MULT[sizeKey] ?? 1.0;
-      const raw = (PRICING.BASE_FEE + distanceKm * PRICING.PER_KM) * mult;
-      return Math.max(raw, PRICING.MIN_PRICE);
-    }
+    function calcPrice(km,size){const m=PRICING.SIZE_MULT[size]??1;return Math.max((PRICING.BASE_FEE+km*PRICING.PER_KM)*m,PRICING.MIN_PRICE);}
 
-    async function calculate() {
-      $status.textContent = '';
-      const origin = $from.value.trim();
-      const dest = $to.value.trim();
-      if (!origin || !dest) {
-        $result.style.display='block';
-        $result.innerHTML = '⚠️ Merci de saisir les deux adresses.';
-        return null;
-      }
-      try {
-        const km = await computeDistanceKm(origin, dest);
-        const price = calcPrice(km, $size.value);
-        $result.style.display='block';
-        $result.innerHTML = `🚚 Distance estimée : <b>${km.toFixed(2)} km</b> | 💶 Prix estimé : <b>${euros(price)} €</b>`;
-        return { km, price };
-      } catch (e) {
-        $result.style.display='block';
-        $result.innerHTML = `❌ Erreur de connexion à l’API Google Maps.`;
-        return null;
-      }
-    }
-
-    $calc.addEventListener('click', calculate);
-
-    // ==== Send WhatsApp via Render API ====
-    const API_BASE = 'https://alexlivraison-api.onrender.com';
-
-    async function sendOrder(paymentMethod){
-      let calc = await calculate();
-      if (!calc) return;
-
-      const payload = {
-        to: '+33677171188',
-        de: $from.value.trim(),
-        a: $to.value.trim(),
-        distance_km: Number(calc.km.toFixed(2)),
-        prix_eur: Number(euros(calc.price)),
-        heure: new Date($time.value).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}),
-        payment_method: paymentMethod
-      };
-
-      $status.className=''; 
-      $status.textContent='Envoi WhatsApp en cours…';
+    async function calculate(){
+      const o=$from.value.trim(),d=$to.value.trim();
+      if(!o||!d){$result.style.display='block';$result.innerHTML='⚠️ Merci de saisir les deux adresses.';return null;}
       try{
-        const res = await fetch(`${API_BASE}/api/notify-whatsapp`, {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if(!res.ok){
-          const t = await res.text();
-          throw new Error(t || ('HTTP '+res.status));
-        }
-        $status.className='ok';
-        $status.textContent = '✅ Notification WhatsApp envoyée.';
-      }catch(err){
-        console.error(err);
-        $status.className='err';
-        $status.textContent = '❌ Échec de l’envoi WhatsApp. Vérifiez l’API Render.';
-      }
+        const km=await computeDistanceKm(o,d),p=calcPrice(km,$size.value);
+        $result.style.display='block';$result.innerHTML=`🚚 Distance estimée : <b>${km.toFixed(2)} km</b> | 💶 Prix estimé : <b>${euros(p)} €</b>`;
+        return{km,p};
+      }catch(e){$result.style.display='block';$result.innerHTML='❌ Erreur Google Maps.';return null;}
     }
 
-    $payCard.addEventListener('click', () => sendOrder('carte (Revolut)'));
-    $payCash.addEventListener('click', () => sendOrder('espèces à la livraison'));
+    async function sendOrder(payType){
+      const calc=await calculate(); if(!calc)return false;
+      const payload={to:'+33677171188',de:$from.value,a:$to.value,
+        distance_km:Number(calc.km.toFixed(2)),prix_eur:Number(euros(calc.p)),
+        heure:new Date($time.value).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
+        payment_method:payType};
+      $status.className='';$status.textContent='Envoi WhatsApp en cours…';
+      try{
+        const r=await fetch(`${API_BASE}/api/notify-whatsapp`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        if(!r.ok)throw new Error(await r.text());
+        $status.className='ok';$status.textContent='✅ Notification WhatsApp envoyée.';
+        return true;
+      }catch(err){console.error(err);$status.className='err';$status.textContent='❌ Échec de l’envoi WhatsApp.';return false;}
+    }
+
+    function lockForm(){
+      $card.classList.add('disabled');
+    }
+    function showSuccess(msg){
+      $status.className='ok';
+      $status.innerHTML=`<br><b>${msg}</b>`;
+    }
+    function openRevolut(){
+      const a=document.createElement('a');
+      a.href=REVOLUT_CHECKOUT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    $calc.addEventListener('click',calculate);
+    $payCard.addEventListener('click',async()=>{
+      await sendOrder('carte (Revolut)');
+      openRevolut();
+      lockForm();
+      showSuccess('🟢 Commande payée avec succès. Merci pour votre confiance !');
+    });
+    $payCash.addEventListener('click',async()=>{
+      await sendOrder('espèces à la livraison');
+      lockForm();
+      showSuccess('🟢 Commande confirmée. Paiement à la livraison.');
+    });
   </script>
 </body>
 </html>
