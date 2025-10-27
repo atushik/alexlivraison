@@ -1,205 +1,183 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alex Livraison 🚗🚴‍♂️</title>
 
-  <!-- Leaflet (carte sans clé API) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root{
-      --bg:#33006f; --bg2:#5f0fb6; --card:#fff; --primary:#5f0fb6; --primary2:#4e0c95; --text:#1f1f1f;
+    body {
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+      background: radial-gradient(circle at top, #5f0fb6, #33006f);
+      color: #222;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;color:var(--text);
-         background:radial-gradient(1000px 600px at 50% -100px,var(--bg2),var(--bg));min-height:100vh}
-    .container{max-width:680px;margin:0 auto;padding:28px 16px 80px}
-    .title{color:#fff;font-weight:800;font-size:40px;display:flex;gap:10px;align-items:center}
-    .card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 12px 40px rgba(0,0,0,.18);margin-top:18px}
-    label{display:block;margin:10px 0 6px;font-weight:700;color:#444}
-    input,select{width:100%;height:52px;font-size:18px;padding:0 14px;border:1px solid #d9d9d9;border-radius:14px}
-    input:focus,select:focus{outline:none;border-color:#c8a8ff;box-shadow:0 0 0 3px rgba(95,15,182,.12)}
-    .btn{width:100%;height:56px;border-radius:14px;font-size:19px;font-weight:800;color:#fff;background:var(--primary);
-         border:none;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 14px 30px rgba(95,15,182,.35);
-         cursor:pointer;margin-top:12px}
-    .btn:active{background:var(--primary2)}
-    .btn-outline{background:#dedede;color:#222;box-shadow:none}
-    .result{background:#fff;border:1px dashed #d5ccff;border-radius:14px;padding:12px;margin-top:14px;font-weight:600}
-    #map{height:320px;margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid #eee}
-    .hidden{display:none}
-    .footer{color:#efe5ff;text-align:center;margin-top:16px;line-height:1.5}
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 30px 15px 100px;
+    }
+    .title {
+      color: white;
+      font-size: 38px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    label { font-weight: 700; margin-top: 10px; display: block; }
+    input, select {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 0 12px;
+      font-size: 17px;
+      margin-top: 5px;
+    }
+    .btn {
+      width: 100%;
+      height: 55px;
+      font-weight: 700;
+      font-size: 18px;
+      border: none;
+      border-radius: 14px;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #fff;
+      background: #5f0fb6;
+      box-shadow: 0 6px 20px rgba(95,15,182,0.4);
+    }
+    .btn:active { background: #4e0c95; }
+    .btn-outline { background: #ddd; color: #222; box-shadow: none; }
+    #map { height: 300px; margin-top: 20px; border-radius: 14px; }
+    .result { margin-top: 10px; background: #fafafa; border-radius: 10px; padding: 10px; font-weight: 600; }
+    .hidden { display: none; }
+    .footer { color: #eee; text-align: center; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="title">Alex Livraison 🚗🚴‍♂️</div>
     <div class="card">
-      <label for="from">Adresse de départ</label>
-      <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon">
-
-      <label for="to">Adresse de destination</label>
-      <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne">
-
-      <label for="size">Taille du colis 📦</label>
+      <label>Adresse de départ</label>
+      <input id="from" placeholder="Ex: 2 Rue Beaussier, Toulon">
+      <label>Adresse de destination</label>
+      <input id="to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
+      <label>Taille du colis 📦</label>
       <select id="size">
         <option value="S">Petit (S)</option>
-        <option value="M" selected>Moyen (M)</option>
+        <option value="M">Moyen (M)</option>
         <option value="L">Grand (L)</option>
         <option value="XL">Très grand (XL)</option>
       </select>
-
-      <label for="time">Heure de livraison souhaitée</label>
+      <label>Heure de livraison souhaitée</label>
       <select id="time"></select>
-
       <button id="calc" class="btn">🧮 Calculer le prix</button>
       <button id="payCard" class="btn">💳 Paiement par carte</button>
       <button id="payCash" class="btn btn-outline">💷 Paiement en espèces</button>
-
       <div id="result" class="result hidden"></div>
       <div id="map" class="hidden"></div>
     </div>
-
-    <p class="footer">
-      🚴 Livraison locale 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules, etc.)<br>
-      💜 © 2025 Alex Livraison
-    </p>
+    <p class="footer">🚴 Livraison locale 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules, etc.)<br>💜 © 2025 Alex Livraison</p>
   </div>
 
   <script>
   (function(){
-    // ====== CONFIG ======
     var PRICE_PER_KM = 0.9;
     var REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
     var TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     var TG_CHAT_ID = "7129872491";
 
-    // ====== HELPERS ======
     function $(id){ return document.getElementById(id); }
-    function euro(n){ return (Math.round(n*100)/100).toFixed(2).replace(".", ",") + " €"; }
+    function euro(n){ return n.toFixed(2).replace('.', ',') + " €"; }
 
-    // Prevent any overlay catching clicks
-    document.body.style.pointerEvents = "auto";
-
-    // ====== FILL TIME SELECT ======
-    (function(){
+    (function fillTimes(){
       var sel = $("time");
       var now = new Date();
-      for (var i=0;i<36;i++){
+      for(var i=0;i<36;i++){
         var t = new Date(now.getTime()+i*30*60000);
-        var dd = String(t.getDate()).padStart(2,"0");
-        var mo = String(t.getMonth()+1).padStart(2,"0");
-        var yy = t.getFullYear();
-        var hh = String(t.getHours()).padStart(2,"0");
-        var mm = String(t.getMinutes()).padStart(2,"0");
-        var label = dd+"."+mo+"."+yy+", "+hh+":"+mm;
+        var label = t.toLocaleDateString('fr-FR') + ", " + t.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
         var opt = document.createElement("option");
         opt.value = label; opt.textContent = label;
         sel.appendChild(opt);
       }
     })();
 
-    // ====== MAP ======
+    function geocode(q){
+      var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q);
+      return fetch(url).then(r=>r.json()).then(j=>{
+        if(!j.length) throw "Adresse introuvable";
+        return {lat:+j[0].lat, lon:+j[0].lon};
+      });
+    }
+
+    function osrmRoute(a,b){
+      var url = "https://router.project-osrm.org/route/v1/driving/"+a.lon+","+a.lat+";"+b.lon+","+b.lat+"?overview=full&geometries=geojson";
+      return fetch(url).then(r=>r.json()).then(j=>{
+        var r=j.routes[0]; return {km:r.distance/1000,geo:r.geometry};
+      });
+    }
+
+    function notifyTelegram(msg){
+      var url="https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage";
+      fetch(url,{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:msg})});
+    }
+
     var map, routeLayer;
-    function ensureMap(geojson, A, B){
+    function showMap(geo,a,b){
       if(!map){
-        map = L.map("map");
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution:"© OpenStreetMap" }).addTo(map);
+        map=L.map("map");
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap"}).addTo(map);
       }
-      if(routeLayer){ routeLayer.remove(); }
-      routeLayer = L.geoJSON(geojson, { style:{ color:"#5f0fb6", weight:6, opacity:0.75 } }).addTo(map);
-      map.fitBounds([[A.lat,A.lon],[B.lat,B.lon]]);
+      if(routeLayer){routeLayer.remove();}
+      routeLayer=L.geoJSON(geo,{style:{color:"#5f0fb6",weight:6}}).addTo(map);
+      map.fitBounds([[a.lat,a.lon],[b.lat,b.lon]]);
       $("map").classList.remove("hidden");
     }
 
-    // ====== OSM HELPERS ======
-    function geocode(q){
-      var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q)+"&accept-language=fr";
-      return fetch(url, {headers:{ "User-Agent":"alexlivraison-demo" }})
-        .then(function(r){ if(!r.ok) throw new Error("Nominatim"); return r.json(); })
-        .then(function(arr){ if(!arr.length) throw new Error("Adresse introuvable");
-              return { lat: +arr[0].lat, lon: +arr[0].lon, disp: arr[0].display_name }; });
-    }
+    var lastCalc=null;
 
-    function osrmRoute(A,B){
-      var url = "https://router.project-osrm.org/route/v1/driving/"+
-                A.lon+","+A.lat+";"+B.lon+","+B.lat+"?overview=full&geometries=geojson";
-      return fetch(url)
-        .then(function(r){ if(!r.ok) throw new Error("OSRM"); return r.json(); })
-        .then(function(j){ if(!j.routes || !j.routes.length) throw new Error("No route");
-              var r = j.routes[0]; return { km: r.distance/1000, geojson: r.geometry }; });
-    }
+    $("calc").onclick=function(){
+      var from=$("from").value.trim(),to=$("to").value.trim(),size=$("size").value,when=$("time").value;
+      if(!from||!to){alert("Veuillez remplir les deux adresses.");return;}
+      $("result").classList.remove("hidden");
+      $("result").innerText="Calcul en cours...";
+      Promise.all([geocode(from),geocode(to)]).then(a=>{
+        return osrmRoute(a[0],a[1]).then(r=>({A:a[0],B:a[1],R:r}));
+      }).then(d=>{
+        var km=d.R.km.toFixed(2);
+        var price=(d.R.km*PRICE_PER_KM).toFixed(2);
+        lastCalc={from,to,km,price,size,when};
+        $("result").innerHTML="🚚 Distance : "+km+" km<br>💶 Prix : "+price+" €<br>📦 "+size+" — "+when;
+        showMap(d.R.geo,d.A,d.B);
+      }).catch(()=>{$("result").innerText="Erreur de calcul";});
+    };
 
-    function notifyTelegram(text){
-      var url = "https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage";
-      var body = new URLSearchParams({ chat_id: TG_CHAT_ID, text: text });
-      return fetch(url, { method:"POST", body: body }).catch(function(){});
-    }
-
-    // ====== STATE ======
-    var lastCalc = null;
-    var resultBox = $("result");
-
-    // ====== BUTTONS ======
-    $("calc").addEventListener("click", function(){
-      var from = $("from").value.trim();
-      var to   = $("to").value.trim();
-      var size = $("size").value;
-      var when = $("time").value;
-
-      if(!from || !to){ alert("Merci de saisir les deux adresses."); return; }
-
-      resultBox.classList.remove("hidden");
-      resultBox.textContent = "Calcul en cours…";
-
-      Promise.all([geocode(from), geocode(to)])
-        .then(function(arr){
-          var A = arr[0], B = arr[1];
-          return osrmRoute(A,B).then(function(r){ return {A:A,B:B,r:r}; });
-        })
-        .then(function(d){
-          var km = Math.max(1, Math.round(d.r.km*100)/100);
-          var price = Math.round(km*PRICE_PER_KM*100)/100;
-          lastCalc = { from:from, to:to, km:km, price:price, size:size, when:when };
-
-          resultBox.innerHTML =
-            "🚚 Distance estimée : <b>"+ km.toFixed(2) +" km</b><br>"+
-            "💶 Prix estimé : <b>"+ price.toFixed(2) +" €</b><br>"+
-            "📦 Taille : "+ size +" — 🕒 "+ when;
-
-          ensureMap(d.r.geojson, d.A, d.B);
-        })
-        .catch(function(){
-          resultBox.textContent = "Problème… Vérifiez les adresses.";
-        });
-    });
-
-    $("payCash").addEventListener("click", function(){
-      if(!lastCalc){ alert("Veuillez d’abord calculer le prix."); return; }
-      var msg = "💵 Nouvelle commande (Espèces)\nDe: "+lastCalc.from+
-                "\nÀ: "+lastCalc.to+"\nDistance: "+lastCalc.km.toFixed(2)+" km"+
-                "\nPrix: "+lastCalc.price.toFixed(2)+" €\nTaille: "+lastCalc.size+
-                "\nHeure: "+lastCalc.when;
-      notifyTelegram(msg);
+    $("payCash").onclick=function(){
+      if(!lastCalc){alert("Calculez le prix d’abord.");return;}
+      notifyTelegram("Nouvelle commande (Espèces)\nDe: "+lastCalc.from+"\nÀ: "+lastCalc.to+"\nPrix: "+lastCalc.price+" €");
       alert("Commande activée ✅ Paiement en espèces.");
-    });
+    };
 
-    $("payCard").addEventListener("click", function(){
-      if(!lastCalc){ alert("Veuillez d’abord calculer le prix."); return; }
-      var msg = "💳 Nouvelle commande (Carte)\nDe: "+lastCalc.from+
-                "\nÀ: "+lastCalc.to+"\nDistance: "+lastCalc.km.toFixed(2)+" km"+
-                "\nPrix: "+lastCalc.price.toFixed(2)+" €\nTaille: "+lastCalc.size+
-                "\nHeure: "+lastCalc.when;
-      notifyTelegram(msg);
-      // откроем оплату в новой вкладке
-      window.open(REVOLUT_LINK, "_blank", "noopener");
-    });
+    $("payCard").onclick=function(){
+      if(!lastCalc){alert("Calculez le prix d’abord.");return;}
+      notifyTelegram("Nouvelle commande (Carte)\nDe: "+lastCalc.from+"\nÀ: "+lastCalc.to+"\nPrix: "+lastCalc.price+" €");
+      window.open(REVOLUT_LINK,"_blank");
+    };
 
-    // Значения по умолчанию для быстрого теста
-    $("from").value = "2 Rue Beaussier, Toulon";
-    $("to").value   = "241 Rue Le Corbusier, La Seyne-sur-Mer";
+    $("from").value="2 Rue Beaussier, Toulon";
+    $("to").value="241 Rue Le Corbusier, La Seyne-sur-Mer";
   })();
   </script>
 </body>
