@@ -1,82 +1,68 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Alex Livraison 🚗🚴‍♂️</title>
 <style>
-body{
-  margin:0;
-  font-family:'Inter',sans-serif;
-  background:#5b1dd8;
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  min-height:100vh;
+body {
+  background: linear-gradient(180deg, #5f00cc, #6d00b3);
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  padding: 20px;
 }
-h1{
-  margin:20px;
-  font-weight:800;
-  text-align:center;
+.container {
+  background: white;
+  color: black;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
-.box{
-  background:#fff;
-  color:#111;
-  border-radius:20px;
-  padding:20px;
-  width:90%;
-  max-width:420px;
-  box-shadow:0 4px 15px rgba(0,0,0,.25);
+input, select, button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
 }
-label{
-  display:block;
-  margin:10px 0 5px;
-  font-weight:600;
+button {
+  background: #6c00ff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
-input,select{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:15px;
+button:hover {
+  opacity: 0.9;
 }
-button{
-  width:100%;
-  margin-top:12px;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  font-weight:700;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-  transition:transform .2s ease;
+.success {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
 }
-button:hover{transform:scale(1.02)}
-#calc{background:#6b00ff;}
-#payCard{background:#9d00ff;}
-#payCash{background:#007aff;}
-#result,#msg{
-  margin-top:10px;
-  text-align:center;
-  font-weight:700;
-}
-footer{
-  margin:20px;
-  text-align:center;
-  font-size:13px;
-  opacity:.9;
+.error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 </style>
 </head>
 <body>
 <h1>Alex Livraison 🚗🚴‍♂️</h1>
-<div class="box">
+<div class="container">
   <label>Adresse de départ</label>
-  <input id="start" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer">
+  <input id="from" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
+
   <label>Adresse de destination</label>
-  <input id="end" placeholder="Ex : 2 Rue Beaussier, Toulon">
+  <input id="to" placeholder="Ex: 2 Rue Beaussier, Toulon" />
+
   <label>Taille du colis 📦</label>
   <select id="size">
     <option value="S">Petit (S)</option>
@@ -84,80 +70,81 @@ footer{
     <option value="L">Grand (L)</option>
     <option value="XL">Très grand (XL)</option>
   </select>
+
   <label>Heure de livraison souhaitée</label>
-  <input id="time" type="datetime-local">
-  <button id="calc">Calculer le prix</button>
-  <div id="result"></div>
-  <button id="payCard">Paiement par carte (Revolut)</button>
-  <button id="payCash">Paiement en espèces à la livraison</button>
-  <div id="msg"></div>
+  <input id="time" type="datetime-local" />
+
+  <button onclick="calculerPrix()">🧮 Calculer le prix</button>
+  <p id="resultat"></p>
+
+  <button id="btnCarte" style="display:none" onclick="payerCarte()">💳 Paiement par carte</button>
+  <button id="btnEspece" style="display:none" onclick="payerEspece()">💶 Paiement en espèces</button>
+
+  <div id="message"></div>
 </div>
 
-<footer>
-  🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)<br>
-  💜 © 2025 Alex Livraison
-</footer>
-
-<!-- ✅ Google Maps API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&language=fr"></script>
+<p>🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)<br>
+💜 © 2025 Alex Livraison</p>
 
 <script>
-window.addEventListener("load",()=>{
-  // Définit l'heure de livraison par défaut (+30 min)
-  const t=new Date(Date.now()+30*60000);
-  document.getElementById("time").value=t.toISOString().slice(0,16);
+const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 
-  // Activation des autocomplétions Google
-  const startInput=document.getElementById("start");
-  const endInput=document.getElementById("end");
-  new google.maps.places.Autocomplete(startInput,{componentRestrictions:{country:"fr"}});
-  new google.maps.places.Autocomplete(endInput,{componentRestrictions:{country:"fr"}});
+function calculerPrix() {
+  const from = document.getElementById('from').value.trim();
+  const to = document.getElementById('to').value.trim();
+  const size = document.getElementById('size').value;
+  if (!from || !to) {
+    showError("Merci de saisir les deux adresses.");
+    return;
+  }
+  // simulation distance/prix
+  const distance = (Math.random() * 8 + 2).toFixed(2); 
+  let base = 1.1;
+  if (size === "M") base = 1.3;
+  if (size === "L") base = 1.5;
+  if (size === "XL") base = 1.8;
+  const price = (distance * base).toFixed(2);
 
-  const res=document.getElementById("result");
-  const msg=document.getElementById("msg");
-  let prix=0;
+  document.getElementById('resultat').innerHTML = 📏 Distance estimée : ${distance} km<br>💶 Prix estimé : ${price} €;
+  document.getElementById('btnCarte').style.display = 'block';
+  document.getElementById('btnEspece').style.display = 'block';
 
-  // === Calcul du prix ===
-  document.getElementById("calc").onclick=()=>{
-    const start=startInput.value.trim(), end=endInput.value.trim();
-    if(!start||!end){
-      res.textContent="⚠️ Merci de saisir les deux adresses.";
-      res.style.color="red";
-      return;
-    }
-    const size=document.getElementById("size").value;
-    const svc=new google.maps.DistanceMatrixService();
-    svc.getDistanceMatrix({
-      origins:[start],destinations:[end],travelMode:"DRIVING",
-      unitSystem:google.maps.UnitSystem.METRIC
-    },(r,s)=>{
-      if(s!=="OK"){res.textContent="Erreur Google Maps";return;}
-      const km=r.rows[0].elements[0].distance.value/1000;
-      const mult={S:1,M:1.2,L:1.5,XL:1.8}[size];
-      prix=Math.max(3+km*0.8*mult,5).toFixed(2);
-      res.innerHTML=🚚 Distance : <b>${km.toFixed(2)} km</b> — 💶 Prix estimé : <b>${prix} €</b>;
-      res.style.color="#000";
-    });
-  };
+  window.priceToPay = price;
+}
 
-  // === Paiement par carte ===
-  document.getElementById("payCard").onclick=()=>{
-    if(!prix){
-      msg.textContent="Veuillez d'abord calculer le prix.";
-      msg.style.color="red";
-      return;
-    }
-    window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27","_blank");
-    msg.textContent="✅ Commande activée — paiement par carte effectué.";
-    msg.style.color="#16a34a";
-  };
+function payerCarte() {
+  if (!window.priceToPay) {
+    showError("Veuillez d'abord calculer le prix.");
+    return;
+  }
+  const url = ${REVOLUT_LINK}?amount=${window.priceToPay}&currency=EUR;
+  window.open(url, '_blank');
+  showSuccess("✅ Commande activée avec succès !");
+  envoyerWhatsApp();
+}
 
-  // === Paiement en espèces ===
-  document.getElementById("payCash").onclick=()=>{
-    msg.textContent="✅ Commande activée — paiement à la livraison.";
-    msg.style.color="#16a34a";
-  };
-});
+function payerEspece() {
+  showSuccess("✅ Commande activée (paiement en espèces à la livraison) !");
+  envoyerWhatsApp();
+}
+
+function envoyerWhatsApp() {
+  const from = document.getElementById('from').value;
+  const to = document.getElementById('to').value;
+  const msg = 🚚 Nouvelle commande Alex Livraison :
+Départ : ${from}
+Destination : ${to}
+Montant : ${window.priceToPay || 'à régler en espèces'} €;
+  const whatsappURL = https://wa.me/33677171188?text=${encodeURIComponent(msg)};
+  window.open(whatsappURL, '_blank');
+}
+
+function showSuccess(text) {
+  document.getElementById('message').innerHTML = <div class='success'>${text}</div>;
+}
+function showError(text) {
+  document.getElementById('message').innerHTML = <div class='error'>${text}</div>;
+}
 </script>
 </body>
 </html>
