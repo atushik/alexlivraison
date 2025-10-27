@@ -1,150 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alex Livraison 🚗🚴‍♂️</title>
-<style>
-body {
-  background: linear-gradient(180deg, #5f00cc, #6d00b3);
-  color: #fff;
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  padding: 20px;
-}
-.container {
-  background: white;
-  color: black;
-  border-radius: 20px;
-  padding: 20px;
-  max-width: 400px;
-  margin: auto;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
-}
-input, select, button {
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-}
-button {
-  background: #6c00ff;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-button:hover {
-  opacity: 0.9;
-}
-.success {
-  background: #d4edda;
-  color: #155724;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-.error {
-  background: #f8d7da;
-  color: #721c24;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alex Livraison</title>
+  <style>
+    :root{
+      --violet:#6f2dff;--violet-dark:#5222c7;
+      --ok:#14b87a;--err:#ef4444;
+    }
+    *{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;}
+    body{margin:0;background:linear-gradient(180deg,#5d1fff,#2b0a65);color:#fff;}
+    .wrap{max-width:980px;margin:24px auto;padding:0 16px;}
+    header{text-align:center;margin-bottom:16px}
+    header h1{margin:0;font-size:34px;font-weight:900}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width:860px){.grid{grid-template-columns:1fr}}
+    .card{background:#fff;color:#111;border-radius:20px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+    label{font-weight:600;margin-top:10px;display:block}
+    input,select,button{width:100%;border-radius:12px;padding:14px;border:none;font-size:16px;margin-top:6px}
+    input,select{border:1px solid #ddd}
+    button{font-weight:800;color:#fff;background:var(--violet);cursor:pointer;transition:.2s}
+    button:hover{background:var(--violet-dark)}
+    .btn-secondary{background:#ddd;color:#000}
+    #map{width:100%;height:460px;border-radius:14px;overflow:hidden}
+    .msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-weight:600;display:none}
+    .ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .err{background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca}
+    .note{margin-top:16px;color:#ddd;text-align:center;font-size:14px}
+  </style>
 </head>
 <body>
-<h1>Alex Livraison 🚗🚴‍♂️</h1>
-<div class="container">
-  <label>Adresse de départ</label>
-  <input id="from" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
+  <div class="wrap">
+    <header><h1>Alex Livraison 🚗🚴‍♂️</h1></header>
 
-  <label>Adresse de destination</label>
-  <input id="to" placeholder="Ex: 2 Rue Beaussier, Toulon" />
+    <div class="grid">
+      <!-- Form -->
+      <div class="card">
+        <label>Adresse de départ</label>
+        <input id="from" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer">
 
-  <label>Taille du colis 📦</label>
-  <select id="size">
-    <option value="S">Petit (S)</option>
-    <option value="M">Moyen (M)</option>
-    <option value="L">Grand (L)</option>
-    <option value="XL">Très grand (XL)</option>
-  </select>
+        <label>Adresse de destination</label>
+        <input id="to" placeholder="Ex: 2 Rue Beaussier, Toulon">
 
-  <label>Heure de livraison souhaitée</label>
-  <input id="time" type="datetime-local" />
+        <label>Taille du colis 📦</label>
+        <select id="size">
+          <option value="S">Petit (S)</option>
+          <option value="M">Moyen (M)</option>
+          <option value="L">Grand (L)</option>
+          <option value="XL">Très grand (XL)</option>
+        </select>
 
-  <button onclick="calculerPrix()">🧮 Calculer le prix</button>
-  <p id="resultat"></p>
+        <label>Heure de livraison souhaitée</label>
+        <input id="time" type="datetime-local">
 
-  <button id="btnCarte" style="display:none" onclick="payerCarte()">💳 Paiement par carte</button>
-  <button id="btnEspece" style="display:none" onclick="payerEspece()">💶 Paiement en espèces</button>
+        <button id="calc">🧮 Calculer le prix</button>
+        <p id="result" style="display:none;font-weight:700;margin-top:10px"></p>
 
-  <div id="message"></div>
-</div>
+        <button id="payCard">💳 Paiement par carte</button>
+        <button id="payCash" class="btn-secondary">💶 Paiement en espèces</button>
 
-<p>🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)<br>
-💜 © 2025 Alex Livraison</p>
+        <div id="msg" class="msg"></div>
+      </div>
 
-<script>
-const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+      <!-- Map -->
+      <div class="card" style="padding:12px">
+        <div id="map"></div>
+      </div>
+    </div>
 
-function calculerPrix() {
-  const from = document.getElementById('from').value.trim();
-  const to = document.getElementById('to').value.trim();
-  const size = document.getElementById('size').value;
-  if (!from || !to) {
-    showError("Merci de saisir les deux adresses.");
-    return;
-  }
-  // simulation distance/prix
-  const distance = (Math.random() * 8 + 2).toFixed(2); 
-  let base = 1.1;
-  if (size === "M") base = 1.3;
-  if (size === "L") base = 1.5;
-  if (size === "XL") base = 1.8;
-  const price = (distance * base).toFixed(2);
+    <p class="note">🚴 Livraison locale 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules, etc.)<br>💜 © 2025 Alex Livraison</p>
+  </div>
 
-  document.getElementById('resultat').innerHTML = 📏 Distance estimée : ${distance} km<br>💶 Prix estimé : ${price} €;
-  document.getElementById('btnCarte').style.display = 'block';
-  document.getElementById('btnEspece').style.display = 'block';
+  <!-- Google Maps JS (Places + Directions) -->
+  <script>
+    // ===== Config =====
+    const GOOGLE_API_KEY = "AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g";
+    const PRICE_PER_KM = 0.9; // prix = 0.9 €/km
+    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    const TELEGRAM_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const CHAT_ID = "7129872491";
 
-  window.priceToPay = price;
-}
+    // ===== DOM helpers =====
+    const $ = id => document.getElementById(id);
+    function showMsg(text, ok=true){
+      const box=$("msg");
+      box.className="msg "+(ok?"ok":"err");
+      box.textContent=text;
+      box.style.display="block";
+      clearTimeout(showMsg._t);
+      showMsg._t=setTimeout(()=>{box.style.display="none"}, 7000);
+    }
 
-function payerCarte() {
-  if (!window.priceToPay) {
-    showError("Veuillez d'abord calculer le prix.");
-    return;
-  }
-  const url = ${REVOLUT_LINK}?amount=${window.priceToPay}&currency=EUR;
-  window.open(url, '_blank');
-  showSuccess("✅ Commande activée avec succès !");
-  envoyerWhatsApp();
-}
+    // ===== Google Map objects =====
+    let map, directionsService, directionsRenderer, autocompleteFrom, autocompleteTo;
 
-function payerEspece() {
-  showSuccess("✅ Commande activée (paiement en espèces à la livraison) !");
-  envoyerWhatsApp();
-}
+    function initMap(){
+      // Map centered around Toulon
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat:43.1242, lng:5.928}, zoom: 12, mapTypeControl: false, fullscreenControl: false
+      });
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers:false, map });
 
-function envoyerWhatsApp() {
-  const from = document.getElementById('from').value;
-  const to = document.getElementById('to').value;
-  const msg = 🚚 Nouvelle commande Alex Livraison :
-Départ : ${from}
-Destination : ${to}
-Montant : ${window.priceToPay || 'à régler en espèces'} €;
-  const whatsappURL = https://wa.me/33677171188?text=${encodeURIComponent(msg)};
-  window.open(whatsappURL, '_blank');
-}
+      // Places Autocomplete
+      autocompleteFrom = new google.maps.places.Autocomplete($("from"), { componentRestrictions:{country:"fr"} });
+      autocompleteTo   = new google.maps.places.Autocomplete($("to"),   { componentRestrictions:{country:"fr"} });
 
-function showSuccess(text) {
-  document.getElementById('message').innerHTML = <div class='success'>${text}</div>;
-}
-function showError(text) {
-  document.getElementById('message').innerHTML = <div class='error'>${text}</div>;
-}
-</script>
+      // Default delivery time: now + 30 min
+      const now = new Date(Date.now()+30*60000);
+      const pad=n=>String(n).padStart(2,"0");
+      $("time").value = ${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())};
+
+      // Handlers
+      $("calc").addEventListener("click", onCalculate);
+      $("payCard").addEventListener("click", onPayCard);
+      $("payCash").addEventListener("click", onPayCash);
+    }
+
+    // Calculate distance via DistanceMatrix, draw static route via Directions
+    function computeDistanceKm(origin, destination){
+      return new Promise((resolve,reject)=>{
+        const svc = new google.maps.DistanceMatrixService();
+        svc.getDistanceMatrix({
+          origins:[origin], destinations:[destination],
+          travelMode: google.maps.TravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.METRIC
+        }, (res, status)=>{
+          if(status!=="OK" || !res.rows?.[0]?.elements?.[0]){
+            reject(new Error("DistanceMatrix error: "+status));
+            return;
+          }
+          const el = res.rows[0].elements[0];
+          if(el.status!=="OK"){ reject(new Error("Distance element status: "+el.status)); return; }
+          resolve(el.distance.value/1000.0); // meters -> km
+        });
+      });
+    }
+
+    function drawRoute(origin, destination){
+      directionsService.route({
+        origin, destination, travelMode: google.maps.TravelMode.DRIVING
+      }, (result, status)=>{
+        if(status === "OK"){
+          directionsRenderer.setDirections(result);
+        }
+      });
+    }
+
+    function setResult(km, price){
+      const r=$("result");
+      r.innerHTML = 🚚 Distance : <b>${km.toFixed(2)} km</b> &nbsp;|&nbsp; 💶 Prix : <b>${price.toFixed(2)} €</b>;
+      r.style.display="block";
+    }
+
+    async function onCalculate(){
+      const from = $("from").value.trim();
+      const to   = $("to").value.trim();
+      if(!from || !to){ showMsg("⚠️ Entrez deux adresses valides.", false); return; }
+      showMsg("⏳ Calcul du trajet...");
+
+      try{
+        // 1) distance for price
+        const km = await computeDistanceKm(from, to);
+        const price = +(km * PRICE_PER_KM).toFixed(2);
+        setResult(km, price);
+        // 2) static route on map
+        drawRoute(from, to);
+        // store
+        window.calc = { from, to, km, price };
+        showMsg("✅ Calcul terminé !");
+      }catch(err){
+        console.error(err);
+        showMsg("❌ Erreur API Google. Vérifiez la clé ou les adresses.", false);
+      }
+    }
+
+    async function sendTelegram(mode){
+      const c=window.calc; if(!c) return;
+      const text = 🚚 Nouvelle commande Alex Livraison
+De : ${c.from}
+À : ${c.to}
+Distance : ${c.km.toFixed(2)} km
+Prix : ${c.price.toFixed(2)} €
+Mode : ${mode}
+Heure : ${$("time").value || "au plus vite"};
+      const url = https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)};
+      try{ await fetch(url); }catch(e){ console.warn("Telegram failed", e); }
+    }
+
+    async function onPayCard(){
+      const c=window.calc;
+      if(!c){ showMsg("⚠️ Calculez le prix d’abord.", false); return; }
+      await sendTelegram("Carte (Revolut)");
+      showMsg("✅ Commande activée, redirection vers paiement...", true);
+      // Open Revolut with amount param in a new tab
+      window.open(${REVOLUT_LINK}?amount=${c.price}&currency=EUR, "_blank");
+    }
+
+    async function onPayCash(){
+      const c=window.calc;
+      if(!c){ showMsg("⚠️ Calculez le prix d’abord.", false); return; }
+      await sendTelegram("Espèces à la livraison");
+      showMsg("✅ Commande activée (paiement en espèces).", true);
+    }
+
+    // Load Maps with callback to ensure everything is ready
+    (function loadGoogle(){
+      const s = document.createElement("script");
+      s.src = https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places&language=fr&callback=initMap;
+      s.async = true; s.defer = true;
+      document.head.appendChild(s);
+    })();
+  </script>
 </body>
 </html>
