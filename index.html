@@ -1,33 +1,80 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>🚗 AlexLivraison 🚴🏻‍♂️</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root{--bg1:#31006f;--bg2:#6c1bcf;--card:#fff;--accent:#6c1bcf}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));min-height:100vh;color:#222}
-    .container{max-width:680px;margin:0 auto;padding:28px 16px 100px}
-    h1{color:#fff;text-align:center;font-weight:800;font-size:40px;margin:0 0 20px}
-    .card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
-    .label{font-weight:700;margin:10px 0 6px}
-    input,select{width:100%;height:50px;border:1px solid #ccc;border-radius:12px;padding:0 14px;font-size:17px}
-    .btn{width:100%;height:54px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:18px;font-weight:700;cursor:pointer;margin-top:10px}
-    .btn:hover{background:#5315a7}
-    .btn-secondary{background:#ddd;color:#222}
-    .result{display:none;margin-top:12px;padding:12px;border-radius:10px;background:#f7f3ff;line-height:1.5;font-weight:600}
-    #map{display:none;height:280px;border-radius:14px;margin-top:14px}
-    .foot{color:#eee;text-align:center;margin-top:16px}
+    :root {
+      --bg1: #2c006e;
+      --bg2: #6b22cc;
+      --card: #fff;
+      --accent: #6b22cc;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      color: #222;
+      min-height: 100vh;
+    }
+    .container { max-width: 700px; margin: 0 auto; padding: 24px 16px; }
+    h1 {
+      text-align: center;
+      color: white;
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+    }
+    .label { font-weight: 700; margin: 10px 0 6px; }
+    input, select {
+      width: 100%;
+      height: 50px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      padding: 0 12px;
+      font-size: 16px;
+    }
+    .btn {
+      width: 100%;
+      height: 54px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #5418a3; }
+    .btn-secondary { background: #ddd; color: #222; }
+    .result {
+      display: none;
+      background: #f3ebff;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    #map { display: none; height: 300px; border-radius: 14px; margin-top: 14px; }
+    .footer { text-align: center; color: #eee; margin-top: 16px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
+    <h1>🚗AlexLivraison🚴🏻‍♂️</h1>
 
     <div class="card">
       <div class="label">Adresse de départ</div>
@@ -48,7 +95,7 @@
       <select id="floor">
         <option value="0">Rez-de-chaussée</option>
         <option value="1">1er–2e étage (+2€)</option>
-        <option value="2">3e–5e étage (+2,5€)</option>
+        <option value="2">3e–5e étage (+2.5€)</option>
         <option value="3">6e–15e étage (+3€)</option>
       </select>
 
@@ -63,146 +110,127 @@
       <div id="map"></div>
     </div>
 
-    <p class="foot">🚲 Livraison locale 24h/24 et 7j/7 — Toulon, La Seyne, Ollioules, etc.<br>💜 © 2025 AlexLivraison</p>
+    <p class="footer">🚲 Livraison locale 24h/24 et 7j/7 — Toulon, La Seyne, Ollioules, etc.<br>💜 © 2025 AlexLivraison</p>
   </div>
 
   <script>
-    // ---- CONFIG ----
-    var PRICE_PER_KM = 0.9;
-    var SIZE_MULTIPLIER = { S:1, M:1.15, L:1.3, XL:1.5 };
-    var FLOOR_EXTRA = { "0":0, "1":2, "2":2.5, "3":3 };
+    // --- CONFIGURATION ---
+    const PRICE_PER_KM = 0.9;
+    const SIZE_MULTIPLIER = { S:1, M:1.15, L:1.3, XL:1.5 };
+    const FLOOR_EXTRA = { "0":0, "1":2, "2":2.5, "3":3 };
 
-    var REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-    var TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-    var TG_CHAT_ID = "7129872491";
+    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TG_CHAT_ID = "7129872491";
 
-    // ---- Helpers ----
-    function $(s){ return document.querySelector(s); }
-    function euro(n){ return n.toFixed(2).replace(".", ",") + " €"; }
+    const $ = s => document.querySelector(s);
+    const euro = n => n.toFixed(2).replace('.', ',') + ' €';
 
-    // Fill time options (+18h, step 30 min)
-    (function(){
-      var sel = $("#time");
-      var now = new Date();
-      for(var i=0;i<36;i++){
-        var t = new Date(now.getTime() + i*30*60000);
-        var label = t.toLocaleString("fr-FR", {dateStyle:"short", timeStyle:"short"});
-        var opt = document.createElement("option");
+    // Remplir les horaires
+    (function() {
+      const sel = $("#time");
+      const now = new Date();
+      for (let i = 0; i < 36; i++) {
+        const t = new Date(now.getTime() + i * 30 * 60000);
+        const label = t.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+        const opt = document.createElement("option");
         opt.value = label;
         opt.textContent = label;
         sel.appendChild(opt);
       }
     })();
 
-    // Geocode via Nominatim
-    async function geocode(addr){
-      var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(addr);
-      var res = await fetch(url, {headers:{"Accept-Language":"fr"}});
-      var data = await res.json();
-      if(!data.length){ throw new Error("Adresse non trouvée"); }
-      return {lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon)};
+    async function geocode(addr) {
+      const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(addr);
+      const res = await fetch(url, { headers: { "Accept-Language": "fr" } });
+      const data = await res.json();
+      if (!data.length) throw new Error("Adresse non trouvée");
+      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
     }
 
-    // Route via OSRM
-    async function getRoute(a,b,c,d){
-      var url = "https://router.project-osrm.org/route/v1/driving/"+b+","+a+";"+d+","+c+"?overview=full&geometries=geojson";
-      var res = await fetch(url);
-      var data = await res.json();
-      var r = data.routes && data.routes[0];
-      if(!r){ throw new Error("Itinéraire introuvable"); }
-      return { km: r.distance/1000, geo: r.geometry };
+    async function getRoute(lat1, lon1, lat2, lon2) {
+      const url = "https://router.project-osrm.org/route/v1/driving/" + lon1 + "," + lat1 + ";" + lon2 + "," + lat2 + "?overview=full&geometries=geojson";
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.routes || !data.routes.length) throw new Error("Itinéraire introuvable");
+      return { km: data.routes[0].distance / 1000, geo: data.routes[0].geometry };
     }
 
-    async function notify(text){
-      try{
-        await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{
-          method:"POST",
-          body:new URLSearchParams({chat_id:TG_CHAT_ID, text:text})
+    async function notify(text) {
+      try {
+        await fetch("https://api.telegram.org/bot" + TG_TOKEN + "/sendMessage", {
+          method: "POST",
+          body: new URLSearchParams({ chat_id: TG_CHAT_ID, text })
         });
-      }catch(e){}
+      } catch (e) {}
     }
 
-    var map, layer, markerA, markerB, lastCalc=null;
+    let map, layer, markerA, markerB, lastCalc = null;
 
-    $("#calc").addEventListener("click", async function(){
-      var from = $("#from").value.trim();
-      var to   = $("#to").value.trim();
-      var size = $("#size").value;
-      var floor= $("#floor").value;
-      var when = $("#time").value;
+    $("#calc").addEventListener("click", async () => {
+      const from = $("#from").value.trim();
+      const to = $("#to").value.trim();
+      const size = $("#size").value;
+      const floor = $("#floor").value;
+      const when = $("#time").value;
+      const result = $("#result");
 
-      if(!from || !to){ alert("Veuillez entrer les deux adresses"); return; }
+      if (!from || !to) return alert("Veuillez entrer les deux adresses.");
 
-      var result = $("#result");
       result.style.display = "block";
-      result.textContent = "Calcul en cours…";
+      result.textContent = "Calcul en cours...";
 
-      try{
-        var A = await geocode(from);
-        var B = await geocode(to);
-        var rt = await getRoute(A.lat, A.lon, B.lat, B.lon);
+      try {
+        const A = await geocode(from);
+        const B = await geocode(to);
+        const route = await getRoute(A.lat, A.lon, B.lat, B.lon);
 
-        var km = Math.max(1, Math.round(rt.km*100)/100);
-        var price = Math.round((km*PRICE_PER_KM*SIZE_MULTIPLIER[size] + FLOOR_EXTRA[floor])*100)/100;
+        const km = Math.max(1, Math.round(route.km * 100) / 100);
+        const price = Math.round((km * PRICE_PER_KM * SIZE_MULTIPLIER[size] + FLOOR_EXTRA[floor]) * 100) / 100;
+        lastCalc = { from, to, km, price, size, floor, when };
 
-        lastCalc = {from:from,to:to,km:km,price:price,size:size,floor:floor,when:when};
-
-        if(!map){
+        if (!map) {
           map = L.map("map");
           L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
         }
-        if(layer){ layer.remove(); }
-        if(markerA){ markerA.remove(); }
-        if(markerB){ markerB.remove(); }
+        if (layer) layer.remove();
+        if (markerA) markerA.remove();
+        if (markerB) markerB.remove();
 
-        layer = L.geoJSON(rt.geo, {style:{color:"#7f56d9",weight:5}}).addTo(map);
-        markerA = L.marker([A.lat,A.lon]).addTo(map);
-        markerB = L.marker([B.lat,B.lon]).addTo(map);
-        map.fitBounds([[A.lat,A.lon],[B.lat,B.lon]]);
+        layer = L.geoJSON(route.geo, { style: { color: "#6c3bd3", weight: 5 } }).addTo(map);
+        markerA = L.marker([A.lat, A.lon]).addTo(map);
+        markerB = L.marker([B.lat, B.lon]).addTo(map);
+        map.fitBounds([[A.lat, A.lon], [B.lat, B.lon]]);
         $("#map").style.display = "block";
 
         result.innerHTML =
-          "🚚 Distance : <b>"+km.toFixed(2)+" km</b><br>"+
-          "💶 Prix : <b>"+euro(price).replace(" €","")+" €</b><br>"+
-          "📦 Taille : "+size+" — 🏢 Étage : "+floor+"<br>"+
-          "🕒 "+when;
-      }catch(e){
-        result.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
+          "🚚 Distance : <b>" + km.toFixed(2) + " km</b><br>" +
+          "💶 Prix : <b>" + euro(price) + "</b><br>" +
+          "📦 Taille : " + size + " — 🏢 Étage : " + floor + "<br>" +
+          "🕒 " + when;
+      } catch (e) {
+        result.textContent = "Erreur : impossible de calculer le trajet.";
       }
     });
 
-    $("#payCash").addEventListener("click", async function(){
-      if(!lastCalc){ alert("Veuillez calculer le prix d’abord."); return; }
+    $("#payCash").addEventListener("click", async () => {
+      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
       alert("Commande confirmée — paiement en espèces.");
-      var text = "🧾 Nouvelle commande (Espèces)\n"+
-                 "De: "+lastCalc.from+"\n"+
-                 "À: "+lastCalc.to+"\n"+
-                 "Distance: "+lastCalc.km+" km\n"+
-                 "Prix: "+lastCalc.price+" €\n"+
-                 "Taille: "+lastCalc.size+"\n"+
-                 "Étage: "+lastCalc.floor+"\n"+
-                 "Heure: "+lastCalc.when;
+      const text = "🧾 Commande (Espèces)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.km + " km\nPrix: " + lastCalc.price + " €";
       await notify(text);
     });
 
-    $("#payCard").addEventListener("click", async function(){
-      if(!lastCalc){ alert("Veuillez calculer le prix d’abord."); return; }
+    $("#payCard").addEventListener("click", async () => {
+      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
       alert("Redirection vers la page de paiement.");
-      var text = "🧾 Nouvelle commande (Carte)\n"+
-                 "De: "+lastCalc.from+"\n"+
-                 "À: "+lastCalc.to+"\n"+
-                 "Distance: "+lastCalc.km+" km\n"+
-                 "Prix: "+lastCalc.price+" €\n"+
-                 "Taille: "+lastCalc.size+"\n"+
-                 "Étage: "+lastCalc.floor+"\n"+
-                 "Heure: "+lastCalc.when;
+      const text = "🧾 Commande (Carte)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.km + " km\nPrix: " + lastCalc.price + " €";
       await notify(text);
       window.open(REVOLUT_LINK, "_blank", "noopener");
     });
 
-    // Valeurs par défaut pour test
+    // Valeurs par défaut
     $("#from").value = "2 Rue Beaussier, Toulon";
-    $("#to").value   = "241 Rue Le Corbusier, La Seyne-sur-Mer";
+    $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
 </body>
 </html>
