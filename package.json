@@ -1,16 +1,18 @@
 {
   "name": "alexlivraison-api",
   "version": "1.0.0",
-  "description": "API de notification WhatsApp pour Alex Livraison",
-  "main": "server.js",
+  "description": "Serveur Express pour intégration WhatsApp Alex Livraison",
   "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "body-parser": "^1.20.3",
-    "twilio": "^5.2.2"
+    "twilio": "^4.22.0"
   }
 }
 
