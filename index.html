@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Livraison 🚴‍♂️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e0b3a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: linear-gradient(90deg, #4b1fbf, #8e44ad);
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    section {
+      margin: 20px;
+      background: #2f165a;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      width: 80%;
+      max-width: 400px;
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #6c3bf9;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #8759fa;
+    }
+    footer {
+      background: #14072b;
+      padding: 20px;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .result {
+      font-size: 20px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    🚴‍♂️ Alex Livraison 🚗  
+  </header>
+
+  <section>
+    <h2>Calculateur de livraison</h2>
+    <label>Distance (km)</label>
+    <input type="number" id="distance" placeholder="Entrez la distance en km" />
+
+    <label>Taille du colis</label>
+    <select id="size">
+      <option value="S">S - petit</option>
+      <option value="M">M - moyen</option>
+      <option value="L">L - grand</option>
+      <option value="XL">XL - très grand</option>
+    </select>
+
+    <button onclick="calculer()">Calculer le prix</button>
+    <div class="result" id="result"></div>
+
+    <button id="payBtn" style="display:none;" onclick="payer()">💳 Payer la livraison</button>
+  </section>
+
+  <footer>
+    <p>📍 Zone de livraison : jusqu’à 22 km autour de Toulon, La Seyne-sur-Mer, Six-Fours, Ollioules, Solliès, etc.</p>
+    <p>📞 06 77 17 11 88 — 📧 atushbek020185@gmail.com</p>
+    <p>© 2025 Alex Livraison — Service local de livraison rapide</p>
+  </footer>
+
+  <script>
+    const TARIF_KM = 2.5;
+    const SUPPLEMENTS = { S: 0, M: 3, L: 5, XL: 8 };
+
+    function calculer() {
+      const distance = parseFloat(document.getElementById("distance").value);
+      const size = document.getElementById("size").value;
+
+      if (isNaN(distance) || distance <= 0) {
+        alert("Veuillez entrer une distance valide.");
+        return;
+      }
+
+      if (distance > 22) {
+        document.getElementById("result").innerHTML = "🚫 Livraison sur devis (plus de 22 km)";
+        document.getElementById("payBtn").style.display = "none";
+        return;
+      }
+
+      let prix = distance * TARIF_KM + SUPPLEMENTS[size];
+      if (prix < 5) prix = 5; // minimum 5€
+      
+      document.getElementById("result").innerHTML = `💰 Prix total : ${prix.toFixed(2)} €`;
+      document.getElementById("payBtn").style.display = "inline-block";
+      document.getElementById("payBtn").setAttribute("data-prix", prix.toFixed(2));
+    }
+
+    function payer() {
+      const prix = document.getElementById("payBtn").getAttribute("data-prix");
+      const lien = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+      window.open(lien, "_blank");
+    }
+  </script>
+
+</body>
+</html>
