@@ -6,67 +6,73 @@
   <title>Alex Livraison 🚗🚴‍♂️</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #6a0dad;
+      font-family: "Poppins", sans-serif;
+      background-color: #6b00b6;
       color: white;
       text-align: center;
       margin: 0;
       padding: 0;
     }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 2em;
+    }
+
     .container {
-      max-width: 420px;
-      margin: 60px auto;
       background: white;
-      color: #333;
+      color: black;
+      width: 90%;
+      max-width: 450px;
+      margin: 30px auto;
       padding: 25px;
       border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     }
-    h1 {
-      color: white;
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
+
     input, select, button {
       width: 100%;
+      margin: 8px 0;
       padding: 10px;
-      margin-top: 8px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      font-size: 15px;
+      font-size: 1em;
     }
+
     button {
-      background-color: #8a2be2;
+      background-color: #7b00ff;
       color: white;
-      font-weight: bold;
       border: none;
       cursor: pointer;
-      transition: 0.3s;
+      font-weight: bold;
     }
+
     button:hover {
-      background-color: #6a1bbd;
+      background-color: #5a00cc;
     }
+
     .result {
       margin-top: 15px;
-      font-size: 15px;
-      color: #222;
+      font-size: 1.1em;
     }
+
     footer {
-      margin-top: 40px;
-      font-size: 13px;
+      margin-top: 30px;
+      font-size: 0.9em;
+      line-height: 1.5;
       color: white;
-      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <h1>Alex Livraison 🚗🚴‍♂️</h1>
+
   <div class="container">
     <label>Adresse de départ</label>
-    <input id="origin" type="text" placeholder="Ex: 2 Rue Beaussier, Toulon">
+    <input id="origin" type="text" placeholder="Ex: 2 Rue Beaussier, Toulon" />
 
     <label>Adresse de destination</label>
-    <input id="destination" type="text" placeholder="Ex: 241 Rue le Corbusier, La Seyne-sur-Mer">
+    <input id="destination" type="text" placeholder="Ex: 241 Rue Le Corbusier, La Seyne" />
 
     <label>Taille du colis 📦</label>
     <select id="size">
@@ -77,80 +83,60 @@
     </select>
 
     <label>Heure de livraison souhaitée</label>
-    <input id="deliveryTime" type="datetime-local">
+    <input type="datetime-local" id="time" />
 
-    <button onclick="calculatePrice()">Calculer le prix</button>
+    <button onclick="calculate()">Calculer le prix</button>
 
-    <div class="result" id="output"></div>
+    <div class="result" id="result"></div>
   </div>
 
   <footer>
-    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)<br>
-    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br>
+    🚴‍♂️ Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)<br/>
+    💜 <b>Nous livrons vos commandes jusqu’à votre porte 💜</b><br/>
     © 2025 Alex Livraison
   </footer>
 
   <script>
-    function calculatePrice() {
+    async function calculate() {
       const origin = document.getElementById("origin").value;
       const destination = document.getElementById("destination").value;
       const size = document.getElementById("size").value;
-      const output = document.getElementById("output");
 
       if (!origin || !destination) {
-        output.innerHTML = "❗Veuillez saisir les deux adresses.";
+        alert("Veuillez entrer les deux adresses.");
         return;
       }
 
-      const service = new google.maps.DistanceMatrixService();
-      service.getDistanceMatrix(
-        {
-          origins: [origin],
-          destinations: [destination],
-          travelMode: "DRIVING",
-          unitSystem: google.maps.UnitSystem.METRIC,
-        },
-        (response, status) => {
-          if (status !== "OK") {
-            output.innerHTML = "Erreur de connexion à l’API Google Maps.";
-            return;
-          }
+      const apiKey = "AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g";
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&mode=bicycling&language=fr&key=${apiKey}`;
 
-          const element = response.rows[0].elements[0];
-          if (element.status !== "OK") {
-            output.innerHTML = "Impossible de calculer la distance.";
-            return;
-          }
+      try {
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+        const parsed = JSON.parse(data.contents);
 
-          const distance = element.distance.value / 1000;
-          let basePrice = 2; // tarif fixe
-          let perKm = 1.1; // tarif par km
-
-          if (size === "M") perKm += 0.2;
-          if (size === "L") perKm += 0.5;
-          if (size === "XL") perKm += 1.0;
-
-          const total = basePrice + perKm * distance;
-
-          output.innerHTML = `
-            🚕 Distance estimée : ${distance.toFixed(2)} km<br>
-            💶 Prix estimé : ${total.toFixed(2)} €
-          `;
+        if (parsed.rows[0].elements[0].status !== "OK") {
+          document.getElementById("result").innerHTML = "Erreur : Impossible de calculer la distance.";
+          return;
         }
-      );
-    }
 
-    // Автоподсказки адресов
-    function initAutocomplete() {
-      new google.maps.places.Autocomplete(document.getElementById("origin"));
-      new google.maps.places.Autocomplete(document.getElementById("destination"));
+        const distanceText = parsed.rows[0].elements[0].distance.text;
+        const distanceKm = parseFloat(distanceText.replace(",", "."));
+        let basePrice = 2.0;
+        let pricePerKm = 0.6;
+
+        if (size === "M") basePrice += 1;
+        if (size === "L") basePrice += 2;
+        if (size === "XL") basePrice += 3;
+
+        const totalPrice = (basePrice + distanceKm * pricePerKm).toFixed(2);
+        document.getElementById("result").innerHTML = `🚴‍♂️ Distance estimée : <b>${distanceKm} km</b><br>💶 Prix estimé : <b>${totalPrice} €</b>`;
+      } catch (error) {
+        document.getElementById("result").innerHTML = "Erreur de connexion à l’API Google Maps.";
+      }
     }
   </script>
 
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=initAutocomplete"
-    async
-    defer
-  ></script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places"></script>
 </body>
 </html>
