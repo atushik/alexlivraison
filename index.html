@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alex Livraison 🚗🚴‍♂️</title>
+
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -61,12 +62,12 @@
     <label>Heure de livraison souhaitée</label>
     <input id="time" type="datetime-local">
 
-    <button onclick="calculate()">Calculer le prix</button>
+    <button id="btnCalc">Calculer le prix</button>
 
     <div class="result" id="result"></div>
 
-    <button id="payCard" onclick="payRevolut()">💳 Paiement par carte (Revolut)</button>
-    <button id="payCash" onclick="confirmCash()">💶 Paiement en espèces à la livraison</button>
+    <button id="btnCard">💳 Paiement par carte (Revolut)</button>
+    <button id="btnCash">💶 Paiement en espèces à la livraison</button>
 
     <div class="alert" id="status"></div>
   </div>
@@ -96,6 +97,11 @@
           return;
         }
         const element = response.rows[0].elements[0];
+        if (element.status !== "OK") {
+          document.getElementById("status").innerHTML = "🚫 Adresse introuvable.";
+          return;
+        }
+
         distanceKm = element.distance.value / 1000;
         price = (distanceKm * 1.15 + 5).toFixed(2);
         document.getElementById("result").innerHTML =
@@ -110,19 +116,23 @@
         return;
       }
       const url = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${price};
-      window.location.href = url;
+      window.open(url, "_blank");
       setTimeout(() => {
         document.getElementById("status").innerHTML = "✅ Paiement confirmé ! Votre commande est activée.";
-      }, 3000);
+      }, 4000);
     }
 
     function confirmCash() {
       document.getElementById("status").innerHTML = "💵 Commande confirmée ! Merci de payer en espèces à la livraison.";
     }
+
+    document.getElementById("btnCalc").addEventListener("click", calculate);
+    document.getElementById("btnCard").addEventListener("click", payRevolut);
+    document.getElementById("btnCash").addEventListener("click", confirmCash);
   </script>
 
   <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=()=>{}">
   </script>
 
 </body>
