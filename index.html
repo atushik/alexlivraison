@@ -12,10 +12,7 @@
       text-align: center;
       padding: 20px;
     }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
+    h1 { font-size: 2em; margin-bottom: 20px; }
     .container {
       background: white;
       color: black;
@@ -42,10 +39,12 @@
       font-weight: bold;
       margin-top: 10px;
       cursor: pointer;
+      transition: 0.3s;
     }
     .calc { background: #7c3aed; color: white; }
     .card { background: #6d28d9; color: white; }
     .cash { background: #4c1d95; color: white; }
+    .calc:hover, .card:hover, .cash:hover { opacity: 0.9; }
     .result {
       background: #e9d5ff;
       color: #4c1d95;
@@ -55,10 +54,7 @@
       border-radius: 10px;
       display: none;
     }
-    footer {
-      margin-top: 20px;
-      font-size: 0.9em;
-    }
+    footer { margin-top: 20px; font-size: 0.9em; }
   </style>
 </head>
 <body>
@@ -82,14 +78,14 @@
     <label>Heure de livraison souhaitée</label>
     <input type="datetime-local" id="time" />
 
-    <button class="calc" onclick="calculer()">🧮 Calculer le prix</button>
+    <button class="calc" id="btnCalc">🧮 Calculer le prix</button>
     <div class="result" id="result"></div>
-    <button class="card" onclick="payerCarte()">💳 Paiement par carte</button>
-    <button class="cash" onclick="payerCash()">💶 Paiement en espèces à la livraison</button>
+    <button class="card" id="btnCard">💳 Paiement par carte</button>
+    <button class="cash" id="btnCash">💶 Paiement en espèces</button>
   </div>
 
   <footer>
-    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var.<br>
+    🚴 Livraison locale 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules, etc.)<br>
     💜 © 2025 Alex Livraison
   </footer>
 
@@ -98,57 +94,45 @@ const BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const CHAT_ID = "7129872491";
 const PRIX_PAR_KM = 0.9;
 
-function distanceSimulee(adresse1, adresse2) {
-  // Petite simulation (remplace plus tard par MapBox ou API Google)
-  return Math.floor(Math.random() * 8) + 2; // entre 2 et 10 km
+function distanceSimulee() {
+  return Math.floor(Math.random() * 8) + 2; // 2–10 km
 }
 
-function calculer() {
-  const start = document.getElementById("start").value.trim();
-  const end = document.getElementById("end").value.trim();
-  const size = document.getElementById("size").value;
-  if (!start || !end) {
-    alert("Merci de saisir les deux adresses.");
-    return;
-  }
-  const km = distanceSimulee(start, end);
-  const prix = (km * PRIX_PAR_KM).toFixed(2);
-  const resultDiv = document.getElementById("result");
-  resultDiv.style.display = "block";
-  resultDiv.innerHTML = 📍 Distance estimée : ${km} km<br>💶 Prix estimé : ${prix} €;
-
-  // Envoi Telegram
-  const message = 🚀 NOUVELLE DEMANDE ALEX LIVRAISON\n\nDépart: ${start}\nDestination: ${end}\nDistance estimée: ${km} km\nPrix estimé: ${prix} €\nTaille du colis: ${size};
-  sendTelegram(message);
-}
-
-function payerCarte() {
-  const resultDiv = document.getElementById("result");
-  if (resultDiv.style.display !== "block") {
-    alert("Veuillez d'abord calculer le prix.");
-    return;
-  }
-  window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27", "_blank");
-  alert("✅ Paiement par carte effectué ! Votre commande est activée.");
-  sendTelegram("💳 Commande activée (paiement carte) ✅");
-}
-
-function payerCash() {
-  alert("💶 Paiement en espèces sélectionné. Votre commande est activée !");
-  sendTelegram("💶 Commande activée (paiement en espèces) ✅");
-}
-
-function sendTelegram(message) {
+function sendTelegram(msg) {
   fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: "HTML"
-    })
+    body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
   });
 }
+
+document.getElementById("btnCalc").onclick = () => {
+  const start = document.getElementById("start").value.trim();
+  const end = document.getElementById("end").value.trim();
+  const size = document.getElementById("size").value;
+  if (!start || !end) return alert("Merci de saisir les deux adresses.");
+  const km = distanceSimulee();
+  const prix = (km * PRIX_PAR_KM).toFixed(2);
+  const div = document.getElementById("result");
+  div.innerHTML = 📍 ${km} km<br>💶 ${prix} €;
+  div.style.display = "block";
+  sendTelegram(🚀 Nouvelle commande\nDe: ${start}\nÀ: ${end}\nTaille: ${size}\nDistance estimée : ${km} km\nPrix : ${prix} €);
+};
+
+document.getElementById("btnCard").onclick = () => {
+  const r = document.getElementById("result");
+  if (r.style.display !== "block") return alert("Calculez d'abord le prix.");
+  window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27", "_blank");
+  alert("✅ Paiement par carte effectué ! Commande activée.");
+  sendTelegram("💳 Commande activée (carte) ✅");
+  location.href = "suivi.html";
+};
+
+document.getElementById("btnCash").onclick = () => {
+  alert("💶 Paiement en espèces choisi. Commande activée !");
+  sendTelegram("💶 Commande activée (espèces) ✅");
+  location.href = "suivi.html";
+};
 </script>
 </body>
 </html>
