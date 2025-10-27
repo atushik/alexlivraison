@@ -1,86 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex Livraison 🚗🚴‍♂️</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Livraison 🚴‍♂️</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #5a2ca0, #8a4de8);
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    header {
-      color: white;
-      padding: 20px;
+      background-color: #4b0082;
+      color: #fff;
       text-align: center;
-      font-size: 26px;
-      font-weight: bold;
+      margin: 0;
+      padding: 0;
     }
-    main {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      margin: 20px;
+    .container {
+      background-color: #fff;
+      color: #333;
+      border-radius: 12px;
       width: 90%;
-      max-width: 480px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      max-width: 450px;
+      margin: 50px auto;
+      padding: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    input, select {
+    input, select, button {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
+      margin: 10px 0;
       border-radius: 8px;
       border: 1px solid #ccc;
-    }
-    .tooltip {
-      border-bottom: 1px dotted #666;
-      cursor: help;
+      font-size: 16px;
     }
     button {
-      background: #5a2ca0;
+      background-color: #6a0dad;
       color: white;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 16px;
       cursor: pointer;
-      width: 100%;
-      margin-top: 15px;
+      transition: 0.3s;
     }
     button:hover {
-      background: #7a45d1;
+      background-color: #500c8e;
     }
-    footer {
-      text-align: center;
-      color: white;
-      font-size: 14px;
-      padding: 10px 0;
+    .footer {
+      margin-top: 30px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .info {
+      margin-top: 10px;
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+      color: #222;
+    }
+    h1 {
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <header>Alex Livraison 🚗🚴‍♂️</header>
-  <main>
-    <label for="from">Adresse de départ</label>
-    <input id="from" type="text" placeholder="Ex: 2 Rue Beaussier, Toulon" />
+  <h1>Alex Livraison 🚗🚴‍♂️</h1>
 
-    <label for="to">Adresse de destination</label>
-    <input id="to" type="text" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
-
-    <label for="size">Taille du colis
-      <span class="tooltip" title="Petit (S) = petit sac, Moyen (M) = carton moyen, Grand (L) = gros colis, Très grand (XL) = plusieurs colis volumineux.">ℹ️</span>
-    </label>
+  <div class="container">
+    <h2>Calculateur de Livraison</h2>
+    <input id="origin" type="text" placeholder="Adresse de départ">
+    <input id="destination" type="text" placeholder="Adresse de destination">
+    
+    <label for="size">Taille du colis 📦</label>
     <select id="size">
       <option value="S">Petit (S)</option>
       <option value="M">Moyen (M)</option>
@@ -88,79 +75,73 @@
       <option value="XL">Très grand (XL)</option>
     </select>
 
-    <label for="time">Heure de livraison souhaitée</label>
-    <input id="time" type="datetime-local" />
+    <label for="time">Heure de livraison souhaitée ⏰</label>
+    <input id="time" type="datetime-local">
 
-    <p id="distance"></p>
-    <p id="price"></p>
+    <button onclick="calculateDelivery()">Calculer le prix</button>
 
-    <button onclick="calculate()">Calculer le prix</button>
-    <button id="payBtn" style="display:none;" onclick="pay()">Payer via Revolut 💳</button>
-  </main>
+    <div id="result" class="info"></div>
+    <button id="payButton" style="display:none;" onclick="pay()">Payer via Revolut 💳</button>
+  </div>
 
-  <footer>
-    <p>Pourquoi Alex Livraison ?<br>
-    🚴‍♂️ Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)</p>
-  </footer>
+  <div class="footer">
+    🚀 Livraison locale 24h/24 et 7j/7 dans le Var (Toulon, La Seyne, Ollioules, etc.)  
+    <br>Repas, courses, médicaments et colis – rapide et fiable 💪
+  </div>
 
   <script>
-    let mapService;
+    let distanceKm = 0;
+    const baseRate = 2.5;
+    const sizeRates = { S: 0, M: 2, L: 4, XL: 6 };
 
-    function initAutocomplete() {
-      const from = document.getElementById("from");
-      const to = document.getElementById("to");
-      new google.maps.places.Autocomplete(from);
-      new google.maps.places.Autocomplete(to);
-      mapService = new google.maps.DistanceMatrixService();
-    }
+    function calculateDelivery() {
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      const size = document.getElementById('size').value;
+      const time = document.getElementById('time').value;
 
-    function calculate() {
-      const from = document.getElementById("from").value;
-      const to = document.getElementById("to").value;
-      const size = document.getElementById("size").value;
-      const time = document.getElementById("time").value;
-
-      if (!from || !to) {
-        alert("Merci de remplir les adresses.");
+      if (!origin || !destination) {
+        alert('Veuillez entrer les deux adresses.');
         return;
       }
 
-      mapService.getDistanceMatrix(
+      const service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix(
         {
-          origins: [from],
-          destinations: [to],
-          travelMode: "DRIVING"
+          origins: [origin],
+          destinations: [destination],
+          travelMode: 'DRIVING',
+          unitSystem: google.maps.UnitSystem.METRIC
         },
         (response, status) => {
-          if (status !== "OK") {
-            alert("Erreur Google Maps : " + status);
+          if (status !== 'OK') {
+            alert('Erreur de calcul: ' + status);
             return;
           }
-          const distanceText = response.rows[0].elements[0].distance.text;
-          const distanceValue = response.rows[0].elements[0].distance.value / 1000;
-          const tariffKm = 2.5;
-          let supplement = 0;
-          if (size === "M") supplement = 2;
-          if (size === "L") supplement = 4;
-          if (size === "XL") supplement = 6;
-          const total = (distanceValue * tariffKm + supplement).toFixed(2);
 
-          document.getElementById("distance").innerText = `📏 Distance estimée : ${distanceText}`;
-          document.getElementById("price").innerText = `💰 Prix estimé : ${total} €`;
-          document.getElementById("payBtn").style.display = "block";
-          document.getElementById("payBtn").dataset.price = total;
+          const distanceText = response.rows[0].elements[0].distance.text;
+          distanceKm = parseFloat(distanceText.replace(',', '.'));
+          const price = (distanceKm * baseRate + sizeRates[size]).toFixed(2);
+
+          document.getElementById('result').innerHTML =
+            `<b>Distance estimée :</b> ${distanceKm} km<br>` +
+            `<b>Prix total estimé :</b> ${price} €<br>` +
+            `<b>Heure souhaitée :</b> ${time || 'Non spécifiée'}`;
+
+          document.getElementById('payButton').style.display = 'block';
+          document.getElementById('payButton').setAttribute('data-amount', price);
         }
       );
     }
 
     function pay() {
-      const amount = document.getElementById("payBtn").dataset.price;
-      const revolutLink = `https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${amount}`;
-      window.open(revolutLink, "_blank");
+      const price = document.getElementById('payButton').getAttribute('data-amount');
+      window.open(`https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${price}`, '_blank');
     }
   </script>
 
-  <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=initAutocomplete" async defer></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places">
+  </script>
 </body>
 </html>
