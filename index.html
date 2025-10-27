@@ -17,7 +17,7 @@
       background: white;
       color: black;
       border-radius: 20px;
-      max-width: 400px;
+      max-width: 420px;
       margin: auto;
       padding: 20px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -70,7 +70,6 @@
     <input id="time" type="datetime-local">
 
     <button id="btnCalc">Calculer le prix</button>
-
     <div class="result" id="result"></div>
 
     <button id="btnCard">💳 Paiement par carte (Revolut)</button>
@@ -140,9 +139,16 @@
     });
   </script>
 
-  <!-- Google Maps API -->
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=initMap">
+  </script>
+  <script>
+    function initMap() {
+      const fromInput = document.getElementById("from");
+      const toInput = document.getElementById("to");
+      new google.maps.places.Autocomplete(fromInput);
+      new google.maps.places.Autocomplete(toInput);
+    }
   </script>
 
 </body>
