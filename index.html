@@ -3,148 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex Livraison 🚴‍♂️🚗</title>
+  <title>Alex Livraison 🚴‍♂️</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Poppins", sans-serif;
       background-color: #6a0dad;
-      color: #222;
+      color: #fff;
       text-align: center;
       margin: 0;
       padding: 0;
     }
-
     h1 {
-      color: white;
-      padding: 20px 0;
+      margin-top: 30px;
     }
-
     .container {
       background: white;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      color: #333;
       max-width: 480px;
-      margin: 40px auto;
-      padding: 25px;
+      margin: 30px auto;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin: 10px 0 5px;
-    }
-
     input, select {
       width: 90%;
       padding: 10px;
+      margin: 8px 0;
       border-radius: 10px;
       border: 1px solid #ccc;
-      font-size: 14px;
+      font-size: 15px;
     }
-
     button {
       background-color: #6a0dad;
       color: white;
+      padding: 12px 25px;
       border: none;
-      padding: 12px 20px;
       border-radius: 10px;
-      cursor: pointer;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #520c9c;
-    }
-
-    .result {
-      margin-top: 20px;
       font-size: 16px;
-      color: #333;
+      cursor: pointer;
+      margin-top: 10px;
     }
-
-    footer {
+    button:hover {
+      background-color: #570c9c;
+    }
+    .footer {
+      font-size: 14px;
       margin-top: 40px;
-      background-color: #4a0072;
       color: white;
-      padding: 15px;
-      font-size: 15px;
-      border-top: 3px solid #fff;
-    }
-
-    .info {
-      font-size: 13px;
-      color: #ddd;
-    }
-
-    .bold {
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Alex Livraison 🚴‍♂️🚗</h1>
-
+  <h1>Alex Livraison 🚗🚴‍♂️</h1>
   <div class="container">
-    <label for="depart">Adresse de départ</label>
-    <input id="depart" type="text" placeholder="Ex: 2 Rue Beaussier Toulon" />
+    <label>Adresse de départ</label>
+    <input id="origin" type="text" placeholder="Ex: 2 Rue Beaussier, Toulon" />
 
-    <label for="destination">Adresse de destination</label>
-    <input id="destination" type="text" placeholder="Ex: 241 Rue Le Corbusier La Seyne-sur-Mer" />
+    <label>Adresse de destination</label>
+    <input id="destination" type="text" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
 
-    <label for="taille">Taille du colis 📦</label>
-    <select id="taille">
-      <option>Petit (S)</option>
-      <option>Moyen (M)</option>
-      <option>Grand (L)</option>
-      <option>Très grand (XL)</option>
+    <label>Taille du colis 📦</label>
+    <select id="size">
+      <option value="S">Petit (S)</option>
+      <option value="M">Moyen (M)</option>
+      <option value="L">Grand (L)</option>
+      <option value="XL">Très grand (XL)</option>
     </select>
 
-    <label for="date">Heure de livraison souhaitée</label>
-    <input id="date" type="datetime-local" />
+    <label>Heure de livraison souhaitée</label>
+    <input id="datetime" type="datetime-local" />
 
-    <button onclick="calculerPrix()">Calculer le prix</button>
+    <button onclick="calculatePrice()">Calculer le prix</button>
 
-    <div class="result" id="result"></div>
-    <button id="payButton" style="display:none;" onclick="payer()">💳 Payer via Revolut</button>
+    <div id="result"></div>
+
+    <button id="payBtn" style="display:none;" onclick="pay()">💳 Payer via Revolut</button>
   </div>
 
-  <footer>
-    <p><b>🚚 Livraison locale 24h/24 et 7j/7</b> — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)</p>
-    <p class="bold">💜 МЫ ДОСТАВИМ ВАШИ ЗАКАЗЫ ДО ДВЕРИ ВАШЕГО ДОМА 💜</p>
-    <p class="info">© 2025 Alex Livraison - Service de livraison locale</p>
+  <footer class="footer">
+    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)  
+    <br><strong>💜 Nous livrons vos commandes jusqu’à votre porte 💜</strong><br>
+    © 2025 Alex Livraison
   </footer>
 
   <script>
-    function calculerPrix() {
-      const distance = Math.random() * 10 + 2; // для примера, пока нет API Google
-      const taille = document.getElementById("taille").value;
-      const date = document.getElementById("date").value;
+    async function calculatePrice() {
+      const origin = document.getElementById("origin").value;
+      const destination = document.getElementById("destination").value;
+      const size = document.getElementById("size").value;
+      const datetime = document.getElementById("datetime").value;
+      const resultDiv = document.getElementById("result");
 
-      let base = 2.0;
-      let prixParKm = 0.6;
-      let supplementTaille = 0;
+      const baseRate = 2.0; // € par km
+      const sizeExtra = { S: 0, M: 1.5, L: 3, XL: 5 };
 
-      if (taille === "Moyen (M)") supplementTaille = 1;
-      if (taille === "Grand (L)") supplementTaille = 2;
-      if (taille === "Très grand (XL)") supplementTaille = 3;
+      if (!origin || !destination) {
+        alert("Veuillez saisir les deux adresses.");
+        return;
+      }
 
-      const prix = base + (distance * prixParKm) + supplementTaille;
+      const apiKey = "AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g"; // ta clé API
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
 
-      document.getElementById("result").innerHTML = `
-        🚴 Distance estimée : <b>${distance.toFixed(1)} km</b><br>
-        💰 Prix estimé : <b>${prix.toFixed(2)} €</b><br>
-        📦 Taille : ${taille}<br>
-        🕓 Heure : ${date || "non spécifiée"}
-      `;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-      document.getElementById("payButton").style.display = "inline-block";
+        if (data.rows[0].elements[0].status === "OK") {
+          const distanceText = data.rows[0].elements[0].distance.text;
+          const distanceKm = parseFloat(distanceText.replace(",", "."));
+          const price = (distanceKm * baseRate + sizeExtra[size]).toFixed(2);
+
+          resultDiv.innerHTML = `📏 Distance estimée : <b>${distanceKm} km</b><br>💰 Prix estimé : <b>${price} €</b><br>🚚 Taille : ${size}<br>🕒 Heure : ${datetime}`;
+          document.getElementById("payBtn").style.display = "inline-block";
+          localStorage.setItem("delivery_price", price);
+        } else {
+          resultDiv.innerHTML = "Impossible de calculer la distance.";
+        }
+      } catch (error) {
+        resultDiv.innerHTML = "Erreur de connexion à l’API Google Maps.";
+      }
     }
 
-    function payer() {
-      alert("Redirection vers le paiement Revolut...");
-      // Здесь позже можно вставить реальную ссылку Revolut
+    function pay() {
+      const price = localStorage.getItem("delivery_price") || "0";
+      const link = `https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${price}`;
+      window.open(link, "_blank");
     }
   </script>
+
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places"></script>
 </body>
 </html>
