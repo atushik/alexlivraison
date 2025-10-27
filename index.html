@@ -1,235 +1,166 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Alex Livraison — Calcul & Paiement</title>
-<style>
-  :root{--violet:#5a2d82;--violet-2:#7c43a8;--bg:#faf7ff}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#ffffff 0%,#faf7ff 55%,#f2edff 100%);color:#222}
-  header{background:var(--violet);color:#fff;text-align:center;padding:16px 12px;font-weight:700}
-  .wrap{max-width:1000px;margin:28px auto;padding:0 16px}
-  .card{background:#fff;border-radius:18px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:22px;margin:auto;max-width:620px}
-  label{font-weight:600;margin:10px 0 6px;display:block}
-  input,select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#fff}
-  .row{display:grid;grid-template-columns:1fr;gap:14px}
-  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-  button{background:var(--violet);color:#fff;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
-  button[disabled]{opacity:.6;cursor:not-allowed}
-  button:hover{background:var(--violet-2)}
-  .muted{color:#666;font-size:14px}
-  .pill{display:inline-flex;gap:8px;align-items:center;background:#f5f0ff;border:1px solid #e6dcff;border-radius:999px;padding:8px 12px}
-  .stack{display:grid;gap:8px;margin-top:10px}
-  .tooltip{position:relative;cursor:help;display:inline-block;margin-left:6px}
-  .tooltip .tip{position:absolute;left:0;top:130%;background:#111;color:#fff;border-radius:8px;padding:10px;max-width:320px;font-size:13px;visibility:hidden;opacity:0;transition:.15s;z-index:5}
-  .tooltip:hover .tip{visibility:visible;opacity:1}
-  footer{margin:36px 0 48px}
-  .hero{margin-top:28px;background:linear-gradient(135deg,#5a2d82 0%,#7c43a8 55%,#8d5bd1 100%);color:#fff;border-radius:18px;padding:22px}
-  .hero h3{margin:0 0 8px}
-  .hero p{margin:0;opacity:.95}
-  .icons{font-size:22px;display:flex;gap:14px;margin-top:12px}
-  .contactbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-  .ghost{background:#fff;color:#5a2d82;border:2px solid #fff}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Livraison 🚗🚴‍♂️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #5a2ca0, #8a4de8);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    header {
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+    }
+    main {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .tooltip {
+      border-bottom: 1px dotted #666;
+      cursor: help;
+    }
+    button {
+      background: #5a2ca0;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #7a45d1;
+    }
+    footer {
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+  </style>
 </head>
 <body>
-<header>🚴‍♂️ Alex Livraison — Calculateur & Paiement</header>
+  <header>Alex Livraison 🚗🚴‍♂️</header>
+  <main>
+    <label for="from">Adresse de départ</label>
+    <input id="from" type="text" placeholder="Ex: 2 Rue Beaussier, Toulon" />
 
-<div class="wrap">
-  <div class="card">
-    <div class="row">
-      <div>
-        <label for="from">Adresse de départ</label>
-        <input id="from" placeholder="ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" autocomplete="street-address" />
-      </div>
-      <div>
-        <label for="to">Adresse de destination</label>
-        <input id="to" placeholder="ex: 1267 Avenue ..., La Seyne" autocomplete="street-address" />
-      </div>
-      <div>
-        <label for="size">
-          Taille du colis
-          <span class="tooltip">ℹ️
-            <span class="tip">
-              <b>S</b> — jusqu’à 2 kg (documents, médicaments)<br/>
-              <b>M</b> — jusqu’à 10 kg (repas, petites courses)<br/>
-              <b>L</b> — jusqu’à 25 kg (cartons moyens, sacs lourds)<br/>
-              <b>XL</b> — jusqu’à 50 kg (colis volumineux, valises)
-            </span>
-          </span>
-        </label>
-        <select id="size">
-          <option value="S">Petit (S)</option>
-          <option value="M">Moyen (M)</option>
-          <option value="L">Grand (L)</option>
-          <option value="XL">Très grand (XL)</option>
-        </select>
-      </div>
+    <label for="to">Adresse de destination</label>
+    <input id="to" type="text" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
 
-      <div>
-        <label for="when">Heure de livraison souhaitée</label>
-        <input type="datetime-local" id="when"/>
-        <div class="muted">Intervalle minimal entre commandes : 30 minutes.</div>
-      </div>
-    </div>
+    <label for="size">Taille du colis
+      <span class="tooltip" title="Petit (S) = petit sac, Moyen (M) = carton moyen, Grand (L) = gros colis, Très grand (XL) = plusieurs colis volumineux.">ℹ️</span>
+    </label>
+    <select id="size">
+      <option value="S">Petit (S)</option>
+      <option value="M">Moyen (M)</option>
+      <option value="L">Grand (L)</option>
+      <option value="XL">Très grand (XL)</option>
+    </select>
 
-    <div class="stack" id="liveInfo" style="display:none;">
-      <div class="pill" id="kmLine">📏 Distance estimée : —</div>
-      <div class="pill" id="priceLine">💰 Prix estimé : —</div>
-      <div class="pill" id="summaryLine">🧾 Résumé : —</div>
-    </div>
+    <label for="time">Heure de livraison souhaitée</label>
+    <input id="time" type="datetime-local" />
 
-    <div class="actions">
-      <button id="payBtn" disabled>Payer via Revolut 💳</button>
-      <a class="pill muted" id="limitNote" style="display:none;">❌ En dehors de la zone (max 22 km).</a>
-    </div>
+    <p id="distance"></p>
+    <p id="price"></p>
 
-    <div class="muted" style="margin-top:8px;">
-      Tarification : 2,50 € / km + supplément selon la taille (S/M/L/XL). Zone jusqu’à 22 km.
-    </div>
-  </div>
+    <button onclick="calculate()">Calculer le prix</button>
+    <button id="payBtn" style="display:none;" onclick="pay()">Payer via Revolut 💳</button>
+  </main>
 
-  <div class="hero">
-    <h3>Pourquoi Alex Livraison ?</h3>
-    <p>Nous travaillons <b>24 h/24 et 7 j/7</b> — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Solliès, Ollioules, etc.).</p>
-    <div class="icons">🚴‍♂️ 🚗 📦 🕓 💳 🌙 🌞</div>
-    <div class="contactbar">
-      <a href="tel:+33677171188"><button class="ghost">📞 Contacter Alex Livraison</button></a>
-      <span class="pill" style="background:#fff1; border-color:#fff2;">💳 Paiement sécurisé par Revolut</span>
-    </div>
-  </div>
-</div>
+  <footer>
+    <p>Pourquoi Alex Livraison ?<br>
+    🚴‍♂️ Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var (Toulon, La Seyne, Ollioules, etc.)</p>
+  </footer>
 
-<footer class="wrap muted">
-  © Alex Livraison — Service local. Sans intermédiaires.
-</footer>
+  <script>
+    let mapService;
 
-<script>
-// ========= CONFIG =========
-const PRICE_PER_KM = 2.50;                        // €/km
-const SIZE_SURCHARGE = { S:0, M:2, L:4, XL:6 };   // €
-const MAX_KM = 22;
-const SLOT_GAP_MIN = 30;                          // разрыв между заказами (мин)
-const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    function initAutocomplete() {
+      const from = document.getElementById("from");
+      const to = document.getElementById("to");
+      new google.maps.places.Autocomplete(from);
+      new google.maps.places.Autocomplete(to);
+      mapService = new google.maps.DistanceMatrixService();
+    }
 
-// ========= UTILS =========
-const $ = s => document.querySelector(s);
-const show = el => el.style.display = 'block';
-const hide = el => el.style.display = 'none';
-const debounce = (fn,ms=400)=>{let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
+    function calculate() {
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+      const size = document.getElementById("size").value;
+      const time = document.getElementById("time").value;
 
-function isoNowPlus(minutes){
-  const d = new Date(Date.now()+minutes*60000);
-  const pad = n=>String(n).padStart(2,'0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+      if (!from || !to) {
+        alert("Merci de remplir les adresses.");
+        return;
+      }
 
-// простая клиентская «база» занятых слотов (для реала подключим вебхук/БД)
-const storeKey = 'alex_orders_slots';
-const getSlots = () => JSON.parse(localStorage.getItem(storeKey)||'[]');
-const addSlot  = (iso) => localStorage.setItem(storeKey, JSON.stringify([...getSlots(), iso]));
+      mapService.getDistanceMatrix(
+        {
+          origins: [from],
+          destinations: [to],
+          travelMode: "DRIVING"
+        },
+        (response, status) => {
+          if (status !== "OK") {
+            alert("Erreur Google Maps : " + status);
+            return;
+          }
+          const distanceText = response.rows[0].elements[0].distance.text;
+          const distanceValue = response.rows[0].elements[0].distance.value / 1000;
+          const tariffKm = 2.5;
+          let supplement = 0;
+          if (size === "M") supplement = 2;
+          if (size === "L") supplement = 4;
+          if (size === "XL") supplement = 6;
+          const total = (distanceValue * tariffKm + supplement).toFixed(2);
 
-// ========= GEO & DISTANCE (OpenStreetMap + OSRM) =========
-async function geocode(q){
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
-  const res = await fetch(url,{headers:{'Accept-Language':'fr'}});
-  const data = await res.json();
-  if(!data || !data[0]) throw new Error("Adresse introuvable");
-  return {lat:+data[0].lat, lon:+data[0].lon, label:data[0].display_name};
-}
-async function osrmDistanceKm(a,b){
-  const url = `https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if(!data?.routes?.[0]) throw new Error("Route introuvable");
-  return data.routes[0].distance/1000;
-}
+          document.getElementById("distance").innerText = `📏 Distance estimée : ${distanceText}`;
+          document.getElementById("price").innerText = `💰 Prix estimé : ${total} €`;
+          document.getElementById("payBtn").style.display = "block";
+          document.getElementById("payBtn").dataset.price = total;
+        }
+      );
+    }
 
-// ========= STATE =========
-let state = { from:'', to:'', size:'S', km:0, price:0, when:'' };
+    function pay() {
+      const amount = document.getElementById("payBtn").dataset.price;
+      const revolutLink = `https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${amount}`;
+      window.open(revolutLink, "_blank");
+    }
+  </script>
 
-function calcPrice(km,size){
-  const p = Math.max(km*PRICE_PER_KM + (SIZE_SURCHARGE[size]||0), 1);
-  return +p.toFixed(2);
-}
-
-async function updateAll(){
-  try{
-    const from = $('#from').value.trim();
-    const to   = $('#to').value.trim();
-    const size = $('#size').value;
-    const when = $('#when').value;
-
-    state.size = size; state.when = when;
-
-    if(!from || !to){ $('#payBtn').disabled = true; hide($('#liveInfo')); return; }
-
-    const [A,B] = await Promise.all([geocode(from), geocode(to)]);
-    const km = await osrmDistanceKm(A,B);
-    state.from = from; state.to = to; state.km = km;
-    state.price = calcPrice(km,size);
-
-    show($('#liveInfo'));
-    $('#kmLine').innerHTML = `📏 Distance estimée : <b>${km.toFixed(1)} km</b>`;
-    $('#priceLine').innerHTML = `💰 Prix estimé : <b>${state.price.toFixed(2)} €</b>`;
-    $('#summaryLine').innerHTML = `🧾 De: ${from} → À: ${to} · Taille: ${size}${when?` · Heure: ${new Date(when).toLocaleString('fr-FR')}`:''}`;
-
-    if(km > MAX_KM){ $('#payBtn').disabled = true; show($('#limitNote')); return; }
-    hide($('#limitNote'));
-
-    // валидируем слот времени
-    const validTime = validateSlot(when);
-    $('#payBtn').disabled = !validTime;
-
-  }catch(e){
-    $('#payBtn').disabled = true;
-    show($('#liveInfo'));
-    $('#kmLine').innerHTML = `❌ ${e.message || 'Erreur de calcul'}`;
-    $('#priceLine').innerHTML = `—`;
-    $('#summaryLine').innerHTML = `—`;
-  }
-}
-
-function validateSlot(iso){
-  if(!iso) return false;
-  const chosen = new Date(iso).getTime();
-  const now    = Date.now();
-  // минимум +30 мин от текущего времени
-  if(chosen < now + SLOT_GAP_MIN*60000) return false;
-  // промежуток с локальными слотами
-  for(const s of getSlots()){
-    const t = new Date(s).getTime();
-    if(Math.abs(t - chosen) < SLOT_GAP_MIN*60000) return false;
-  }
-  return true;
-}
-
-// ========= PAY =========
-$('#payBtn').addEventListener('click', async ()=>{
-  // финальная проверка
-  if(!state.price || !state.from || !state.to || !state.when){
-    await updateAll(); if(!state.price || !state.when) return;
-  }
-  if(!validateSlot(state.when)){ alert("Créneau non disponible. Choisissez un autre horaire."); return; }
-
-  // бронируем слот локально (для продакшена — вебхук/БД)
-  addSlot(state.when);
-
-  const url = `${REVOLUT_LINK}?amount=${encodeURIComponent(state.price)}&currency=EUR`;
-  window.open(url,'_blank');
-});
-
-// ========= INIT =========
-$('#size').addEventListener('change', updateAll);
-$('#from').addEventListener('input', debounce(updateAll,400));
-$('#to').addEventListener('input', debounce(updateAll,400));
-$('#when').addEventListener('change', updateAll);
-
-// min для времени — сейчас + 30 мин
-$('#when').min = isoNowPlus(SLOT_GAP_MIN);
-</script>
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=initAutocomplete" async defer></script>
 </body>
-</html>
-
 </html>
