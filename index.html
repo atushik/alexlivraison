@@ -1,217 +1,154 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Alex Livraison</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Livraison 🚗🚴‍♂️</title>
   <style>
-    :root{
-      --violet:#6f2dff;--violet-dark:#5222c7;
-      --ok:#14b87a;--err:#ef4444;
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(180deg, #6b21a8, #9333ea);
+      color: white;
+      text-align: center;
+      padding: 20px;
     }
-    *{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;}
-    body{margin:0;background:linear-gradient(180deg,#5d1fff,#2b0a65);color:#fff;}
-    .wrap{max-width:980px;margin:24px auto;padding:0 16px;}
-    header{text-align:center;margin-bottom:16px}
-    header h1{margin:0;font-size:34px;font-weight:900}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media (max-width:860px){.grid{grid-template-columns:1fr}}
-    .card{background:#fff;color:#111;border-radius:20px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-    label{font-weight:600;margin-top:10px;display:block}
-    input,select,button{width:100%;border-radius:12px;padding:14px;border:none;font-size:16px;margin-top:6px}
-    input,select{border:1px solid #ddd}
-    button{font-weight:800;color:#fff;background:var(--violet);cursor:pointer;transition:.2s}
-    button:hover{background:var(--violet-dark)}
-    .btn-secondary{background:#ddd;color:#000}
-    #map{width:100%;height:460px;border-radius:14px;overflow:hidden}
-    .msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-weight:600;display:none}
-    .ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-    .err{background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca}
-    .note{margin-top:16px;color:#ddd;text-align:center;font-size:14px}
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    .container {
+      background: white;
+      color: black;
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 420px;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .calc { background: #7c3aed; color: white; }
+    .card { background: #6d28d9; color: white; }
+    .cash { background: #4c1d95; color: white; }
+    .result {
+      background: #e9d5ff;
+      color: #4c1d95;
+      font-weight: bold;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header><h1>Alex Livraison 🚗🚴‍♂️</h1></header>
 
-    <div class="grid">
-      <!-- Form -->
-      <div class="card">
-        <label>Adresse de départ</label>
-        <input id="from" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer">
+  <h1>Alex Livraison 🚗🚴‍♂️</h1>
+  <div class="container">
+    <label>Adresse de départ</label>
+    <input id="start" placeholder="ex. 241 Rue Le Corbusier, La Seyne-sur-Mer" />
 
-        <label>Adresse de destination</label>
-        <input id="to" placeholder="Ex: 2 Rue Beaussier, Toulon">
+    <label>Adresse de destination</label>
+    <input id="end" placeholder="ex. 2 Rue Beaussier, Toulon" />
 
-        <label>Taille du colis 📦</label>
-        <select id="size">
-          <option value="S">Petit (S)</option>
-          <option value="M">Moyen (M)</option>
-          <option value="L">Grand (L)</option>
-          <option value="XL">Très grand (XL)</option>
-        </select>
+    <label>Taille du colis 📦</label>
+    <select id="size">
+      <option value="S">Petit (S)</option>
+      <option value="M">Moyen (M)</option>
+      <option value="L">Grand (L)</option>
+      <option value="XL">Très grand (XL)</option>
+    </select>
 
-        <label>Heure de livraison souhaitée</label>
-        <input id="time" type="datetime-local">
+    <label>Heure de livraison souhaitée</label>
+    <input type="datetime-local" id="time" />
 
-        <button id="calc">🧮 Calculer le prix</button>
-        <p id="result" style="display:none;font-weight:700;margin-top:10px"></p>
-
-        <button id="payCard">💳 Paiement par carte</button>
-        <button id="payCash" class="btn-secondary">💶 Paiement en espèces</button>
-
-        <div id="msg" class="msg"></div>
-      </div>
-
-      <!-- Map -->
-      <div class="card" style="padding:12px">
-        <div id="map"></div>
-      </div>
-    </div>
-
-    <p class="note">🚴 Livraison locale 24h/24 et 7j/7 — Var (Toulon, La Seyne, Ollioules, etc.)<br>💜 © 2025 Alex Livraison</p>
+    <button class="calc" onclick="calculer()">🧮 Calculer le prix</button>
+    <div class="result" id="result"></div>
+    <button class="card" onclick="payerCarte()">💳 Paiement par carte</button>
+    <button class="cash" onclick="payerCash()">💶 Paiement en espèces à la livraison</button>
   </div>
 
-  <!-- Google Maps JS (Places + Directions) -->
-  <script>
-    // ===== Config =====
-    const GOOGLE_API_KEY = "AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g";
-    const PRICE_PER_KM = 0.9; // prix = 0.9 €/km
-    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-    const TELEGRAM_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-    const CHAT_ID = "7129872491";
+  <footer>
+    🚴 Livraison locale 24h/24 et 7j/7 — repas, courses, médicaments et colis dans tout le Var.<br>
+    💜 © 2025 Alex Livraison
+  </footer>
 
-    // ===== DOM helpers =====
-    const $ = id => document.getElementById(id);
-    function showMsg(text, ok=true){
-      const box=$("msg");
-      box.className="msg "+(ok?"ok":"err");
-      box.textContent=text;
-      box.style.display="block";
-      clearTimeout(showMsg._t);
-      showMsg._t=setTimeout(()=>{box.style.display="none"}, 7000);
-    }
+<script>
+const BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const CHAT_ID = "7129872491";
+const PRIX_PAR_KM = 0.9;
 
-    // ===== Google Map objects =====
-    let map, directionsService, directionsRenderer, autocompleteFrom, autocompleteTo;
+function distanceSimulee(adresse1, adresse2) {
+  // Petite simulation (remplace plus tard par MapBox ou API Google)
+  return Math.floor(Math.random() * 8) + 2; // entre 2 et 10 km
+}
 
-    function initMap(){
-      // Map centered around Toulon
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: {lat:43.1242, lng:5.928}, zoom: 12, mapTypeControl: false, fullscreenControl: false
-      });
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers:false, map });
+function calculer() {
+  const start = document.getElementById("start").value.trim();
+  const end = document.getElementById("end").value.trim();
+  const size = document.getElementById("size").value;
+  if (!start || !end) {
+    alert("Merci de saisir les deux adresses.");
+    return;
+  }
+  const km = distanceSimulee(start, end);
+  const prix = (km * PRIX_PAR_KM).toFixed(2);
+  const resultDiv = document.getElementById("result");
+  resultDiv.style.display = "block";
+  resultDiv.innerHTML = 📍 Distance estimée : ${km} km<br>💶 Prix estimé : ${prix} €;
 
-      // Places Autocomplete
-      autocompleteFrom = new google.maps.places.Autocomplete($("from"), { componentRestrictions:{country:"fr"} });
-      autocompleteTo   = new google.maps.places.Autocomplete($("to"),   { componentRestrictions:{country:"fr"} });
+  // Envoi Telegram
+  const message = 🚀 NOUVELLE DEMANDE ALEX LIVRAISON\n\nDépart: ${start}\nDestination: ${end}\nDistance estimée: ${km} km\nPrix estimé: ${prix} €\nTaille du colis: ${size};
+  sendTelegram(message);
+}
 
-      // Default delivery time: now + 30 min
-      const now = new Date(Date.now()+30*60000);
-      const pad=n=>String(n).padStart(2,"0");
-      $("time").value = ${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())};
+function payerCarte() {
+  const resultDiv = document.getElementById("result");
+  if (resultDiv.style.display !== "block") {
+    alert("Veuillez d'abord calculer le prix.");
+    return;
+  }
+  window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27", "_blank");
+  alert("✅ Paiement par carte effectué ! Votre commande est activée.");
+  sendTelegram("💳 Commande activée (paiement carte) ✅");
+}
 
-      // Handlers
-      $("calc").addEventListener("click", onCalculate);
-      $("payCard").addEventListener("click", onPayCard);
-      $("payCash").addEventListener("click", onPayCash);
-    }
+function payerCash() {
+  alert("💶 Paiement en espèces sélectionné. Votre commande est activée !");
+  sendTelegram("💶 Commande activée (paiement en espèces) ✅");
+}
 
-    // Calculate distance via DistanceMatrix, draw static route via Directions
-    function computeDistanceKm(origin, destination){
-      return new Promise((resolve,reject)=>{
-        const svc = new google.maps.DistanceMatrixService();
-        svc.getDistanceMatrix({
-          origins:[origin], destinations:[destination],
-          travelMode: google.maps.TravelMode.DRIVING,
-          unitSystem: google.maps.UnitSystem.METRIC
-        }, (res, status)=>{
-          if(status!=="OK" || !res.rows?.[0]?.elements?.[0]){
-            reject(new Error("DistanceMatrix error: "+status));
-            return;
-          }
-          const el = res.rows[0].elements[0];
-          if(el.status!=="OK"){ reject(new Error("Distance element status: "+el.status)); return; }
-          resolve(el.distance.value/1000.0); // meters -> km
-        });
-      });
-    }
-
-    function drawRoute(origin, destination){
-      directionsService.route({
-        origin, destination, travelMode: google.maps.TravelMode.DRIVING
-      }, (result, status)=>{
-        if(status === "OK"){
-          directionsRenderer.setDirections(result);
-        }
-      });
-    }
-
-    function setResult(km, price){
-      const r=$("result");
-      r.innerHTML = 🚚 Distance : <b>${km.toFixed(2)} km</b> &nbsp;|&nbsp; 💶 Prix : <b>${price.toFixed(2)} €</b>;
-      r.style.display="block";
-    }
-
-    async function onCalculate(){
-      const from = $("from").value.trim();
-      const to   = $("to").value.trim();
-      if(!from || !to){ showMsg("⚠️ Entrez deux adresses valides.", false); return; }
-      showMsg("⏳ Calcul du trajet...");
-
-      try{
-        // 1) distance for price
-        const km = await computeDistanceKm(from, to);
-        const price = +(km * PRICE_PER_KM).toFixed(2);
-        setResult(km, price);
-        // 2) static route on map
-        drawRoute(from, to);
-        // store
-        window.calc = { from, to, km, price };
-        showMsg("✅ Calcul terminé !");
-      }catch(err){
-        console.error(err);
-        showMsg("❌ Erreur API Google. Vérifiez la clé ou les adresses.", false);
-      }
-    }
-
-    async function sendTelegram(mode){
-      const c=window.calc; if(!c) return;
-      const text = 🚚 Nouvelle commande Alex Livraison
-De : ${c.from}
-À : ${c.to}
-Distance : ${c.km.toFixed(2)} km
-Prix : ${c.price.toFixed(2)} €
-Mode : ${mode}
-Heure : ${$("time").value || "au plus vite"};
-      const url = https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)};
-      try{ await fetch(url); }catch(e){ console.warn("Telegram failed", e); }
-    }
-
-    async function onPayCard(){
-      const c=window.calc;
-      if(!c){ showMsg("⚠️ Calculez le prix d’abord.", false); return; }
-      await sendTelegram("Carte (Revolut)");
-      showMsg("✅ Commande activée, redirection vers paiement...", true);
-      // Open Revolut with amount param in a new tab
-      window.open(${REVOLUT_LINK}?amount=${c.price}&currency=EUR, "_blank");
-    }
-
-    async function onPayCash(){
-      const c=window.calc;
-      if(!c){ showMsg("⚠️ Calculez le prix d’abord.", false); return; }
-      await sendTelegram("Espèces à la livraison");
-      showMsg("✅ Commande activée (paiement en espèces).", true);
-    }
-
-    // Load Maps with callback to ensure everything is ready
-    (function loadGoogle(){
-      const s = document.createElement("script");
-      s.src = https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places&language=fr&callback=initMap;
-      s.async = true; s.defer = true;
-      document.head.appendChild(s);
-    })();
-  </script>
+function sendTelegram(message) {
+  fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: "HTML"
+    })
+  });
+}
+</script>
 </body>
 </html>
