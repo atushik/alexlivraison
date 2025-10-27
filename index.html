@@ -1,108 +1,260 @@
-<script>
-  const PRICE_PER_KM = 0.9;
-  const PRICE_FLOOR = 0.3;
-  const PRICE_URGENT = 3.0;
-  const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🚗 AlexLivraison 🚴🏻‍♂️</title>
 
-  const euro = n => (Math.round(n * 100) / 100).toFixed(2).replace('.', ',') + " €";
-  const $ = s => document.querySelector(s);
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  // === Remplir la liste d’heures ===
-  (function fillTimes() {
-    const sel = $("#time");
+  <style>
+    :root {
+      --bg1: #31006f;
+      --bg2: #6c1bcf;
+      --card: #ffffff;
+      --accent: #6c1bcf;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      color: #222;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 16px 100px;
+    }
+    h1 {
+      color: #fff;
+      font-size: 40px;
+      text-align: center;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .label {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      height: 50px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      padding: 0 14px;
+      font-size: 17px;
+      margin-bottom: 14px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s ease;
+    }
+    .btn:hover { background: #5315a7; }
+    .btn-secondary {
+      background: #ddd;
+      color: #222;
+    }
+    .result, .badge {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f7f3ff;
+      color: #222;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    #map {
+      height: 280px;
+      border-radius: 14px;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
+
+    <div class="card">
+      <div class="label">Adresse de départ</div>
+      <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon" />
+
+      <div class="label">Adresse de destination</div>
+      <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer" />
+
+      <div class="label">Taille du colis 📦</div>
+      <select id="size">
+        <option value="S">Petit (S)</option>
+        <option value="M">Moyen (M)</option>
+        <option value="L">Grand (L)</option>
+        <option value="XL">Très grand (XL)</option>
+      </select>
+
+      <div class="label">Étage de livraison (optionnel)</div>
+      <select id="floor">
+        <option value="0">Rez-de-chaussée</option>
+        <option value="1">1er–2e étage (+2€)</option>
+        <option value="2">3e–5e étage (+2,5€)</option>
+        <option value="3">6e–15e étage (+3€)</option>
+      </select>
+
+      <div class="label">Heure de livraison souhaitée</div>
+      <select id="time"></select>
+
+      <button id="calc" class="btn">🧮 Calculer le prix</button>
+      <button id="payCard" class="btn">💳 Paiement par carte</button>
+      <button id="payCash" class="btn btn-secondary">💶 Paiement en espèces</button>
+
+      <div id="result" class="result" style="display:none;"></div>
+      <div id="map" style="display:none;"></div>
+    </div>
+
+    <p style="text-align:center; color:#eee; margin-top:16px;">
+      🚲 Livraison locale 24h/24 et 7j/7 — Toulon, La Seyne, Ollioules, etc. <br>
+      💜 © 2025 AlexLivraison
+    </p>
+  </div>
+
+  <script>
+    const PRICE_PER_KM = 0.9;
+    const SIZE_MULTIPLIER = { S: 1, M: 1.15, L: 1.3, XL: 1.5 };
+    const FLOOR_EXTRA = { 0: 0, 1: 2, 2: 2.5, 3: 3 };
+
+    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TG_CHAT_ID = "7129872491";
+
+    const $ = s => document.querySelector(s);
+    const resultBox = $("#result");
+    const mapBox = $("#map");
+    let map, layer, markerA, markerB, lastCalc = null;
+
+    // Remplir les heures
     const now = new Date();
+    const timeSel = $("#time");
     for (let i = 0; i < 36; i++) {
       const t = new Date(now.getTime() + i * 30 * 60000);
-      const hh = String(t.getHours()).padStart(2, "0");
-      const mm = String(t.getMinutes()).padStart(2, "0");
-      const dd = String(t.getDate()).padStart(2, "0");
-      const mo = String(t.getMonth() + 1).padStart(2, "0");
-      const yyyy = t.getFullYear();
-      const label = ${dd}.${mo}.${yyyy}, ${hh}:${mm};
+      const label = t.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
       const opt = document.createElement("option");
-      opt.textContent = label;
-      sel.appendChild(opt);
+      opt.value = label; opt.textContent = label;
+      timeSel.appendChild(opt);
     }
-  })();
 
-  async function geocode(q) {
-    const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}&accept-language=fr;
-    const res = await fetch(url);
-    const js = await res.json();
-    if (!js.length) throw new Error("Adresse introuvable");
-    return { lat: +js[0].lat, lon: +js[0].lon };
-  }
-
-  async function route(lat1, lon1, lat2, lon2) {
-    const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
-    const res = await fetch(url);
-    const js = await res.json();
-    if (!js.routes.length) throw new Error("Itinéraire introuvable");
-    return { km: js.routes[0].distance / 1000, geojson: js.routes[0].geometry };
-  }
-
-  let map;
-  function showMap(lat1, lon1, lat2, lon2, geojson) {
-    if (!map) {
-      map = L.map("map");
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    async function geocode(addr) {
+      const url = https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.length) throw new Error("Adresse non trouvée");
+      return { lat: +data[0].lat, lon: +data[0].lon };
     }
-    L.geoJSON(geojson, { style: { color: "#6c4cff", weight: 5 } }).addTo(map);
-    map.fitBounds([[lat1, lon1], [lat2, lon2]]);
-    $("#map").style.display = "block";
-  }
 
-  let lastCalc = null;
-
-  $("#calc").onclick = async () => {
-    const from = $("#from").value.trim();
-    const to = $("#to").value.trim();
-    const size = $("#size").value;
-    const floor = +$("#floor").value;
-    const urgent = $("#urgent").checked;
-    const when = $("#time").value;
-
-    if (!from || !to) return alert("Veuillez saisir les deux adresses.");
-
-    $("#result").style.display = "block";
-    $("#result").innerHTML = "Calcul en cours...";
-
-    try {
-      const [A, B] = await Promise.all([geocode(from), geocode(to)]);
-      const { km, geojson } = await route(A.lat, A.lon, B.lat, B.lon);
-      const kmRound = Math.max(1, Math.round(km * 100) / 100);
-
-      let price = kmRound * PRICE_PER_KM;
-      price += floor * PRICE_FLOOR;
-      if (urgent) price += PRICE_URGENT;
-
-      lastCalc = { from, to, km: kmRound, price, size, floor, urgent, when };
-
-      $("#result").innerHTML = 
-        🚚 <b>Distance :</b> ${kmRound.toFixed(2)} km<br>
-        💶 <b>Prix total :</b> ${euro(price)}<br>
-        📦 <b>Taille :</b> ${size}<br>
-        🏢 <b>Étage :</b> ${floor === 0 ? "RDC" : floor + "ᵉ"}<br>
-        ${urgent ? "🚨 <b>Urgent :</b> Oui<br>" : ""}
-        🕒 <b>Heure :</b> ${when}
-      ;
-
-      showMap(A.lat, A.lon, B.lat, B.lon, geojson);
-    } catch (err) {
-      $("#result").innerHTML = "Erreur : " + err.message;
+    async function route(lat1, lon1, lat2, lon2) {
+      const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
+      const res = await fetch(url);
+      const data = await res.json();
+      const r = data.routes[0];
+      return { km: r.distance / 1000, geo: r.geometry };
     }
-  };
 
-  $("#payCard").onclick = () => {
-    if (!lastCalc) return alert("Calculez d'abord le prix.");
-    window.open(REVOLUT_LINK, "_blank");
-  };
+    async function notify(msg) {
+      try {
+        await fetch(https://api.telegram.org/bot${TG_TOKEN}/sendMessage, {
+          method: "POST",
+          body: new URLSearchParams({ chat_id: TG_CHAT_ID, text: msg })
+        });
+      } catch(e) {}
+    }
 
-  $("#payCash").onclick = () => {
-    if (!lastCalc) return alert("Calculez d'abord le prix.");
-    alert("Commande enregistrée pour paiement en espèces ✅");
-  };
+    $("#calc").onclick = async () => {
+      const from = $("#from").value.trim();
+      const to = $("#to").value.trim();
+      const size = $("#size").value;
+      const floor = $("#floor").value;
+      const when = $("#time").value;
+      if (!from || !to) { alert("Veuillez entrer les deux adresses"); return; }
 
-  $("#from").value = "2 Rue Beaussier, Toulon";
-  $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
-</script>
+      resultBox.style.display = "block";
+      resultBox.textContent = "Calcul en cours…";
+      try {
+        const [A, B] = await Promise.all([geocode(from), geocode(to)]);
+        const { km, geo } = await route(A.lat, A.lon, B.lat, B.lon);
+        const kmRound = Math.max(1, Math.round(km * 100) / 100);
+        const price = Math.round((kmRound * PRICE_PER_KM * SIZE_MULTIPLIER[size] + FLOOR_EXTRA[floor]) * 100) / 100;
+
+        lastCalc = { from, to, km: kmRound, price, size, floor, when };
+
+        if (!map) {
+          map = L.map('map');
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        }
+        if (layer) layer.remove();
+        if (markerA) markerA.remove();
+        if (markerB) markerB.remove();
+
+        layer = L.geoJSON(geo, { style: { color: '#7f56d9', weight: 5 } }).addTo(map);
+        markerA = L.marker([A.lat, A.lon]).addTo(map);
+        markerB = L.marker([B.lat, B.lon]).addTo(map);
+        map.fitBounds([[A.lat, A.lon], [B.lat, B.lon]]);
+        mapBox.style.display = "block";
+
+        resultBox.innerHTML = 
+          🚚 Distance : <b>${kmRound.toFixed(2)} km</b><br>
+          💶 Prix : <b>${price.toFixed(2)} €</b><br>
+          📦 Taille : ${size} — 🏢 Étage : ${floor}<br>
+          🕒 ${when}
+        ;
+      } catch (e) {
+        resultBox.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
+      }
+    };
+
+    $("#payCash").onclick = async () => {
+      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
+      alert("Commande confirmée — paiement en espèces.");
+      await notify(🧾 Nouvelle commande (Espèces)
+De: ${lastCalc.from}
+À: ${lastCalc.to}
+Distance: ${lastCalc.km} km
+Prix: ${lastCalc.price} €
+Taille: ${lastCalc.size}
+Étage: ${lastCalc.floor}
+Heure: ${lastCalc.when});
+    };
+
+    $("#payCard").onclick = async () => {
+      if (!lastCalc) return alert("Veuillez calculer le prix d’abord.");
+      alert("Redirection vers le paiement sécurisé Revolut.");
+      await notify(🧾 Nouvelle commande (Carte)
+De: ${lastCalc.from}
+À: ${lastCalc.to}
+Distance: ${lastCalc.km} km
+Prix: ${lastCalc.price} €
+Taille: ${lastCalc.size}
+Étage: ${lastCalc.floor}
+Heure: ${lastCalc.when});
+      window.open(REVOLUT_LINK, "_blank");
+    };
+
+    $("#from").value = "2 Rue Beaussier, Toulon";
+    $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
+  </script>
+</body>
+</html>
