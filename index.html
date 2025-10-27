@@ -39,6 +39,13 @@
     }
     button:hover { background: #8a2be2; }
     .result, .alert { margin-top: 15px; font-size: 16px; }
+    .success {
+      background: #4CAF50;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -117,22 +124,25 @@
       }
       const url = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${price};
       window.open(url, "_blank");
-      setTimeout(() => {
-        document.getElementById("status").innerHTML = "✅ Paiement confirmé ! Votre commande est activée.";
-      }, 4000);
+      document.getElementById("status").innerHTML =
+        <div class='success'>✅ Paiement confirmé ! Votre commande est activée.</div>;
     }
 
     function confirmCash() {
-      document.getElementById("status").innerHTML = "💵 Commande confirmée ! Merci de payer en espèces à la livraison.";
+      document.getElementById("status").innerHTML =
+        <div class='success'>💵 Commande confirmée ! Merci de payer en espèces à la livraison.</div>;
     }
 
-    document.getElementById("btnCalc").addEventListener("click", calculate);
-    document.getElementById("btnCard").addEventListener("click", payRevolut);
-    document.getElementById("btnCash").addEventListener("click", confirmCash);
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("btnCalc").addEventListener("click", calculate);
+      document.getElementById("btnCard").addEventListener("click", payRevolut);
+      document.getElementById("btnCash").addEventListener("click", confirmCash);
+    });
   </script>
 
-  <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places&callback=()=>{}">
+  <!-- Google Maps API -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaUyjOAjx9TNonfUF5psKSpxunrgr2h6g&libraries=places">
   </script>
 
 </body>
