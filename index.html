@@ -2,17 +2,23 @@
 const PRICE_PER_KM = 0.9;
 const REVOLUT_BASE = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 
-function euro(n){
-  return (Math.round(n*100)/100).toFixed(2) + " €";
+function euro(n) {
+  return (Math.round(n * 100) / 100).toFixed(2) + " €";
 }
 
-// === Heures ===
-(function fillTimes(){
+// === Remplir les heures ===
+(function fillTimes() {
   const sel = document.querySelector("#time");
   const now = new Date();
-  for(let i=0;i<36;i++){
-    const t = new Date(now.getTime()+i*30*60000);
-    const label = t.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  for (let i = 0; i < 36; i++) {
+    const t = new Date(now.getTime() + i * 30 * 60000);
+    const label = t.toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
     const opt = document.createElement("option");
     opt.value = label;
     opt.textContent = label;
@@ -20,43 +26,46 @@ function euro(n){
   }
 })();
 
-// === Géocodage + itinéraire ===
-async function geocode(q){
+// === Géocodage + Itinéraire ===
+async function geocode(q) {
   const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}&accept-language=fr;
-  const res = await fetch(url, { headers: { 'User-Agent': 'AlexLivraisonApp/1.0' } });
+  const res = await fetch(url, { headers: { "User-Agent": "AlexLivraisonApp/1.0" } });
   const json = await res.json();
-  if(!json.length) throw new Error("Adresse introuvable");
+  if (!json.length) throw new Error("Adresse introuvable");
   return { lat: +json[0].lat, lon: +json[0].lon };
 }
 
-async function route(lat1, lon1, lat2, lon2){
+async function route(lat1, lon1, lat2, lon2) {
   const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
   const res = await fetch(url);
   const json = await res.json();
-  if(!json.routes || !json.routes.length) throw new Error("Itinéraire introuvable");
+  if (!json.routes || !json.routes.length) throw new Error("Itinéraire introuvable");
   return { km: json.routes[0].distance / 1000, geo: json.routes[0].geometry };
 }
 
 let map, routeLayer;
-function drawMap(lat1,lon1,lat2,lon2,geo){
-  if(!map){
-    map = L.map("map").setView([lat1,lon1],13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-      attribution: '© OpenStreetMap'
+function drawMap(lat1, lon1, lat2, lon2, geo) {
+  if (!map) {
+    map = L.map("map").setView([lat1, lon1], 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
     }).addTo(map);
   }
-  if(routeLayer) routeLayer.remove();
-  routeLayer = L.geoJSON(geo,{style:{color:"#6c4cff",weight:5}}).addTo(map);
-  map.fitBounds([[lat1,lon1],[lat2,lon2]]);
+  if (routeLayer) routeLayer.remove();
+  routeLayer = L.geoJSON(geo, { style: { color: "#6c4cff", weight: 5 } }).addTo(map);
+  map.fitBounds([[lat1, lon1], [lat2, lon2]]);
 }
 
-// === Logique principale ===
 let lastCalc = null;
 
+// === Calcul du prix ===
 document.querySelector("#calc").onclick = async () => {
   const from = document.querySelector("#from").value.trim();
   const to = document.querySelector("#to").value.trim();
-  if(!from || !to){ alert("Veuillez saisir les adresses."); return; }
+  if (!from || !to) {
+    alert("Veuillez saisir les adresses.");
+    return;
+  }
 
   const size = document.querySelector("#size").value;
   const floor = parseInt(document.querySelector("#floor").value);
@@ -79,20 +88,20 @@ document.querySelector("#calc").onclick = async () => {
     let price = r.km * PRICE_PER_KM;
 
     // Suppléments selon taille
-    if(size === "M") price += 1;
-    if(size === "L") price += 2;
-    if(size === "XL") price += 3;
+    if (size === "M") price += 1;
+    if (size === "L") price += 2;
+    if (size === "XL") price += 3;
 
     // Étages
-    if(floor >= 2) price += floor;
+    if (floor >= 2) price += floor;
 
-    // Options
-    if(fragile) price += 2;
-    if(urgent) price += 3;
-    if(wait5) price += 1;
-    if(wait10) price += 2;
+    // Options supplémentaires
+    if (fragile) price += 2;
+    if (urgent) price += 3;
+    if (wait5) price += 1;
+    if (wait10) price += 2;
 
-    lastCalc = {from,to,price,km:r.km,when};
+    lastCalc = { from, to, price, km: r.km, when };
     drawMap(A.lat, A.lon, B.lat, B.lon, r.geo);
 
     res.innerHTML = 
@@ -100,7 +109,7 @@ document.querySelector("#calc").onclick = async () => {
       💶 <b>Prix :</b> ${euro(price)}<br>
       📦 <b>Taille :</b> ${size} — 🕒 ${when}
     ;
-  } catch(e){
+  } catch (e) {
     console.error(e);
     res.innerHTML = "⚠️ Erreur lors du calcul. Vérifiez les adresses.";
   }
@@ -108,13 +117,14 @@ document.querySelector("#calc").onclick = async () => {
 
 // === Paiement ===
 document.querySelector("#payCard").onclick = () => {
-  if(!lastCalc) return alert("Calculez le prix d'abord !");
-  const url = ${REVOLUT_BASE}?amount=${lastCalc.price.toFixed(2)}&currency=EUR;
+  if (!lastCalc) return alert("Calculez le prix d'abord !");
+  const amount = lastCalc.price.toFixed(2);
+  const url = ${REVOLUT_BASE}?amount=${amount}&currency=EUR;
   window.open(url, "_blank");
 };
 
 document.querySelector("#payCash").onclick = () => {
-  if(!lastCalc) return alert("Calculez le prix d'abord !");
+  if (!lastCalc) return alert("Calculez le prix d'abord !");
   alert("Commande enregistrée. Paiement en espèces à la livraison.");
 };
 </script>
