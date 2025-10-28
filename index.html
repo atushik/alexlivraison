@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🚗AlexLivraison🚴🏻‍♂️</title>
 
 <style>
@@ -90,10 +90,10 @@
 
   <div class="container">
     <label>Adresse de départ</label>
-    <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon" />
+    <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon">
 
     <label>Adresse de destination</label>
-    <input type="text" id="end" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer" />
+    <input type="text" id="end" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
 
     <label>Taille du colis 📦</label>
     <select id="size">
@@ -120,7 +120,7 @@
     </div>
 
     <label>Heure de livraison souhaitée</label>
-    <input type="datetime-local" id="time" />
+    <input type="datetime-local" id="time">
 
     <button class="button calc" onclick="calculatePrice()">🧮 Calculer le prix</button>
     <button class="button card" onclick="payByCard()">💳 Paiement par carte</button>
@@ -149,7 +149,7 @@
     services.forEach(s => extras += parseFloat(s.value));
     base += floor + extras;
 
-    const distance = 2.5; // тестовая дистанция
+    const distance = 2.5; // distance test
     const total = (base + distance * 0.8).toFixed(2);
 
     document.getElementById("result").innerHTML =
@@ -167,6 +167,5 @@
     window.open(link, "_blank");
   }
 </script>
-
 </body>
 </html>
