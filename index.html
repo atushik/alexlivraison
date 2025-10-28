@@ -10,91 +10,35 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #4e00b8, #2a006f);
-      background-attachment: fixed;
-      color: #222;
+    :root { --violet:#5f0fb6; --violet2:#3a0780; }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      color:#222;
+      background: radial-gradient(1200px 600px at 50% -200px, var(--violet), var(--violet2));
+      min-height:100vh;
     }
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 25px;
-    }
-    .title {
-      color: #fff;
-      font-size: 36px;
-      text-align: center;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    }
-    .label { font-weight: bold; margin-top: 12px; }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
-    }
-    .services {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .services label {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 6px;
-      background: #f9f9f9;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      font-size: 17px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      margin-top: 12px;
-      font-weight: bold;
-      color: #fff;
-    }
-    .btn-main { background: #5f0fb6; }
-    .btn-main:hover { background: #4a0a8f; }
-    .btn-alt { background: #eee; color: #000; }
-    #result {
-      margin-top: 15px;
-      background: #fff;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px dashed #bbb;
-      font-weight: 600;
-    }
-    #map {
-      height: 300px;
-      margin-top: 10px;
-      border-radius: 10px;
-    }
-    .hidden { display: none; }
-    .footer {
-      text-align: center;
-      color: #fff;
-      margin-top: 20px;
-    }
+    .container{max-width:720px;margin:0 auto;padding:24px 16px 64px}
+    .title{color:#fff;font-size:38px;font-weight:900;text-align:center;margin:6px 0 18px}
+    .card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 14px 36px rgba(0,0,0,.25)}
+    .label{font-weight:800;margin:12px 0 6px}
+    input,select{width:100%;height:52px;padding:0 14px;border:1px solid #ddd;border-radius:12px;font-size:16px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .svc{display:flex;align-items:center;gap:10px;border:1px solid #ddd;border-radius:12px;padding:10px;background:#fafafa}
+    .btn{width:100%;height:56px;margin-top:12px;border:none;border-radius:14px;color:#fff;font-weight:800;font-size:18px;cursor:pointer}
+    .btn.primary{background:var(--violet)}
+    .btn.primary:active{transform:translateY(1px);background:#4a0c96}
+    .btn.alt{background:#ececec;color:#111}
+    #result{margin-top:12px;background:#fff;border-radius:12px;border:1px dashed #cdb8ff;padding:12px;font-weight:600}
+    #map{height:320px;margin-top:10px;border-radius:12px;overflow:hidden;border:1px solid #eee}
+    .hidden{display:none}
+    .footer{color:#f0eaff;text-align:center;margin-top:16px}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="title">🚗 AlexLivraison 🚴🏻‍♂️</div>
+
     <div class="card">
       <div class="label">Adresse de départ</div>
       <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon">
@@ -110,46 +54,49 @@
         <option value="XL">Très grand (XL)</option>
       </select>
 
-      <div class="label">Étage</div>
+      <div class="label">Étage (optionnel)</div>
       <select id="floor">
         <option value="0">RDC / 1er (0 €)</option>
-        <option value="1">2e — 4e (+2 €)</option>
-        <option value="2">5e — 10e (+3 €)</option>
-        <option value="3">11e — 15e (+4 €)</option>
+        <option value="1">2e—4e (+2 €)</option>
+        <option value="2">5e—10e (+3 €)</option>
+        <option value="3">11e—15e (+4 €)</option>
       </select>
 
       <div class="label">Services additionnels</div>
-      <div class="services">
-        <label><input type="checkbox" value="2" class="extra">Colis fragile (+2 €)</label>
-        <label><input type="checkbox" value="3" class="extra">Livraison urgente (+3 €)</label>
-        <label><input type="checkbox" value="1" class="extra">Attente 5 min (+1 €)</label>
-        <label><input type="checkbox" value="2" class="extra">Attente 10 min (+2 €)</label>
+      <div class="grid2">
+        <label class="svc"><input type="checkbox" class="extra" value="2"> Colis fragile (+2 €)</label>
+        <label class="svc"><input type="checkbox" class="extra" value="3"> Livraison urgente (+3 €)</label>
+        <label class="svc"><input type="checkbox" class="extra" value="1"> Attente 5 min (+1 €)</label>
+        <label class="svc"><input type="checkbox" class="extra" value="2"> Attente 10 min (+2 €)</label>
       </div>
 
-      <div class="label">Heure de livraison</div>
+      <div class="label">Heure de livraison souhaitée</div>
       <select id="time"></select>
 
-      <button id="calc" class="btn btn-main">🧮 Calculer le prix</button>
-      <button id="payCard" class="btn btn-main">💳 Paiement par carte</button>
-      <button id="payCash" class="btn btn-alt">💶 Paiement en espèces</button>
+      <button id="calc" class="btn primary">🧮 Calculer le prix</button>
+      <button id="payCard" class="btn primary">💳 Paiement par carte</button>
+      <button id="payCash" class="btn alt">💶 Paiement en espèces</button>
 
       <div id="result" class="hidden"></div>
       <div id="map" class="hidden"></div>
     </div>
-    <div class="footer">💜 Nous livrons vos commandes jusqu’à votre porte 💜<br>© 2025 Alex Livraison</div>
+
+    <p class="footer">💜 Nous livrons vos commandes jusqu’à votre porte — © 2025 Alex Livraison</p>
   </div>
 
   <script>
-    const PRICE_KM = 0.9;
+    // --- Config ---
+    const PRICE_PER_KM = 0.9;
     const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-    const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TG_TOKEN   = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TG_CHAT_ID = "7129872491";
-    let lastCalc = null, map, routeLayer;
 
+    // --- Helpers ---
     const $ = s => document.querySelector(s);
     const euro = n => n.toFixed(2).replace('.', ',') + " €";
 
-    (function(){
+    // --- Time slots (30 min, 18 heures) ---
+    (function fillTimes(){
       const sel = $("#time");
       const now = new Date();
       for(let i=0;i<36;i++){
@@ -161,74 +108,116 @@
       }
     })();
 
+    // --- Geocoding (Nominatim) ---
     async function geocode(q){
-      const url = https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)};
-      const res = await fetch(url);
+      const url = https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=fr&q=${encodeURIComponent(q)};
+      const res = await fetch(url, { headers: { "Accept-Language":"fr-FR" } });
+      if(!res.ok) throw new Error("Nominatim HTTP " + res.status);
       const js = await res.json();
       if(!js.length) throw new Error("Adresse introuvable");
-      return {lat:+js[0].lat, lon:+js[0].lon};
+      return { lat: +js[0].lat, lon: +js[0].lon };
     }
 
-    async function route(lat1,lon1,lat2,lon2){
-      const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
+    // --- Routing (OSRM) ---
+    async function osrmRoute(a,b){
+      const url = https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=full&geometries=geojson;
       const res = await fetch(url);
+      if(!res.ok) throw new Error("OSRM HTTP " + res.status);
       const js = await res.json();
       if(!js.routes || !js.routes.length) throw new Error("Itinéraire introuvable");
-      return {km: js.routes[0].distance/1000, geojson: js.routes[0].geometry};
+      return { km: js.routes[0].distance/1000, geojson: js.routes[0].geometry };
     }
 
-    async function telegram(msg){
-      const url = https://api.telegram.org/bot${TG_TOKEN}/sendMessage;
-      const body = new URLSearchParams({chat_id: TG_CHAT_ID, text: msg});
-      await fetch(url,{method:"POST",body});
+    // --- Telegram notify ---
+    async function notify(msg){
+      try{
+        const url = https://api.telegram.org/bot${TG_TOKEN}/sendMessage;
+        const body = new URLSearchParams({ chat_id: TG_CHAT_ID, text: msg });
+        await fetch(url, { method:"POST", body });
+      }catch(_e){}
     }
 
+    // --- Map ---
+    let map, routeLayer;
+    function showMap(geo, a, b){
+      if(!map){
+        map = L.map('map');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+          attribution:'© OpenStreetMap'
+        }).addTo(map);
+      }
+      if(routeLayer) routeLayer.remove();
+      routeLayer = L.geoJSON(geo, { style:{ color:'#6c4cff', weight:6, opacity:.8 } }).addTo(map);
+      map.fitBounds([[a.lat,a.lon],[b.lat,b.lon]]);
+      $("#map").classList.remove("hidden");
+    }
+
+    // --- State ---
+    let lastCalc = null;
+
+    // --- Calculate ---
     $("#calc").addEventListener("click", async ()=>{
-      const from = $("#from").value.trim(), to = $("#to").value.trim();
+      const from = $("#from").value.trim();
+      const to   = $("#to").value.trim();
       if(!from || !to){ alert("Veuillez saisir les deux adresses."); return; }
-      const size = $("#size").value, floor = +$("#floor").value, extras = document.querySelectorAll(".extra:checked");
-      const when = $("#time").value;
-      const result = $("#result"), mapBox = $("#map");
+
+      const size  = $("#size").value;
+      const floor = +$("#floor").value;
+      const when  = $("#time").value;
+      const extrasNodes = document.querySelectorAll(".extra:checked");
+
+      const result = $("#result");
       result.classList.remove("hidden");
-      result.textContent = "Calcul en cours...";
+      result.textContent = "Calcul en cours…";
 
       try{
         const [A,B] = await Promise.all([geocode(from), geocode(to)]);
-        const r = await route(A.lat,A.lon,B.lat,B.lon);
-        if(!map){ map = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map); }
-        if(routeLayer) routeLayer.remove();
-        routeLayer = L.geoJSON(r.geojson,{style:{color:"#5f0fb6",weight:6}}).addTo(map);
-        map.fitBounds([[A.lat,A.lon],[B.lat,B.lon]]);
-        mapBox.classList.remove("hidden");
+        const r = await osrmRoute(A,B);
 
-        let price = r.km * PRICE_KM;
+        let price = r.km * PRICE_PER_KM;
         if(size==="M") price += 1;
         if(size==="L") price += 2;
         if(size==="XL") price += 3;
         if(floor===1) price += 2;
         if(floor===2) price += 3;
         if(floor===3) price += 4;
-        extras.forEach(x=> price += +x.value);
+        extrasNodes.forEach(n => price += +n.value);
 
-        lastCalc = {from,to,km:r.km,price,size,floor,when};
-        result.innerHTML = 🚚 Distance : ${r.km.toFixed(2)} km<br>💶 Prix total : ${euro(price)}<br>📦 Taille : ${size} — Étage : ${floor} — 🕒 ${when};
-      }catch(e){ result.textContent = "Erreur lors du calcul. Vérifiez les adresses."; }
+        lastCalc = { from, to, when, km:r.km, price, size, floor };
+
+        result.innerHTML =
+          🚚 Distance : <b>${r.km.toFixed(2)} km</b><br> +
+          💶 Prix total : <b>${euro(price)}</b><br> +
+          📦 Taille : ${size} — Étage : ${floor} — 🕒 ${when};
+
+        showMap(r.geojson, A, B);
+      }catch(err){
+        console.error(err);
+        result.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
+      }
     });
 
+    // --- Cash ---
     $("#payCash").addEventListener("click", async ()=>{
-      if(!lastCalc) return alert("Calculez d’abord le prix.");
-      await telegram(🧾 Commande (espèces)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\n${lastCalc.km.toFixed(2)} km, ${lastCalc.price.toFixed(2)} €);
+      if(!lastCalc){ alert("Calculez d’abord le prix."); return; }
+      await notify(🧾 Commande (espèces)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\n${lastCalc.km.toFixed(2)} km — ${lastCalc.price.toFixed(2)} €\n${lastCalc.when});
       alert("Commande confirmée (paiement en espèces).");
     });
 
+    // --- Card (ouvre la page Revolut ; montant клиент вводит) ---
     $("#payCard").addEventListener("click", async ()=>{
-      if(!lastCalc) return alert("Calculez d’abord le prix.");
-      await telegram(🧾 Commande (carte)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\n${lastCalc.km.toFixed(2)} km, ${lastCalc.price.toFixed(2)} €);
-      window.open(REVOLUT_LINK, "_blank");
+      if(!lastCalc){ alert("Calculez d’abord le prix."); return; }
+      await notify(🧾 Commande (carte)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\n${lastCalc.km.toFixed(2)} km — ${lastCalc.price.toFixed(2)} €\n${lastCalc.when});
+      try{
+        await navigator.clipboard.writeText(lastCalc.price.toFixed(2));
+        alert(Montant copié: ${lastCalc.price.toFixed(2)} €);
+      }catch(_e){}
+      window.open(REVOLUT_LINK, "_blank", "noopener");
     });
 
+    // --- Defaults ---
     $("#from").value = "2 Rue Beaussier, Toulon";
-    $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
+    $("#to").value   = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
 </body>
 </html>
