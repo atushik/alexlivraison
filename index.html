@@ -1,81 +1,147 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>🚗 Alexlivraison 🚴🏻‍♂️</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alexlivraison</title>
 
-  <!-- Leaflet (carte) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Leaflet pour la carte -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
 
   <style>
-    :root{
-      --bg1:#2a035a; --bg2:#5a0fb6; --card:#ffffff;
-      --primary:#6b23ff; --primary-press:#5a1fe0;
-      --ink:#1f1f1f; --muted:#666;
-      --ok:#0ea35a; --warn:#b45309;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #2a035a 0%, #5a0fb6 100%);
+      background-attachment: fixed;
+      color: #1f1f1f;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0; color:var(--ink); font-family:Inter,system-ui,Arial;
-      min-height:100vh;
-      /* statique: gradient + dessin en SVG léger (icônes) */
-      background:
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="none"><g opacity="0.12"><path d="M80 520l40-40 40 40M480 120l-24 24 24 24M340 440l30-18 18 30" stroke="white" stroke-width="10" stroke-linecap="round"/><circle cx="520" cy="480" r="18" stroke="white" stroke-width="8"/><rect x="60" y="80" width="70" height="40" rx="8" stroke="white" stroke-width="8"/></g></svg>') repeat,
-        radial-gradient(1100px 700px at 50% -180px, var(--bg2), var(--bg1));
-      background-attachment: fixed,fixed;
+
+    .wrap {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 16px 100px;
     }
-    .wrap{max-width:760px; margin:0 auto; padding:28px 16px 120px}
-    .hero{
-      color:#fff; font-weight:900; letter-spacing:.3px;
-      font-size:46px; display:flex; align-items:center; gap:10px;
+
+    h1 {
+      text-align: center;
+      color: white;
+      font-size: 38px;
+      margin-bottom: 16px;
     }
-    .hero span{font-size:44px}
-    .card{
-      margin-top:18px; background:var(--card); border-radius:20px; padding:18px;
-      box-shadow:0 14px 44px rgba(0,0,0,.18);
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
-    .label{font-weight:800; color:#3b3b3b; margin:12px 0 8px; font-size:18px}
-    input, select{
-      width:100%; height:54px; border-radius:14px; padding:0 14px; font-size:17px;
-      border:1px solid #e6e6e6; outline:none; background:#fff; color:var(--ink);
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
     }
-    input:focus, select:focus{border-color:#cdb9ff; box-shadow:0 0 0 3px rgba(107,35,255,.12)}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    .service{
-      display:flex; align-items:center; gap:10px; border:1px solid #eee; border-radius:14px; padding:12px 14px; height:54px;
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
-    .service input{width:20px; height:20px}
-    .btn{
-      width:100%; height:58px; border-radius:16px; font-weight:900; font-size:18px; border:none; color:#fff;
-      background:var(--primary); box-shadow:0 16px 36px rgba(107,35,255,.36); cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:10px; transition:.15s transform ease,.15s background ease;
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
     }
-    .btn:active{transform:translateY(1px); background:var(--primary-press)}
-    .btn-outline{background:#eee; color:#222; box-shadow:none; font-weight:800}
-    .note{color:#eadbff; text-align:center; margin-top:16px}
-    .foot{color:#eadbff; text-align:center; margin-top:8px}
-    .badge{margin-top:12px; padding:10px 12px; border-radius:12px; font-weight:700;}
-    .ok{background:#e7f8f0; color:#056a3a; border:1px solid #b6efd6}
-    .warn{background:#fff7e6; color:#8a6200; border:1px solid #ffe4a3}
-    .result{margin-top:12px; padding:12px; border-radius:14px; border:1px dashed #d7cfff; background:#fff; font-weight:600; line-height:1.5}
-    #map{height:320px; margin-top:12px; border-radius:16px; overflow:hidden; border:1px solid #eee}
-    .hidden{display:none}
+
+    .service {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #calc {
+      background-color: #6b23ff;
+      color: white;
+    }
+
+    #payCard {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    #payCash {
+      background-color: #ddd;
+      color: black;
+    }
+
+    #result {
+      margin-top: 12px;
+      background: #f7f7ff;
+      border-radius: 12px;
+      border: 1px dashed #aaa;
+      padding: 10px;
+      display: none;
+    }
+
+    #map {
+      height: 300px;
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: #e6dfff;
+      margin-top: 20px;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="hero">🚗 Alexlivraison 🚴🏻‍♂️</div>
+    <h1>🚗 Alexlivraison 🚴🏻‍♂️</h1>
 
     <div class="card">
-      <div class="label">Adresse de départ</div>
-      <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon"/>
+      <label>Adresse de départ</label>
+      <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon" />
 
-      <div class="label">Adresse de destination</div>
-      <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer"/>
+      <label>Adresse de destination</label>
+      <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer" />
 
-      <div class="label">Taille du colis 📦</div>
+      <label>Taille du colis</label>
       <select id="size">
         <option value="S">Petit (S)</option>
         <option value="M" selected>Moyen (M)</option>
@@ -83,190 +149,154 @@
         <option value="XL">Très grand (XL)</option>
       </select>
 
-      <div class="label">Étage (optionnel)</div>
+      <label>Étage</label>
       <select id="floor">
         <option value="0">RDC / 1er (0 €)</option>
-        <option value="2">2e – 5e (+2 €)</option>
-        <option value="2.5">6e – 10e (+2,5 €)</option>
-        <option value="3">11e – 15e (+3 €)</option>
+        <option value="2">2e–5e (+2 €)</option>
+        <option value="2.5">6e–10e (+2,5 €)</option>
+        <option value="3">11e–15e (+3 €)</option>
       </select>
 
-      <div class="label">Services additionnels</div>
+      <label>Services additionnels</label>
       <div class="grid">
-        <label class="service"><input type="checkbox" class="srv" data-fee="2"> <span>Colis fragile (+2 €)</span></label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="3"> <span>Livraison urgente (+3 €)</span></label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="1"> <span>Attente 5 min (+1 €)</span></label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="2"> <span>Attente 10 min (+2 €)</span></label>
+        <label class="service"><input type="checkbox" class="srv" data-fee="2" />Colis fragile (+2 €)</label>
+        <label class="service"><input type="checkbox" class="srv" data-fee="3" />Livraison urgente (+3 €)</label>
+        <label class="service"><input type="checkbox" class="srv" data-fee="1" />Attente 5 min (+1 €)</label>
+        <label class="service"><input type="checkbox" class="srv" data-fee="2" />Attente 10 min (+2 €)</label>
       </div>
 
-      <div class="label">Heure de livraison souhaitée</div>
+      <label>Heure de livraison souhaitée</label>
       <select id="time"></select>
 
-      <div id="banner" class="badge hidden"></div>
+      <button id="calc">🧮 Calculer le prix</button>
+      <button id="payCard">💳 Paiement par carte</button>
+      <button id="payCash">💶 Paiement en espèces</button>
 
-      <div style="margin-top:14px">
-        <button id="calc" class="btn">🧮 Calculer le prix</button>
-      </div>
-      <div style="margin-top:12px">
-        <button id="payCard" class="btn">💳 Paiement par carte</button>
-      </div>
-      <div style="margin-top:12px">
-        <button id="payCash" class="btn btn-outline">💶 Paiement en espèces</button>
-      </div>
-
-      <div id="result" class="result hidden"></div>
-      <div id="map" class="hidden"></div>
+      <div id="result"></div>
+      <div id="map"></div>
     </div>
 
-    <p class="note">💜 Nous livrons vos commandes jusqu’à votre porte.</p>
-    <p class="foot">© 2025 Alex Livraison</p>
+    <div class="footer">© 2025 Alex Livraison</div>
   </div>
 
   <script>
-    // ---------------- CONFIG ----------------
-    const PRICE_PER_KM = 0.9; // base €/km
-    const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 }; // supplément par taille
-    const REVOLUT_CHECKOUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    const PRICE_PER_KM = 0.9;
+    const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
+    const REVOLUT_LINK =
+      "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 
-    // ---------------- HELPERS ----------------
-    const $ = sel => document.querySelector(sel);
-    const banner = $("#banner");
-    const resBox = $("#result");
-    const mapBox = $("#map");
+    const $ = (s) => document.querySelector(s);
+    const res = $("#result");
+    const mapDiv = $("#map");
 
-    function euro(v){ return (Math.round(v*100)/100).toFixed(2).replace(".", ",") + " €"; }
-    function show(type, text){
-      banner.className = "badge " + (type === "ok" ? "ok" : "warn");
-      banner.textContent = text;
-      banner.classList.remove("hidden");
-      setTimeout(()=>banner.classList.add("hidden"), 5000);
+    function euro(v) {
+      return v.toFixed(2).replace(".", ",") + " €";
     }
 
-    // ---------------- TIME OPTIONS ----------------
-    (function fillTimes(){
-      const sel = $("#time");
-      const now = new Date();
-      sel.innerHTML = "";
-      for(let i=0;i<48;i++){
-        const t = new Date(now.getTime() + i*30*60000);
-        const dd = String(t.getDate()).padStart(2,"0");
-        const mo = String(t.getMonth()+1).padStart(2,"0");
-        const yyyy = t.getFullYear();
-        const hh = String(t.getHours()).padStart(2,"0");
-        const mm = String(t.getMinutes()).padStart(2,"0");
-        const label = ${dd}.${mo}.${yyyy} ${hh}:${mm};
-        const opt = document.createElement("option");
-        opt.value = label; opt.textContent = label;
-        sel.appendChild(opt);
-      }
-    })();
-
-    // ---------------- MAP ----------------
-    let map, routeLayer, markerA, markerB;
-    function ensureMap(lat1, lon1, lat2, lon2, geojson){
-      if(!map){
-        map = L.map('map');
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap' }).addTo(map);
-      }
-      if(routeLayer){ routeLayer.remove(); }
-      if(markerA){ markerA.remove(); }
-      if(markerB){ markerB.remove(); }
-
-      routeLayer = L.geoJSON(geojson, { style:{ color:'#6b23ff', weight:6, opacity:.75 } }).addTo(map);
-      markerA = L.marker([lat1, lon1]).addTo(map);
-      markerB = L.marker([lat2, lon2]).addTo(map);
-      const b = L.latLngBounds([[lat1,lon1],[lat2,lon2]]);
-      map.fitBounds(b.pad(0.25));
-      mapBox.classList.remove("hidden");
+    // Заполнение часов
+    const timeSel = $("#time");
+    const now = new Date();
+    for (let i = 0; i < 48; i++) {
+      const t = new Date(now.getTime() + i * 30 * 60000);
+      const label = ${t.getDate().toString().padStart(2, "0")}/${(
+        t.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")} ${t.getHours().toString().padStart(2, "0")}:${t
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")};
+      const opt = document.createElement("option");
+      opt.value = label;
+      opt.textContent = label;
+      timeSel.appendChild(opt);
     }
 
-    // ---------------- OSM helpers ----------------
-    async function geocode(q){
-      const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}&accept-language=fr;
-      const res = await fetch(url, { headers:{ "User-Agent":"alexlivraison-site" }});
-      if(!res.ok) throw new Error("Nominatim error");
+    // Геокод и маршрут
+    async function geocode(q) {
+      const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
+        q
+      )};
+      const res = await fetch(url);
       const json = await res.json();
-      if(!json.length) throw new Error("Adresse introuvable");
-      return { lat:+json[0].lat, lon:+json[0].lon, disp:json[0].display_name };
+      if (!json.length) throw new Error("Adresse introuvable");
+      return { lat: +json[0].lat, lon: +json[0].lon };
     }
-    async function route(lat1, lon1, lat2, lon2){
+
+    async function route(lat1, lon1, lat2, lon2) {
       const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
       const res = await fetch(url);
-      if(!res.ok) throw new Error("OSRM error");
       const json = await res.json();
-      if(!json.routes || !json.routes.length) throw new Error("No route");
       const r = json.routes[0];
-      return { km: r.distance/1000, geojson: r.geometry };
+      return { km: r.distance / 1000, geojson: r.geometry };
     }
 
-    // ---------------- CALC ----------------
+    let map, routeLayer;
+
+    function showMap(lat1, lon1, lat2, lon2, geojson) {
+      if (!map) {
+        map = L.map("map");
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+          map
+        );
+      }
+      if (routeLayer) routeLayer.remove();
+      routeLayer = L.geoJSON(geojson, {
+        style: { color: "#6b23ff", weight: 5 },
+      }).addTo(map);
+      map.fitBounds([
+        [lat1, lon1],
+        [lat2, lon2],
+      ]);
+      mapDiv.style.display = "block";
+    }
+
     let lastCalc = null;
 
-    async function doCalc(){
+    async function calc() {
       const from = $("#from").value.trim();
       const to = $("#to").value.trim();
-      const size = $("#size").value;
-      const floorFee = parseFloat($("#floor").value || "0");
-      const when = $("#time").value;
-
-      if(!from || !to){
-        show("warn","Merci de saisir les deux adresses.");
+      if (!from || !to) {
+        alert("Veuillez saisir les adresses.");
         return;
       }
-
-      // collect services fees
-      let extra = 0;
-      document.querySelectorAll(".srv").forEach(cb=>{
-        if(cb.checked) extra += parseFloat(cb.dataset.fee || "0");
+      const size = $("#size").value;
+      const floorFee = parseFloat($("#floor").value);
+      let extras = 0;
+      document.querySelectorAll(".srv").forEach((x) => {
+        if (x.checked) extras += parseFloat(x.dataset.fee);
       });
-      extra += floorFee;
 
-      resBox.classList.remove("hidden");
-      resBox.textContent = "Calcul en cours…";
-
-      try{
-        const [A,B] = await Promise.all([geocode(from), geocode(to)]);
-        const {km, geojson} = await route(A.lat, A.lon, B.lat, B.lon);
-        const kmRound = Math.max(1, Math.round(km*100)/100);
-        const base = kmRound * PRICE_PER_KM;
-        const total = Math.max(1, base + (SIZE_FEES[size]||0) + extra);
-
-        lastCalc = { from, to, km: kmRound, size, floorFee, extra, when, total: Math.round(total*100)/100 };
-        ensureMap(A.lat, A.lon, B.lat, B.lon, geojson);
-
-        resBox.innerHTML = 
-          🚚 <b>Distance :</b> ${kmRound.toFixed(2)} km<br>
-          💶 <b>Prix estimé :</b> ${euro(lastCalc.total)}<br>
-          📦 <b>Taille :</b> ${size} — 🏢 <b>Étage + services :</b> ${extra.toFixed(2)} €<br>
-          🕒 <b>${when}</b>
-        ;
-        show("ok","Tarif calculé ✔️");
-      }catch(e){
-        resBox.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
-        show("warn","Impossible de calculer l’itinéraire.");
+      try {
+        const [A, B] = await Promise.all([geocode(from), geocode(to)]);
+        const r = await route(A.lat, A.lon, B.lat, B.lon);
+        const dist = Math.round(r.km * 100) / 100;
+        const price =
+          dist * PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras;
+        lastCalc = { dist, price };
+        res.style.display = "block";
+        res.innerHTML = <b>Distance:</b> ${dist.toFixed(
+          2
+        )} km<br><b>Prix estimé:</b> ${euro(price)};
+        showMap(A.lat, A.lon, B.lat, B.lon, r.geojson);
+      } catch {
+        alert("Erreur lors du calcul. Vérifiez les adresses.");
       }
     }
 
-    $("#calc").addEventListener("click", doCalc);
+    $("#calc").addEventListener("click", calc);
 
-    $("#payCash").addEventListener("click", async ()=>{
-      if(!lastCalc){ show("warn","Veuillez d’abord calculer le prix."); return; }
-      show("ok","Commande enregistrée — paiement en espèces.");
-      alert(Commande enregistrée.\nMontant à encaisser: ${lastCalc.total.toFixed(2)} €);
+    $("#payCash").addEventListener("click", () => {
+      if (!lastCalc) return alert("Calculez d'abord le prix.");
+      alert("Paiement en espèces: " + euro(lastCalc.price));
     });
 
-    $("#payCard").addEventListener("click", async ()=>{
-      if(!lastCalc){ show("warn","Veuillez d’abord calculer le prix."); return; }
-      try{
-        await navigator.clipboard.writeText(lastCalc.total.toFixed(2));
-        show("ok",Montant copié: ${lastCalc.total.toFixed(2)} €);
-      }catch(_){}
-      // ⚠️ Pour un remplissage automatique sur Revolut, il faut créer un Payment Link côté serveur via l’API Merchant
-      // et rediriger vers l’URL de checkout retournée par Revolut. En frontend seul ce n’est pas autorisé par le navigateur.
-      window.open(REVOLUT_CHECKOUT_LINK, "_blank", "noopener");
+    $("#payCard").addEventListener("click", () => {
+      if (!lastCalc) return alert("Calculez d'abord le prix.");
+      navigator.clipboard.writeText(lastCalc.price.toFixed(2));
+      window.open(REVOLUT_LINK, "_blank");
     });
 
-    // valeurs par défaut de démo
     $("#from").value = "2 Rue Beaussier, Toulon";
     $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
