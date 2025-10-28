@@ -76,12 +76,6 @@
     font-size: 15px;
   }
 
-  #map {
-    height: 200px;
-    margin-top: 15px;
-    border-radius: 8px;
-  }
-
   footer {
     text-align: center;
     color: white;
@@ -133,7 +127,6 @@
     <button class="button cash">💶 Paiement en espèces</button>
 
     <div id="result"></div>
-    <div id="map"></div>
   </div>
 
   <footer>
@@ -142,47 +135,27 @@
   </footer>
 
 <script>
-  async function calculatePrice() {
-    const start = document.getElementById("start").value;
-    const end = document.getElementById("end").value;
+  function calculatePrice() {
     const size = document.getElementById("size").value;
     const floor = parseInt(document.getElementById("floor").value);
     const services = document.querySelectorAll(".service:checked");
+
+    let base = 2.0;
+    if (size === "M") base += 1;
+    if (size === "L") base += 2;
+    if (size === "XL") base += 3;
+
     let extras = 0;
     services.forEach(s => extras += parseFloat(s.value));
+    base += floor + extras;
 
-    if (!start || !end) {
-      document.getElementById("result").innerHTML = "⚠️ Entrez les deux adresses.";
-      return;
-    }
+    const distance = 2.5; // тестовая дистанция
+    const total = (base + distance * 0.8).toFixed(2);
 
-    // API distance (OpenRouteService)
-    const apiKey = "5b3ce3597851110001cf6248xxxxxxxxxxxxxxxxxx"; // <-- Remplace par ta clé OpenRouteService
-    const url = https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)};
+    document.getElementById("result").innerHTML =
+      🚗 Distance estimée : ${distance} km<br>💰 Prix total : ${total} €;
 
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Erreur API distance");
-      const data = await response.json();
-
-      const distance = data.features[0].properties.summary.distance / 1000;
-      let price = 2 + distance * 0.8;
-
-      if (size === "M") price += 1;
-      if (size === "L") price += 2;
-      if (size === "XL") price += 3;
-      price += extras;
-      price += floor;
-
-      price = price.toFixed(2);
-
-      document.getElementById("result").innerHTML =
-        🚗 Distance : ${distance.toFixed(2)} km<br>💰 Prix total : ${price} €;
-
-      window.currentPrice = price;
-    } catch (err) {
-      document.getElementById("result").innerHTML = "Erreur lors du calcul. Vérifiez les adresses.";
-    }
+    window.currentPrice = total;
   }
 
   function payByCard() {
@@ -190,8 +163,7 @@
       alert("Veuillez d'abord calculer le prix !");
       return;
     }
-    const amount = window.currentPrice;
-    const link = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${amount};
+    const link = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${window.currentPrice};
     window.open(link, "_blank");
   }
 </script>
