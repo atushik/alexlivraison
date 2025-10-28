@@ -1,100 +1,97 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🚗AlexLivraison🚴🏻‍♂️</title>
-
-<style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    background-attachment: fixed;
-    margin: 0;
-    color: #333;
-  }
-
-  .container {
-    max-width: 480px;
-    margin: 30px auto;
-    background: white;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  }
-
-  h1 {
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
-  }
-
-  label {
-    font-weight: 600;
-    display: block;
-    margin-top: 15px;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
-  }
-
-  .button {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 12px;
-    cursor: pointer;
-  }
-
-  .calc { background-color: #6a11cb; }
-  .card { background-color: #8e2de2; }
-  .cash { background-color: #999; }
-
-  .services {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  #result {
-    background: #f4f4f4;
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 15px;
-  }
-
-  footer {
-    text-align: center;
-    color: white;
-    font-size: 14px;
-    margin-top: 20px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🚗AlexLivraison🚴🏻‍♂️</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      background-attachment: fixed;
+      margin: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 480px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+    .button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+    .calc {
+      background-color: #6a11cb;
+    }
+    .card {
+      background-color: #8e2de2;
+    }
+    .cash {
+      background-color: #999;
+    }
+    .services {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    #result {
+      background: #f4f4f4;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    footer {
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
   <h1>🚗AlexLivraison🚴🏻‍♂️</h1>
-
   <div class="container">
     <label>Adresse de départ</label>
-    <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon">
-
+    <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon" />
     <label>Adresse de destination</label>
-    <input type="text" id="end" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
-
+    <input
+      type="text"
+      id="end"
+      placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer"
+    />
     <label>Taille du colis 📦</label>
     <select id="size">
       <option value="S">Petit (S)</option>
@@ -102,7 +99,6 @@
       <option value="L">Grand (L)</option>
       <option value="XL">Très grand (XL)</option>
     </select>
-
     <label>Étage (optionnel)</label>
     <select id="floor">
       <option value="0">RDC / 1er (0 €)</option>
@@ -110,62 +106,57 @@
       <option value="2">5e – 10e étage (+3 €)</option>
       <option value="3">11e – 15e étage (+4 €)</option>
     </select>
-
     <label>Services additionnels</label>
     <div class="services">
-      <label><input type="checkbox" class="service" value="2"> Colis fragile (+2€)</label>
-      <label><input type="checkbox" class="service" value="3"> Livraison urgente (+3€)</label>
-      <label><input type="checkbox" class="service" value="1"> Attente 5 min (+1€)</label>
-      <label><input type="checkbox" class="service" value="2"> Attente 10 min (+2€)</label>
+      <label><input type="checkbox" class="service" value="2" /> Colis fragile (+2€)</label>
+      <label><input type="checkbox" class="service" value="3" /> Livraison urgente (+3€)</label>
+      <label><input type="checkbox" class="service" value="1" /> Attente 5 min (+1€)</label>
+      <label><input type="checkbox" class="service" value="2" /> Attente 10 min (+2€)</label>
     </div>
-
     <label>Heure de livraison souhaitée</label>
-    <input type="datetime-local" id="time">
-
+    <input type="datetime-local" id="time" />
     <button class="button calc" onclick="calculatePrice()">🧮 Calculer le prix</button>
     <button class="button card" onclick="payByCard()">💳 Paiement par carte</button>
     <button class="button cash">💶 Paiement en espèces</button>
-
     <div id="result"></div>
   </div>
-
   <footer>
-    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br>
-    © 2025 Alex Livraison
+    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br />© 2025 Alex
+    Livraison
   </footer>
 
-<script>
-  function calculatePrice() {
-    const size = document.getElementById("size").value;
-    const floor = parseInt(document.getElementById("floor").value);
-    const services = document.querySelectorAll(".service:checked");
+  <script>
+    function calculatePrice() {
+      const size = document.getElementById("size").value;
+      const floor = parseInt(document.getElementById("floor").value);
+      const services = document.querySelectorAll(".service:checked");
 
-    let base = 2.0;
-    if (size === "M") base += 1;
-    if (size === "L") base += 2;
-    if (size === "XL") base += 3;
+      let base = 2.0;
+      if (size === "M") base += 1;
+      if (size === "L") base += 2;
+      if (size === "XL") base += 3;
 
-    let extras = 0;
-    services.forEach(s => extras += parseFloat(s.value));
-    base += floor + extras;
+      let extras = 0;
+      services.forEach((s) => (extras += parseFloat(s.value)));
+      base += floor + extras;
 
-    const distance = 2.5; // distance test
-    const total = (base + distance * 0.8).toFixed(2);
+      const distance = 2.5; // valeur de test
+      const total = (base + distance * 0.8).toFixed(2);
 
-    document.getElementById("result").innerHTML =
-      🚗 Distance estimée : ${distance} km<br>💰 Prix total : ${total} €;
+      document.getElementById("result").innerHTML =
+        🚗 Distance estimée : ${distance} km<br>💰 Prix total : ${total} €;
 
-    window.currentPrice = total;
-  }
-
-  function payByCard() {
-    if (!window.currentPrice) {
-      alert("Veuillez d'abord calculer le prix !");
-      return;
+      window.currentPrice = total;
     }
-    const link = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${window.currentPrice};
-    window.open(link, "_blank");
-  }
-</script>
+
+    function payByCard() {
+      if (!window.currentPrice) {
+        alert("Veuillez d'abord calculer le prix !");
+        return;
+      }
+      const link = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${window.currentPrice};
+      window.open(link, "_blank");
+    }
+  </script>
 </body>
 </html>
