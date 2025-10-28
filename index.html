@@ -4,11 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AlexLivraison</title>
-
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
   <style>
     body {
       margin: 0;
@@ -17,85 +14,42 @@
       background-attachment: fixed;
       color: #222;
     }
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: white;
-      margin-bottom: 20px;
-    }
+    .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+    h1 { text-align: center; color: white; margin-bottom: 20px; }
     .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
+      background: white; border-radius: 12px; padding: 20px;
       box-shadow: 0 6px 25px rgba(0,0,0,0.3);
     }
     label { display:block; margin-top:10px; font-weight:bold; }
     input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      width: 100%; padding: 10px; margin-top: 5px;
+      border-radius: 8px; border: 1px solid #ccc;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .service {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 6px;
-    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .service { border: 1px solid #ccc; border-radius: 8px; padding: 6px; }
     button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-top: 10px;
-      cursor: pointer;
+      width: 100%; padding: 14px; border: none; border-radius: 10px;
+      font-size: 16px; margin-top: 10px; cursor: pointer;
     }
     #calc { background:#6b23ff; color:#fff; }
     #payCard { background:#4caf50; color:#fff; }
     #payCash { background:#ddd; }
     #result {
-      display: none;
-      background: #f7f7ff;
-      border-radius: 10px;
-      border: 1px dashed #aaa;
-      margin-top: 10px;
-      padding: 10px;
+      display: none; background: #f7f7ff; border-radius: 10px;
+      border: 1px dashed #aaa; margin-top: 10px; padding: 10px;
     }
-    #map {
-      display: none;
-      height: 300px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    .footer {
-      text-align: center;
-      color: #e5d9ff;
-      margin-top: 20px;
-    }
+    #map { display: none; height: 300px; border-radius: 10px; margin-top: 10px; }
+    .footer { text-align: center; color: #e5d9ff; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
-
     <div class="card">
       <label>Adresse de départ</label>
       <input id="from" placeholder="2 Rue Beaussier, Toulon">
-
       <label>Adresse de destination</label>
       <input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
-
       <label>Taille du colis</label>
       <select id="size">
         <option value="S">Petit (S)</option>
@@ -103,7 +57,6 @@
         <option value="L">Grand (L)</option>
         <option value="XL">Très grand (XL)</option>
       </select>
-
       <label>Étage</label>
       <select id="floor">
         <option value="0">RDC / 1er (0 €)</option>
@@ -111,7 +64,6 @@
         <option value="2.5">6e–10e (+2,5 €)</option>
         <option value="3">11e–15e (+3 €)</option>
       </select>
-
       <label>Services additionnels</label>
       <div class="grid">
         <label class="service"><input type="checkbox" class="srv" data-fee="2"> Colis fragile (+2 €)</label>
@@ -119,18 +71,14 @@
         <label class="service"><input type="checkbox" class="srv" data-fee="1"> Attente 5 min (+1 €)</label>
         <label class="service"><input type="checkbox" class="srv" data-fee="2"> Attente 10 min (+2 €)</label>
       </div>
-
       <label>Heure de livraison souhaitée</label>
       <select id="time"></select>
-
       <button id="calc">🧮 Calculer le prix</button>
       <button id="payCard">💳 Paiement par carte</button>
       <button id="payCash">💶 Paiement en espèces</button>
-
       <div id="result"></div>
       <div id="map"></div>
     </div>
-
     <div class="footer">© 2025 AlexLivraison</div>
   </div>
 
@@ -138,7 +86,7 @@
     const PRICE_PER_KM = 0.9;
     const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
     const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-    const TELEGRAM_BOT_TOKEN = "PASTE_YOUR_TOKEN_HERE";
+    const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID = "7129872491";
 
     const $ = (s) => document.querySelector(s);
@@ -193,7 +141,9 @@
         const msg = encodeURIComponent(text);
         const url = https://api.telegram.org/bot${8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA}/sendMessage?chat_id=${7129872491}&text=${msg};
         await fetch(url);
-      } catch (e) { console.error("Telegram error", e); }
+      } catch (e) {
+        console.error("Telegram error", e);
+      }
     }
 
     async function calc() {
