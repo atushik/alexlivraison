@@ -1,338 +1,191 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🚗 AlexLivraison 🚴🏻‍♂️</title>
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🚗AlexLivraison🚴🏻‍♂️</title>
   <style>
-    :root{
-      --violet:#5f0fb6;
-      --violet-2:#33006f;
-      --white:#ffffff;
-      --text:#1f1f1f;
-      --muted:#6b6b6b;
-      --ok:#0ea35a;
-      --warn:#eab308;
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #5e2ced, #8b52ff);
+      background-attachment: fixed;
+      color: #222;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
-      color:var(--text);
-      min-height:100vh;
-      background:
-        radial-gradient(1200px 700px at 50% -200px, var(--violet), var(--violet-2));
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
-    /* motif statique léger (SVG en base64) */
-    body::before{
-      content:"";
-      position:fixed; inset:0; pointer-events:none; opacity:.25;
-      background-image:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNDAwJyBoZWlnaHQ9JzQwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZGVmcz48cGF0dGVybiBpZD0ncHQnIHdpZHRoPSc2MCcgaGVpZ2h0PSc2MCcgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0nTTAgNTBMMjAgNTAgMjAgNjAgMCA2MCB6JyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA4Ii8+PHBhdGggZD0nTTYwIDBMODAgMCA4MCAxMCA2MCAxMCB6JyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA4Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJub25lIiB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJy8+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0idXJsKCNwdCkiLz48L3N2Zz4=");
-      background-size:700px 700px;
+    h1 {
+      text-align: center;
+      color: #5e2ced;
+      font-size: 28px;
+      margin-bottom: 15px;
     }
-
-    .container{max-width:780px;margin:0 auto;padding:28px 16px 80px}
-    .title{
-      color:#fff; font-weight:900; font-size:44px; letter-spacing:.3px;
-      display:flex; align-items:center; justify-content:center; gap:14px;
-      text-align:center;
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 500;
     }
-    .card{
-      background:#fff; border-radius:20px; padding:22px;
-      box-shadow:0 12px 40px rgba(0,0,0,.18); margin-top:18px;
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    .label{color:#555; font-weight:800; font-size:18px; margin:8px 4px 10px}
-    input, select{
-      width:100%; height:54px; font-size:17px; padding:0 14px;
-      border:1px solid #e6e6e6; border-radius:14px; background:#fff; outline:none;
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #7a35ff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    input:focus, select:focus{border-color:#c8a8ff; box-shadow:0 0 0 3px rgba(95,15,182,.12)}
-    .row{margin:10px 0 16px}
-    .grid{display:grid; gap:12px}
-    .grid-2{grid-template-columns:1fr 1fr}
-    .service{
-      border:1px solid #eee; border-radius:14px; padding:12px 14px; display:flex; align-items:center; gap:10px;
+    button:hover { background: #5e2ced; }
+    #map {
+      height: 250px;
+      border-radius: 10px;
+      margin-top: 20px;
     }
-    .service input{width:auto; height:auto}
-    .btn{
-      width:100%; height:58px; border-radius:16px; font-size:20px; font-weight:800;
-      color:#fff; background:var(--violet); border:none;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      box-shadow:0 14px 30px rgba(95,15,182,.35); cursor:pointer; transition:.15s transform ease;
+    footer {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: white;
     }
-    .btn:active{transform:translateY(1px)}
-    .btn-ghost{background:#e9e4ff; color:#2a1261; box-shadow:none}
-    .btn-outline{background:#eee; color:#222; box-shadow:none; font-weight:700}
-    .result{
-      background:#fff; border-radius:16px; padding:14px; margin-top:14px;
-      border:1px dashed #d9c7ff; color:#2b2b2b; line-height:1.5; font-weight:600
-    }
-    .badge{margin-top:14px; padding:12px 14px; border-radius:14px; font-weight:700; text-align:center}
-    .ok{background:#e7f8f0;color:#056a3a;border:1px solid #b6efd6}
-    .warn{background:#fff7e6;color:#8a6200;border:1px solid #ffe4a3}
-    #map{height:320px;margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid #eee}
-    .note, .footer{color:#f0e7ff;text-align:center;margin-top:16px}
-    .hidden{display:none}
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">🚗 AlexLivraison 🚴🏻‍♂️</div>
+    <h1>🚗AlexLivraison🚴🏻‍♂️</h1>
 
-    <div class="card">
-      <div class="label">Adresse de départ</div>
-      <div class="row"><input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon"></div>
+    <label>Adresse de départ</label>
+    <input id="start" placeholder="Ex: 2 Rue Beaussier, Toulon" />
 
-      <div class="label">Adresse de destination</div>
-      <div class="row"><input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne"></div>
+    <label>Adresse de destination</label>
+    <input id="end" placeholder="Ex: 241 Rue Le Corbusier, La Seyne-sur-Mer" />
 
-      <div class="label">Taille du colis 📦</div>
-      <div class="row">
-        <select id="size">
-          <option value="S">Petit (S)</option>
-          <option value="M">Moyen (M)</option>
-          <option value="L">Grand (L)</option>
-          <option value="XL">Très grand (XL)</option>
-        </select>
-      </div>
+    <label>Taille du colis 📦</label>
+    <select id="size">
+      <option value="S">Petit (S)</option>
+      <option value="M">Moyen (M)</option>
+      <option value="L">Grand (L)</option>
+      <option value="XL">Très grand (XL)</option>
+    </select>
 
-      <div class="label">Étage (optionnel)</div>
-      <div class="row">
-        <select id="floor">
-          <option value="0">RDC / 1er (0 €)</option>
-          <option value="1">2e — 5e (+2 €)</option>
-          <option value="2">6e — 15e (+3 €)</option>
-        </select>
-      </div>
+    <label>Étage (optionnel)</label>
+    <select id="floor">
+      <option value="0">RDC / 1er (0 €)</option>
+      <option value="2">2e à 4e (+2 €)</option>
+      <option value="5">5e à 10e (+3 €)</option>
+      <option value="11">11e et plus (+4 €)</option>
+    </select>
 
-      <div class="label">Services additionnels</div>
-      <div class="grid grid-2">
-        <label class="service"><input type="checkbox" id="fragile"> <span>Colis fragile (+2 €)</span></label>
-        <label class="service"><input type="checkbox" id="urgent"> <span>Livraison urgente (+3 €)</span></label>
-        <label class="service"><input type="checkbox" id="wait5"> <span>Attente 5 min (+1 €)</span></label>
-        <label class="service"><input type="checkbox" id="wait10"> <span>Attente 10 min (+2 €)</span></label>
-      </div>
-
-      <div class="label">Heure de livraison souhaitée</div>
-      <div class="row"><select id="time"></select></div>
-
-      <div id="banner" class="badge hidden"></div>
-
-      <div class="row"><button id="calc" class="btn">🧮 Calculer le prix</button></div>
-      <div class="row"><button id="payCard" class="btn">💳 Paiement par carte</button></div>
-      <div class="row"><button id="payCash" class="btn btn-outline">💶 Paiement en espèces</button></div>
-
-      <div id="result" class="result hidden"></div>
-      <div id="map" class="hidden"></div>
+    <label>Services additionnels</label>
+    <div>
+      <label><input type="checkbox" class="extra" value="2" /> Colis fragile (+2 €)</label><br>
+      <label><input type="checkbox" class="extra" value="3" /> Livraison urgente (+3 €)</label><br>
+      <label><input type="checkbox" class="extra" value="1" /> Attente 5 min (+1 €)</label><br>
+      <label><input type="checkbox" class="extra" value="2" /> Attente 10 min (+2 €)</label>
     </div>
 
-    <p class="note">💜 Nous livrons vos commandes jusqu’à votre porte.</p>
-    <p class="footer">© 2025 Alex Livraison</p>
+    <label>Heure de livraison souhaitée</label>
+    <input type="datetime-local" id="time" />
+
+    <button onclick="calculatePrice()">🧮 Calculer le prix</button>
+    <div id="result"></div>
+    <button id="payCard" style="display:none;" onclick="payByCard()">💳 Paiement par carte</button>
+    <button id="payCash" style="display:none;" onclick="alert('Paiement en espèces accepté à la livraison.')">💶 Paiement en espèces</button>
+
+    <div id="map"></div>
   </div>
 
-<script>
-"use strict";
+  <footer>💜 Nous livrons vos commandes jusqu’à votre porte © 2025 AlexLivraison</footer>
 
-/* ===== CONFIG ===== */
-const PRICE_PER_KM = 0.90;
-const SIZE_MULT = { S:1.00, M:1.15, L:1.35, XL:1.60 };
-const FLOOR_FEE = { "0":0, "1":2, "2":3 }; // 0: RDC/1er, 1: 2–5, 2: 6–15
+  <script>
+    let map;
+    let markerA, markerB;
+    const mapKey = "AIzaSyC6bP1-fake-key-for-demo"; // замени на свой ключ Google Maps API
 
-// Services additionnels (montants fixes)
-const SERVICE_FEES = {
-  fragile: 2,
-  urgent: 3,
-  wait5: 1,
-  wait10: 2
-};
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 43.118, lng: 5.933 },
+        zoom: 11,
+      });
+    }
 
-// Revolut: lien statique (sans montant pré-rempli côté front)
-const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+    async function calculatePrice() {
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+      if (!start || !end) {
+        alert("Veuillez entrer les deux adresses !");
+        return;
+      }
 
-// Telegram (mettez vos valeurs ici)
-const TG_TOKEN   = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-const TG_CHAT_ID = "7129872491";
+      const size = document.getElementById("size").value;
+      const floor = parseInt(document.getElementById("floor").value);
+      const extras = Array.from(document.querySelectorAll(".extra:checked")).map(e => parseFloat(e.value));
+      const extraCost = extras.reduce((a,b)=>a+b,0);
 
-/* ===== HELPERS ===== */
-const $ = sel => document.querySelector(sel);
-const banner = $("#banner");
-const resultBox = $("#result");
-const mapBox = $("#map");
+      // API Distance Matrix
+      const url = https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(start)}&destinations=${encodeURIComponent(end)}&key=${mapKey};
+      const response = await fetch(https://api.allorigins.win/get?url=${encodeURIComponent(url)});
+      const data = await response.json();
+      const result = JSON.parse(data.contents);
 
-function showBanner(kind, text){
-  banner.className = "badge " + (kind === "ok" ? "ok" : "warn");
-  banner.textContent = text;
-  banner.classList.remove("hidden");
-  setTimeout(()=>banner.classList.add("hidden"), 4500);
-}
-function euro(n){
-  return (Math.round(n*100)/100).toFixed(2).replace(".", ",") + " €";
-}
+      if (!result.rows[0] || !result.rows[0].elements[0].distance) {
+        alert("Erreur lors du calcul. Vérifiez les adresses.");
+        return;
+      }
 
-/* ===== TIME OPTIONS ===== */
-(function fillTimes(){
-  const sel = $("#time");
-  sel.innerHTML = "";
-  const now = new Date();
-  for(let i=0;i<36;i++){
-    const t = new Date(now.getTime()+i*30*60000);
-    const hh = String(t.getHours()).padStart(2,"0");
-    const mm = String(t.getMinutes()).padStart(2,"0");
-    const dd = String(t.getDate()).padStart(2,"0");
-    const mo = String(t.getMonth()+1).padStart(2,"0");
-    const yyyy = t.getFullYear();
-    const label = ${dd}/${mo}/${yyyy} ${hh}:${mm};
-    const opt = document.createElement("option");
-    opt.value = label; opt.textContent = label;
-    sel.appendChild(opt);
-  }
-})();
+      const distanceKm = result.rows[0].elements[0].distance.value / 1000;
+      let basePrice = 1.5 + distanceKm * 0.8;
 
-/* ===== MAP ===== */
-let map, routeLayer, markerA, markerB;
-function ensureMap(lat1, lon1, lat2, lon2, geojson){
-  if(!map){
-    map = L.map('map');
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:'© OpenStreetMap'
-    }).addTo(map);
-  }
-  if(routeLayer){ routeLayer.remove(); }
-  if(markerA){ markerA.remove(); }
-  if(markerB){ markerB.remove(); }
+      if (size === "M") basePrice += 0.8;
+      else if (size === "L") basePrice += 1.5;
+      else if (size === "XL") basePrice += 2.5;
 
-  const line = L.geoJSON(geojson, {style:{color:'#6c4cff', weight:6, opacity:.7}});
-  line.addTo(map);
-  routeLayer = line;
+      const floorCost = floor === 0 ? 0 : floor <= 4 ? 2 : floor <= 10 ? 3 : 4;
+      const total = (basePrice + extraCost + floorCost).toFixed(2);
 
-  markerA = L.marker([lat1, lon1]).addTo(map);
-  markerB = L.marker([lat2, lon2]).addTo(map);
+      document.getElementById("result").innerHTML = 📏 Distance : ${distanceKm.toFixed(2)} km<br>💰 Prix total : ${total} €;
+      document.getElementById("payCard").style.display = "block";
+      document.getElementById("payCash").style.display = "block";
 
-  const b = L.latLngBounds([[lat1,lon1],[lat2,lon2]]);
-  map.fitBounds(b.pad(0.25));
-  mapBox.classList.remove("hidden");
-}
+      if (map) {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address: start }, (res1) => {
+          geocoder.geocode({ address: end }, (res2) => {
+            if (res1[0] && res2[0]) {
+              const locA = res1[0].geometry.location;
+              const locB = res2[0].geometry.location;
+              if (markerA) markerA.setMap(null);
+              if (markerB) markerB.setMap(null);
+              markerA = new google.maps.Marker({ position: locA, map, label: "A" });
+              markerB = new google.maps.Marker({ position: locB, map, label: "B" });
+              map.setCenter(locA);
+            }
+          });
+        });
+      }
+    }
 
-/* ===== OSM: geocode + route ===== */
-async function geocode(query){
-  const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}&accept-language=fr;
-  const res = await fetch(url, {headers:{'User-Agent':'alexlivraison-web'}}); // User-Agent facultatif
-  if(!res.ok) throw new Error("Nominatim error");
-  const json = await res.json();
-  if(!json.length) throw new Error("Adresse introuvable");
-  return { lat: +json[0].lat, lon: +json[0].lon, disp: json[0].display_name };
-}
-async function route(lat1, lon1, lat2, lon2){
-  const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
-  const res = await fetch(url);
-  if(!res.ok) throw new Error("OSRM error");
-  const json = await res.json();
-  if(!json.routes || !json.routes.length) throw new Error("Itinéraire introuvable");
-  const r = json.routes[0];
-  return { km: r.distance/1000, geojson: r.geometry };
-}
+    function payByCard() {
+      const totalText = document.getElementById("result").innerText.match(/(\d+(\.\d+)?)/);
+      const amount = totalText ? totalText[0] : 0;
+      window.open(https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${amount}&currency=EUR, "_blank");
+    }
+  </script>
 
-/* ===== TELEGRAM ===== */
-async function notifyTelegram(text){
-  try{
-    const url = https://api.telegram.org/bot${TG_TOKEN}/sendMessage;
-    const body = new URLSearchParams({ chat_id: TG_CHAT_ID, text });
-    await fetch(url, { method:'POST', body });
-  }catch(e){ /* silencieux */ }
-}
-
-/* ===== MAIN LOGIC ===== */
-let lastCalc = null;
-
-$("#calc").addEventListener("click", async ()=>{
-  const from  = $("#from").value.trim();
-  const to    = $("#to").value.trim();
-  const size  = $("#size").value;
-  const floor = $("#floor").value;
-  const when  = $("#time").value;
-
-  if(!from || !to){
-    showBanner("warn","Merci de saisir les deux adresses.");
-    return;
-  }
-
-  resultBox.classList.remove("hidden");
-  resultBox.textContent = "Calcul en cours…";
-
-  try{
-    const [A,B] = await Promise.all([geocode(from), geocode(to)]);
-    const {km, geojson} = await route(A.lat, A.lon, B.lat, B.lon);
-    const kmRound = Math.max(1, Math.round(km*100)/100);
-
-    let price = kmRound * PRICE_PER_KM * (SIZE_MULT[size] || 1);
-    price += FLOOR_FEE[floor] || 0;
-    if($("#fragile").checked) price += SERVICE_FEES.fragile;
-    if($("#urgent").checked)  price += SERVICE_FEES.urgent;
-    if($("#wait5").checked)   price += SERVICE_FEES.wait5;
-    if($("#wait10").checked)  price += SERVICE_FEES.wait10;
-    price = Math.round(price*100)/100;
-
-    lastCalc = {from,to,km:kmRound,price,size,floor,when};
-    ensureMap(A.lat, A.lon, B.lat, B.lon, geojson);
-
-    const floorTxt = (floor==="0")?"0":(floor==="1")?"2–5":"6–15";
-    resultBox.innerHTML =
-      🚚 <b>Distance :</b> ${kmRound.toFixed(2)} km<br>+
-      💶 <b>Prix :</b> ${euro(price)}<br>+
-      📦 <b>Taille :</b> ${size} — 🏢 <b>Étage :</b> ${floorTxt}<br>+
-      🕒 ${when};
-    showBanner("ok","Tarif calculé ✔️");
-  }catch(err){
-    resultBox.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
-    showBanner("warn","Erreur de calcul. Réessayez.");
-  }
-});
-
-$("#payCash").addEventListener("click", async ()=>{
-  if(!lastCalc){ showBanner("warn","Veuillez d’abord calculer le prix."); return; }
-  showBanner("ok","Commande enregistrée (paiement en espèces).");
-  await notifyTelegram(
-    🧾 Nouvelle commande (Espèces)\n+
-    De: ${lastCalc.from}\n+
-    À: ${lastCalc.to}\n+
-    Distance: ${lastCalc.km.toFixed(2)} km\n+
-    Prix: ${lastCalc.price.toFixed(2)} €\n+
-    Taille: ${lastCalc.size} | Étage: ${lastCalc.floor}\n+
-    Heure: ${lastCalc.when}
-  );
-});
-
-$("#payCard").addEventListener("click", async ()=>{
-  if(!lastCalc){ showBanner("warn","Veuillez d’abord calculer le prix."); return; }
-  showBanner("ok","Redirection vers le paiement…");
-
-  await notifyTelegram(
-    🧾 Nouvelle commande (Carte)\n+
-    De: ${lastCalc.from}\n+
-    À: ${lastCalc.to}\n+
-    Distance: ${lastCalc.km.toFixed(2)} km\n+
-    Prix: ${lastCalc.price.toFixed(2)} €\n+
-    Taille: ${lastCalc.size} | Étage: ${lastCalc.floor}\n+
-    Heure: ${lastCalc.when}
-  );
-
-  // Copie la somme pour que le client la colle sur la page Revolut (limite côté front)
-  try{
-    await navigator.clipboard.writeText(lastCalc.price.toFixed(2));
-    alert(Montant copié: ${lastCalc.price.toFixed(2)} €\nSaisissez/collez ce montant sur la page Revolut.);
-  }catch(e){}
-
-  window.open(REVOLUT_LINK, "_blank", "noopener");
-});
-
-/* Valeurs par défaut pour tester vite */
-$("#from").value = "2 Rue Beaussier, Toulon";
-$("#to").value   = "241 Rue Le Corbusier, La Seyne-sur-Mer";
-</script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6bP1-fake-key-for-demo&callback=initMap"></script>
 </body>
 </html>
