@@ -1,150 +1,338 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🚗AlexLivraison🚴🏻‍♂️</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🚗 AlexLivraison 🚴🏻‍♂️</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
   <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      background-attachment: fixed;
-      margin: 0;
-      color: #333;
+    :root{
+      --violet:#5f0fb6;
+      --violet-2:#33006f;
+      --white:#ffffff;
+      --text:#1f1f1f;
+      --muted:#6b6b6b;
+      --ok:#0ea35a;
+      --warn:#eab308;
     }
-    .container {
-      max-width: 480px;
-      margin: 30px auto;
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(1200px 700px at 50% -200px, var(--violet), var(--violet-2));
     }
-    h1 {
-      text-align: center;
-      color: white;
-      margin-bottom: 20px;
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    /* motif statique léger (SVG en base64) */
+    body::before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; opacity:.25;
+      background-image:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNDAwJyBoZWlnaHQ9JzQwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZGVmcz48cGF0dGVybiBpZD0ncHQnIHdpZHRoPSc2MCcgaGVpZ2h0PSc2MCcgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0nTTAgNTBMMjAgNTAgMjAgNjAgMCA2MCB6JyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA4Ii8+PHBhdGggZD0nTTYwIDBMODAgMCA4MCAxMCA2MCAxMCB6JyBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA4Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJub25lIiB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJy8+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0idXJsKCNwdCkiLz48L3N2Zz4=");
+      background-size:700px 700px;
     }
-    label {
-      font-weight: 600;
-      display: block;
-      margin-top: 15px;
+
+    .container{max-width:780px;margin:0 auto;padding:28px 16px 80px}
+    .title{
+      color:#fff; font-weight:900; font-size:44px; letter-spacing:.3px;
+      display:flex; align-items:center; justify-content:center; gap:14px;
+      text-align:center;
     }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
+    .card{
+      background:#fff; border-radius:20px; padding:22px;
+      box-shadow:0 12px 40px rgba(0,0,0,.18); margin-top:18px;
     }
-    .button {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 12px;
-      cursor: pointer;
+    .label{color:#555; font-weight:800; font-size:18px; margin:8px 4px 10px}
+    input, select{
+      width:100%; height:54px; font-size:17px; padding:0 14px;
+      border:1px solid #e6e6e6; border-radius:14px; background:#fff; outline:none;
     }
-    .calc { background-color: #6a11cb; }
-    .card { background-color: #8e2de2; }
-    .cash { background-color: #999; }
-    .services {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    input:focus, select:focus{border-color:#c8a8ff; box-shadow:0 0 0 3px rgba(95,15,182,.12)}
+    .row{margin:10px 0 16px}
+    .grid{display:grid; gap:12px}
+    .grid-2{grid-template-columns:1fr 1fr}
+    .service{
+      border:1px solid #eee; border-radius:14px; padding:12px 14px; display:flex; align-items:center; gap:10px;
     }
-    #result {
-      background: #f4f4f4;
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 15px;
+    .service input{width:auto; height:auto}
+    .btn{
+      width:100%; height:58px; border-radius:16px; font-size:20px; font-weight:800;
+      color:#fff; background:var(--violet); border:none;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      box-shadow:0 14px 30px rgba(95,15,182,.35); cursor:pointer; transition:.15s transform ease;
     }
-    footer {
-      text-align: center;
-      color: white;
-      font-size: 14px;
-      margin-top: 20px;
+    .btn:active{transform:translateY(1px)}
+    .btn-ghost{background:#e9e4ff; color:#2a1261; box-shadow:none}
+    .btn-outline{background:#eee; color:#222; box-shadow:none; font-weight:700}
+    .result{
+      background:#fff; border-radius:16px; padding:14px; margin-top:14px;
+      border:1px dashed #d9c7ff; color:#2b2b2b; line-height:1.5; font-weight:600
     }
+    .badge{margin-top:14px; padding:12px 14px; border-radius:14px; font-weight:700; text-align:center}
+    .ok{background:#e7f8f0;color:#056a3a;border:1px solid #b6efd6}
+    .warn{background:#fff7e6;color:#8a6200;border:1px solid #ffe4a3}
+    #map{height:320px;margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid #eee}
+    .note, .footer{color:#f0e7ff;text-align:center;margin-top:16px}
+    .hidden{display:none}
   </style>
 </head>
 <body>
-  <h1>🚗AlexLivraison🚴🏻‍♂️</h1>
   <div class="container">
-    <label>Adresse de départ</label>
-    <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon" />
-    <label>Adresse de destination</label>
-    <input type="text" id="end" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer" />
-    <label>Taille du colis 📦</label>
-    <select id="size">
-      <option value="S">Petit (S)</option>
-      <option value="M">Moyen (M)</option>
-      <option value="L">Grand (L)</option>
-      <option value="XL">Très grand (XL)</option>
-    </select>
-    <label>Étage (optionnel)</label>
-    <select id="floor">
-      <option value="0">RDC / 1er (0 €)</option>
-      <option value="1">2e – 4e étage (+2 €)</option>
-      <option value="2">5e – 10e étage (+3 €)</option>
-      <option value="3">11e – 15e étage (+4 €)</option>
-    </select>
-    <label>Services additionnels</label>
-    <div class="services">
-      <label><input type="checkbox" class="service" value="2"> Colis fragile (+2€)</label>
-      <label><input type="checkbox" class="service" value="3"> Livraison urgente (+3€)</label>
-      <label><input type="checkbox" class="service" value="1"> Attente 5 min (+1€)</label>
-      <label><input type="checkbox" class="service" value="2"> Attente 10 min (+2€)</label>
+    <div class="title">🚗 AlexLivraison 🚴🏻‍♂️</div>
+
+    <div class="card">
+      <div class="label">Adresse de départ</div>
+      <div class="row"><input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon"></div>
+
+      <div class="label">Adresse de destination</div>
+      <div class="row"><input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne"></div>
+
+      <div class="label">Taille du colis 📦</div>
+      <div class="row">
+        <select id="size">
+          <option value="S">Petit (S)</option>
+          <option value="M">Moyen (M)</option>
+          <option value="L">Grand (L)</option>
+          <option value="XL">Très grand (XL)</option>
+        </select>
+      </div>
+
+      <div class="label">Étage (optionnel)</div>
+      <div class="row">
+        <select id="floor">
+          <option value="0">RDC / 1er (0 €)</option>
+          <option value="1">2e — 5e (+2 €)</option>
+          <option value="2">6e — 15e (+3 €)</option>
+        </select>
+      </div>
+
+      <div class="label">Services additionnels</div>
+      <div class="grid grid-2">
+        <label class="service"><input type="checkbox" id="fragile"> <span>Colis fragile (+2 €)</span></label>
+        <label class="service"><input type="checkbox" id="urgent"> <span>Livraison urgente (+3 €)</span></label>
+        <label class="service"><input type="checkbox" id="wait5"> <span>Attente 5 min (+1 €)</span></label>
+        <label class="service"><input type="checkbox" id="wait10"> <span>Attente 10 min (+2 €)</span></label>
+      </div>
+
+      <div class="label">Heure de livraison souhaitée</div>
+      <div class="row"><select id="time"></select></div>
+
+      <div id="banner" class="badge hidden"></div>
+
+      <div class="row"><button id="calc" class="btn">🧮 Calculer le prix</button></div>
+      <div class="row"><button id="payCard" class="btn">💳 Paiement par carte</button></div>
+      <div class="row"><button id="payCash" class="btn btn-outline">💶 Paiement en espèces</button></div>
+
+      <div id="result" class="result hidden"></div>
+      <div id="map" class="hidden"></div>
     </div>
-    <label>Heure de livraison souhaitée</label>
-    <input type="datetime-local" id="time" />
-    <button class="button calc" onclick="calculatePrice()">🧮 Calculer le prix</button>
-    <button class="button card" onclick="payByCard()">💳 Paiement par carte</button>
-    <button class="button cash">💶 Paiement en espèces</button>
-    <div id="result"></div>
+
+    <p class="note">💜 Nous livrons vos commandes jusqu’à votre porte.</p>
+    <p class="footer">© 2025 Alex Livraison</p>
   </div>
-  <footer>
-    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br>© 2025 Alex Livraison
-  </footer>
 
-  <script>
-    function calculatePrice() {
-      const size = document.getElementById("size").value;
-      const floor = parseInt(document.getElementById("floor").value);
-      const services = document.querySelectorAll(".service:checked");
+<script>
+"use strict";
 
-      let base = 2.0;
-      if (size === "M") base += 1;
-      if (size === "L") base += 2;
-      if (size === "XL") base += 3;
+/* ===== CONFIG ===== */
+const PRICE_PER_KM = 0.90;
+const SIZE_MULT = { S:1.00, M:1.15, L:1.35, XL:1.60 };
+const FLOOR_FEE = { "0":0, "1":2, "2":3 }; // 0: RDC/1er, 1: 2–5, 2: 6–15
 
-      let extras = 0;
-      services.forEach((s) => { extras += parseFloat(s.value); });
-      base += floor + extras;
+// Services additionnels (montants fixes)
+const SERVICE_FEES = {
+  fragile: 2,
+  urgent: 3,
+  wait5: 1,
+  wait10: 2
+};
 
-      const distance = 2.5; // test
-      const total = (base + distance * 0.8).toFixed(2);
+// Revolut: lien statique (sans montant pré-rempli côté front)
+const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 
-      document.getElementById("result").innerHTML =
-        🚗 Distance estimée : ${distance} km<br>💰 Prix total : ${total} €;
+// Telegram (mettez vos valeurs ici)
+const TG_TOKEN   = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const TG_CHAT_ID = "7129872491";
 
-      window.currentPrice = total;
-    }
+/* ===== HELPERS ===== */
+const $ = sel => document.querySelector(sel);
+const banner = $("#banner");
+const resultBox = $("#result");
+const mapBox = $("#map");
 
-    function payByCard() {
-      if (!window.currentPrice) {
-        alert("Veuillez d'abord calculer le prix !");
-        return;
-      }
-      const link = https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27?amount=${window.currentPrice};
-      window.open(link, "_blank");
-    }
-  </script>
+function showBanner(kind, text){
+  banner.className = "badge " + (kind === "ok" ? "ok" : "warn");
+  banner.textContent = text;
+  banner.classList.remove("hidden");
+  setTimeout(()=>banner.classList.add("hidden"), 4500);
+}
+function euro(n){
+  return (Math.round(n*100)/100).toFixed(2).replace(".", ",") + " €";
+}
+
+/* ===== TIME OPTIONS ===== */
+(function fillTimes(){
+  const sel = $("#time");
+  sel.innerHTML = "";
+  const now = new Date();
+  for(let i=0;i<36;i++){
+    const t = new Date(now.getTime()+i*30*60000);
+    const hh = String(t.getHours()).padStart(2,"0");
+    const mm = String(t.getMinutes()).padStart(2,"0");
+    const dd = String(t.getDate()).padStart(2,"0");
+    const mo = String(t.getMonth()+1).padStart(2,"0");
+    const yyyy = t.getFullYear();
+    const label = ${dd}/${mo}/${yyyy} ${hh}:${mm};
+    const opt = document.createElement("option");
+    opt.value = label; opt.textContent = label;
+    sel.appendChild(opt);
+  }
+})();
+
+/* ===== MAP ===== */
+let map, routeLayer, markerA, markerB;
+function ensureMap(lat1, lon1, lat2, lon2, geojson){
+  if(!map){
+    map = L.map('map');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'© OpenStreetMap'
+    }).addTo(map);
+  }
+  if(routeLayer){ routeLayer.remove(); }
+  if(markerA){ markerA.remove(); }
+  if(markerB){ markerB.remove(); }
+
+  const line = L.geoJSON(geojson, {style:{color:'#6c4cff', weight:6, opacity:.7}});
+  line.addTo(map);
+  routeLayer = line;
+
+  markerA = L.marker([lat1, lon1]).addTo(map);
+  markerB = L.marker([lat2, lon2]).addTo(map);
+
+  const b = L.latLngBounds([[lat1,lon1],[lat2,lon2]]);
+  map.fitBounds(b.pad(0.25));
+  mapBox.classList.remove("hidden");
+}
+
+/* ===== OSM: geocode + route ===== */
+async function geocode(query){
+  const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}&accept-language=fr;
+  const res = await fetch(url, {headers:{'User-Agent':'alexlivraison-web'}}); // User-Agent facultatif
+  if(!res.ok) throw new Error("Nominatim error");
+  const json = await res.json();
+  if(!json.length) throw new Error("Adresse introuvable");
+  return { lat: +json[0].lat, lon: +json[0].lon, disp: json[0].display_name };
+}
+async function route(lat1, lon1, lat2, lon2){
+  const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error("OSRM error");
+  const json = await res.json();
+  if(!json.routes || !json.routes.length) throw new Error("Itinéraire introuvable");
+  const r = json.routes[0];
+  return { km: r.distance/1000, geojson: r.geometry };
+}
+
+/* ===== TELEGRAM ===== */
+async function notifyTelegram(text){
+  try{
+    const url = https://api.telegram.org/bot${TG_TOKEN}/sendMessage;
+    const body = new URLSearchParams({ chat_id: TG_CHAT_ID, text });
+    await fetch(url, { method:'POST', body });
+  }catch(e){ /* silencieux */ }
+}
+
+/* ===== MAIN LOGIC ===== */
+let lastCalc = null;
+
+$("#calc").addEventListener("click", async ()=>{
+  const from  = $("#from").value.trim();
+  const to    = $("#to").value.trim();
+  const size  = $("#size").value;
+  const floor = $("#floor").value;
+  const when  = $("#time").value;
+
+  if(!from || !to){
+    showBanner("warn","Merci de saisir les deux adresses.");
+    return;
+  }
+
+  resultBox.classList.remove("hidden");
+  resultBox.textContent = "Calcul en cours…";
+
+  try{
+    const [A,B] = await Promise.all([geocode(from), geocode(to)]);
+    const {km, geojson} = await route(A.lat, A.lon, B.lat, B.lon);
+    const kmRound = Math.max(1, Math.round(km*100)/100);
+
+    let price = kmRound * PRICE_PER_KM * (SIZE_MULT[size] || 1);
+    price += FLOOR_FEE[floor] || 0;
+    if($("#fragile").checked) price += SERVICE_FEES.fragile;
+    if($("#urgent").checked)  price += SERVICE_FEES.urgent;
+    if($("#wait5").checked)   price += SERVICE_FEES.wait5;
+    if($("#wait10").checked)  price += SERVICE_FEES.wait10;
+    price = Math.round(price*100)/100;
+
+    lastCalc = {from,to,km:kmRound,price,size,floor,when};
+    ensureMap(A.lat, A.lon, B.lat, B.lon, geojson);
+
+    const floorTxt = (floor==="0")?"0":(floor==="1")?"2–5":"6–15";
+    resultBox.innerHTML =
+      🚚 <b>Distance :</b> ${kmRound.toFixed(2)} km<br>+
+      💶 <b>Prix :</b> ${euro(price)}<br>+
+      📦 <b>Taille :</b> ${size} — 🏢 <b>Étage :</b> ${floorTxt}<br>+
+      🕒 ${when};
+    showBanner("ok","Tarif calculé ✔️");
+  }catch(err){
+    resultBox.textContent = "Erreur lors du calcul. Vérifiez les adresses.";
+    showBanner("warn","Erreur de calcul. Réessayez.");
+  }
+});
+
+$("#payCash").addEventListener("click", async ()=>{
+  if(!lastCalc){ showBanner("warn","Veuillez d’abord calculer le prix."); return; }
+  showBanner("ok","Commande enregistrée (paiement en espèces).");
+  await notifyTelegram(
+    🧾 Nouvelle commande (Espèces)\n+
+    De: ${lastCalc.from}\n+
+    À: ${lastCalc.to}\n+
+    Distance: ${lastCalc.km.toFixed(2)} km\n+
+    Prix: ${lastCalc.price.toFixed(2)} €\n+
+    Taille: ${lastCalc.size} | Étage: ${lastCalc.floor}\n+
+    Heure: ${lastCalc.when}
+  );
+});
+
+$("#payCard").addEventListener("click", async ()=>{
+  if(!lastCalc){ showBanner("warn","Veuillez d’abord calculer le prix."); return; }
+  showBanner("ok","Redirection vers le paiement…");
+
+  await notifyTelegram(
+    🧾 Nouvelle commande (Carte)\n+
+    De: ${lastCalc.from}\n+
+    À: ${lastCalc.to}\n+
+    Distance: ${lastCalc.km.toFixed(2)} km\n+
+    Prix: ${lastCalc.price.toFixed(2)} €\n+
+    Taille: ${lastCalc.size} | Étage: ${lastCalc.floor}\n+
+    Heure: ${lastCalc.when}
+  );
+
+  // Copie la somme pour que le client la colle sur la page Revolut (limite côté front)
+  try{
+    await navigator.clipboard.writeText(lastCalc.price.toFixed(2));
+    alert(Montant copié: ${lastCalc.price.toFixed(2)} €\nSaisissez/collez ce montant sur la page Revolut.);
+  }catch(e){}
+
+  window.open(REVOLUT_LINK, "_blank", "noopener");
+});
+
+/* Valeurs par défaut pour tester vite */
+$("#from").value = "2 Rue Beaussier, Toulon";
+$("#to").value   = "241 Rue Le Corbusier, La Seyne-sur-Mer";
+</script>
 </body>
 </html>
