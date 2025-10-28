@@ -97,10 +97,10 @@
     </select>
     <label>Services additionnels</label>
     <div class="services">
-      <label><input type="checkbox" class="service" value="2" /> Colis fragile (+2€)</label>
-      <label><input type="checkbox" class="service" value="3" /> Livraison urgente (+3€)</label>
-      <label><input type="checkbox" class="service" value="1" /> Attente 5 min (+1€)</label>
-      <label><input type="checkbox" class="service" value="2" /> Attente 10 min (+2€)</label>
+      <label><input type="checkbox" class="service" value="2"> Colis fragile (+2€)</label>
+      <label><input type="checkbox" class="service" value="3"> Livraison urgente (+3€)</label>
+      <label><input type="checkbox" class="service" value="1"> Attente 5 min (+1€)</label>
+      <label><input type="checkbox" class="service" value="2"> Attente 10 min (+2€)</label>
     </div>
     <label>Heure de livraison souhaitée</label>
     <input type="datetime-local" id="time" />
@@ -125,7 +125,7 @@
       if (size === "XL") base += 3;
 
       let extras = 0;
-      services.forEach((s) => extras += parseFloat(s.value));
+      services.forEach((s) => { extras += parseFloat(s.value); });
       base += floor + extras;
 
       const distance = 2.5; // test
