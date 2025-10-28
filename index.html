@@ -1,130 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🚗 AlexLivraison 🚴🏻‍♂️</title>
+
+<!-- Leaflet (carte) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<style>
+:root{
+  --violet:#5f0fb6;
+  --violet-dark:#33006f;
+  --card:#ffffff;
+  --text:#1f1f1f;
+}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+  background:linear-gradient(135deg,#33006f,#5f0fb6);
+  background-attachment:fixed;
+  color:var(--text);
+  min-height:100vh;
+}
+.container{
+  max-width:700px;
+  margin:0 auto;
+  padding:28px 16px 80px;
+}
+.title{
+  font-size:40px;
+  font-weight:800;
+  color:#fff;
+  text-align:center;
+  margin-bottom:12px;
+}
+.card{
+  background:var(--card);
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+  padding:22px;
+}
+.label{
+  font-weight:700;
+  color:#4c2b8b;
+  margin-top:10px;
+  margin-bottom:4px;
+}
+input, select{
+  width:100%;
+  height:48px;
+  font-size:16px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  padding:0 12px;
+  outline:none;
+}
+.btn{
+  width:100%;
+  height:52px;
+  border:none;
+  border-radius:14px;
+  font-size:18px;
+  font-weight:700;
+  color:#fff;
+  margin-top:14px;
+  cursor:pointer;
+}
+.btn-primary{background:#5f0fb6;}
+.btn-outline{background:#e7e7e7;color:#222;}
+.badge{
+  text-align:center;
+  font-weight:700;
+  padding:10px;
+  margin-top:12px;
+  border-radius:10px;
+}
+.badge.ok{background:#e8fff0;color:#1b703a;}
+.badge.warn{background:#fff7e8;color:#9c5d00;}
+.result{
+  background:#fff;
+  border-radius:14px;
+  border:1px dashed #d2c1ff;
+  margin-top:12px;
+  padding:12px;
+  font-weight:600;
+}
+.hidden{display:none;}
+#map{height:280px;margin-top:14px;border-radius:14px;overflow:hidden;}
+.footer{text-align:center;color:#f0e7ff;margin-top:18px;}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="title">🚗 AlexLivraison 🚴🏻‍♂️</div>
+  <div class="card">
+    <div class="label">Adresse de départ</div>
+    <input id="from" placeholder="Ex : 2 Rue Beaussier, Toulon">
+
+    <div class="label">Adresse de destination</div>
+    <input id="to" placeholder="Ex : 241 Rue Le Corbusier, La Seyne-sur-Mer">
+
+    <div class="label">Taille du colis 📦</div>
+    <select id="size">
+      <option value="S">Petit (S)</option>
+      <option value="M" selected>Moyen (M)</option>
+      <option value="L">Grand (L)</option>
+      <option value="XL">Très grand (XL)</option>
+    </select>
+
+    <div class="label">Étage (optionnel)</div>
+    <select id="floor">
+      <option value="0">RDC / 1er (0 €)</option>
+      <option value="2">2e étage (+2 €)</option>
+      <option value="3">3e étage (+2.5 €)</option>
+      <option value="4">4e-15e étage (+3 €)</option>
+    </select>
+
+    <div class="label">Services additionnels</div>
+    <div>
+      <label><input type="checkbox" class="addon" value="2"> Colis fragile (+2 €)</label><br>
+      <label><input type="checkbox" class="addon" value="3"> Livraison urgente (+3 €)</label><br>
+      <label><input type="checkbox" class="addon" value="1"> Attente 5 min (+1 €)</label><br>
+      <label><input type="checkbox" class="addon" value="2"> Attente 10 min (+2 €)</label>
+    </div>
+
+    <div class="label">Heure de livraison souhaitée</div>
+    <select id="time"></select>
+
+    <div id="banner" class="badge hidden"></div>
+
+    <button id="calc" class="btn btn-primary">🧮 Calculer le prix</button>
+    <button id="payCard" class="btn btn-primary">💳 Paiement par carte</button>
+    <button id="payCash" class="btn btn-outline">💶 Paiement en espèces</button>
+
+    <div id="result" class="result hidden"></div>
+    <div id="map" class="hidden"></div>
+  </div>
+  <div class="footer">💜 Nous livrons vos commandes jusqu’à votre porte<br>© 2025 AlexLivraison</div>
+</div>
+
 <script>
 const PRICE_PER_KM = 0.9;
-const REVOLUT_BASE = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+const TG_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const TG_CHAT_ID = "7129872491";
+const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 
-function euro(n) {
-  return (Math.round(n * 100) / 100).toFixed(2) + " €";
+const $ = s => document.querySelector(s);
+const banner = $("#banner"), result = $("#result"), mapBox = $("#map");
+
+function showBanner(type, text){
+  banner.className = "badge " + (type==="ok"?"ok":"warn");
+  banner.textContent = text;
+  banner.classList.remove("hidden");
+  setTimeout(()=>banner.classList.add("hidden"), 4000);
 }
 
-// === Remplir les heures ===
-(function fillTimes() {
-  const sel = document.querySelector("#time");
+function euro(n){return n.toFixed(2).replace(".",",")+" €";}
+
+(function fillTimes(){
+  const sel = $("#time");
   const now = new Date();
-  for (let i = 0; i < 36; i++) {
-    const t = new Date(now.getTime() + i * 30 * 60000);
-    const label = t.toLocaleString("fr-FR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-    const opt = document.createElement("option");
-    opt.value = label;
-    opt.textContent = label;
+  for(let i=0;i<36;i++){
+    const t=new Date(now.getTime()+i*30*60000);
+    const label=t.toLocaleString("fr-FR",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
+    const opt=document.createElement("option");
+    opt.value=label;opt.textContent=label;
     sel.appendChild(opt);
   }
 })();
 
-// === Géocodage + Itinéraire ===
-async function geocode(q) {
-  const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}&accept-language=fr;
-  const res = await fetch(url, { headers: { "User-Agent": "AlexLivraisonApp/1.0" } });
-  const json = await res.json();
-  if (!json.length) throw new Error("Adresse introuvable");
-  return { lat: +json[0].lat, lon: +json[0].lon };
+async function geocode(q){
+  const url=https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1;
+  const r=await fetch(url);
+  const j=await r.json();
+  if(!j.length) throw Error("Adresse introuvable");
+  return {lat:+j[0].lat,lon:+j[0].lon};
 }
 
-async function route(lat1, lon1, lat2, lon2) {
-  const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
-  const res = await fetch(url);
-  const json = await res.json();
-  if (!json.routes || !json.routes.length) throw new Error("Itinéraire introuvable");
-  return { km: json.routes[0].distance / 1000, geo: json.routes[0].geometry };
+async function route(lat1,lon1,lat2,lon2){
+  const url=https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
+  const r=await fetch(url);
+  const j=await r.json();
+  return {km:j.routes[0].distance/1000,geo:j.routes[0].geometry};
 }
 
-let map, routeLayer;
-function drawMap(lat1, lon1, lat2, lon2, geo) {
-  if (!map) {
-    map = L.map("map").setView([lat1, lon1], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap"
-    }).addTo(map);
-  }
-  if (routeLayer) routeLayer.remove();
-  routeLayer = L.geoJSON(geo, { style: { color: "#6c4cff", weight: 5 } }).addTo(map);
-  map.fitBounds([[lat1, lon1], [lat2, lon2]]);
+async function notifyTelegram(text){
+  const body=new URLSearchParams({chat_id:TG_CHAT_ID,text});
+  await fetch(https://api.telegram.org/bot${TG_TOKEN}/sendMessage,{method:"POST",body});
 }
 
-let lastCalc = null;
-
-// === Calcul du prix ===
-document.querySelector("#calc").onclick = async () => {
-  const from = document.querySelector("#from").value.trim();
-  const to = document.querySelector("#to").value.trim();
-  if (!from || !to) {
-    alert("Veuillez saisir les adresses.");
-    return;
+let map,routeLayer;
+function drawMap(a,b,geo){
+  if(!map){
+    map=L.map("map");
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
   }
+  if(routeLayer) routeLayer.remove();
+  routeLayer=L.geoJSON(geo,{style:{color:"#5f0fb6",weight:6}}).addTo(map);
+  map.fitBounds([[a.lat,a.lon],[b.lat,b.lon]].map(p=>[p.lat,p.lon]));
+  mapBox.classList.remove("hidden");
+}
 
-  const size = document.querySelector("#size").value;
-  const floor = parseInt(document.querySelector("#floor").value);
-  const when = document.querySelector("#time").value;
-
-  const fragile = document.querySelector("#fragile").checked;
-  const urgent = document.querySelector("#urgent").checked;
-  const wait5 = document.querySelector("#wait5").checked;
-  const wait10 = document.querySelector("#wait10").checked;
-
-  const res = document.querySelector("#result");
-  res.style.display = "block";
-  res.innerHTML = "⏳ Calcul en cours...";
-
-  try {
-    const A = await geocode(from);
-    const B = await geocode(to);
-    const r = await route(A.lat, A.lon, B.lat, B.lon);
-
-    let price = r.km * PRICE_PER_KM;
-
-    // Suppléments selon taille
-    if (size === "M") price += 1;
-    if (size === "L") price += 2;
-    if (size === "XL") price += 3;
-
-    // Étages
-    if (floor >= 2) price += floor;
-
-    // Options supplémentaires
-    if (fragile) price += 2;
-    if (urgent) price += 3;
-    if (wait5) price += 1;
-    if (wait10) price += 2;
-
-    lastCalc = { from, to, price, km: r.km, when };
-    drawMap(A.lat, A.lon, B.lat, B.lon, r.geo);
-
-    res.innerHTML = 
-      🚚 <b>Distance :</b> ${r.km.toFixed(2)} km<br>
-      💶 <b>Prix :</b> ${euro(price)}<br>
-      📦 <b>Taille :</b> ${size} — 🕒 ${when}
-    ;
-  } catch (e) {
-    console.error(e);
-    res.innerHTML = "⚠️ Erreur lors du calcul. Vérifiez les adresses.";
+let lastCalc=null;
+$("#calc").addEventListener("click",async()=>{
+  const from=$("#from").value.trim(), to=$("#to").value.trim();
+  if(!from||!to){showBanner("warn","Veuillez saisir les adresses");return;}
+  try{
+    result.classList.remove("hidden");
+    result.textContent="Calcul en cours...";
+    const [A,B]=await Promise.all([geocode(from),geocode(to)]);
+    const {km,geo}=await route(A.lat,A.lon,B.lat,B.lon);
+    const floor=parseFloat($("#floor").value);
+    const addons=[...document.querySelectorAll(".addon:checked")].reduce((a,b)=>a+parseFloat(b.value),0);
+    const size=$("#size").value;
+    let factor={S:1,M:1.1,L:1.25,XL:1.4}[size];
+    const price=(km*PRICE_PER_KM*factor)+floor+addons;
+    lastCalc={from,to,km,price,size,floor,addons};
+    drawMap(A,B,geo);
+    result.innerHTML=🚚 Distance : ${km.toFixed(2)} km<br>💶 Prix estimé : <b>${euro(price)}</b>;
+    showBanner("ok","Tarif calculé ✔️");
+  }catch(e){
+    result.textContent="Erreur lors du calcul. Vérifiez les adresses.";
+    showBanner("warn","Erreur de calcul");
   }
-};
+});
 
-// === Paiement ===
-document.querySelector("#payCard").onclick = () => {
-  if (!lastCalc) return alert("Calculez le prix d'abord !");
-  const amount = lastCalc.price.toFixed(2);
-  const url = ${REVOLUT_BASE}?amount=${amount}&currency=EUR;
-  window.open(url, "_blank");
-};
+$("#payCash").addEventListener("click",()=>{
+  if(!lastCalc){showBanner("warn","Calculez d'abord le prix");return;}
+  notifyTelegram(🧾 Nouvelle commande (Espèces)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\nDistance: ${lastCalc.km.toFixed(2)} km\nPrix: ${lastCalc.price.toFixed(2)} €);
+  showBanner("ok","Commande enregistrée (espèces)");
+});
 
-document.querySelector("#payCash").onclick = () => {
-  if (!lastCalc) return alert("Calculez le prix d'abord !");
-  alert("Commande enregistrée. Paiement en espèces à la livraison.");
-};
+$("#payCard").addEventListener("click",()=>{
+  if(!lastCalc){showBanner("warn","Calculez d'abord le prix");return;}
+  notifyTelegram(🧾 Nouvelle commande (Carte)\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\nDistance: ${lastCalc.km.toFixed(2)} km\nPrix: ${lastCalc.price.toFixed(2)} €);
+  window.open(REVOLUT_LINK,"_blank");
+});
 </script>
+</body>
+</html>
