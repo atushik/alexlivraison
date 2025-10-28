@@ -31,8 +31,7 @@
       display: block;
       margin-top: 15px;
     }
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 10px;
       border-radius: 8px;
@@ -52,15 +51,9 @@
       margin-top: 12px;
       cursor: pointer;
     }
-    .calc {
-      background-color: #6a11cb;
-    }
-    .card {
-      background-color: #8e2de2;
-    }
-    .cash {
-      background-color: #999;
-    }
+    .calc { background-color: #6a11cb; }
+    .card { background-color: #8e2de2; }
+    .cash { background-color: #999; }
     .services {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -87,11 +80,7 @@
     <label>Adresse de départ</label>
     <input type="text" id="start" placeholder="2 Rue Beaussier, Toulon" />
     <label>Adresse de destination</label>
-    <input
-      type="text"
-      id="end"
-      placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer"
-    />
+    <input type="text" id="end" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer" />
     <label>Taille du colis 📦</label>
     <select id="size">
       <option value="S">Petit (S)</option>
@@ -121,8 +110,7 @@
     <div id="result"></div>
   </div>
   <footer>
-    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br />© 2025 Alex
-    Livraison
+    💜 Nous livrons vos commandes jusqu’à votre porte 💜<br>© 2025 Alex Livraison
   </footer>
 
   <script>
@@ -137,10 +125,10 @@
       if (size === "XL") base += 3;
 
       let extras = 0;
-      services.forEach((s) => (extras += parseFloat(s.value)));
+      services.forEach((s) => extras += parseFloat(s.value));
       base += floor + extras;
 
-      const distance = 2.5; // valeur de test
+      const distance = 2.5; // test
       const total = (base + distance * 0.8).toFixed(2);
 
       document.getElementById("result").innerHTML =
