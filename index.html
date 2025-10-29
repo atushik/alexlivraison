@@ -4,10 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AlexLivraison</title>
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
   <style>
     body {
       margin: 0;
@@ -18,28 +16,16 @@
     }
     .container { max-width: 700px; margin: 0 auto; padding: 20px; }
     h1 { text-align: center; color: white; margin-bottom: 20px; }
-    .card {
-      background: white; border-radius: 12px; padding: 20px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.3);
-    }
+    .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 6px 25px rgba(0,0,0,0.3); }
     label { display:block; margin-top:10px; font-weight:bold; }
-    input, select {
-      width: 100%; padding: 10px; margin-top: 5px;
-      border-radius: 8px; border: 1px solid #ccc;
-    }
+    input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     .service { border: 1px solid #ccc; border-radius: 8px; padding: 6px; }
-    button {
-      width: 100%; padding: 14px; border: none; border-radius: 10px;
-      font-size: 16px; margin-top: 10px; cursor: pointer;
-    }
+    button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; margin-top: 10px; cursor: pointer; }
     #calc { background:#6b23ff; color:#fff; }
     #payCard { background:#4caf50; color:#fff; }
     #payCash { background:#ddd; }
-    #result {
-      display: none; background: #f7f7ff; border-radius: 10px;
-      border: 1px dashed #aaa; margin-top: 10px; padding: 10px;
-    }
+    #result { display: none; background: #f7f7ff; border-radius: 10px; border: 1px dashed #aaa; margin-top: 10px; padding: 10px; }
     #map { display: none; height: 300px; border-radius: 10px; margin-top: 10px; }
     .footer { text-align: center; color: #e5d9ff; margin-top: 20px; }
   </style>
