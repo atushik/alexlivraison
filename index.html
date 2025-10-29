@@ -16,28 +16,16 @@
     }
     .container {max-width: 700px; margin: 0 auto; padding: 20px;}
     h1 {text-align: center; color: white; margin-bottom: 20px;}
-    .card {
-      background: white; border-radius: 12px; padding: 20px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.3);
-    }
+    .card {background: white; border-radius: 12px; padding: 20px; box-shadow: 0 6px 25px rgba(0,0,0,0.3);}
     label {display:block; margin-top:10px; font-weight:bold;}
-    input, select {
-      width: 100%; padding: 10px; margin-top: 5px;
-      border-radius: 8px; border: 1px solid #ccc;
-    }
+    input, select {width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc;}
     .grid {display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;}
     .service {border: 1px solid #ccc; border-radius: 8px; padding: 6px;}
-    button {
-      width: 100%; padding: 14px; border: none; border-radius: 10px;
-      font-size: 16px; margin-top: 10px; cursor: pointer;
-    }
+    button {width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; margin-top: 10px; cursor: pointer;}
     #calc {background:#6b23ff; color:#fff;}
     #payCard {background:#4caf50; color:#fff;}
     #payCash {background:#ddd;}
-    #result {
-      display: none; background: #f7f7ff; border-radius: 10px;
-      border: 1px dashed #aaa; margin-top: 10px; padding: 10px;
-    }
+    #result {display: none; background: #f7f7ff; border-radius: 10px; border: 1px dashed #aaa; margin-top: 10px; padding: 10px;}
     #map {display: none; height: 300px; border-radius: 10px; margin-top: 10px;}
     .footer {text-align: center; color: #e5d9ff; margin-top: 20px;}
   </style>
@@ -114,19 +102,19 @@
     }
 
     async function geocode(q) {
-      const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)};
-      const res = await fetch(url);
-      const json = await res.json();
-      if (!json.length) throw new Error("Adresse introuvable");
-      return { lat: +json[0].lat, lon: +json[0].lon };
+      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
+      const r = await fetch(url);
+      const j = await r.json();
+      if (!j.length) throw new Error("Adresse introuvable");
+      return { lat: +j[0].lat, lon: +j[0].lon };
     }
 
     async function route(lat1, lon1, lat2, lon2) {
-      const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
-      const res = await fetch(url);
-      const json = await res.json();
-      const r = json.routes[0];
-      return { km: r.distance / 1000, geo: r.geometry };
+      const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`;
+      const r = await fetch(url);
+      const j = await r.json();
+      const path = j.routes[0];
+      return { km: path.distance / 1000, geo: path.geometry };
     }
 
     let map, routeLayer;
@@ -142,18 +130,16 @@
     }
 
     async function sendToTelegram(text) {
-      try {
-        const msg = encodeURIComponent(text);
-        const url = https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg};
-        await fetch(url);
-      } catch (e) { console.error("Erreur Telegram", e); }
+      const msg = encodeURIComponent(text);
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}&parse_mode=Markdown`;
+      await fetch(url);
     }
 
     async function calc() {
       const from = $("#from").value.trim();
       const to = $("#to").value.trim();
       const clientPhone = $("#clientPhone").value.trim();
-      if (!from  !to  !clientPhone) {
+      if (!from || !to || !clientPhone) {
         alert("Veuillez remplir toutes les informations obligatoires.");
         return;
       }
@@ -168,7 +154,7 @@
         const price = dist * PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras;
         lastCalc = { from, to, dist, price, size };
         res.style.display = "block";
-        res.innerHTML = <b>Distance:</b> ${dist} km<br><b>Prix estimé:</b> ${euro(price)};
+        res.innerHTML = `<b>Distance:</b> ${dist} km<br><b>Prix estimé:</b> ${euro(price)}`;
         $("#total").value = price.toFixed(2);
         showMap(A.lat, A.lon, B.lat, B.lon, r.geo);
       } catch { alert("Erreur lors du calcul."); }
@@ -180,16 +166,18 @@
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       const name = $("#clientName").value.trim() || "Non précisé";
       const phone = $("#clientPhone").value.trim();
+      const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement en espèces.");
-      await sendToTelegram(🆕 Nouvelle commande (Espèces)\nNom: ${name}\nTéléphone: ${phone}\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\nDistance: ${lastCalc.dist} km\nPrix: ${lastCalc.price.toFixed(2)} €);
+      await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💶 *Prix:* ${lastCalc.price.toFixed(2)} €`);
     });
 
     $("#payCard").addEventListener("click", async () => {
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       const name = $("#clientName").value.trim() || "Non précisé";
       const phone = $("#clientPhone").value.trim();
+      const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
-      await sendToTelegram(🆕 Nouvelle commande (Carte)\nNom: ${name}\nTéléphone: ${phone}\nDe: ${lastCalc.from}\nÀ: ${lastCalc.to}\nDistance: ${lastCalc.dist} km\nPrix: ${lastCalc.price.toFixed(2)} €);
+      await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price.toFixed(2)} €`);
       window.open(REVOLUT_LINK, "_blank");
     });
 
