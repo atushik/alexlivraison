@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AlexLivraison</title>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
   <style>
     body {
       margin: 0;
@@ -42,6 +44,7 @@
     .footer { text-align: center; color: #e5d9ff; margin-top: 20px; }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
@@ -96,7 +99,6 @@
 
     function euro(v) { return v.toFixed(2).replace(".", ",") + " €"; }
 
-    // Fill time selector (next 24h)
     const timeSel = $("#time");
     const now = new Date();
     for (let i = 0; i < 48; i++) {
@@ -110,18 +112,18 @@
 
     async function geocode(q) {
       const url = https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)};
-      const res = await fetch(url);
-      const json = await res.json();
-      if (!json.length) throw new Error("Address not found");
-      return { lat: +json[0].lat, lon: +json[0].lon };
+      const r = await fetch(url);
+      const j = await r.json();
+      if (!j.length) throw new Error("Adresse introuvable");
+      return { lat: +j[0].lat, lon: +j[0].lon };
     }
 
     async function route(lat1, lon1, lat2, lon2) {
       const url = https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson;
-      const res = await fetch(url);
-      const json = await res.json();
-      const r = json.routes[0];
-      return { km: r.distance / 1000, geo: r.geometry };
+      const r = await fetch(url);
+      const j = await r.json();
+      const route = j.routes[0];
+      return { km: route.distance / 1000, geo: route.geometry };
     }
 
     let map, routeLayer;
@@ -139,7 +141,7 @@
     async function sendToTelegram(text) {
       try {
         const msg = encodeURIComponent(text);
-        const url = https://api.telegram.org/bot${8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA}/sendMessage?chat_id=${7129872491}&text=${msg};
+        const url = https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg};
         await fetch(url);
       } catch (e) {
         console.error("Telegram error", e);
