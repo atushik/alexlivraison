@@ -53,11 +53,17 @@
         <label class="service"><input type="checkbox" class="srv" data-fee="1"> Attente 5 min (+1 €)</label>
         <label class="service"><input type="checkbox" class="srv" data-fee="2"> Attente 10 min (+2 €)</label>
       </div>
-      <label>Heure de livraison souhaitée</label>
+
+      <label>⏰ Heure de livraison souhaitée</label>
       <select id="time"></select>
+
+      <label>📞 Numéro de téléphone du client</label>
+      <input id="phone" type="tel" placeholder="Ex: +33 6 12 34 56 78" required>
+
       <button id="calc">🧮 Calculer le prix</button>
       <button id="payCard">💳 Paiement par carte</button>
       <button id="payCash">💶 Paiement en espèces</button>
+
       <div id="result"></div>
       <div id="map"></div>
     </div>
@@ -128,7 +134,10 @@
     async function calc() {
       const from = $("#from").value.trim();
       const to = $("#to").value.trim();
+      const phone = $("#phone").value.trim();
+
       if (!from || !to) { alert("Veuillez saisir les adresses."); return; }
+      if (!phone) { alert("Veuillez entrer le numéro de téléphone du client."); return; }
 
       const size = $("#size").value;
       const floorFee = parseFloat($("#floor").value);
@@ -140,7 +149,7 @@
         const r = await route(A.lat, A.lon, B.lat, B.lon);
         const dist = Math.round(r.km * 100) / 100;
         const price = dist * PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras;
-        lastCalc = { from, to, dist, price, size };
+        lastCalc = { from, to, dist, price, size, phone };
         res.style.display = "block";
         res.innerHTML = "<b>Distance:</b> " + dist + " km<br><b>Prix estimé:</b> " + euro(price);
         showMap(A.lat, A.lon, B.lat, B.lon, r.geo);
@@ -154,13 +163,13 @@
     $("#payCash").addEventListener("click", async () => {
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       alert("Commande enregistrée ✅ Paiement en espèces.");
-      await sendToTelegram("🆕 Nouvelle commande (Espèces)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.dist + " km\nPrix: " + lastCalc.price.toFixed(2) + " €");
+      await sendToTelegram("🆕 Nouvelle commande (Espèces)\n📞 Téléphone: " + lastCalc.phone + "\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.dist + " km\nPrix: " + lastCalc.price.toFixed(2) + " €");
     });
 
     $("#payCard").addEventListener("click", async () => {
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       alert("Commande enregistrée ✅ Paiement par carte.");
-      await sendToTelegram("🆕 Nouvelle commande (Carte)\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.dist + " km\nPrix: " + lastCalc.price.toFixed(2) + " €");
+      await sendToTelegram("🆕 Nouvelle commande (Carte)\n📞 Téléphone: " + lastCalc.phone + "\nDe: " + lastCalc.from + "\nÀ: " + lastCalc.to + "\nDistance: " + lastCalc.dist + " km\nPrix: " + lastCalc.price.toFixed(2) + " €");
       navigator.clipboard.writeText(lastCalc.price.toFixed(2));
       window.open(REVOLUT_LINK, "_blank");
     });
