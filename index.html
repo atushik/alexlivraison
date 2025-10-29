@@ -151,7 +151,7 @@
         const [A, B] = await Promise.all([geocode(from), geocode(to)]);
         const r = await route(A.lat, A.lon, B.lat, B.lon);
         const dist = Math.round(r.km * 100) / 100;
-        const price = dist * PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras;
+        const price = Math.round(dist * PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras);
         lastCalc = { from, to, dist, price, size };
         res.style.display = "block";
         res.innerHTML = `<b>Distance:</b> ${dist} km<br><b>Prix estimé:</b> ${euro(price)}`;
@@ -168,7 +168,7 @@
       const phone = $("#clientPhone").value.trim();
       const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement en espèces.");
-      await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💶 *Prix:* ${lastCalc.price.toFixed(2)} €`);
+      await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💶 *Prix:* ${lastCalc.price} €`);
     });
 
     $("#payCard").addEventListener("click", async () => {
@@ -177,7 +177,7 @@
       const phone = $("#clientPhone").value.trim();
       const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
-      await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price.toFixed(2)} €`);
+      await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price} €`);
       window.open(REVOLUT_LINK, "_blank");
     });
 
