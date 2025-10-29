@@ -147,12 +147,13 @@ const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
 const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
 const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const TELEGRAM_CHAT_ID = "7129872491";
+
 const $ = s => document.querySelector(s);
 const res = $("#result");
 const mapDiv = $("#map");
 let lastCalc = null;
 
-function euro(v){ return v.toFixed(2).replace(".", ",") + " €"; }
+function euro(v) { return v.toFixed(2).replace(".", ",") + " €"; }
 
 const timeSel = $("#time");
 const now = new Date();
@@ -204,7 +205,7 @@ async function calc() {
   const to = $("#to").value.trim();
   const name = $("#name").value.trim();
   const phone = $("#phone").value.trim();
-  if (!from  !to  !phone) { alert("Veuillez remplir toutes les informations obligatoires."); return; }
+  if (!from  !to  !phone) { alert("Veuillez remplir toutes les informations."); return; }
 
   const size = $("#size").value;
   const floorFee = parseFloat($("#floor").value);
