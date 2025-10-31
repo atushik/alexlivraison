@@ -15,7 +15,7 @@ const TELEGRAM_CHAT = process.env.TELEGRAM_CHAT;
 app.post("/api/pay", async (req, res) => {
   try {
     const { amount, name, phone } = req.body;
-    if (!amount || !phone) return res.status(400).json({ error: "Missing fields" });
+    if (!amount || !phone) return res.status(400).json({ error: "Missing amount or phone" });
 
     const orderId = "alex-" + Date.now();
 
@@ -26,11 +26,10 @@ app.post("/api/pay", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: Math.round(amount * 100),
-        currency: "EUR",
-        description: `AlexLivraison - ${name}`,
-        merchant_order_ext_ref: orderId,
+        amount: { value: Math.round(amount * 100), currency: "EUR" },
         capture_mode: "AUTOMATIC",
+        merchant_order_ext_ref: orderId,
+        description: `AlexLivraison - ${name}`,
         success_url: "https://alexlivraison.shop/success",
         failure_url: "https://alexlivraison.shop/fail",
         customer_email: "client@example.com",
