@@ -116,10 +116,7 @@
     function showMap(lat1, lon1, lat2, lon2, geo) {
       if (!map) {
         map = L.map("map");
-        L.tileLayer(
-          `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
-          { tileSize: 512, zoomOffset: -1 }
-        ).addTo(map);
+        L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`, { tileSize: 512, zoomOffset: -1 }).addTo(map);
       }
       if (routeLayer) routeLayer.remove();
       routeLayer = L.geoJSON(geo, { style: { color: "#6b23ff", weight: 5 } }).addTo(map);
@@ -176,7 +173,15 @@
       const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
       await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price} €`);
-      window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27", "_blank");
+      
+      const response = await fetch("https://alexlivraison-api.onrender.com/api/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: lastCalc.price, name, phone })
+      });
+      const data = await response.json();
+      if (data.checkout_url) window.open(data.checkout_url, "_blank");
+      else alert("Erreur de paiement.");
     });
 
     $("#from").value = "2 Rue Beaussier, Toulon";
