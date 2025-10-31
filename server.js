@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -17,7 +18,7 @@ app.post("/api/pay", async (req, res) => {
     const { amount, name, phone } = req.body;
     const orderId = "alex-" + Date.now();
 
-    const response = await fetch("https://b2b.revolut.com/api/1.0/order", {
+    const response = await fetch("https://b2b.revolut.com/api/1.0/orders", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${REVOLUT_SECRET}`,
@@ -39,7 +40,10 @@ app.post("/api/pay", async (req, res) => {
     const message = `💳 New paid order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
 
-    res.json({ checkout_url: data.checkout_url || "https://revolut.com/pay" });
+    res.json({
+      checkout_url: data.links?.checkout?.href || "https://revolut.com/pay"
+    });
+
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ error: "Payment processing failed" });
@@ -47,4 +51,3 @@ app.post("/api/pay", async (req, res) => {
 });
 
 app.listen(3000, () => console.log("✅ AlexLivraison API is running on port 3000"));
- 
