@@ -40,10 +40,12 @@ app.post("/api/pay", async (req, res) => {
     const message = `💳 New paid order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
 
-    res.json({
-      checkout_url: data.links?.checkout?.href || "https://revolut.com/pay"
-    });
-
+    if (data?.links?.checkout?.href) {
+      res.json({ checkout_url: data.links.checkout.href });
+    } else {
+      console.error("❌ Revolut response:", data);
+      res.status(400).json({ error: "No checkout link from Revolut", details: data });
+    }
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ error: "Payment processing failed" });
