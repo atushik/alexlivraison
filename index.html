@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+<!DOCTYPE html><html lang="fr"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AlexLivraison</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #32006b, #7a2cf5);
-      background-attachment: fixed;
-      color: #222;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(180deg, #32006b, #7a2cf5); background-attachment: fixed; color: #222; }
     .container {max-width: 700px; margin: 0 auto; padding: 20px;}
     h1 {text-align: center; color: white; margin-bottom: 20px;}
     .card {background: white; border-radius: 12px; padding: 20px; box-shadow: 0 6px 25px rgba(0,0,0,0.3);}
@@ -29,8 +21,7 @@
     #map {display: none; height: 300px; border-radius: 10px; margin-top: 10px;}
     .footer {text-align: center; color: #e5d9ff; margin-top: 20px;}
   </style>
-</head>
-<body>
+</head><body>
   <div class="container">
     <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
     <div class="card">
@@ -80,8 +71,12 @@
     const PRICE_PER_KM = 0.9;
     const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
     const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
+
+    // 👇 твои токены (оставлены без изменений)
     const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID = "7129872491";
+
+    const MAPBOX_TOKEN = "pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
 
     const $ = s => document.querySelector(s);
     const res = $("#result");
@@ -102,15 +97,16 @@
     }
 
     async function geocode(q) {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;
       const r = await fetch(url);
       const j = await r.json();
-      if (!j.length) throw new Error("Adresse introuvable");
-      return { lat: +j[0].lat, lon: +j[0].lon };
+      if (!j.features.length) throw new Error("Adresse introuvable");
+      const [lon, lat] = j.features[0].center;
+      return { lat, lon };
     }
 
     async function route(lat1, lon1, lat2, lon2) {
-      const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`;
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
       const r = await fetch(url);
       const j = await r.json();
       const path = j.routes[0];
@@ -121,7 +117,10 @@
     function showMap(lat1, lon1, lat2, lon2, geo) {
       if (!map) {
         map = L.map("map");
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+        L.tileLayer(
+          `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
+          { tileSize: 512, zoomOffset: -1 }
+        ).addTo(map);
       }
       if (routeLayer) routeLayer.remove();
       routeLayer = L.geoJSON(geo, { style: { color: "#6b23ff", weight: 5 } }).addTo(map);
@@ -184,5 +183,4 @@
     $("#from").value = "2 Rue Beaussier, Toulon";
     $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
-</body>
-</html>
+</body></html>
