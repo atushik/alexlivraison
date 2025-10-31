@@ -26,23 +26,23 @@ app.post("/api/pay", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: { value: Math.round(amount * 100), currency: "EUR" },
-        capture_mode: "AUTOMATIC",
+        amount: Math.round(amount * 100),
+        currency: "EUR",
         merchant_order_ext_ref: orderId,
         description: `AlexLivraison - ${name}`,
+        capture_mode: "AUTOMATIC",
+        callback_url: "https://alexlivraison.shop",
         success_url: "https://alexlivraison.shop/success",
-        failure_url: "https://alexlivraison.shop/fail",
-        customer_email: "client@example.com",
-        customer_phone: phone
+        failure_url: "https://alexlivraison.shop/fail"
       })
     });
 
     const data = await response.json();
-    console.log("Revolut Response:", data);
+    console.log("Revolut response:", data);
 
-    if (data?.public_id) {
+    if (data.public_id) {
       const checkoutUrl = `https://merchant.revolut.com/pay/${data.public_id}`;
-      const message = `💳 Nouvelle commande\n👤 ${name}\n📞 ${phone}\n💶 ${amount} €`;
+      const message = `💳 New order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
       await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
       res.json({ checkout_url: checkoutUrl });
     } else {
@@ -50,7 +50,7 @@ app.post("/api/pay", async (req, res) => {
     }
   } catch (error) {
     console.error("Server error:", error);
-    res.status(500).json({ error: "Payment failed" });
+    res.status(500).json({ error: "Payment processing failed" });
   }
 });
 
