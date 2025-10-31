@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 dotenv.config();
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -25,32 +24,27 @@ app.post("/api/pay", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: {
-          currency: "EUR",
-          value: Math.round(amount * 100)
-        },
+        amount: { currency: "EUR", value: Math.round(amount * 100) },
         merchant_order_ext_ref: orderId,
         capture_mode: "AUTOMATIC",
         description: `AlexLivraison - ${name}`,
         email: "client@example.com",
-        phone
+        phone_number: phone,
+        callback_url: "https://alexlivraison.shop"
       })
     });
 
     const data = await response.json();
-    console.log("Revolut response:", data);
+    console.log("Revolut Response:", data);
 
     const message = `💳 New paid order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
 
     if (data?.links?.checkout_url) {
       res.json({ checkout_url: data.links.checkout_url });
-    } else if (data?.checkout_url) {
-      res.json({ checkout_url: data.checkout_url });
     } else {
       res.status(400).json({ error: "Invalid Revolut response", details: data });
     }
-
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ error: "Payment processing failed" });
