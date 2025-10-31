@@ -69,21 +69,17 @@
     </div>
     <div class="footer">© 2025 AlexLivraison</div>
   </div>
-
   <script>
     const PRICE_PER_KM = 0.9;
     const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
     const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID = "7129872491";
     const MAPBOX_TOKEN = "pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
-
     const $ = s => document.querySelector(s);
     const res = $("#result");
     const mapDiv = $("#map");
     let lastCalc = null;
-
     function euro(v) { return v.toFixed(2).replace(".", ",") + " €"; }
-
     const timeSel = $("#time");
     const now = new Date();
     for (let i = 0; i < 48; i++) {
@@ -94,7 +90,6 @@
       opt.textContent = label;
       timeSel.appendChild(opt);
     }
-
     async function geocode(q) {
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;
       const r = await fetch(url);
@@ -103,7 +98,6 @@
       const [lon, lat] = j.features[0].center;
       return { lat, lon };
     }
-
     async function route(lat1, lon1, lat2, lon2) {
       const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
       const r = await fetch(url);
@@ -111,7 +105,6 @@
       const path = j.routes[0];
       return { km: path.distance / 1000, geo: path.geometry };
     }
-
     let map, routeLayer;
     function showMap(lat1, lon1, lat2, lon2, geo) {
       if (!map) {
@@ -123,13 +116,11 @@
       map.fitBounds([[lat1, lon1], [lat2, lon2]]);
       mapDiv.style.display = "block";
     }
-
     async function sendToTelegram(text) {
       const msg = encodeURIComponent(text);
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}&parse_mode=Markdown`;
       await fetch(url);
     }
-
     async function calc() {
       const from = $("#from").value.trim();
       const to = $("#to").value.trim();
@@ -154,9 +145,7 @@
         showMap(A.lat, A.lon, B.lat, B.lon, r.geo);
       } catch { alert("Erreur lors du calcul."); }
     }
-
     $("#calc").addEventListener("click", calc);
-
     $("#payCash").addEventListener("click", async () => {
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       const name = $("#clientName").value.trim() || "Non précisé";
@@ -165,7 +154,6 @@
       alert("Commande enregistrée ✅ Paiement en espèces.");
       await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💶 *Prix:* ${lastCalc.price} €`);
     });
-
     $("#payCard").addEventListener("click", async () => {
       if (!lastCalc) return alert("Calculez d'abord le prix.");
       const name = $("#clientName").value.trim() || "Non précisé";
@@ -173,7 +161,6 @@
       const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
       await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price} €`);
-      
       const response = await fetch("https://alexlivraison-api.onrender.com/api/pay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -183,7 +170,6 @@
       if (data.checkout_url) window.open(data.checkout_url, "_blank");
       else alert("Erreur de paiement.");
     });
-
     $("#from").value = "2 Rue Beaussier, Toulon";
     $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
