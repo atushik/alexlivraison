@@ -15,6 +15,10 @@ const TELEGRAM_CHAT = process.env.TELEGRAM_CHAT;
 app.post("/api/pay", async (req, res) => {
   try {
     const { amount, name, phone } = req.body;
+    if (!amount || !phone) {
+      return res.status(400).json({ error: "Missing amount or phone" });
+    }
+
     const orderId = "alex-" + Date.now();
 
     const response = await fetch("https://b2b.revolut.com/api/1.0/checkout/order", {
@@ -24,9 +28,12 @@ app.post("/api/pay", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: { currency: "EUR", value: Math.round(amount * 100) },
-        merchant_order_ext_ref: orderId,
+        amount: {
+          currency: "EUR",
+          value: Math.round(amount * 100)
+        },
         capture_mode: "AUTOMATIC",
+        merchant_order_ext_ref: orderId,
         description: `AlexLivraison - ${name}`,
         email: "client@example.com",
         phone_number: phone,
@@ -35,7 +42,7 @@ app.post("/api/pay", async (req, res) => {
     });
 
     const data = await response.json();
-    console.log("Revolut Response:", data);
+    console.log("Revolut response:", data);
 
     const message = `💳 New paid order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
