@@ -1,45 +1,41 @@
 import express from "express";
 import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.post("/pay", async (req, res) => {
-  const { amount, name, phone } = req.body;
+const REVOLUT_SECRET = process.env.REVOLUT_SECRET;
 
+app.post("/create-payment", async (req, res) => {
   try {
-    const response = await fetch("https://b2b.revolut.com/api/1.0/order", {
+    const { amount, name, phone } = req.body;
+
+    const r = await fetch("https://b2b.revolut.com/api/1.0/order", {
       method: "POST",
       headers: {
+        "Authorization": Bearer ${REVOLUT_SECRET},
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.REVOLUT_SECRET}`
       },
       body: JSON.stringify({
         amount: Math.round(amount * 100),
         currency: "EUR",
-        merchant_order_ext_ref: `alexlivraison-${Date.now()}`,
-        description: `Livraison pour ${name || "client"} (${phone})`,
-        capture_mode: "AUTOMATIC"
-      })
+        description: Commande AlexLivraison - ${name} (${phone}),
+        capture_mode: "AUTOMATIC",
+      }),
     });
 
-    const data = await response.json();
-    if (data && data.checkout_url) {
-      res.json({ ok: true, url: data.checkout_url });
-    } else {
-      res.status(400).json({ ok: false, error: data });
-    }
-  } catch (err) {
-    res.status(500).json({ ok: false, message: "Internal error" });
+    const data = await r.json();
+    res.json(data);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur de paiement" });
   }
 });
 
 app.get("/", (req, res) => {
-  res.send("AlexLivraison API online");
+  res.send("✅ AlexLivraison API active !");
 });
 
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(10000, () => console.log("✅ Serveur API AlexLivraison en ligne (port 10000)"));
