@@ -24,7 +24,7 @@ app.post("/api/pay", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: Math.round(amount * 100),
         currency: "EUR",
         capture_mode: "AUTOMATIC",
         merchant_order_ext_ref: orderId,
@@ -36,7 +36,6 @@ app.post("/api/pay", async (req, res) => {
 
     const data = await response.json();
 
-    // Send Telegram notification
     const message = `💳 New paid order\n👤 Name: ${name}\n📞 Phone: ${phone}\n💶 Amount: ${amount} €`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT}&text=${encodeURIComponent(message)}`);
 
