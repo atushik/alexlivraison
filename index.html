@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="fr"><head>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AlexLivraison</title>
@@ -21,7 +23,8 @@
     #map {display: none; height: 300px; border-radius: 10px; margin-top: 10px;}
     .footer {text-align: center; color: #e5d9ff; margin-top: 20px;}
   </style>
-</head><body>
+</head>
+<body>
   <div class="container">
     <h1>🚗 AlexLivraison 🚴🏻‍♂️</h1>
     <div class="card">
@@ -70,12 +73,8 @@
   <script>
     const PRICE_PER_KM = 0.9;
     const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
-    const REVOLUT_LINK = "https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27";
-
-    // 👇 твои токены (оставлены без изменений)
     const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID = "7129872491";
-
     const MAPBOX_TOKEN = "pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
 
     const $ = s => document.querySelector(s);
@@ -177,10 +176,11 @@
       const time = $("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
       await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price} €`);
-      window.open(REVOLUT_LINK, "_blank");
+      window.open("https://checkout.revolut.com/pay/10d5b369-d7f0-43cb-a810-af4c7afe9d27", "_blank");
     });
 
     $("#from").value = "2 Rue Beaussier, Toulon";
     $("#to").value = "241 Rue Le Corbusier, La Seyne-sur-Mer";
   </script>
-</body></html>
+</body>
+</html>
