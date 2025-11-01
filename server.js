@@ -57,4 +57,16 @@ app.post("/api/pay", async (req, res) => {
   }
 });
 
+app.get("/api/test", async (req, res) => {
+  try {
+    const r = await fetch("https://b2b.revolut.com/api/1.0/merchant", {
+      headers: { "Authorization": `Bearer ${REVOLUT_SECRET}` }
+    });
+    const j = await r.text();
+    res.send(j);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 app.listen(3000, () => console.log("✅ AlexLivraison API is running on port 3000"));
