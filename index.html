@@ -62,121 +62,119 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 </style>
 </head>
 <body>
+
 <div class="topbar">
-  <div class="topbar-inner wrap">
-    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-    <div class="hamb" id="btn-menu"><span></span></div>
-  </div>
+<div class="topbar-inner wrap">
+<div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
+<div class="hamb" id="btn-menu"><span></span></div>
+</div>
 </div>
 
 <div class="drawer" id="drawer">
-  <div class="shade" id="shade"></div>
-  <div class="panel">
-    <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">
-    <a href="#calc-section" id="nav-calc">Calcul & Commande</a>
-    <a href="#partners" id="nav-partners">Partenaires</a>
-    <a href="#contact" id="nav-contact">Contact</a>
-    <div class="langs">
-      <button id="btn-fr">FR</button>
-      <button id="btn-en">EN</button>
-    </div>
-  </div>
+<div class="shade" id="shade"></div>
+<div class="panel">
+<img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">
+<a href="#calc-section">Calcul & Commande</a>
+<a href="#partners">Partenaires</a>
+<a href="#contact">Contact</a>
+<div class="langs"><button id="btn-fr">FR</button><button id="btn-en">EN</button></div>
+</div>
 </div>
 
 <header class="hero wrap">
-  <h1 class="h2" id="hero-title">Livraison locale rapide à Toulon & La Seyne</h1>
-  <p class="muted" id="hero-desc">Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.</p>
+<h1 class="h2">Livraison locale rapide à Toulon & La Seyne</h1>
+<p class="muted">Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.</p>
 </header>
 
 <main class="wrap">
-  <section id="calc-section" class="section">
-    <h2 class="h2" id="calc-title">Calcul du prix et commande</h2>
-    <div class="card">
-      <label>Nom du client (optionnel)</label><input id="clientName" placeholder="Jean Dupont">
-      <label>Numéro de téléphone du client</label><input id="clientPhone" placeholder="+33 6 12 34 56 78" required>
-      <label>Adresse de départ</label><input id="from" placeholder="2 Rue Beaussier, Toulon">
-      <label>Adresse de destination</label><input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
-      <div class="grid">
-        <div>
-          <label>Taille du colis</label>
-          <select id="size">
-            <option value="S">Petit (S)</option>
-            <option value="M" selected>Moyen (M)</option>
-            <option value="L">Grand (L)</option>
-            <option value="XL">Très grand (XL)</option>
-          </select>
-        </div>
-        <div>
-          <label>Étage</label>
-          <select id="floor">
-            <option value="0">RDC / 1er (0 €)</option>
-            <option value="2">2e–5e (+2 €)</option>
-            <option value="2.5">6e–10e (+2,5 €)</option>
-            <option value="3">11e–15e (+3 €)</option>
-          </select>
-        </div>
-      </div>
-      <div class="grid">
-        <div><label>Date de livraison</label><input type="date" id="date"></div>
-        <div><label>Heure de livraison souhaitée</label><select id="time"></select></div>
-      </div>
-      <label>Services additionnels</label>
-      <div class="grid">
-        <label class="service"><input type="checkbox" class="srv" data-fee="2"> Colis fragile (+2 €)</label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="3"> Livraison urgente (+3 €)</label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="1"> Attente 5 min (+1 €)</label>
-        <label class="service"><input type="checkbox" class="srv" data-fee="2"> Attente 10 min (+2 €)</label>
-      </div>
-      <label>Montant total (€)</label>
-      <input id="total" readonly>
-      <button id="calc">🧮 Calculer le prix</button>
-      <button id="payCard">💳 Paiement par carte</button>
-      <button id="payCash">💶 Paiement en espèces</button>
-      <div id="result"></div>
-      <div id="map"></div>
-    </div>
-  </section>
+<section id="calc-section" class="section">
+<h2 class="h2">Calcul du prix et commande</h2>
+<div class="card">
+<label>Nom du client (optionnel)</label>
+<input id="clientName" placeholder="Jean Dupont">
+<label>Numéro de téléphone du client</label>
+<input id="clientPhone" placeholder="+33 6 12 34 56 78" required>
+<label>Adresse de départ</label>
+<input id="from" placeholder="2 Rue Beaussier, Toulon">
+<label>Adresse de destination</label>
+<input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
+<div class="grid">
+<div><label>Taille du colis</label>
+<select id="size">
+<option value="S">Petit (S)</option>
+<option value="M" selected>Moyen (M)</option>
+<option value="L">Grand (L)</option>
+<option value="XL">Très grand (XL)</option>
+</select></div>
+<div><label>Étage</label>
+<select id="floor">
+<option value="0">RDC / 1er (0 €)</option>
+<option value="2">2e–5e (+2 €)</option>
+<option value="2.5">6e–10e (+2,5 €)</option>
+<option value="3">11e–15e (+3 €)</option>
+</select></div>
+</div>
+<div class="grid">
+<div><label>Date de livraison</label><input type="date" id="date"></div>
+<div><label>Heure de livraison souhaitée</label><select id="time"></select></div>
+</div>
+<label>Services additionnels</label>
+<div class="grid">
+<label class="service"><input type="checkbox" class="srv" data-fee="2"> Colis fragile (+2 €)</label>
+<label class="service"><input type="checkbox" class="srv" data-fee="3"> Livraison urgente (+3 €)</label>
+<label class="service"><input type="checkbox" class="srv" data-fee="1"> Attente 5 min (+1 €)</label>
+<label class="service"><input type="checkbox" class="srv" data-fee="2"> Attente 10 min (+2 €)</label>
+</div>
+<label>Montant total (€)</label>
+<input id="total" readonly>
+<button id="calc">🧮 Calculer le prix</button>
+<button id="payCard">💳 Paiement par carte</button>
+<button id="payCash">💶 Paiement en espèces</button>
+<div id="result"></div>
+<div id="map"></div>
+</div>
+</section>
 
-  <section id="partners" class="section">
-    <h2 class="h2" id="partners-title">Partenaires (exemples)</h2>
-    <div class="partners">
-      <a href="supermarches.html" target="_blank" class="partner"><span id="p1">🛒 Supermarchés</span></a>
-      <a href="boulangeries.html" target="_blank" class="partner"><span id="p2">🥖 Boulangeries</span></a>
-      <a href="pharmacies.html" target="_blank" class="partner"><span id="p3">💊 Pharmacies</span></a>
-      <a href="restaurants.html" target="_blank" class="partner"><span id="p4">🍱 Restaurants</span></a>
-      <a href="epiceries.html" target="_blank" class="partner"><span id="p5">🧀 Épiceries fines</span></a>
-      <a href="commercants.html" target="_blank" class="partner"><span id="p6">📦 Commerçants locaux</span></a>
-    </div>
-  </section>
+<section id="partners" class="section">
+<h2 class="h2">Partenaires (exemples)</h2>
+<div class="partners">
+<a href="supermarches.html" target="_blank" class="partner"><span>🛒 Supermarchés</span></a>
+<a href="boulangeries.html" target="_blank" class="partner"><span>🥖 Boulangeries</span></a>
+<a href="pharmacies.html" target="_blank" class="partner"><span>💊 Pharmacies</span></a>
+<a href="restaurants.html" target="_blank" class="partner"><span>🍱 Restaurants</span></a>
+<a href="epiceries.html" target="_blank" class="partner"><span>🧀 Épiceries fines</span></a>
+<a href="commercants.html" target="_blank" class="partner"><span>📦 Commerçants locaux</span></a>
+</div>
+</section>
 
-  <section id="contact" class="section">
-    <h2 class="h2" id="contact-title">Contact</h2>
-    <div class="card">
-      <div class="muted" style="margin-bottom:10px;color:#333;text-align:center">
-        AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
-      </div>
-      <div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">
-        <a href="https://wa.me/33677171188" target="_blank">💬 WhatsApp</a>
-        <a href="tel:+33677171188">📲 Appeler</a>
-        <a href="mailto:atushbek020185@gmail.com">✉️ E-mail</a>
-      </div>
-    </div>
-  </section>
+<section id="contact" class="section">
+<h2 class="h2">Contact</h2>
+<div class="card">
+<div class="muted" style="margin-bottom:10px;color:#333;text-align:center">
+AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
+</div>
+<div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">
+<a href="https://wa.me/33677171188" target="_blank">💬 WhatsApp</a>
+<a href="tel:+33677171188">📲 Appeler</a>
+<a href="mailto:atushbek020185@gmail.com">✉️ E-mail</a>
+</div>
+</div>
+</section>
 
-  <div class="qr-banner">
-    <div class="qr-block">
-      <img src="QR-code.jpg" alt="QR AlexLivraison">
-      <div style="margin-top:6px;color:#fff;font-weight:700;text-align:center">alexlivraison.shop</div>
-    </div>
-    <div class="banner-box">
-      <div class="l1" id="bn1">🎉 Offres partenaires</div>
-      <div class="l2" id="bn2">ÉNORMES RÉDUCTIONS</div>
-      <div class="l1" id="bn3">ET LES 5 PREMIÈRES LIVRAISONS GRATUITES !</div>
-    </div>
-  </div>
+<div class="qr-banner">
+<div class="qr-block">
+<img src="QR-code.jpg" alt="QR AlexLivraison">
+<div style="margin-top:6px;color:#fff;font-weight:700;text-align:center">alexlivraison.shop</div>
+</div>
+<div class="banner-box">
+<div class="l1">🎉 Offres partenaires</div>
+<div class="l2">ÉNORMES RÉDUCTIONS</div>
+<div class="l1">ET LES 5 PREMIÈRES LIVRAISONS GRATUITES !</div>
+</div>
+</div>
 
-  <div class="year">2025</div>
-  <div class="footer">© AlexLivraison</div>
+<div class="year">2025</div>
+<div class="footer">© AlexLivraison</div>
 </main>
 
 <script>
@@ -185,12 +183,32 @@ const shade=document.getElementById('shade');
 const btnMenu=document.getElementById('btn-menu');
 btnMenu.addEventListener('click',()=>drawer.classList.add('open'));
 shade.addEventListener('click',()=>drawer.classList.remove('open'));
-const btnFr=document.getElementById('btn-fr');
-const btnEn=document.getElementById('btn-en');
-function setLang(lang){const heroTitle=document.getElementById('hero-title');const heroDesc=document.getElementById('hero-desc');const calcTitle=document.getElementById('calc-title');const navCalc=document.getElementById('nav-calc');const navPartners=document.getElementById('nav-partners');const navContact=document.getElementById('nav-contact');const partnersTitle=document.getElementById('partners-title');const contactTitle=document.getElementById('contact-title');const p1=document.getElementById('p1');const p2=document.getElementById('p2');const p3=document.getElementById('p3');const p4=document.getElementById('p4');const p5=document.getElementById('p5');const p6=document.getElementById('p6');const bn1=document.getElementById('bn1');const bn2=document.getElementById('bn2');const bn3=document.getElementById('bn3');if(lang==='fr'){heroTitle.textContent='Livraison locale rapide à Toulon & La Seyne';heroDesc.textContent='Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.';calcTitle.textContent='Calcul du prix et commande';navCalc.textContent='Calcul & Commande';navPartners.textContent='Partenaires';navContact.textContent='Contact';partnersTitle.textContent='Partenaires (exemples)';contactTitle.textContent='Contact';p1.textContent='🛒 Supermarchés';p2.textContent='🥖 Boulangeries';p3.textContent='💊 Pharmacies';p4.textContent='🍱 Restaurants';p5.textContent='🧀 Épiceries fines';p6.textContent='📦 Commerçants locaux';bn1.textContent='🎉 Offres partenaires';bn2.textContent='ÉNORMES RÉDUCTIONS';bn3.textContent='ET LES 5 PREMIÈRES LIVRAISONS GRATUITES !';document.documentElement.lang='fr';}else{heroTitle.textContent='Fast & reliable local delivery in Toulon & La Seyne';heroDesc.textContent='Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds.';calcTitle.textContent='Price calculation & order';navCalc.textContent='Price & Order';navPartners.textContent='Partners';navContact.textContent='Contact';partnersTitle.textContent='Partners (examples)';contactTitle.textContent='Contact';p1.textContent='🛒 Supermarkets';p2.textContent='🥖 Bakeries';p3.textContent='💊 Pharmacies';p4.textContent='🍱 Restaurants';p5.textContent='🧀 Delicatessens';p6.textContent='📦 Local merchants';bn1.textContent='🎉 Partner deals';bn2.textContent='HUGE DISCOUNTS';bn3.textContent='AND THE FIRST 5 DELIVERIES FREE!';document.documentElement.lang='en';}}
-btnFr.addEventListener('click',()=>{setLang('fr');drawer.classList.remove('open');});
-btnEn.addEventListener('click',()=>{setLang('en');drawer.classList.remove('open');});
-const PRICE_PER_KM=0.9;const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
+const PRICE_PER_KM=0.9;
+const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
 const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const TELEGRAM_CHAT_ID="7129872491";
-const MAPBOX_TOKEN="pk.ey
+const MAPBOX_TOKEN="pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
+const $=s=>document.querySelector(s);
+const res=$("#result");
+const mapDiv=$("#map");
+let lastCalc=null;
+const timeSel=$("#time");
+const dateInput=$("#date");
+const now=new Date();
+if(dateInput){const t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffset());dateInput.value=t.toISOString().slice(0,10);}
+if(timeSel){for(let i=0;i<48;i++){const t=new Date(now.getTime()+i*30*60000);const label=t.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});const opt=document.createElement("option");opt.value=label;opt.textContent=label;timeSel.appendChild(opt);}}
+async function geocode(q){const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;const r=await fetch(url);const j=await r.json();if(!j.features.length)throw new Error("Adresse introuvable");const[lon,lat]=j.features[0].center;return{lat,lon};}
+async function route(lat1,lon1,lat2,lon2){const url=`https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;const r=await fetch(url);const j=await r.json();const path=j.routes[0];return{km:path.distance/1000,geo:path.geometry};}
+let map,routeLayer;
+function showMap(lat1,lon1,lat2,lon2,geo){if(!map){map=L.map("map");L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,{tileSize:512,zoomOffset:-1}).addTo(map);}if(routeLayer)routeLayer.remove();routeLayer=L.geoJSON(geo,{style:{color:"#6b23ff",weight:5}}).addTo(map);map.fitBounds([[lat1,lon1],[lat2,lon2]]);mapDiv.style.display="block";}
+async function sendToTelegram(text){await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text})});}
+function euro(v){return v.toFixed(2).replace(".", ",")+" €";}
+async function calc(){const from=$("#from").value.trim();const to=$("#to").value.trim();const clientPhone=$("#clientPhone").value.trim();if(!from||!to||!clientPhone){alert("Veuillez remplir toutes les informations obligatoires.");return;}const size=$("#size").value;const floorFee=parseFloat($("#floor").value);let extras=0;document.querySelectorAll(".srv").forEach(x=>{if(x.checked)extras+=parseFloat(x.dataset.fee);});try{const[A,B]=await Promise.all([geocode(from),geocode(to)]);const r=await route(A.lat,A.lon,B.lat,B.lon);const dist=Math.round(r.km*100)/100;const price=Math.round(dist*PRICE_PER_KM+SIZE_FEES[size]+floorFee+extras);lastCalc={from,to,dist,price,size};res.style.display="block";res.innerHTML=`<b>Distance:</b> ${dist} km<br><b>Prix estimé:</b> ${euro(price)}`;$("#total").value=price.toFixed(2);showMap(A.lat,A.lon,B.lat,B.lon,r.geo);}catch(e){alert("Erreur lors du calcul.");}}
+$("#calc").addEventListener("click",calc);
+$("#payCash").addEventListener("click",async()=>{if(!lastCalc){alert("Calculez d'abord le prix.");return;}const name=$("#clientName").value.trim()||"Non précisé";const phone=$("#clientPhone").value.trim();const time=$("#time").value;const date=$("#date").value;await sendToTelegram(`🆕 Nouvelle commande (Espèces)\n👤 Nom: ${name}\n📞 Téléphone: ${phone}\n📅 Date: ${date}\n🕒 Heure: ${time}\n📍 De: ${lastCalc.from}\n🏁 À: ${lastCalc.to}\n📦 Distance: ${lastCalc.dist} km\n💶 Prix: ${lastCalc.price} €`);alert("Commande enregistrée ✅ Paiement en espèces.");});
+$("#payCard").addEventListener("click",async()=>{if(!lastCalc){alert("Calculez d'abord le prix.");return;}const name=$("#clientName").value.trim()||"Non précisé";const phone=$("#clientPhone").value.trim();const time=$("#time").value;const date=$("#date").value;await sendToTelegram(`🆕 Nouvelle commande (Carte)\n👤 Nom: ${name}\n📞 Téléphone: ${phone}\n📅 Date: ${date}\n🕒 Heure: ${time}\n📍 De: ${lastCalc.from}\n🏁 À: ${lastCalc.to}\n📦 Distance: ${lastCalc.dist} km\n💳 Prix: ${lastCalc.price} €`);const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:lastCalc.price,name,phone})});const data=await response.json();if(data.checkout_url)window.open(data.checkout_url,"_blank");else alert("Erreur de paiement.");});
+document.getElementById("from").value="2 Rue Beaussier, Toulon";
+document.getElementById("to").value="241 Rue Le Corbusier, La Seyne-sur-Mer";
+</script>
+</body>
+</html>
