@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>AlexLivraison</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
     .wrap{max-width:1060px;margin:0 auto;padding:16px}
-    .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.85),rgba(20,0,45,.5));border-bottom:1px solid var(--ring)}
-    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:10px 16px}
+    .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
+    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
     .brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800}
-    .brand .logo{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;color:#6b23ff}
-    .nav{display:flex;gap:14px;flex-wrap:wrap}
-    .nav a{color:#e9e5ff;opacity:.9;text-decoration:none}
-    .lang{display:flex;gap:8px}
-    .lang button{background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:6px 10px;border-radius:10px;cursor:pointer}
+    .brand img{width:140px;height:auto;display:block}
+    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer}
+    .hamb span,.hamb::before,.hamb::after{content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.2s}
+    .hamb::before{transform:translateY(-6px)}
+    .hamb::after{transform:translateY(6px)}
+    .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
+    .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
+    .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
+    .drawer.open{pointer-events:auto}
+    .drawer.open .shade{opacity:1}
+    .drawer.open .panel{left:0}
+    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22}
+    .drawer .langs{margin-top:auto;display:flex;gap:8px}
+    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
     .hero{padding:28px 16px 8px;color:#fff}
-    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center}
-    .qr-card{background:#fff;border-radius:16px;padding:14px;display:grid;place-items:center;box-shadow:0 12px 34px rgba(0,0,0,.25)}
     .h2{color:#fff;margin:0 0 12px 0;font-weight:900}
     .muted{color:#e5d9ff;opacity:.92}
     .section{padding:18px 0}
@@ -45,35 +52,36 @@
     .partner{background:#fff;border-radius:12px;padding:18px;display:grid;place-items:center;height:90px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
     .partner span{opacity:.65}
     .contact-links a{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid #e4e4ef;margin-right:8px;text-decoration:none;color:#222;background:#fff}
-    .footer{color:#e5d9ff;text-align:center;margin:24px 0}
-    @media (max-width:900px){.hero-grid,.row{grid-template-columns:1fr}.svc-grid{grid-template-columns:1fr}.partners{grid-template-columns:repeat(2,1fr)}}
+    .qr-block{display:grid;place-items:center;padding:18px}
+    .qr-block img{width:240px;height:240px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
+    .year{color:#e5d9ff;text-align:center;margin:8px 0 0 0;font-weight:700}
+    .footer{color:#e5d9ff;text-align:center;margin:8px 0 24px 0}
+    @media (max-width:900px){.row{grid-template-columns:1fr}.svc-grid{grid-template-columns:1fr}.partners{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
 <body>
   <div class="topbar">
     <div class="topbar-inner wrap">
-      <div class="brand"><div class="logo">🚗</div><div>AlexLivraison</div></div>
-      <nav class="nav">
-        <a href="#calc-section" data-i="nav_calc">Calcul & Commande</a>
-        <a href="#services" data-i="nav_services">Services</a>
-        <a href="#partners" data-i="nav_partners">Partenaires</a>
-        <a href="#contact" data-i="nav_contact">Contact</a>
-      </nav>
-      <div class="lang"><button id="btn-fr">FR</button><button id="btn-en">EN</button></div>
+      <div class="brand"><img src="logo.jpg" alt="AlexLivraison"/></div>
+      <div class="hamb" id="btn-menu"><span></span></div>
+    </div>
+  </div>
+
+  <div class="drawer" id="drawer">
+    <div class="shade" id="shade"></div>
+    <div class="panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto"></div>
+      <a href="#calc-section" data-i="nav_calc">Calcul & Commande</a>
+      <a href="#services" data-i="nav_services">Services</a>
+      <a href="#partners" data-i="nav_partners">Partenaires</a>
+      <a href="#contact" data-i="nav_contact">Contact</a>
+      <div class="langs"><button id="btn-fr">FR</button><button id="btn-en">EN</button></div>
     </div>
   </div>
 
   <header class="hero wrap">
-    <div class="hero-grid">
-      <div>
-        <h1 class="h2" data-i="hero_title">Livraison locale rapide à Toulon & La Seyne</h1>
-        <p class="muted" data-i="hero_sub">Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30&nbsp;secondes.</p>
-      </div>
-      <div class="qr-card">
-        <img src="qr.png" alt="QR AlexLivraison" style="width:260px;height:260px;object-fit:contain" />
-        <div style="margin-top:8px;color:#333;font-weight:700">alexlivraison.shop</div>
-      </div>
-    </div>
+    <h1 class="h2" data-i="hero_title">Livraison locale rapide à Toulon & La Seyne</h1>
+    <p class="muted" data-i="hero_sub">Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30&nbsp;secondes.</p>
   </header>
 
   <main class="wrap">
@@ -91,13 +99,12 @@
       <h2 class="h2" data-i="calc_title">Calcul du prix et commande</h2>
       <div class="row">
         <div class="card">
-          <label data-i="lbl_name">Nom du client (optionnel)</label><input id="clientName" placeholder="Jean Dupont" />
-          <label data-i="lbl_phone">Numéro de téléphone du client</label><input id="clientPhone" placeholder="+33 6 12 34 56 78" required />
-          <label data-i="lbl_from">Adresse de départ</label><input id="from" placeholder="2 Rue Beaussier, Toulon" />
-          <label data-i="lbl_to">Adresse de destination</label><input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer" />
+          <label data-i="lbl_name">Nom du client (optionnel)</label><input id="clientName" placeholder="Jean Dupont"/>
+          <label data-i="lbl_phone">Numéro de téléphone du client</label><input id="clientPhone" placeholder="+33 6 12 34 56 78" required/>
+          <label data-i="lbl_from">Adresse de départ</label><input id="from" placeholder="2 Rue Beaussier, Toulon"/>
+          <label data-i="lbl_to">Adresse de destination</label><input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer"/>
           <div class="grid">
-            <div>
-              <label data-i="lbl_size">Taille du colis</label>
+            <div><label data-i="lbl_size">Taille du colis</label>
               <select id="size">
                 <option value="S">Petit (S)</option>
                 <option value="M" selected>Moyen (M)</option>
@@ -105,8 +112,7 @@
                 <option value="XL">Très grand (XL)</option>
               </select>
             </div>
-            <div>
-              <label data-i="lbl_floor">Étage</label>
+            <div><label data-i="lbl_floor">Étage</label>
               <select id="floor">
                 <option value="0">RDC / 1er (0 €)</option>
                 <option value="2">2e–5e (+2 €)</option>
@@ -115,17 +121,15 @@
               </select>
             </div>
           </div>
-
           <label data-i="lbl_add">Services additionnels</label>
           <div class="grid">
-            <label class="service"><input type="checkbox" class="srv" data-fee="2" /> Colis fragile (+2 €)</label>
-            <label class="service"><input type="checkbox" class="srv" data-fee="3" /> Livraison urgente (+3 €)</label>
-            <label class="service"><input type="checkbox" class="srv" data-fee="1" /> Attente 5 min (+1 €)</label>
-            <label class="service"><input type="checkbox" class="srv" data-fee="2" /> Attente 10 min (+2 €)</label>
+            <label class="service"><input type="checkbox" class="srv" data-fee="2"/> Colis fragile (+2 €)</label>
+            <label class="service"><input type="checkbox" class="srv" data-fee="3"/> Livraison urgente (+3 €)</label>
+            <label class="service"><input type="checkbox" class="srv" data-fee="1"/> Attente 5 min (+1 €)</label>
+            <label class="service"><input type="checkbox" class="srv" data-fee="2"/> Attente 10 min (+2 €)</label>
           </div>
-
           <label data-i="lbl_time">Heure de livraison souhaitée</label><select id="time"></select>
-          <label data-i="lbl_total">Montant total (€)</label><input id="total" readonly />
+          <label data-i="lbl_total">Montant total (€)</label><input id="total" readonly/>
           <button id="calc">🧮 <span data-i="btn_calc">Calculer le prix</span></button>
           <button id="payCard">💳 <span data-i="btn_card">Paiement par carte</span></button>
           <button id="payCash">💶 <span data-i="btn_cash">Paiement en espèces</span></button>
@@ -172,110 +176,108 @@
       </div>
     </section>
 
-    <div class="footer">© 2025 AlexLivraison</div>
+    <div class="qr-block">
+      <img src="qr.png" alt="QR AlexLivraison">
+      <div style="margin-top:6px;color:#fff;font-weight:700">alexlivraison.shop</div>
+    </div>
+
+    <div class="year">2025</div>
+    <div class="footer">© AlexLivraison</div>
   </main>
 
   <script>
-    const I18N={fr:{nav_calc:"Calcul & Commande",nav_services:"Services",nav_partners:"Partenaires",nav_contact:"Contact",hero_title:"Livraison locale rapide à Toulon & La Seyne",hero_sub:"Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.",svc_title:"Nos services",svc_1:"Courses, repas, petits colis en ville. Idéal pour les trajets courts.",svc_2:"Colis fragile, température contrôlée, attente en magasin.",svc_3:"Récupération en boutique et livraison jusqu’à votre porte.",svc_4:"Courses quotidiennes, devis sur demande, facturation mensuelle.",calc_title:"Calcul du prix et commande",lbl_name:"Nom du client (optionnel)",lbl_phone:"Numéro de téléphone du client",lbl_from:"Adresse de départ",lbl_to:"Adresse de destination",lbl_size:"Taille du colis",lbl_floor:"Étage",lbl_add:"Services additionnels",lbl_time:"Heure de livraison souhaitée",lbl_total:"Montant total (€)",btn_calc:"Calculer le prix",btn_card:"Paiement par carte",btn_cash:"Paiement en espèces",pay_title:"Paiement en ligne sécurisé",pay_sub:"Le paiement par carte se fait via Stripe. Vous recevez un lien de paiement, et nous sommes notifiés instantanément.",pay_ul_1:"CB / Visa / Mastercard",pay_ul_2:"Lien valable 30 minutes",pay_ul_3:"Reçu envoyé par e-mail",partners_title:"Partenaires (exemples)"},en:{nav_calc:"Quote & Order",nav_services:"Services",nav_partners:"Partners",nav_contact:"Contact",hero_title:"Fast local delivery in Toulon & La Seyne",hero_sub:"Meals, groceries, parcels & small items — by bike, scooter or light vehicle. Order in 30 seconds.",svc_title:"Our services",svc_1:"Groceries, meals, small parcels in town. Perfect for short trips.",svc_2:"Fragile items, temperature-controlled, in-store waiting.",svc_3:"Click & Collect from stores delivered to your door.",svc_4:"Daily runs for shops, quotes on request, monthly invoicing.",calc_title:"Price calculator & order",lbl_name:"Client name (optional)",lbl_phone:"Client phone number",lbl_from:"Pickup address",lbl_to:"Dropoff address",lbl_size:"Parcel size",lbl_floor:"Floor",lbl_add:"Extra services",lbl_time:"Preferred delivery time",lbl_total:"Total amount (€)",btn_calc:"Calculate price",btn_card:"Pay by card",btn_cash:"Pay cash",pay_title:"Secure online payment",pay_sub:"Card payments are processed by Stripe. You get a payment link and we are notified instantly.",pay_ul_1:"CB / Visa / Mastercard",pay_ul_2:"Link valid for 30 minutes",pay_ul_3:"Receipt by e-mail",partners_title:"Partners (examples)"}};
+    const drawer=document.getElementById('drawer');const shade=document.getElementById('shade');const btnMenu=document.getElementById('btn-menu');
+    function toggleDrawer(open){drawer.classList[open?'add':'remove']('open')}
+    btnMenu.onclick=()=>toggleDrawer(true);shade.onclick=()=>toggleDrawer(false);
+
+    const I18N={
+      fr:{nav_calc:"Calcul & Commande",nav_services:"Services",nav_partners:"Partenaires",nav_contact:"Contact",hero_title:"Livraison locale rapide à Toulon & La Seyne",hero_sub:"Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.",svc_title:"Nos services",svc_1:"Courses, repas, petits colis en ville. Idéal pour les trajets courts.",svc_2:"Colis fragile, température contrôlée, attente en magasin.",svc_3:"Récupération en boutique et livraison jusqu’à votre porte.",svc_4:"Courses quotidiennes, devis sur demande, facturation mensuelle.",calc_title:"Calcul du prix et commande",lbl_name:"Nom du client (optionnel)",lbl_phone:"Numéro de téléphone du client",lbl_from:"Adresse de départ",lbl_to:"Adresse de destination",lbl_size:"Taille du colis",lbl_floor:"Étage",lbl_add:"Services additionnels",lbl_time:"Heure de livraison souhaitée",lbl_total:"Montant total (€)",btn_calc:"Calculer le prix",btn_card:"Paiement par carte",btn_cash:"Paiement en espèces",pay_title:"Paiement en ligne sécurisé",pay_sub:"Le paiement par carte se fait via Stripe. Vous recevez un lien de paiement, et nous sommes notifiés instantanément.",pay_ul_1:"CB / Visa / Mastercard",pay_ul_2:"Lien valable 30 minutes",pay_ul_3:"Reçu envoyé par e-mail",partners_title:"Partenaires (exemples)"},
+      en:{nav_calc:"Quote & Order",nav_services:"Services",nav_partners:"Partners",nav_contact:"Contact",hero_title:"Fast local delivery in Toulon & La Seyne",hero_sub:"Meals, groceries, parcels & small items — by bike, scooter or light vehicle. Order in 30 seconds.",svc_title:"Our services",svc_1:"Groceries, meals, small parcels in town. Perfect for short trips.",svc_2:"Fragile items, temperature-controlled, in-store waiting.",svc_3:"Click & Collect from stores delivered to your door.",svc_4:"Daily runs for shops, quotes on request, monthly invoicing.",calc_title:"Price calculator & order",lbl_name:"Client name (optional)",lbl_phone:"Client phone number",lbl_from:"Pickup address",lbl_to:"Dropoff address",lbl_size:"Parcel size",lbl_floor:"Floor",lbl_add:"Extra services",lbl_time:"Preferred delivery time",lbl_total:"Total amount (€)",btn_calc:"Calculate price",btn_card:"Pay by card",btn_cash:"Pay cash",pay_title:"Secure online payment",pay_sub:"Card payments are processed by Stripe. You get a payment link and we are notified instantly.",pay_ul_1:"CB / Visa / Mastercard",pay_ul_2:"Link valid for 30 minutes",pay_ul_3:"Receipt by e-mail",partners_title:"Partners (examples)"}
+    };
     const tElems=[...document.querySelectorAll("[data-i]")];
     function setLang(lang){const d=I18N[lang]||I18N.fr;tElems.forEach(el=>{const k=el.dataset.i;if(d[k])el.textContent=d[k];});document.documentElement.lang=lang;}
     document.getElementById("btn-fr").onclick=()=>setLang("fr");
     document.getElementById("btn-en").onclick=()=>setLang("en");
     setLang("fr");
 
-    const PRICE_PER_KM = 0.9;
-    const SIZE_FEES = { S: 0, M: 0.5, L: 1.0, XL: 1.5 };
-    const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-    const TELEGRAM_CHAT_ID = "7129872491";
-    const MAPBOX_TOKEN = "pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
-
-    const $ = s => document.querySelector(s);
-    const res = $("#result");
-    const mapDiv = $("#map");
-    let lastCalc = null;
-
+    const PRICE_PER_KM=0.9;
+    const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
+    const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TELEGRAM_CHAT_ID="7129872491";
+    const MAPBOX_TOKEN="pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
+    const $=s=>document.querySelector(s);
+    const res=$("#result");
+    const mapDiv=$("#map");
+    let lastCalc=null;
     function euro(v){return v.toFixed(2).replace(".", ",")+" €";}
+    const timeSel=$("#time");
+    const now=new Date();
+    for(let i=0;i<48;i++){const t=new Date(now.getTime()+i*30*60000);const label=t.toLocaleString(document.documentElement.lang==="en"?"en-GB":"fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});const opt=document.createElement("option");opt.value=label;opt.textContent=label;timeSel.appendChild(opt);}
 
-    const timeSel = $("#time");
-    const now = new Date();
-    for (let i=0;i<48;i++){
-      const t=new Date(now.getTime()+i*30*60000);
-      const label=t.toLocaleString(document.documentElement.lang==="en"?"en-GB":"fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-      const opt=document.createElement("option"); opt.value=label; opt.textContent=label; timeSel.appendChild(opt);
-    }
+    async function geocode(q){const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;const r=await fetch(url);const j=await r.json();if(!j.features.length)throw new Error("Adresse introuvable");const [lon,lat]=j.features[0].center;return{lat,lon};}
+    async function route(lat1,lon1,lat2,lon2){const url=`https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;const r=await fetch(url);const j=await r.json();const path=j.routes[0];return{km:path.distance/1000,geo:path.geometry};}
 
-    async function geocode(q){
-      const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;
-      const r=await fetch(url); const j=await r.json();
-      if(!j.features.length) throw new Error("Adresse introuvable");
-      const [lon,lat]=j.features[0].center; return {lat,lon};
-    }
-    async function route(lat1,lon1,lat2,lon2){
-      const url=`https://api.mapbox.com/directions/v5/mapbox/driving/${lon1},${lat1};${lon2},${lat2}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
-      const r=await fetch(url); const j=await r.json(); const path=j.routes[0];
-      return {km:path.distance/1000, geo:path.geometry};
-    }
+    let map,routeLayer;
+    function showMap(lat1,lon1,lat2,lon2,geo){if(!map){map=L.map("map");L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,{tileSize:512,zoomOffset:-1}).addTo(map);}if(routeLayer)routeLayer.remove();routeLayer=L.geoJSON(geo,{style:{color:"#6b23ff",weight:5}}).addTo(map);map.fitBounds([[lat1,lon1],[lat2,lon2]]);mapDiv.style.display="block";}
 
-    let map, routeLayer;
-    function showMap(lat1,lon1,lat2,lon2,geo){
-      if(!map){
-        map=L.map("map");
-        L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,{tileSize:512,zoomOffset:-1}).addTo(map);
-      }
-      if(routeLayer) routeLayer.remove();
-      routeLayer=L.geoJSON(geo,{style:{color:"#6b23ff",weight:5}}).addTo(map);
-      map.fitBounds([[lat1,lon1],[lat2,lon2]]);
-      mapDiv.style.display="block";
-    }
-
-    async function sendToTelegram(text){
-      const msg=encodeURIComponent(text);
-      const url=`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}&parse_mode=Markdown`;
-      await fetch(url);
-    }
+    async function sendToTelegram(text){const msg=encodeURIComponent(text);const url=`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}&parse_mode=Markdown`;await fetch(url);}
 
     async function calc(){
       const from=$("#from").value.trim();
       const to=$("#to").value.trim();
       const clientPhone=$("#clientPhone").value.trim();
-      if(!from||!to||!clientPhone){ alert("Veuillez remplir toutes les informations obligatoires."); return; }
+      if(!from || !to || !clientPhone){alert("Veuillez remplir toutes les informations obligatoires.");return;}
       const size=$("#size").value;
       const floorFee=parseFloat($("#floor").value);
-      let extras=0; document.querySelectorAll(".srv").forEach(x=>{if(x.checked) extras+=parseFloat(x.dataset.fee);});
+      let extras=0;document.querySelectorAll(".srv").forEach(x=>{if(x.checked)extras+=parseFloat(x.dataset.fee);});
       try{
         const [A,B]=await Promise.all([geocode(from),geocode(to)]);
         const r=await route(A.lat,A.lon,B.lat,B.lon);
         const dist=Math.round(r.km*100)/100;
-        const price=Math.round(dist*PRICE_PER_KM + SIZE_FEES[size] + floorFee + extras);
+        const price=Math.round(dist*PRICE_PER_KM+SIZE_FEES[size]+floorFee+extras);
         lastCalc={from,to,dist,price,size};
         res.style.display="block";
         res.innerHTML=`<b>Distance:</b> ${dist} km<br><b>Prix estimé:</b> ${euro(price)}`;
         $("#total").value=price.toFixed(2);
         showMap(A.lat,A.lon,B.lat,B.lon,r.geo);
-      }catch{ alert("Erreur lors du calcul."); }
+      }catch{alert("Erreur lors du calcul.");}
     }
 
-    $("#calc").addEventListener("click", calc);
+    $("#calc").addEventListener("click",calc);
 
-    $("#payCash").addEventListener("click", async()=>{
-      if(!lastCalc) return alert("Calculez d'abord le prix.");
+    $("#payCash").addEventListener("click",async()=>{
+      if(!lastCalc)return alert("Calculez d'abord le prix.");
       const name=$("#clientName").value.trim()||"Non précisé";
       const phone=$("#clientPhone").value.trim();
       const time=$("#time").value;
       alert("Commande enregistrée ✅ Paiement en espèces.");
-      await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💶 *Prix:* ${lastCalc.price} €`);
+      await sendToTelegram(`🆕 *Nouvelle commande (Espèces)*
+👤 *Nom:* ${name}
+📞 *Téléphone:* ${phone}
+🕒 *Heure:* ${time}
+📍 *De:* ${lastCalc.from}
+🏁 *À:* ${lastCalc.to}
+📦 *Distance:* ${lastCalc.dist} km
+💶 *Prix:* ${lastCalc.price} €`);
     });
 
-    $("#payCard").addEventListener("click", async()=>{
-      if(!lastCalc) return alert("Calculez d'abord le prix.");
+    $("#payCard").addEventListener("click",async()=>{
+      if(!lastCalc)return alert("Calculez d'abord le prix.");
       const name=$("#clientName").value.trim()||"Non précisé";
       const phone=$("#clientPhone").value.trim();
       const time=$("#time").value;
       alert("Commande enregistrée ✅ Paiement par carte.");
-      await sendToTelegram(`🆕 *Nouvelle commande (Carte)*%0A👤 *Nom:* ${name}%0A📞 *Téléphone:* ${phone}%0A🕒 *Heure:* ${time}%0A📍 *De:* ${lastCalc.from}%0A🏁 *À:* ${lastCalc.to}%0A📦 *Distance:* ${lastCalc.dist} km%0A💳 *Prix:* ${lastCalc.price} €`);
+      await sendToTelegram(`🆕 *Nouvelle commande (Carte)*
+👤 *Nom:* ${name}
+📞 *Téléphone:* ${phone}
+🕒 *Heure:* ${time}
+📍 *De:* ${lastCalc.from}
+🏁 *À:* ${lastCalc.to}
+📦 *Distance:* ${lastCalc.dist} km
+💳 *Prix:* ${lastCalc.price} €`);
       const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:lastCalc.price,name,phone})});
       const data=await response.json();
-      if(data.checkout_url) window.open(data.checkout_url,"_blank"); else alert("Erreur de paiement.");
+      if(data.checkout_url)window.open(data.checkout_url,"_blank");else alert("Erreur de paiement.");
     });
 
     $("#from").value="2 Rue Beaussier, Toulon";
