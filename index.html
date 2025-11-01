@@ -35,7 +35,7 @@ img{max-width:100%;height:auto;display:block}
 .section{padding:18px 0;width:100%}
 .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);width:100%}
 label{display:block;margin-top:10px;font-weight:700}
-input,select{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
+input,select{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none;background:#fff}
 input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .service{border:1px solid #e5e7ef;border-radius:10px;padding:8px;font-size:14px}
@@ -48,8 +48,8 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
 .qr-section{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;justify-items:center;width:100%;padding:18px}
 .qr-block{display:grid;place-items:center;padding:18px}
-.qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
-.banner{background:#fff;color:#32006b;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:20px;text-align:center;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;height:180px;width:100%}
+.qr-block img{width:160px;height:160px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
+.banner{background:#fff;color:#32006b;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:20px;text-align:center;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;flex-direction:column;height:160px;width:100%;line-height:1.4}
 .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
 .footer{color:#cfc5ff;text-align:center;margin:8px 0 24px 0}
 .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:100%}
@@ -160,7 +160,7 @@ AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atush
 <div style="margin-top:6px;color:#fff;font-weight:700;text-align:center">alexlivraison.shop</div>
 </div>
 <div class="banner">
-🎉 <br>Chez nous, les partenaires bénéficient de <br><strong>grandes réductions</strong><br>et les <strong>5 premières livraisons sont gratuites !</strong>
+🎉 Chez nous, les partenaires bénéficient de <br><strong>grandes réductions</strong><br>et les <strong>5 premières livraisons sont gratuites !</strong>
 </div>
 </div>
 
@@ -189,6 +189,7 @@ let lastCalc=null;
 
 function euro(v){return v.toFixed(2).replace(".", ",")+" €";}
 
+window.addEventListener("DOMContentLoaded",()=>{
 const timeSel=$("#time");
 const now=new Date();
 for(let i=0;i<48;i++){
@@ -199,6 +200,7 @@ opt.value=label;
 opt.textContent=label;
 timeSel.appendChild(opt);
 }
+});
 
 async function geocode(q){
 const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;
@@ -276,5 +278,4 @@ const name=$("#clientName").value.trim()||"Non précisé";
 const phone=$("#clientPhone").value.trim();
 const time=$("#time").value;
 const date=$("#date").value;
-await sendToTelegram(`🆕 Nouvelle commande (Carte)\n👤 Nom: ${name}\n📞 Téléphone: ${phone}\n📅 Date: ${date}\n🕒 Heure: ${time}\n📍 De: ${lastCalc.from}\n🏁 À: ${lastCalc.to}\n📦 Distance: ${lastCalc.dist} km\n💳 Prix: ${lastCalc.price} €`);
-const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{
+await sendToTelegram(`🆕 Nouvelle commande (Carte)\n👤 Nom: ${name}\n📞 Téléphone: ${phone}\n📅 Date: ${date}\n🕒 Heure: ${time}\n📍 De: ${lastCalc.from}\n🏁 À: ${lastCalc.to}\n📦 Distance: ${lastCalc.dist} km\n💳 Prix: ${lastCalc.price
