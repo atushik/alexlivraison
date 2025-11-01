@@ -24,7 +24,7 @@ app.post("/api/pay", async (req, res) => {
         {
           price_data: {
             currency: "eur",
-            product_data: { name: `AlexLivraison - ${name}` },
+            product_data: { name: `Livraison AlexLivraison - ${name}` },
             unit_amount: Math.round(amount * 100),
           },
           quantity: 1,
@@ -40,8 +40,8 @@ app.post("/api/pay", async (req, res) => {
 
     res.json({ checkout_url: session.url });
   } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).json({ error: "Payment processing failed" });
+    console.error("Stripe error:", error);
+    res.status(500).json({ error: "Payment creation failed" });
   }
 });
 
