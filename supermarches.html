@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Partenaires • Supermarchés | AlexLivraison</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<style>
+:root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
+html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
+*{box-sizing:border-box}img{max-width:100%;height:auto;display:block}
+.wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
+.topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
+.topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px;color:#fff}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:120px;height:auto}
+.btn{display:inline-block;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
+.btn-primary{background:#6b23ff;color:#fff}
+.btn-ghost{background:#ffffff14;color:#fff;border:1px solid #ffffff33}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);margin:14px 0}
+.h1{color:#fff;margin:18px 0 8px 0;font-weight:900}
+.h2{margin:0 0 12px 0;font-weight:900}
+.muted{color:#cfc5ff}
+label{display:block;margin-top:10px;font-weight:700}
+input,select,textarea{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
+textarea{min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.section-title{color:#fff;font-weight:900;margin-top:22px}
+.lock{opacity:.5;pointer-events:none;filter:grayscale(20%)}
+.row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sig-wrap{border:1px dashed #b6b4d6;border-radius:12px;overflow:hidden;background:#fff}
+canvas#signature{width:100%;height:220px;display:block;touch-action:none}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
+.item{background:#fff;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.12);padding:12px}
+.item img{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;background:#f3f3f8}
+.badge{display:inline-block;background:#eae6ff;color:#3a2a88;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner wrap">
+    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
+    <div>
+      <a class="btn btn-ghost" href="index.html" target="_blank">Ouvrir le site</a>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <h1 class="h1">Supermarchés • Portail Partenaire</h1>
+
+  <section class="card">
+    <h2 class="h2">Présentation</h2>
+    <div class="muted">Livraisons rapides pour vos clients à Toulon & La Seyne. Retrait en magasin, température contrôlée, créneaux sur-mesure et facturation mensuelle.</div>
+    <div class="row-actions">
+      <span class="badge">Service B2B</span>
+      <span class="badge">Link Stripe</span>
+      <span class="badge">Suivi en temps réel</span>
+    </div>
+  </section>
+
+  <section id="step1" class="card">
+    <h2 class="h2">Formulaire de collaboration</h2>
+    <div class="grid2">
+      <div>
+        <label>Nom de l’enseigne</label>
+        <input id="f_enseigne" placeholder="Ex: E.Leclerc, Carrefour, Intermarché">
+      </div>
+      <div>
+        <label>Catégorie</label>
+        <input id="f_cat" value="Supermarché" readonly>
+      </div>
+    </div>
+    <div class="grid3">
+      <div>
+        <label>Nom et prénom du responsable</label>
+        <input id="f_resp" placeholder="Nom Prénom">
+      </div>
+      <div>
+        <label>SIREN</label>
+        <input id="f_siren" placeholder="9 chiffres">
+      </div>
+      <div>
+        <label>SIRET</label>
+        <input id="f_siret" placeholder="14 chiffres">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label>Adresse complète</label>
+        <input id="f_addr" placeholder="N°, Rue, Ville">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="f_tel" placeholder="+33 6 12 34 56 78">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label>E-mail</label>
+        <input id="f_mail" placeholder="contact@exemple.fr">
+      </div>
+      <div>
+        <label>Message</label>
+        <input id="f_msg" placeholder="Votre besoin">
+      </div>
+    </div>
+    <div class="row-actions">
+      <button id="btn_step1" class="btn btn-primary">Valider l’étape 1</button>
+    </div>
+  </section>
+
+  <section id="step2" class="card lock">
+    <h2 class="h2">Convention de Collaboration</h2>
+    <div class="grid2">
+      <div>
+        <label>Nom du signataire</label>
+        <input id="sign_name" placeholder="Nom Prénom">
+      </div>
+      <div>
+        <label>Date</label>
+        <input id="sign_date" type="date">
+      </div>
+    </div>
+    <div class="sig-wrap" style="margin-top:10px">
+      <canvas id="signature"></canvas>
+    </div>
+    <div class="row-actions">
+      <button id="sig_clear" class="btn">Effacer la signature</button>
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="agree"> J’accepte la convention</label>
+    </div>
+    <div class="row-actions">
+      <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
+      <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Partenaire.pdf" style="display:none">Télécharger (Partenaire)</a>
+      <a id="dl_alex" class="btn" download="Convention_AlexLivraison_Alex.pdf" style="display:none">Télécharger (AlexLivraison)</a>
+    </div>
+    <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
+  </section>
+
+  <section id="step3" class="card lock">
+    <h2 class="h2">Ajout de produits</h2>
+    <div class="grid3">
+      <div>
+        <label>Nom du produit</label>
+        <input id="p_name" placeholder="Ex: Panier fruits">
+      </div>
+      <div>
+        <label>Prix (€)</label>
+        <input id="p_price" type="number" step="0.01" placeholder="0.00">
+      </div>
+      <div>
+        <label>Photo</label>
+        <input id="p_photo" type="file" accept="image/*">
+      </div>
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea id="p_desc" placeholder="Détails du produit"></textarea>
+    </div>
+    <div class="row-actions">
+      <button id="add_product" class="btn btn-primary">Ajouter le produit</button>
+    </div>
+    <div id="list" class="list"></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const step1Btn=document.getElementById('btn_step1');const step2=document.getElementById('step2');const step3=document.getElementById('step3');
+const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')}
+const signName=document.getElementById('sign_name');const signDate=document.getElementById('sign_date');signDate.valueAsDate=new Date()
+const canvas=document.getElementById('signature');const ctx=canvas.getContext('2d');let drawing=false;function resizeCanvas(){const r=canvas.getBoundingClientRect();const img=ctx.getImageData(0,0,canvas.width,canvas.height);canvas.width=r.width;canvas.height=220;ctx.putImageData(img,0,0)}window.addEventListener('resize',resizeCanvas);resizeCanvas()
+function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
+function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
+function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
+function end(){drawing=false}
+canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchend',end)
+document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)}
+const agree=document.getElementById('agree');const gen=document.getElementById('gen_pdf');const dlPartner=document.getElementById('dl_partner');const dlAlex=document.getElementById('dl_alex');
+gen.onclick=async()=>{for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire de collaboration.');return}}if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}if(!agree.checked){alert('Veuillez accepter la convention.');return}
+const sigData=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'pt',format:'a4'});const margin=48;let y=margin;doc.setFont('helvetica','bold');doc.setFontSize(18);doc.text('Convention de Collaboration',margin,y);y+=22;doc.setFont('helvetica','');doc.setFontSize(12);
+const enseigne=document.getElementById('f_enseigne').value.trim();const cat=document.getElementById('f_cat').value.trim();const resp=document.getElementById('f_resp').value.trim();const siren=document.getElementById('f_siren').value.trim();const siret=document.getElementById('f_siret').value.trim();const addr=document.getElementById('f_addr').value.trim();const tel=document.getElementById('f_tel').value.trim();const mail=document.getElementById('f_mail').value.trim();
+const lines=[`Entre AlexLivraison et ${enseigne} (${cat}).`,`Responsable: ${resp}`,`SIREN: ${siren} — SIRET: ${siret}`,`Adresse: ${addr}`,`Téléphone: ${tel} — E-mail: ${mail}`,'Objet: Prestations de collecte et livraison locale pour la clientèle du partenaire.','Tarifs: selon devis ou barème en vigueur. Facturation mensuelle.','Engagements: délais, qualité, confidentialité des données clients.','Durée: à compter de la signature, résiliable avec préavis de 15 jours.','Signature électronique ci-dessous.'];
+lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16})
+y+=10;doc.text(`Date: ${signDate.value}`,margin,y);y+=8;doc.text(`Signataire: ${signName.value}`,margin,y);y+=12;doc.addImage(sigData,'PNG',margin,y,220,110);y+=130;doc.setDrawColor(210);doc.line(margin,y,margin+520,y)
+const pdf=doc.output('blob');const url=URL.createObjectURL(pdf);dlPartner.href=url;dlAlex.href=url;dlPartner.style.display='inline-block';dlAlex.style.display='inline-block';step3.classList.remove('lock')}
+const addBtn=document.getElementById('add_product');const list=document.getElementById('list');addBtn.onclick=()=>{if(step3.classList.contains('lock')){alert('Remplissez d’abord les étapes 1 et 2.');return}const name=document.getElementById('p_name').value.trim();const price=document.getElementById('p_price').value.trim();const desc=document.getElementById('p_desc').value.trim();const file=document.getElementById('p_photo').files[0];if(!name||!price){alert('Nom et prix requis.');return}const card=document.createElement('div');card.className='item';const img=document.createElement('img');if(file){const rr=new FileReader();rr.onload=e=>{img.src=e.target.result};rr.readAsDataURL(file)}else{img.src='';img.style.background='#eee';img.style.height='80px'}const h=document.createElement('div');h.style.fontWeight='800';h.textContent=name;const p=document.createElement('div');p.textContent=Number(price).toFixed(2)+' €';const d=document.createElement('div');d.style.opacity='.8';d.style.fontSize='14px';d.textContent=desc||'';card.appendChild(img);card.appendChild(h);card.appendChild(p);card.appendChild(d);list.prepend(card);document.getElementById('p_name').value='';document.getElementById('p_price').value='';document.getElementById('p_desc').value='';document.getElementById('p_photo').value=''}
+</script>
+</body>
+</html>
