@@ -46,14 +46,16 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 #payCash{background:#ececf4}
 #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:10px;padding:12px}
 #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
-.qr-block{display:grid;place-items:center;padding:18px;width:100%}
-.qr-block img{width:220px;height:220px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
+.qr-section{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;justify-items:center;width:100%;padding:18px}
+.qr-block{display:grid;place-items:center;padding:18px}
+.qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
+.banner{background:#fff;color:#32006b;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:20px;text-align:center;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;height:180px;width:100%}
 .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
 .footer{color:#cfc5ff;text-align:center;margin:8px 0 24px 0}
 .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:100%}
 .partner{background:#fff;border-radius:12px;padding:18px;display:grid;place-items:center;height:90px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
 .partner span{opacity:.75;text-align:center}
-@media(max-width:900px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.hero{text-align:center}}
+@media(max-width:900px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.qr-section{grid-template-columns:1fr}.hero{text-align:center}}
 </style>
 </head>
 <body>
@@ -152,9 +154,14 @@ AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atush
 </div>
 </section>
 
+<div class="qr-section">
 <div class="qr-block">
 <img src="QR-code.jpg" alt="QR AlexLivraison">
 <div style="margin-top:6px;color:#fff;font-weight:700;text-align:center">alexlivraison.shop</div>
+</div>
+<div class="banner">
+🎉 <br>Chez nous, les partenaires bénéficient de <br><strong>grandes réductions</strong><br>et les <strong>5 premières livraisons sont gratuites !</strong>
+</div>
 </div>
 
 <div class="year">2025</div>
@@ -270,10 +277,4 @@ const phone=$("#clientPhone").value.trim();
 const time=$("#time").value;
 const date=$("#date").value;
 await sendToTelegram(`🆕 Nouvelle commande (Carte)\n👤 Nom: ${name}\n📞 Téléphone: ${phone}\n📅 Date: ${date}\n🕒 Heure: ${time}\n📍 De: ${lastCalc.from}\n🏁 À: ${lastCalc.to}\n📦 Distance: ${lastCalc.dist} km\n💳 Prix: ${lastCalc.price} €`);
-const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:lastCalc.price,name,phone})});
-const data=await response.json();
-if(data.checkout_url)window.open(data.checkout_url,"_blank");else alert("Erreur de paiement.");
-});
-</script>
-</body>
-</html>
+const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{
