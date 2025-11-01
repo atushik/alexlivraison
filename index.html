@@ -2,20 +2,20 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>AlexLivraison</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
 <style>
 :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
-html,body{height:100%}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
+html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}
 *{box-sizing:border-box}
-img{max-width:100%;height:auto}
-.wrap{max-width:1060px;margin:0 auto;padding:16px}
-.topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
+img{max-width:100%;height:auto;display:block}
+.wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
+.topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
 .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
-.brand img{width:120px;height:auto;display:block}
+.brand img{width:120px;height:auto}
 .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer}
 .hamb span,.hamb::before,.hamb::after{content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.2s}
 .hamb::before{transform:translateY(-6px)}
@@ -26,14 +26,14 @@ img{max-width:100%;height:auto}
 .drawer.open{pointer-events:auto}
 .drawer.open .shade{opacity:1}
 .drawer.open .panel{left:0}
-.drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22}
+.drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center}
 .drawer .langs{margin-top:auto;display:flex;gap:8px}
 .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
 .hero{padding:28px 16px 8px;color:#fff;text-align:center}
-.h2{color:#fff;margin:0 0 12px 0;font-weight:900}
-.muted{color:#cfc5ff;opacity:1}
-.section{padding:18px 0}
-.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22)}
+.h2{color:#fff;margin:0 0 12px 0;font-weight:900;text-align:center}
+.muted{color:#cfc5ff;opacity:1;text-align:center}
+.section{padding:18px 0;width:100%}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);width:100%}
 label{display:block;margin-top:10px;font-weight:700}
 input,select{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
 input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
@@ -45,15 +45,15 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 #payCard{background:#4caf50;color:#fff}
 #payCash{background:#ececf4}
 #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:10px;padding:12px}
-#map{display:none;height:320px;border-radius:12px;margin-top:12px}
-.qr-block{display:grid;place-items:center;padding:18px}
+#map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
+.qr-block{display:grid;place-items:center;padding:18px;width:100%}
 .qr-block img{width:220px;height:220px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:12px}
 .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
 .footer{color:#cfc5ff;text-align:center;margin:8px 0 24px 0}
-.partners{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:100%}
 .partner{background:#fff;border-radius:12px;padding:18px;display:grid;place-items:center;height:90px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
-.partner span{opacity:.75}
-@media(max-width:900px){.row{grid-template-columns:1fr}}
+.partner span{opacity:.75;text-align:center}
+@media(max-width:900px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.hero{text-align:center}}
 </style>
 </head>
 <body>
@@ -106,14 +106,8 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 </select></div>
 </div>
 <div class="grid">
-<div>
-<label>Date de livraison</label>
-<input type="date" id="date">
-</div>
-<div>
-<label>Heure de livraison souhaitée</label>
-<select id="time"></select>
-</div>
+<div><label>Date de livraison</label><input type="date" id="date"></div>
+<div><label>Heure de livraison souhaitée</label><select id="time"></select></div>
 </div>
 <label>Services additionnels</label>
 <div class="grid">
@@ -147,10 +141,10 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;mar
 <section id="contact" class="section">
 <h2 class="h2">Contact</h2>
 <div class="card">
-<div class="muted" style="margin-bottom:10px;color:#333">
+<div class="muted" style="margin-bottom:10px;color:#333;text-align:center">
 AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
 </div>
-<div class="contact-links">
+<div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">
 <a href="https://wa.me/33677171188" target="_blank">💬 WhatsApp</a>
 <a href="tel:+33677171188">📲 Appeler</a>
 <a href="mailto:atushbek020185@gmail.com">✉️ E-mail</a>
@@ -160,7 +154,7 @@ AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atush
 
 <div class="qr-block">
 <img src="QR-code.jpg" alt="QR AlexLivraison">
-<div style="margin-top:6px;color:#fff;font-weight:700">alexlivraison.shop</div>
+<div style="margin-top:6px;color:#fff;font-weight:700;text-align:center">alexlivraison.shop</div>
 </div>
 
 <div class="year">2025</div>
