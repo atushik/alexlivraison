@@ -6,30 +6,14 @@
   <title>Partenaires • Boulangeries | AlexLivraison</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <style>
-    :root {
-      --violet:#6b23ff;
-      --violet-dark:#32006b;
-      --green:#4caf50;
-      --ring:#ffffff35;
-    }
-    html,body {
-      height:100%;
-      margin:0;
-      padding:0;
-      overflow-x:hidden;
-    }
-    body {
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:#222;
-      background:linear-gradient(180deg,#32006b,#7a2cf5);
-      background-attachment:fixed;
-    }
+    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
+    html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
     *{box-sizing:border-box}
     img{max-width:100%;height:auto;display:block}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
     .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
     .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px;color:#fff}
-    .brand{display:flex;align-items:center;gap:10px}
     .brand img{width:120px;height:auto}
     .btn{display:inline-block;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
     .btn-primary{background:#6b23ff;color:#fff}
@@ -55,7 +39,6 @@
     .notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
   </style>
 </head>
-
 <body>
   <div class="topbar">
     <div class="topbar-inner wrap">
@@ -69,13 +52,11 @@
 
     <section class="card">
       <h2 class="h2">Présentation</h2>
-      <div class="muted">
-        Livraison de pains, viennoiseries et pâtisseries aux particuliers et entreprises, avec service matinal et respect des délais.
-      </div>
+      <div class="muted">Livraison quotidienne de produits boulangers aux clients du partenaire. Respect de la confidentialité et de la qualité.</div>
       <div class="row-actions">
+        <span class="badge">Fraîcheur</span>
         <span class="badge">Ponctualité</span>
-        <span class="badge">Service Matinal</span>
-        <span class="badge">Fiabilité</span>
+        <span class="badge">Proximité</span>
       </div>
     </section>
 
@@ -85,23 +66,19 @@
         <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
         <div><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly></div>
       </div>
-
       <div class="grid3">
         <div><label>Nom et prénom du responsable</label><input id="f_resp"></div>
         <div><label>SIREN</label><input id="f_siren"></div>
         <div><label>SIRET</label><input id="f_siret"></div>
       </div>
-
       <div class="grid2">
         <div><label>Adresse complète</label><input id="f_addr"></div>
         <div><label>Téléphone</label><input id="f_tel"></div>
       </div>
-
       <div class="grid2">
         <div><label>E-mail</label><input id="f_mail"></div>
         <div><label>Message</label><input id="f_msg"></div>
       </div>
-
       <div class="row-actions">
         <button id="btn_step1" class="btn btn-primary">Valider l’étape 1</button>
       </div>
@@ -113,24 +90,15 @@
         <div><label>Nom du signataire</label><input id="sign_name"></div>
         <div><label>Date</label><input id="sign_date" type="date"></div>
       </div>
-
-      <div class="sig-wrap" style="margin-top:10px">
-        <canvas id="signature"></canvas>
-      </div>
-
+      <div class="sig-wrap" style="margin-top:10px"><canvas id="signature"></canvas></div>
       <div class="row-actions">
         <button id="sig_clear" class="btn">Effacer la signature</button>
-        <label style="display:flex;align-items:center;gap:8px">
-          <input type="checkbox" id="agree"> J’accepte la convention
-        </label>
+        <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="agree"> J’accepte la convention</label>
       </div>
-
       <div class="row-actions">
         <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
         <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Boulangerie.pdf" style="display:none">Télécharger (Partenaire)</a>
-        <a id="dl_alex" class="btn" download="Convention_AlexLivraison_Alex.pdf" style="display:none">Télécharger (AlexLivraison)</a>
       </div>
-
       <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
     </section>
 
@@ -141,53 +109,37 @@
         <div><label>Prix (€)</label><input id="p_price" type="number" step="0.01"></div>
         <div><label>Photo</label><input id="p_photo" type="file" accept="image/*"></div>
       </div>
-
       <div><label>Description</label><textarea id="p_desc"></textarea></div>
-
-      <div class="row-actions"><button id="add_product" class="btn btn-primary">Ajouter le produit</button></div>
+      <div class="row-actions">
+        <button id="add_product" class="btn btn-primary">Ajouter le produit</button>
+      </div>
       <div id="list" class="list"></div>
     </section>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TELEGRAM_CHAT_ID="7129872491";
     const step1Btn=document.getElementById('btn_step1');
     const step2=document.getElementById('step2');
     const step3=document.getElementById('step3');
     const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-
-    step1Btn.onclick=()=>{
-      for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}
-      step2.classList.remove('lock');
-    }
+    step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
 
     const signName=document.getElementById('sign_name');
     const signDate=document.getElementById('sign_date');
     signDate.valueAsDate=new Date();
-
     const canvas=document.getElementById('signature');
     const ctx=canvas.getContext('2d');
     let drawing=false;
-
-    function resizeCanvas(){
-      const r=canvas.getBoundingClientRect();
-      const img=ctx.getImageData(0,0,canvas.width,canvas.height);
-      canvas.width=r.width;
-      canvas.height=220;
-      ctx.putImageData(img,0,0);
-    }
+    function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
     window.addEventListener('resize',resizeCanvas);
     resizeCanvas();
-
-    function pos(e){
-      const rect=canvas.getBoundingClientRect();
-      const t=e.touches?e.touches[0]:e;
-      return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)};
-    }
-
-    function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
-    function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke();}
-    function end(){drawing=false;}
+    function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
+    function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
+    function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
+    function end(){drawing=false}
     canvas.addEventListener('mousedown',start);
     canvas.addEventListener('mousemove',move);
     canvas.addEventListener('mouseup',end);
@@ -195,28 +147,25 @@
     canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
     canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
     canvas.addEventListener('touchend',end);
-
-    document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);};
-
+    document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
     const agree=document.getElementById('agree');
     const gen=document.getElementById('gen_pdf');
     const dlPartner=document.getElementById('dl_partner');
-    const dlAlex=document.getElementById('dl_alex');
 
-    gen.onclick=async ()=>{
-      for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire de collaboration.');return}}
+    gen.onclick=async()=>{
+      for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
       if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
       if(!agree.checked){alert('Veuillez accepter la convention.');return}
-
       const sigData=canvas.toDataURL('image/png');
       const {jsPDF}=window.jspdf;
       const doc=new jsPDF({unit:'pt',format:'a4'});
       const margin=48;
       let y=margin;
+      doc.addImage("logo.jpg","JPEG",430,20,100,100);
       doc.setFont('helvetica','bold');
       doc.setFontSize(18);
       doc.text('Convention de Collaboration',margin,y);
-      y+=22;
+      y+=30;
       doc.setFont('helvetica','');
       doc.setFontSize(12);
 
@@ -235,88 +184,62 @@
         `SIREN: ${siren} — SIRET: ${siret}`,
         `Adresse: ${addr}`,
         `Téléphone: ${tel} — E-mail: ${mail}`,
-        'Objet: Livraison quotidienne de produits boulangers aux clients du partenaire.',
-        'Offre: 5 premières livraisons gratuites. Engagement de collaboration d’un an.',
-        'Période d’essai: 2 semaines renouvelables une fois.',
-        'Engagements: respect des délais, confidentialité, qualité de service.',
+        '',
+        '--- Informations AlexLivraison ---',
+        'Responsable: Atabek ZAKIROV',
+        'SIREN: 953281288 — SIRET: 95328128800011',
+        'Adresse: 241 Rue Le Corbusier, 83500 La Seyne-sur-Mer',
+        'Téléphone: +33 6 77 17 11 88 — E-mail: atushbek020185@gmail.com',
+        '',
+        'Offre et durée:',
+        'Le partenaire bénéficie de 5 livraisons gratuites à la signature.',
+        'Collaboration d’un an, reconductible, avec période d’essai de 2 semaines.',
+        '',
+        'Engagements:',
+        'Confidentialité, rapidité, traçabilité, qualité du service.',
+        'Préavis 15 jours en cas de rupture après la période d’essai.',
+        '',
         'Signature électronique ci-dessous.'
       ];
+
       lines.forEach(t=>{
         const split=doc.splitTextToSize(t,520);
         doc.text(split,margin,y);
         y+=split.length*16;
       });
-      y+=10;
+
+      y+=20;
       doc.text(`Date: ${signDate.value}`,margin,y);
       y+=8;
       doc.text(`Signataire: ${signName.value}`,margin,y);
       y+=12;
       doc.addImage(sigData,'PNG',margin,y,220,110);
-      y+=130;
-      doc.setDrawColor(210);
+
+      y+=140;
+      doc.text('Pour AlexLivraison',margin+300,y);
+      y+=16;
+      doc.text('Nom: Atabek ZAKIROV',margin+300,y);
+      y+=16;
+      doc.text(`Date: ${signDate.value}`,margin+300,y);
+      y+=6;
+      doc.addImage("signature-alex.jpg","JPEG",margin+300,y,150,70);
+      doc.addImage("stamp-alex.jpg","JPEG",margin+460,y-20,90,90);
+
+      y+=100;
+      doc.setDrawColor(200);
       doc.line(margin,y,margin+520,y);
 
-      const pdf=doc.output('blob');
-      const url=URL.createObjectURL(pdf);
+      const pdfBlob=doc.output('blob');
+      const url=URL.createObjectURL(pdfBlob);
       dlPartner.href=url;
-      dlAlex.href=url;
       dlPartner.style.display='inline-block';
-      dlAlex.style.display='inline-block';
       step3.classList.remove('lock');
 
-      // --- Envoi automatique à Telegram ---
-      const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-      const TELEGRAM_CHAT_ID="7129872491";
-
       const formData=new FormData();
-      formData.append("document",pdf);
-      formData.append("caption",`🆕 Nouvelle convention signée (Boulangerie)\n👤 ${signName.value}\n🏢 ${enseigne}`);
-
-      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument?chat_id=${TELEGRAM_CHAT_ID}`,{
-        method:"POST",
-        body:formData
-      });
-    };
-
-    const addBtn=document.getElementById('add_product');
-    const list=document.getElementById('list');
-    addBtn.onclick=()=>{
-      if(step3.classList.contains('lock')){alert('Remplissez d’abord les étapes 1 et 2.');return}
-      const name=document.getElementById('p_name').value.trim();
-      const price=document.getElementById('p_price').value.trim();
-      const desc=document.getElementById('p_desc').value.trim();
-      const file=document.getElementById('p_photo').files[0];
-      if(!name||!price){alert('Nom et prix requis.');return}
-      const card=document.createElement('div');
-      card.className='item';
-      const img=document.createElement('img');
-      if(file){
-        const rr=new FileReader();
-        rr.onload=e=>{img.src=e.target.result};
-        rr.readAsDataURL(file);
-      }else{
-        img.src='';
-        img.style.background='#eee';
-        img.style.height='80px';
-      }
-      const h=document.createElement('div');
-      h.style.fontWeight='800';
-      h.textContent=name;
-      const p=document.createElement('div');
-      p.textContent=Number(price).toFixed(2)+' €';
-      const d=document.createElement('div');
-      d.style.opacity='.8';
-      d.style.fontSize='14px';
-      d.textContent=desc||'';
-      card.appendChild(img);
-      card.appendChild(h);
-      card.appendChild(p);
-      card.appendChild(d);
-      list.prepend(card);
-      document.getElementById('p_name').value='';
-      document.getElementById('p_price').value='';
-      document.getElementById('p_desc').value='';
-      document.getElementById('p_photo').value='';
+      formData.append("chat_id",TELEGRAM_CHAT_ID);
+      formData.append("document",new File([pdfBlob],"Convention_Boulangerie.pdf",{type:"application/pdf"}));
+      formData.append("caption",`🧾 Nouvelle convention signée (Boulangerie)\n👤 ${signName.value}\n🏢 ${enseigne}`);
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:"POST",body:formData});
     };
   </script>
 </body>
