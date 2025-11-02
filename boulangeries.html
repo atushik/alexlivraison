@@ -121,6 +121,7 @@
   <script>
     const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID="7129872491";
+
     const step1Btn=document.getElementById('btn_step1');
     const step2=document.getElementById('step2');
     const step3=document.getElementById('step3');
@@ -130,6 +131,7 @@
     const signName=document.getElementById('sign_name');
     const signDate=document.getElementById('sign_date');
     signDate.valueAsDate=new Date();
+
     const canvas=document.getElementById('signature');
     const ctx=canvas.getContext('2d');
     let drawing=false;
@@ -148,6 +150,7 @@
     canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
     canvas.addEventListener('touchend',end);
     document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
+
     const agree=document.getElementById('agree');
     const gen=document.getElementById('gen_pdf');
     const dlPartner=document.getElementById('dl_partner');
@@ -156,11 +159,13 @@
       for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
       if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
       if(!agree.checked){alert('Veuillez accepter la convention.');return}
+
       const sigData=canvas.toDataURL('image/png');
       const {jsPDF}=window.jspdf;
       const doc=new jsPDF({unit:'pt',format:'a4'});
       const margin=48;
       let y=margin;
+
       doc.addImage("logo.jpg","JPEG",430,20,100,100);
       doc.setFont('helvetica','bold');
       doc.setFontSize(18);
@@ -202,11 +207,7 @@
         'Signature électronique ci-dessous.'
       ];
 
-      lines.forEach(t=>{
-        const split=doc.splitTextToSize(t,520);
-        doc.text(split,margin,y);
-        y+=split.length*16;
-      });
+      lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
 
       y+=20;
       doc.text(`Date: ${signDate.value}`,margin,y);
@@ -222,7 +223,7 @@
       y+=16;
       doc.text(`Date: ${signDate.value}`,margin+300,y);
       y+=6;
-      doc.addImage("signature-alex.jpg","JPEG",margin+300,y,150,70);
+      doc.addImage("sinature-alex.jpg","JPEG",margin+300,y,150,70);
       doc.addImage("stamp-alex.jpg","JPEG",margin+460,y-20,90,90);
 
       y+=100;
