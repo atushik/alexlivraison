@@ -97,9 +97,7 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     <div class="sig-wrap" style="margin-top:10px"><canvas id="signature"></canvas></div>
     <div class="row-actions">
       <button id="sig_clear" class="btn">Effacer la signature</button>
-      <label style="display:flex;align-items:center;gap:8px">
-        <input type="checkbox" id="agree"> J’accepte la convention
-      </label>
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="agree"> J’accepte la convention</label>
     </div>
     <div class="row-actions">
       <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
@@ -124,6 +122,9 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+const BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const CHAT_ID="7129872491";
+
 const step1Btn=document.getElementById('btn_step1');
 const step2=document.getElementById('step2');
 const step3=document.getElementById('step3');
@@ -157,9 +158,10 @@ const gen=document.getElementById('gen_pdf');
 const dlPartner=document.getElementById('dl_partner');
 const dlAlex=document.getElementById('dl_alex');
 gen.onclick=async()=>{
-  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire de collaboration.');return}}
+  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
   if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
   if(!agree.checked){alert('Veuillez accepter la convention.');return}
+
   const sigData=canvas.toDataURL('image/png');
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'pt',format:'a4'});
@@ -190,10 +192,10 @@ gen.onclick=async()=>{
     `Téléphone: ${tel} — E-mail: ${mail}`,
     'Objet: Livraison de repas et produits alimentaires selon la réglementation.',
     'Offre spéciale: 5 livraisons gratuites lors de la signature.',
-    'Engagement: partenariat d’une durée d’un an avec une période d’essai de 2 semaines.',
+    'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
     'Tarifs: barème en vigueur, facturation mensuelle.',
     'Engagements: ponctualité, qualité et confidentialité.',
-    'Durée: à compter de la signature, préavis de 15 jours pour résiliation.',
+    'Durée: à compter de la signature, préavis 15 jours pour résiliation.',
     'Signature électronique ci-dessous.'
   ];
   lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
@@ -208,22 +210,18 @@ gen.onclick=async()=>{
   await Promise.all([new Promise(r=>mySig.onload=r),new Promise(r=>stamp.onload=r)]);
   doc.addImage(mySig,'JPEG',350,y-50,130,70);
   doc.addImage(stamp,'JPEG',470,y-40,100,100);
-  y+=120;
-  doc.setDrawColor(210);doc.line(margin,y,margin+520,y);
 
-  const pdf=doc.output('blob');
-  const url=URL.createObjectURL(pdf);
+  const pdfBlob=doc.output('blob');
+  const url=URL.createObjectURL(pdfBlob);
   dlPartner.href=url;dlAlex.href=url;
-  dlPartner.style.display='inline-block';dlAlex.style.display='inline-block';
+  dlPartner.style.display='inline-block';
+  dlAlex.style.display='inline-block';
   step3.classList.remove('lock');
 
-  await fetch(`https://api.telegram.org/bot8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA/sendDocument`,{
-    method:'POST',
-    body:new FormData(Object.assign(document.createElement('form'),{
-      chat_id:'7129872491',
-      document:new File([pdf],'Convention_Restaurant.pdf',{type:'application/pdf'})
-    }))
-  });
+  const formData=new FormData();
+  formData.append('chat_id',CHAT_ID);
+  formData.append('document',new File([pdfBlob],'Convention_Restaurant.pdf',{type:'application/pdf'}));
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
 };
 
 const addBtn=document.getElementById('add_product');
