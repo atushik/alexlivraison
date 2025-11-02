@@ -167,15 +167,13 @@ gen.onclick=async()=>{
   const mail=document.getElementById('f_mail').value.trim();
 
   const sigData=canvas.toDataURL('image/png');
-
   const logo=await loadImage('logo.jpg');
-  const alexSig=await loadImage('alex44.jpg');
   const stamp=await loadImage('stamp-alex.jpg');
 
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'pt',format:'a4'});
-  const margin=48; let y=30;
-  doc.addImage(logo,'JPEG',margin,30,120,36); y=90;
+  const margin=48; let y=40;
+  doc.addImage(logo,'JPEG',margin,40,100,30); y=90;
 
   doc.setFont('helvetica','bold');doc.setFontSize(18);
   doc.text('Convention de Collaboration',margin,y); y+=24;
@@ -200,11 +198,10 @@ gen.onclick=async()=>{
   doc.setFont('helvetica','');doc.text('Pour le Partenaire',col1,y);
   doc.text('Pour AlexLivraison',col2,y);y+=8;
   doc.line(col1,y,col1+220,y);doc.line(col2,y,col2+220,y);y+=10;
-  doc.text(`Nom: ${signName.value}`,col1,y);doc.text('Nom: AlexLivraison',col2,y);y+=14;
+  doc.text(`Nom: ${signName.value}`,col1,y);doc.text('Nom: Atabek ZAKIROV',col2,y);y+=14;
   doc.text(`Date: ${signDate.value}`,col1,y);doc.text(`Date: ${signDate.value}`,col2,y);y+=10;
   doc.addImage(sigData,'PNG',col1,y,220,110);
-  doc.addImage(alexSig,'JPEG',col2,y,220,110);
-  y+=120;doc.addImage(stamp,'JPEG',col2+150,y-100,70,70);
+  doc.addImage(stamp,'JPEG',col2+110,y-40,90,90);
 
   const pdfBlob=doc.output('blob');
   const url=URL.createObjectURL(pdfBlob);
@@ -212,32 +209,10 @@ gen.onclick=async()=>{
   step3.classList.remove('lock');
 
   const fd=new FormData();
-  fd.append('chat_id',"7129872491");
+  fd.append('chat_id',TELEGRAM_CHAT_ID);
   fd.append('caption',`Convention signée: ${enseigne} (${cat})`);
   fd.append('document',new File([pdfBlob],`Convention_${enseigne}.pdf`,{type:'application/pdf'}));
-  try{await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:'POST',body:fd})}catch(e){}
-};
-
-const addBtn=document.getElementById('add_product');
-const list=document.getElementById('list');
-addBtn.onclick=()=>{
-  if(step3.classList.contains('lock')){alert('Remplissez d’abord les étapes 1 et 2.');return}
-  const name=document.getElementById('p_name').value.trim();
-  const price=document.getElementById('p_price').value.trim();
-  const desc=document.getElementById('p_desc').value.trim();
-  const file=document.getElementById('p_photo').files[0];
-  if(!name||!price){alert('Nom et prix requis.');return}
-  const card=document.createElement('div');
-  card.className='item';
-  const img=document.createElement('img');
-  if(file){const rr=new FileReader();rr.onload=e=>{img.src=e.target.result};rr.readAsDataURL(file);}
-  else{img.src='';img.style.background='#eee';img.style.height='80px'}
-  const h=document.createElement('div');h.style.fontWeight='800';h.textContent=name;
-  const p=document.createElement('div');p.textContent=Number(price).toFixed(2)+' €';
-  const d=document.createElement('div');d.style.opacity='.8';d.style.fontSize='14px';d.textContent=desc||'';
-  card.append(img,h,p,d);list.prepend(card);
-  document.getElementById('p_name').value='';document.getElementById('p_price').value='';
-  document.getElementById('p_desc').value='';document.getElementById('p_photo').value='';
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:'POST',body:fd});
 };
 </script>
 </body>
