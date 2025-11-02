@@ -22,7 +22,7 @@ img{max-width:100%;height:auto;display:block}
 .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);margin:14px 0}
 .h1{color:#fff;margin:18px 0 8px 0;font-weight:900}
 .h2{margin:0 0 12px 0;font-weight:900}
-.muted{color:#cfc5ff}
+.muted{color:#000}
 label{display:block;margin-top:10px;font-weight:700}
 input,select,textarea{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
 textarea{min-height:110px;resize:vertical}
@@ -97,9 +97,8 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     <div class="row-actions">
       <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
       <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Partenaire.pdf" style="display:none">Télécharger (Partenaire)</a>
-      <a id="dl_alex" class="btn" download="Convention_AlexLivraison_Alex.pdf" style="display:none">Télécharger (AlexLivraison)</a>
     </div>
-    <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
+    <div class="notice">Après génération, vous pourrez télécharger la convention signée. Un exemplaire est archivé par AlexLivraison.</div>
   </section>
 
   <section id="step3" class="card lock">
@@ -121,57 +120,42 @@ const step1Btn=document.getElementById('btn_step1');
 const step2=document.getElementById('step2');
 const step3=document.getElementById('step3');
 const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')}
+step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
+
 const signName=document.getElementById('sign_name');
 const signDate=document.getElementById('sign_date');
 signDate.valueAsDate=new Date();
+
 const canvas=document.getElementById('signature');
 const ctx=canvas.getContext('2d');
 let drawing=false;
-function resizeCanvas(){const r=canvas.getBoundingClientRect();const img=ctx.getImageData(0,0,canvas.width,canvas.height);canvas.width=r.width;canvas.height=220;ctx.putImageData(img,0,0)}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
+function resizeCanvas(){const r=canvas.getBoundingClientRect();const img=ctx.getImageData(0,0,canvas.width||1,canvas.height||1);canvas.width=r.width;canvas.height=220;ctx.putImageData(img,0,0)}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();
 function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
 function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
 function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
 function end(){drawing=false}
-canvas.addEventListener('mousedown',start);
-canvas.addEventListener('mousemove',move);
-canvas.addEventListener('mouseup',end);
-canvas.addEventListener('mouseleave',end);
+canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
 canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
 canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
 canvas.addEventListener('touchend',end);
-document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)}
+document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
+
 const agree=document.getElementById('agree');
 const gen=document.getElementById('gen_pdf');
 const dlPartner=document.getElementById('dl_partner');
-const dlAlex=document.getElementById('dl_alex');
+
+const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const TELEGRAM_CHAT_ID="7129872491";
+
+function loadImage(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src})}
+function addWrapped(doc,text,x,y,maxW,lh){const lines=doc.splitTextToSize(text,maxW);doc.text(lines,x,y);return y+lines.length*lh}
 
 gen.onclick=async()=>{
-  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire de collaboration.');return}}
-  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
+  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
+  if(!signName.value.trim()){alert('Nom du signataire requis.');return}
+  if(!signDate.value){alert('Date requise.');return}
   if(!agree.checked){alert('Veuillez accepter la convention.');return}
-
-  const sigData=canvas.toDataURL('image/png');
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:'pt',format:'a4'});
-  const margin=48;
-  let y=margin;
-
-  // Ajout du logo AlexLivraison
-  const logo=await fetch('logo.jpg').then(r=>r.blob()).then(b=>new Promise(res=>{
-    const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(b);
-  }));
-  doc.addImage(logo,'JPEG',margin,margin,80,80);
-  y+=90;
-
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(18);
-  doc.text('Convention de Collaboration',margin,y);
-  y+=22;
-  doc.setFont('helvetica','');
-  doc.setFontSize(12);
 
   const enseigne=document.getElementById('f_enseigne').value.trim();
   const cat=document.getElementById('f_cat').value.trim();
@@ -182,46 +166,56 @@ gen.onclick=async()=>{
   const tel=document.getElementById('f_tel').value.trim();
   const mail=document.getElementById('f_mail').value.trim();
 
-  const lines=[
-    `Entre AlexLivraison (Micro-entreprise de livraison locale) et ${enseigne} (${cat}).`,
-    '',
-    '--- Informations AlexLivraison ---',
-    'Responsable: Atabek ZAKIROV',
-    'SIREN: 953281288 — SIRET: 95328128800011',
-    'Adresse: 241 Rue Le Corbusier, 83500 La Seyne-sur-Mer',
-    'Téléphone: +33 6 77 17 11 88 — E-mail: atushbek020185@gmail.com',
-    '',
-    '--- Informations du Partenaire ---',
-    `Responsable: ${resp}`,
-    `SIREN: ${siren} — SIRET: ${siret}`,
-    `Adresse: ${addr}`,
-    `Téléphone: ${tel} — E-mail: ${mail}`,
-    '',
-    'Objet: Prestations de collecte et de livraison locale pour la clientèle du partenaire.',
-    'Tarifs: selon devis ou barème en vigueur. Facturation mensuelle.',
-    'Engagements: délais, qualité, confidentialité des données clients.',
-    'Durée: à compter de la signature, résiliable avec préavis de 15 jours.',
-    'Signature électronique ci-dessous.'
-  ];
+  const sigData=canvas.toDataURL('image/png');
 
-  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
-  y+=10;
-  doc.text(`Date: ${signDate.value}`,margin,y);
-  y+=8;
-  doc.text(`Signataire: ${signName.value}`,margin,y);
-  y+=12;
-  doc.addImage(sigData,'PNG',margin,y,220,110);
-  y+=130;
-  doc.setDrawColor(210);
-  doc.line(margin,y,margin+520,y);
+  const logo=await loadImage('logo.jpg');
+  const alexSig=await loadImage('alex44.jpg');
+  const stamp=await loadImage('stamp-alex.jpg');
 
-  const pdf=doc.output('blob');
-  const url=URL.createObjectURL(pdf);
-  dlPartner.href=url;
-  dlAlex.href=url;
-  dlPartner.style.display='inline-block';
-  dlAlex.style.display='inline-block';
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const margin=48; let y=30;
+  doc.addImage(logo,'JPEG',margin,30,120,36); y=90;
+
+  doc.setFont('helvetica','bold');doc.setFontSize(18);
+  doc.text('Convention de Collaboration',margin,y); y+=24;
+  doc.setFont('helvetica','');doc.setFontSize(12);
+
+  y=addWrapped(doc,`Entre AlexLivraison et ${enseigne} (${cat}). Responsable: ${resp}`,margin,y,520,16);
+  y=addWrapped(doc,`SIREN: ${siren} — SIRET: ${siret}`,margin,y,520,16);
+  y=addWrapped(doc,`Adresse: ${addr}`,margin,y,520,16);
+  y=addWrapped(doc,`Téléphone: ${tel} — E-mail: ${mail}`,margin,y,520,16);
+
+  y+=8;doc.setFont('helvetica','bold');doc.text('Offre et durée',margin,y);y+=16;
+  doc.setFont('helvetica','');
+  y=addWrapped(doc,'Le partenaire bénéficie de 5 livraisons gratuites à la signature. Collaboration d’un an, reconductible, période d’essai 2 semaines.',margin,y,520,16);
+
+  y+=8;doc.setFont('helvetica','bold');doc.text('Engagements',margin,y);y+=16;
+  doc.setFont('helvetica','');
+  y=addWrapped(doc,"Confidentialité, rapidité, traçabilité, communication efficace. Préavis 15 jours en cas de rupture après la période d’essai.",margin,y,520,16);
+
+  y+=18;doc.setDrawColor(210);doc.line(margin,y,margin+520,y);y+=12;
+  doc.setFont('helvetica','bold');doc.text('Signatures',margin,y);y+=14;
+  const col1=margin;const col2=margin+280;
+  doc.setFont('helvetica','');doc.text('Pour le Partenaire',col1,y);
+  doc.text('Pour AlexLivraison',col2,y);y+=8;
+  doc.line(col1,y,col1+220,y);doc.line(col2,y,col2+220,y);y+=10;
+  doc.text(`Nom: ${signName.value}`,col1,y);doc.text('Nom: AlexLivraison',col2,y);y+=14;
+  doc.text(`Date: ${signDate.value}`,col1,y);doc.text(`Date: ${signDate.value}`,col2,y);y+=10;
+  doc.addImage(sigData,'PNG',col1,y,220,110);
+  doc.addImage(alexSig,'JPEG',col2,y,220,110);
+  y+=120;doc.addImage(stamp,'JPEG',col2+150,y-100,70,70);
+
+  const pdfBlob=doc.output('blob');
+  const url=URL.createObjectURL(pdfBlob);
+  dlPartner.href=url;dlPartner.style.display='inline-block';
   step3.classList.remove('lock');
+
+  const fd=new FormData();
+  fd.append('chat_id',"7129872491");
+  fd.append('caption',`Convention signée: ${enseigne} (${cat})`);
+  fd.append('document',new File([pdfBlob],`Convention_${enseigne}.pdf`,{type:'application/pdf'}));
+  try{await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:'POST',body:fd})}catch(e){}
 };
 
 const addBtn=document.getElementById('add_product');
@@ -236,16 +230,14 @@ addBtn.onclick=()=>{
   const card=document.createElement('div');
   card.className='item';
   const img=document.createElement('img');
-  if(file){const rr=new FileReader();rr.onload=e=>{img.src=e.target.result};rr.readAsDataURL(file)}else{img.src='';img.style.background='#eee';img.style.height='80px'}
+  if(file){const rr=new FileReader();rr.onload=e=>{img.src=e.target.result};rr.readAsDataURL(file);}
+  else{img.src='';img.style.background='#eee';img.style.height='80px'}
   const h=document.createElement('div');h.style.fontWeight='800';h.textContent=name;
   const p=document.createElement('div');p.textContent=Number(price).toFixed(2)+' €';
   const d=document.createElement('div');d.style.opacity='.8';d.style.fontSize='14px';d.textContent=desc||'';
-  card.appendChild(img);card.appendChild(h);card.appendChild(p);card.appendChild(d);
-  list.prepend(card);
-  document.getElementById('p_name').value='';
-  document.getElementById('p_price').value='';
-  document.getElementById('p_desc').value='';
-  document.getElementById('p_photo').value='';
+  card.append(img,h,p,d);list.prepend(card);
+  document.getElementById('p_name').value='';document.getElementById('p_price').value='';
+  document.getElementById('p_desc').value='';document.getElementById('p_photo').value='';
 };
 </script>
 </body>
