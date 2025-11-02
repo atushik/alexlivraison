@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Partenaires • Restaurants | AlexLivraison</title>
+<title>Partenaires • Épiceries fines | AlexLivraison</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
 <style>
 :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
@@ -50,17 +50,17 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 </div>
 
 <main class="wrap">
-  <h1 class="h1">Restaurants • Portail Partenaire</h1>
+  <h1 class="h1">Épiceries fines • Portail Partenaire</h1>
 
   <section class="card">
     <h2 class="h2">Présentation</h2>
     <div class="muted">
-      Livraison de repas, plats préparés et produits alimentaires pour les restaurants et traiteurs avec rapidité, soin et confidentialité.
+      Livraison de produits d’épicerie fine, locaux et artisanaux avec soin, rapidité et respect de la qualité.
     </div>
     <div class="row-actions">
-      <span class="badge">Fiabilité</span>
+      <span class="badge">Qualité</span>
       <span class="badge">Confidentialité</span>
-      <span class="badge">Priorité</span>
+      <span class="badge">Ponctualité</span>
     </div>
   </section>
 
@@ -68,7 +68,7 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     <h2 class="h2">Formulaire de collaboration</h2>
     <div class="grid2">
       <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
-      <div><label>Catégorie</label><input id="f_cat" value="Restaurant" readonly></div>
+      <div><label>Catégorie</label><input id="f_cat" value="Épicerie fine" readonly></div>
     </div>
     <div class="grid3">
       <div><label>Nom et prénom du responsable</label><input id="f_resp"></div>
@@ -101,7 +101,7 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     </div>
     <div class="row-actions">
       <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
-      <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Restaurant.pdf" style="display:none">Télécharger (Partenaire)</a>
+      <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Epicerie.pdf" style="display:none">Télécharger (Partenaire)</a>
       <a id="dl_alex" class="btn" download="Convention_AlexLivraison_Alex.pdf" style="display:none">Télécharger (AlexLivraison)</a>
     </div>
     <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
@@ -190,7 +190,7 @@ gen.onclick=async()=>{
     `SIREN: ${siren} — SIRET: ${siret}`,
     `Adresse: ${addr}`,
     `Téléphone: ${tel} — E-mail: ${mail}`,
-    'Objet: Livraison de repas et produits alimentaires selon la réglementation.',
+    'Objet: Livraison de produits d’épicerie fine selon la réglementation.',
     'Offre spéciale: 5 livraisons gratuites lors de la signature.',
     'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
     'Tarifs: barème en vigueur, facturation mensuelle.',
@@ -220,7 +220,7 @@ gen.onclick=async()=>{
 
   const formData=new FormData();
   formData.append('chat_id',CHAT_ID);
-  formData.append('document',new File([pdfBlob],'Convention_Restaurant.pdf',{type:'application/pdf'}));
+  formData.append('document',new File([pdfBlob],'Convention_Epicerie.pdf',{type:'application/pdf'}));
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
 };
 
