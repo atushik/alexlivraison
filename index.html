@@ -50,7 +50,8 @@
     .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%}
     .qr-block{display:grid;place-items:center;flex:1 1 240px}
     .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:10px}
-    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:20px;text-align:center;font-weight:800;line-height:1.35}
+
+.banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:20px;text-align:center;font-weight:800;line-height:1.35}
     .banner-box .l1{font-size:18px}
     .banner-box .l2{font-size:22px}
     .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
@@ -73,9 +74,9 @@
     <div class="shade" id="shade"></div>
     <div class="panel">
       <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">
-      <a href="#calc-section" id="nav-calc">Calcul & Commande</a>
-      <a href="#partners" id="nav-partners">Partenaires</a>
-      <a href="#contact" id="nav-contact">Contact</a>
+      <a href="produits.html" id="nav-calc">Produits & Partenaires</a>
+      <a href="about.html" id="nav-partners">À propos</a>
+      <a href="#" id="nav-contact">Chat</a>
       <div class="langs">
         <button id="btn-fr">FR</button>
         <button id="btn-en">EN</button>
@@ -127,7 +128,7 @@
           <div><label id="lbl-time">Heure de livraison souhaitée</label><select id="time"></select></div>
         </div>
 
-        <label id="lbl-add">Services additionnels</label>
+<label id="lbl-add">Services additionnels</label>
         <div class="grid">
           <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
           <label class="service"><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
@@ -488,6 +489,26 @@
 
     document.getElementById('btn-fr').addEventListener('click',()=>{setLang('fr');drawer.classList.remove('open');});
     document.getElementById('btn-en').addEventListener('click',()=>{setLang('en');drawer.classList.remove('open');});
+
+    document.getElementById('nav-contact').addEventListener('click', (e) => {
+      e.preventDefault();
+      drawer.classList.remove('open');
+      if (!document.getElementById('telegram-chat-iframe')) {
+        const iframe = document.createElement('iframe');
+        iframe.id = 'telegram-chat-iframe';
+        iframe.src = 'https://t.me/embed/alexlivraison_bot';
+        iframe.style.position = 'fixed';
+        iframe.style.bottom = '20px';
+        iframe.style.right = '20px';
+        iframe.style.width = '350px';
+        iframe.style.height = '500px';
+        iframe.style.border = 'none';
+        iframe.style.zIndex = '1000';
+        iframe.style.borderRadius = '12px';
+        iframe.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+        document.body.appendChild(iframe);
+      }
+    });
   </script>
 </body>
 </html>
