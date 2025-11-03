@@ -2,157 +2,79 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>Produits des Partenaires | AlexLivraison</title>
-  <meta name="description" content="Découvrez les produits de nos partenaires — restaurants, commerces et artisans locaux. Commandez facilement avec AlexLivraison.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Produits Partenaires | AlexLivraison</title>
+  <meta name="description" content="Découvrez les produits de nos partenaires locaux — commerces, restaurants, boulangeries et plus encore. Commandez facilement avec AlexLivraison.">
   <meta name="theme-color" content="#6b23ff">
-  <link rel="icon" href="logo.jpg" type="image/jpeg">
-  <link rel="apple-touch-icon" href="logo.jpg">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡%3c/text%3e%3c/svg%3e"/>
   <style>
-    :root{--violet:#6b23ff;--violet-dark:#32006b;--ring:#ffffff2d;}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center}
-    *{box-sizing:border-box}
-    a{text-decoration:none;color:inherit}
-    img{max-width:100%;height:auto;display:block}
-    header{width:100%;background:rgba(20,0,45,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--ring);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-    header img{width:120px;height:auto;border-radius:10px}
-    header .btns{display:flex;gap:10px}
-    .btn{padding:10px 14px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
-    .btn-primary{background:#6b23ff;color:#fff}
-    .btn-primary:hover{background:#5a18d9}
-    .btn-ghost{background:#ffffff18;color:#fff;border:1px solid #ffffff3b}
-    .btn-ghost:hover{background:#ffffff2a}
-    h1{text-align:center;margin:28px 10px 6px 10px;font-size:1.9rem;font-weight:900}
-    .muted{text-align:center;color:#d9d0ff;margin-bottom:18px}
-    .filters,.tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0}
-    .chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 14px;border-radius:999px;font-weight:700;cursor:pointer}
-    .chip.active{background:#fff;color:#32006b}
-    .search{display:flex;justify-content:center;margin-bottom:16px}
-    .search input{width:300px;max-width:80%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;width:100%;max-width:1080px;padding:16px}
-    .card{background:#fff;color:#222;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s}
-    .card:hover{transform:translateY(-4px)}
-    .pic{height:180px;background:#f2f2f7;display:grid;place-items:center;overflow:hidden}
-    .card .body{padding:12px 16px;flex-grow:1;display:flex;flex-direction:column;justify-content:space-between}
-    .title{font-weight:900;margin-bottom:6px}
-    .desc{opacity:.8;font-size:14px;margin-bottom:10px;min-height:36px}
-    .row{display:flex;align-items:center;justify-content:space-between}
-    .price{font-weight:900;color:#32006b}
-    footer{color:#d9d0ff;text-align:center;margin:24px 0 30px}
-    .toast{position:fixed;bottom:20px;right:20px;background:#4caf50;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.3);opacity:0;transform:translateY(10px);transition:.3s;z-index:100;font-weight:700}
-    .toast.show{opacity:1;transform:translateY(0)}
+    :root {--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;}
+    html,body {margin:0;padding:0;font-family:system-ui,Roboto,Arial;background:#f9f9fc;color:#222;}
+    header {background:linear-gradient(120deg,#32006b,#7a2cf5);color:#fff;text-align:center;padding:40px 10px;}
+    header h1 {margin:0;font-size:2em;}
+    header p {opacity:.9;}
+    .wrap {max-width:1100px;margin:auto;padding:20px;}
+    .grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
+    .card {background:#fff;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.1);overflow:hidden;display:flex;flex-direction:column;transition:.3s;}
+    .card:hover {transform:translateY(-4px);}
+    .card img {width:100%;height:180px;object-fit:cover;}
+    .card .body {padding:14px;}
+    .card h3 {margin:0;font-size:1.2em;}
+    .card p {font-size:0.9em;opacity:.8;margin:6px 0 12px 0;}
+    .price {font-weight:700;color:#32006b;margin-bottom:8px;}
+    .btn {display:inline-block;background:var(--violet);color:#fff;padding:10px 14px;border:none;border-radius:10px;text-decoration:none;text-align:center;font-weight:600;transition:.3s;}
+    .btn:hover {background:var(--violet-dark);}
+    footer {text-align:center;font-size:14px;color:#666;margin:40px 0;}
+    .toast {position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:10px 16px;border-radius:8px;opacity:0;transition:.3s;}
+    .toast.show {opacity:1;}
+    .contact-btn {
+      position:fixed;bottom:20px;left:20px;background:var(--violet);
+      color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;
+      box-shadow:0 4px 12px rgba(0,0,0,.2);font-weight:600;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="logo.jpg" alt="AlexLivraison" onclick="location.href='index.html'">
-    <div class="btns">
-      <button class="btn btn-ghost" id="btn-fr">FR</button>
-      <button class="btn btn-ghost" id="btn-en">EN</button>
-      <a href="https://t.me/alexlivraison_bot" target="_blank" rel="noopener" class="btn btn-primary">💬 Ouvrir le chat</a>
-    </div>
+    <h1>🛍️ Produits Partenaires</h1>
+    <p>Découvrez les produits et offres de nos commerçants locaux à Toulon & La Seyne-sur-Mer.</p>
   </header>
 
-  <h1 id="title">Produits des partenaires</h1>
-  <div class="muted" id="desc">Découvrez et commandez en ligne les produits de nos magasins, restaurants et commerces locaux.</div>
+  <main class="wrap">
+    <div class="grid" id="product-grid"></div>
+  </main>
 
-  <div class="filters" id="filters"></div>
-  <div class="search"><input id="q" placeholder="Rechercher un produit…"></div>
+  <footer>© 2025 AlexLivraison — Tous droits réservés</footer>
 
-  <div class="grid" id="grid"></div>
-
-  <footer>© 2025 AlexLivraison — Livraison locale rapide</footer>
-  <div class="toast" id="toast"></div>
+  <a href="https://t.me/AlexLivraisonBot" target="_blank" class="contact-btn">💬 Contact Bot</a>
 
   <script>
-    const grid=document.getElementById('grid');
-    const filters=document.getElementById('filters');
-    const q=document.getElementById('q');
-    const toast=document.getElementById('toast');
-    const btnFR=document.getElementById('btn-fr');
-    const btnEN=document.getElementById('btn-en');
-    const title=document.getElementById('title');
-    const desc=document.getElementById('desc');
-
-    const i18n={
-      fr:{title:'Produits des partenaires',desc:'Découvrez et commandez en ligne les produits de nos magasins, restaurants et commerces locaux.',all:'Tous',search:'Rechercher un produit…',order:'Commander',added:'Produit ajouté au panier ✅'},
-      en:{title:'Partner Products',desc:'Discover and order local partner shops, restaurants, and artisans online.',all:'All',search:'Search a product…',order:'Order',added:'Product added to cart ✅'}
-    };
-    let strings=i18n.fr;
-
-    function setLang(lang){
-      strings=lang==='en'?i18n.en:i18n.fr;
-      title.textContent=strings.title;
-      desc.textContent=strings.desc;
-      q.placeholder=strings.search;
-      render();
-    }
-    btnFR.onclick=()=>setLang('fr');
-    btnEN.onclick=()=>setLang('en');
-
-    function showToast(msg,color='#4caf50'){toast.textContent=msg;toast.style.background=color;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2500)}
-
-    const products=[
-      {id:1,cat:"Supermarchés",name:"Panier fruits frais",price:9.90,img:"https://source.unsplash.com/600x400/?fruits",desc:"Fruits de saison, livraison rapide."},
-      {id:2,cat:"Boulangeries",name:"Baguette tradition x3",price:3.20,img:"https://source.unsplash.com/600x400/?baguette,bread",desc:"Croustillante, farine locale."},
-      {id:3,cat:"Restaurants",name:"Sushi mix 18 pcs",price:14.90,img:"https://source.unsplash.com/600x400/?sushi",desc:"Assortiment du chef."},
-      {id:4,cat:"Pharmacies",name:"Paracétamol 500mg",price:2.99,img:"https://source.unsplash.com/600x400/?pharmacy",desc:"Livraison express disponible."},
-      {id:5,cat:"Épiceries",name:"Huile d’olive AOP 75cl",price:8.50,img:"https://source.unsplash.com/600x400/?olive-oil",desc:"Pression à froid, goût fruité."},
-      {id:6,cat:"Commerçants",name:"Bouquet de fleurs",price:12.00,img:"https://source.unsplash.com/600x400/?flowers",desc:"Composition artisanale, locale."}
+    const products = [
+      {name:"Baguette tradition", price:"1.20 €", desc:"Boulangerie artisanale – pain chaud du matin", img:"https://source.unsplash.com/600x400/?bread"},
+      {name:"Pizza 4 fromages", price:"10.90 €", desc:"Restaurant local – pâte fine, recette italienne", img:"https://source.unsplash.com/600x400/?pizza"},
+      {name:"Fleurs fraîches", price:"12.00 €", desc:"Commerçant local – bouquets sur mesure", img:"https://source.unsplash.com/600x400/?flowers"},
+      {name:"Panier de fruits", price:"9.50 €", desc:"Fruits de saison du marché provençal", img:"https://source.unsplash.com/600x400/?fruits"},
+      {name:"Huile d’olive AOP", price:"8.90 €", desc:"Épicerie fine – production locale", img:"https://source.unsplash.com/600x400/?olive-oil"},
+      {name:"Croissants x6", price:"5.50 €", desc:"Boulangerie artisanale – pur beurre AOP", img:"https://source.unsplash.com/600x400/?croissant"},
     ];
 
-    const categories=[...new Set(products.map(p=>p.cat))];
-    function renderFilters(){
-      filters.innerHTML='';
-      const allBtn=document.createElement('button');
-      allBtn.className='chip active';allBtn.textContent=strings.all;allBtn.dataset.cat='all';
-      filters.appendChild(allBtn);
-      categories.forEach(c=>{
-        const b=document.createElement('button');
-        b.className='chip';b.textContent=c;b.dataset.cat=c;
-        filters.appendChild(b);
-      });
-    }
-
-    let activeCat='all';
-    function render(){
-      grid.innerHTML='';
-      let data=products.filter(p=>activeCat==='all'||p.cat===activeCat);
-      const term=q.value.trim().toLowerCase();
-      if(term)data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));
-      data.forEach(p=>{
-        const card=document.createElement('div');
-        card.className='card';
-        card.innerHTML=`
-          <div class="pic"><img src="${p.img}" alt="${p.name}"></div>
-          <div class="body">
-            <div>
-              <div class="title">${p.name}</div>
-              <div class="desc">${p.desc}</div>
-            </div>
-            <div class="row">
-              <div class="price">${p.price.toFixed(2).replace('.',',')} €</div>
-              <button class="btn btn-primary" onclick="showToast('${strings.added}')">${strings.order}</button>
-            </div>
-          </div>`;
-        grid.appendChild(card);
-      });
-    }
-
-    filters.addEventListener('click',e=>{
-      if(e.target.classList.contains('chip')){
-        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-        e.target.classList.add('active');
-        activeCat=e.target.dataset.cat;
-        render();
-      }
+    const grid = document.getElementById("product-grid");
+    products.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <div class="body">
+          <h3>${p.name}</h3>
+          <p>${p.desc}</p>
+          <div class="price">${p.price}</div>
+          <a href="https://t.me/AlexLivraisonBot" target="_blank" class="btn">Commander</a>
+        </div>`;
+      grid.appendChild(card);
     });
-
-    q.oninput=render;
-
-    renderFilters();
-    render();
   </script>
+
 </body>
 </html>
