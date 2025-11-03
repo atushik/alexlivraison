@@ -1,279 +1,358 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#6b23ff">
-  <title>Produits & Boutiques | AlexLivraison</title>
-  <meta name="description" content="Commandez vos produits et boutiques locales en 30 secondes grâce à AlexLivraison. Livraison rapide et fiable.">
-  <meta property="og:title" content="Produits & Boutiques | AlexLivraison">
-  <meta property="og:description" content="Trouvez vos produits et commandez en 30 secondes avec AlexLivraison. Livraison rapide et fiable.">
-  <meta property="og:image" content="logo.jpg">
-  <link rel="apple-touch-icon" href="logo.jpg">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡%3c/text%3e%3c/svg%3e">
-  <style>
-    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
-    html,body{height:100%;margin:0;padding:0;overflow-x:hidden;scroll-behavior:smooth;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;display:flex;flex-direction:column;align-items:center}
-    *,*::before,*::after{box-sizing:border-box}
-    img{max-width:100%;height:auto;display:block;transition:transform .3s}
-    img:hover{transform:scale(1.03)}
-    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-    .topbar{position:sticky;top:0;z-index:60;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
-    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
-    .brand img{width:120px;height:auto;cursor:pointer}
-    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative;transition:background .3s}
-    .hamb:hover{background:#ffffff26}
-    .hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
-    .hamb span{top:50%;transform:translateY(-50%)}
-    .hamb::before{top:9px}
-    .hamb::after{bottom:9px}
-    .hamb.open span{opacity:0}
-    .hamb.open::before{transform:rotate(45deg);top:19px}
-    .hamb.open::after{transform:rotate(-45deg);bottom:19px}
-    .drawer{position:fixed;inset:0;z-index:70;pointer-events:none}
-    .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:opacity .3s}
-    .drawer .panel{position:absolute;left:-320px;top:0;bottom:0;width:320px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0008;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:left .3s;overflow-y:auto}
-    .drawer.open{pointer-events:auto}
-    .drawer.open .shade{opacity:1}
-    .drawer.open .panel{left:0}
-    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;transition:background .3s}
-    .drawer a:hover{background:#ffffff26}
-    .drawer .langs{margin-top:auto;display:flex;gap:8px}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;transition:background .3s}
-    .drawer .langs button:hover{background:var(--violet)}
-    .drawer .tabnav{display:flex;gap:8px;margin-bottom:12px}
-    .drawer .tabnav button{flex:1;background:#420086;border:none;color:#cfc5ff;font-weight:700;padding:8px 0;cursor:pointer;border-radius:8px;transition:background .3s}
-    .drawer .tabnav button.active{background:var(--violet);color:#fff}
-    .drawer .tabcontent{flex-grow:1;overflow-y:auto;max-height:60vh}
-    .drawer .order-item{border-bottom:1px solid #532aaf;padding:8px 0;font-size:13px;color:#d6cafc;display:flex;flex-direction:column;gap:4px}
-    .drawer .order-item:last-child{border-bottom:none}
-    .drawer .order-actions{margin-top:6px;display:flex;gap:6px}
-    .drawer .btn-reorder{background:var(--green);border:none;padding:6px 12px;border-radius:8px;color:#fff;cursor:pointer;font-weight:700;font-size:12px;transition:background .3s}
-    .drawer .btn-reorder:hover{background:#3b8a40}
-    .hero{padding:28px 16px;color:#fff;text-align:center}
-    .h1{color:#fff;margin:4px 0 6px 0;font-weight:900}
-    .muted{color:#cfc5ff}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px 0}
-    .filters{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700;transition:background .3s}
-    .chip.active{background:#fff;color:var(--violet-dark)}
-    .chip:hover{background:#ffffff2a}
-    .search{flex:1;min-width:220px}
-    .search input{width:100%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 20px}
-    .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s;scroll-margin-top:110px}
-    .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.25)}
-    .pic{height:160px;background:#f4f4fb;display:grid;place-items:center}
-    .body{padding:12px 14px}
-    .title{font-weight:900}
-    .desc{opacity:.8;font-size:14px;margin-top:4px;min-height:40px}
-    .row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
-    .price{font-weight:900}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:12px;border:none;cursor:pointer;transition:background .2s}
-    .btn-primary{background:var(--violet);color:#fff}
-    .btn-primary:hover{background:var(--violet-dark)}
-    .btn-ghost{background:#ececf4}
-    #moreBtn{margin:12px auto;display:block;padding:10px 18px;border-radius:12px;border:none;background:#ffffff22;color:#fff;cursor:pointer;transition:background .3s}
-    #moreBtn:hover{background:#ffffff33}
-    .modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:80}
-    .modal.show{display:flex}
-    .sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35);animation:fadeIn .3s}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .sheet h3{margin:0 0 8px}
-    .sheet .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .sheet label{display:block;margin-top:8px;font-weight:700}
-    .sheet input,.sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
-    .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
-    .note{font-size:12px;opacity:.7;margin-top:6px}
-    .footer{color:#cfc5ff;text-align:center;margin:18px 0 38px 0;font-size:14px;user-select:none}
-    .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.3);opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .3s ease,transform .3s ease;font-weight:700;z-index:200;max-width:280px;word-wrap:break-word;font-size:14px}
-    .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
-    #preloader{position:fixed;inset:0;background:linear-gradient(135deg,#32006b,#7a2cf5);display:flex;align-items:center;justify-content:center;z-index:99999;flex-direction:column;color:#fff;font-weight:700;font-size:18px}
-    #preloader-logo{width:80px;height:80px;margin-bottom:12px}
-    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-    #preloader-logo svg{animation:spin 4s linear infinite;width:100%;height:100%;fill:#fff}
-    #btn-top{position:fixed;bottom:40px;right:20px;background:var(--violet);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:24px;z-index:300;box-shadow:0 4px 8px rgba(0,0,0,0.3);transition:background .3s}
-    #btn-top:hover{background:var(--violet-dark)}
-  </style>
-</head>
-<body>
-  <div id="preloader" aria-label="Chargement du site, veuillez patienter">
-    <div id="preloader-logo" aria-hidden="true">
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" focusable="false">
-        <circle cx="32" cy="32" r="32" fill="#6b23ff"/>
-        <path d="M25 12 L39 32 L27 32 L39 52 Z" fill="white"/>
-      </svg>
-    </div>
-    Chargement…
-  </div>
+<html lang="fr">  
+<head>  
+  <meta charset="utf-8"/>  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>  
+  <title>Produits & Boutiques | AlexLivraison</title>  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>  
+  <style>  
+    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}  
+    html,body{height:100%;margin:0;padding:0;overflow-x:hidden}  
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}  
+    *{box-sizing:border-box}  
+    img{max-width:100%;height:auto;display:block}  
+    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}  .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}  
+.topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}  
+.brand img{width:120px;height:auto}  
+.hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative}  
+.hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}  
+.hamb span{top:50%;transform:translateY(-50%)}  
+.hamb::before{top:9px}  
+.hamb::after{bottom:9px}  
 
-  <div class="topbar">
-    <div class="topbar-inner wrap">
-      <div class="brand" role="banner"><img src="logo.jpg" alt="AlexLivraison" tabindex="0" style="outline:none"></div>
-      <div class="hamb" id="btn-menu" aria-label="Ouvrir le menu principal" role="button" tabindex="0" aria-expanded="false"><span></span></div>
-    </div>
-  </div>
+.drawer{position:fixed;inset:0;z-index:60;pointer-events:none}  
+.drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}  
+.drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}  
+.drawer.open{pointer-events:auto}  
+.drawer.open .shade{opacity:1}  
+.drawer.open .panel{left:0}  
+.drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center}  
+.drawer .langs{margin-top:auto;display:flex;gap:8px}  
+.drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}  
 
-  <div class="drawer" id="drawer" role="region" aria-label="Menu latéral navigation">
-    <div class="shade" id="shade" tabindex="-1"></div>
-    <div class="panel" tabindex="0">
-      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px" aria-hidden="true">
-      <div class="tabnav" role="tablist" aria-label="Sections menu">
-        <button role="tab" aria-selected="true" tabindex="0" class="active" id="tab-products-btn">Produits</button>
-        <button role="tab" aria-selected="false" tabindex="-1" id="tab-orders-btn">Mes commandes récentes</button>
-      </div>
-      <div class="tabcontent" id="tab-products" role="tabpanel" aria-labelledby="tab-products-btn">
-        <a href="index.html">Accueil / Commander</a>
-        <a href="supermarches.html" target="_blank" rel="noopener">Supermarchés</a>
-        <a href="restaurants.html" target="_blank" rel="noopener">Restaurants</a>
-        <a href="pharmacies.html" target="_blank" rel="noopener">Pharmacies</a>
-        <a href="boulangeries.html" target="_blank" rel="noopener">Boulangeries</a>
-        <div class="langs" style="margin-top:auto;display:flex;gap:8px">
-          <button id="btn-fr-lang" aria-label="Changer la langue en Français">FR</button>
-          <button id="btn-en-lang" aria-label="Changer la langue en Anglais">EN</button>
-        </div>
-      </div>
-      <div class="tabcontent" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-btn" hidden>
-        <div id="recent-orders" aria-live="polite" aria-relevant="additions"></div>
-        <p id="no-orders-msg" style="color:#bbb;font-size:14px;margin-top:12px">Aucune commande récente.</p>
-      </div>
-    </div>
-  </div>
+.hero{padding:28px 16px;color:#fff;text-align:center}  
+.h1{color:#fff;margin:4px 0 6px 0;font-weight:900}  
+.muted{color:#cfc5ff}  
 
-  <header class="hero wrap">
-    <div class="muted" id="hero-eyebrow">Catalogue</div>
-    <h1 class="h1" id="hero-title">Produits & Boutiques</h1>
-    <div class="muted" id="hero-desc">Trouvez vos produits et commandez en 30 secondes.</div>
-  </header>
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px 0}  
+.filters{display:flex;flex-wrap:wrap;gap:8px}  
+.chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700}  
+.chip.active{background:#fff;color:#32006b}  
+.search{flex:1;min-width:220px}  
+.search input{width:100%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}  
 
-  <main class="wrap" role="main">
-    <div class="controls" aria-label="Filtres et recherche de produits">
-      <div class="filters" id="filters">
-        <button class="chip active" data-cat="all" aria-pressed="true">Tous</button>
-      </div>
-      <div class="search">
-        <input id="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
-      </div>
-    </div>
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 20px 0}  
+.card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column}  
+.card .pic{height:160px;background:#f4f4fb;display:grid;place-items:center}  
+.card .pic img{width:100%;height:100%;object-fit:cover}  
+.card .body{padding:12px 14px}  
+.title{font-weight:900}  
+.desc{opacity:.8;font-size:14px;margin-top:4px;min-height:40px}  
+.row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}  
+.price{font-weight:900}  
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:12px;border:none;cursor:pointer}  
+.btn-primary{background:#6b23ff;color:#fff}  
+.btn-ghost{background:#ececf4}
 
-    <div class="grid" id="grid" aria-live="polite"></div>
-    <button id="moreBtn" style="display:none" aria-label="Voir plus de produits">+ Voir plus</button>
-  </main>
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:70}
+.modal.show{display:flex}
+.sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+.sheet h3{margin:0 0 8px 0}
+.sheet .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet label{display:block;margin-top:8px;font-weight:700}
+.sheet input, .sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
+.sheet .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+.note{font-size:12px;opacity:.7;margin-top:6px}
 
-  <div class="footer" aria-label="Pied de page">
-    © AlexLivraison – Livraison locale rapide<br>Dernière mise à jour : novembre 2025
-  </div>
+.footer{color:#cfc5ff;text-align:center;margin:18px 0 26px 0}  
+@media(max-width:900px){.wrap{padding:12px}}
 
-  <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="m_title" aria-describedby="m_sub" tabindex="-1">
-    <div class="sheet">
-      <h3 id="m_title">Commander</h3>
-      <div class="muted" id="m_sub">Complétez vos informations pour finaliser la demande.</div>
-      <div class="grid2">
-        <div>
-          <label id="m_label_name" for="m_name">Nom du client</label>
-          <input id="m_name" placeholder="Jean Dupont" autocomplete="name">
-        </div>
-        <div>
-          <label id="m_label_phone" for="m_phone">Téléphone</label>
-          <input id="m_phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
-        </div>
-      </div>
-      <label id="m_label_from" for="m_from">Adresse de départ (magasin)</label>
-      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon" autocomplete="off">
-      <label id="m_label_to" for="m_to">Adresse de destination</label>
-      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne" autocomplete="off">
-      <label id="m_label_note" for="m_note">Remarque</label>
-      <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
-      <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
-      <div class="actions">
-        <button class="btn btn-ghost" id="m_cancel">Annuler</button>
-        <button class="btn btn-primary" id="m_send">Envoyer</button>
-      </div>
-    </div>
-  </div>
+  </style>  
+</head>  
+<body>  
+  <div class="topbar">  
+    <div class="topbar-inner wrap">  
+      <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>  
+      <div class="hamb" id="btn-menu"><span></span></div>  
+    </div>  
+  </div>    <div class="drawer" id="drawer">  
+    <div class="shade" id="shade"></div>  
+    <div class="panel">  
+      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">  
+      <a href="index.html">Accueil / Commander</a>  
+      <a href="supermarches.html" target="_blank">Partenaires – Supermarchés</a>  
+      <a href="restaurants.html" target="_blank">Partenaires – Restaurants</a>  
+      <a href="pharmacies.html" target="_blank">Partenaires – Pharmacies</a>  
+      <a href="boulangeries.html" target="_blank">Partenaires – Boulangeries</a>  
+      <div class="langs">  
+        <button id="btn-fr">FR</button>  
+        <button id="btn-en">EN</button>  
+      </div>  
+    </div>  
+  </div>    <header class="hero wrap">  
+    <div class="muted" id="hero-eyebrow">Catalogue</div>  
+    <h1 class="h1" id="hero-title">Produits & Boutiques</h1>  
+    <div class="muted" id="hero-desc">Trouvez vos produits et commandez en 30 secondes.</div>  
+  </header>    <main class="wrap">  
+    <div class="controls">  
+      <div class="filters" id="filters">  
+        <button class="chip active" data-cat="all" id="f_all">Tous</button>  
+        <button class="chip" data-cat="Supermarchés" id="f_sup">Supermarchés</button>  
+        <button class="chip" data-cat="Boulangeries" id="f_bou">Boulangeries</button>  
+        <button class="chip" data-cat="Restaurants" id="f_res">Restaurants</button>  
+        <button class="chip" data-cat="Pharmacies" id="f_pha">Pharmacies</button>  
+        <button class="chip" data-cat="Épiceries" id="f_epi">Épiceries</button>  
+        <button class="chip" data-cat="Commerçants" id="f_com">Commerçants</button>  
+      </div>  
+      <div class="search">  
+        <input id="q" placeholder="Rechercher un produit…">  
+      </div>  
+    </div>  <div class="grid" id="grid"></div>
 
-  <div id="toast-container" aria-live="assertive" aria-atomic="true" style="position:fixed;bottom:20px;right:20px;z-index:200"></div>
-  <button id="btn-top" aria-label="Retour en haut" title="Retour en haut">&#8679;</button>
-
-  <script>
-    window.addEventListener('load',()=>{const p=document.getElementById('preloader');p.style.opacity='0';setTimeout(()=>p.style.display='none',400)});
-    if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js').then(()=>console.log('Service Worker enregistré')).catch(()=>console.log('SW non disponible'));});}
-
-    const btnMenu=document.getElementById('btn-menu'),drawer=document.getElementById('drawer'),shade=document.getElementById('shade');
-    btnMenu.addEventListener('click',()=>{btnMenu.classList.toggle('open');drawer.classList.toggle('open');btnMenu.setAttribute('aria-expanded',btnMenu.classList.contains('open'));if(drawer.classList.contains('open'))drawer.querySelector('.panel').focus();});
-    shade.addEventListener('click',()=>{btnMenu.classList.remove('open');drawer.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
-
-    const toastContainer=document.getElementById('toast-container');
-    function toast(message,color="#4caf50"){const t=document.createElement('div');t.className='toast';t.style.backgroundColor=color;t.textContent=message;toastContainer.appendChild(t);setTimeout(()=>t.classList.add('show'),50);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);}
-
-    const productsData=[
-      {id:1,cat:"Supermarchés",name:"Panier fruits frais",price:9.90,img:"https://images.unsplash.com/photo-1587049352851-8d4e89133930?q=80&w=1200&auto=format&fit=crop",desc:"Sélection quotidienne de fruits de saison."},
-      {id:2,cat:"Boulangeries",name:"Baguette tradition x3",price:3.20,img:"https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop",desc:"Farine locale, croustillante à souhait."},
-      {id:3,cat:"Pharmacies",name:"Paracétamol 500mg",price:2.99,img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",desc:"Respect des conditions de délivrance."},
-      {id:4,cat:"Restaurants",name:"Sushi mix 18 pcs",price:14.90,img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",desc:"Assortiment chef, sauce soja & wasabi."},
-      {id:5,cat:"Épiceries",name:"Huile d’olive AOP 75cl",price:8.50,img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop",desc:"Pression à froid, goût fruité."},
-      {id:6,cat:"Commerçants",name:"Bouquet de fleurs",price:12.00,img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop",desc:"Composition artisanale, à la demande."},
-      {id:7,cat:"Boulangeries",name:"Croissants x6",price:6.00,img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop",desc:"Pur beurre AOP, tout juste sortis du four."},
-      {id:8,cat:"Supermarchés",name:"Pack eau minérale 6x1,5L",price:3.10,img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop",desc:"Hydratation au quotidien, livraison rapide."},
-      {id:9,cat:"Restaurants",name:"Pizza 4 fromages",price:11.50,img:"https://images.unsplash.com/photo-1601924638867-3ec4a62ec07d?q=80&w=1200&auto=format&fit=crop",desc:"Authentique recette italienne, pâte fine."},
-      {id:10,cat:"Épiceries",name:"Café en grains 500g",price:7.20,img:"https://images.unsplash.com/photo-1509043759401-136742328bb3?q=80&w=1200&auto=format&fit=crop",desc:"Torréfaction artisanale de Provence."}
-    ];
-    const categories=[...new Set(productsData.map(p=>p.cat))];
-
-    const i18n={fr:{eyebrow:'Catalogue',title:'Produits & Boutiques',desc:'Trouvez vos produits et commandez en 30 secondes.',all:'Tous',search:'Rechercher un produit…',orderBtn:'Commander',modalTitle:'Commander',modalSub:'Complétez vos informations pour finaliser la demande.',name:'Nom du client',phone:'Téléphone',from:'Adresse de départ (magasin)',to:'Adresse de destination',note:'Remarque',hint:'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',cancel:'Annuler',send:'Envoyer',fillAll:'Veuillez compléter tous les champs obligatoires.',sentOk:'Commande envoyée ✅ Nous vous recontactons rapidement.',sentErr:'Erreur lors de l’envoi. Réessayez.',noOrders:'Aucun produit trouvé.'},en:{eyebrow:'Catalog',title:'Products & Shops',desc:'Find your items and order in 30 seconds.',all:'All',search:'Search a product…',orderBtn:'Order',modalTitle:'Order',modalSub:'Fill in your details to finalize the request.',name:'Customer name',phone:'Phone',from:'Pickup address (shop)',to:'Delivery address',note:'Note',hint:'A summary will be sent to AlexLivraison (Telegram).',cancel:'Cancel',send:'Send',fillAll:'Please fill in all required fields.',sentOk:'Order sent ✅ We’ll contact you shortly.',sentErr:'Sending error. Please retry.',noOrders:'No products found.'}};
-    let strings=i18n.fr,activeLang='fr';
-
-    const grid=document.getElementById('grid'),q=document.getElementById('q'),filters=document.getElementById('filters'),moreBtn=document.getElementById('moreBtn'),orderModal=document.getElementById('orderModal'),mTitle=document.getElementById('m_title'),mSub=document.getElementById('m_sub'),mName=document.getElementById('m_name'),mPhone=document.getElementById('m_phone'),mFrom=document.getElementById('m_from'),mTo=document.getElementById('m_to'),mNote=document.getElementById('m_note'),mCancel=document.getElementById('m_cancel'),mSend=document.getElementById('m_send'),btnFrLang=document.getElementById('btn-fr-lang'),btnEnLang=document.getElementById('btn-en-lang'),tabProductsBtn=document.getElementById('tab-products-btn'),tabOrdersBtn=document.getElementById('tab-orders-btn'),tabProducts=document.getElementById('tab-products'),tabOrders=document.getElementById('tab-orders'),recentOrdersContainer=document.getElementById('recent-orders'),noOrdersMsg=document.getElementById('no-orders-msg'),btnTop=document.getElementById('btn-top');
-
-    let activeCat='all',visibleCount=6,currentProduct=null,recentOrders=[];
-
-    function formatPrice(v){return v.toFixed(2).replace('.',',')+' €';}
-
-    function renderFilters(){categories.forEach(cat=>{if([...filters.children].some(c=>c.dataset.cat===cat))return;const b=document.createElement('button');b.className='chip';b.textContent=cat;b.dataset.cat=cat;filters.appendChild(b);});}
-
-    function renderProducts(){const term=q.value.trim().toLowerCase();grid.innerHTML='';let data=productsData.filter(p=>activeCat==='all'||p.cat===activeCat);if(term){data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));}const toShow=data.slice(0,visibleCount);if(toShow.length===0){grid.innerHTML=`<p style="color:white;text-align:center">${strings.noOrders}</p>`;moreBtn.style.display='none';return;}toShow.forEach(p=>{const card=document.createElement('div');card.className='card';card.id='prod'+p.id;card.innerHTML=`<div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div><div class="body"><div class="title">${p.name}</div><div class="desc">${p.desc}</div><div class="row"><div class="price">${formatPrice(p.price)}</div><button class="btn btn-primary" data-id="${p.id}">${strings.orderBtn}</button></div></div>`;grid.appendChild(card);});moreBtn.style.display=data.length>visibleCount?'block':'none';}
-
-    function setLang(lang){strings=lang==='en'?i18n.en:i18n.fr;activeLang=lang;document.getElementById('hero-eyebrow').textContent=strings.eyebrow;document.getElementById('hero-title').textContent=strings.title;document.getElementById('hero-desc').textContent=strings.desc;filters.children[0].textContent=strings.all;q.placeholder=strings.search;mTitle.textContent=strings.modalTitle;mSub.textContent=strings.modalSub;document.getElementById('m_label_name').textContent=strings.name;document.getElementById('m_label_phone').textContent=strings.phone;document.getElementById('m_label_from').textContent=strings.from;document.getElementById('m_label_to').textContent=strings.to;document.getElementById('m_label_note').textContent=strings.note;document.getElementById('m_hint').textContent=strings.hint;mCancel.textContent=strings.cancel;mSend.textContent=strings.send;renderProducts();renderRecentOrders();}
-
-    function renderRecentOrders(){recentOrders=JSON.parse(localStorage.getItem('alexRecentOrders')||'[]');recentOrdersContainer.innerHTML='';if(recentOrders.length===0){noOrdersMsg.style.display='block';return;}noOrdersMsg.style.display='none';recentOrders.forEach((order,index)=>{const div=document.createElement('div');div.className='order-item';div.innerHTML=`<div><strong>${order.productName}</strong> - ${formatPrice(order.price)}</div><div>Client: ${order.name}</div><div>Téléphone: ${order.phone}</div><div>De: ${order.from}</div><div>À: ${order.to}</div><div>Date: ${order.date}</div><div class="order-actions"><button class="btn-reorder" data-index="${index}">Re-commander</button></div>`;recentOrdersContainer.appendChild(div);});recentOrdersContainer.querySelectorAll('.btn-reorder').forEach(btn=>btn.addEventListener('click',e=>{const idx=parseInt(e.target.dataset.index);const order=recentOrders[idx];if(!order)return;currentProduct=productsData.find(p=>p.name===order.productName)||null;if(!currentProduct)return toast("Produit non trouvé","#f44336");mTitle.textContent=strings.modalTitle+' — '+currentProduct.name;mName.value=order.name;mPhone.value=order.phone;mFrom.value=order.from;mTo.value=order.to;mNote.value=order.note||'';orderModal.classList.add('show');}));}
-
-    function saveOrder(order){recentOrders=JSON.parse(localStorage.getItem('alexRecentOrders')||'[]');recentOrders.unshift(order);if(recentOrders.length>5)recentOrders.pop();localStorage.setItem('alexRecentOrders',JSON.stringify(recentOrders));renderRecentOrders();}
-
-    filters.addEventListener('click',e=>{if(e.target.classList.contains('chip')){Array.from(filters.children).forEach(c=>{c.classList.remove('active');c.setAttribute('aria-pressed','false');});e.target.classList.add('active');e.target.setAttribute('aria-pressed','true');activeCat=e.target.dataset.cat||'all';visibleCount=6;renderProducts();}});
-    q.addEventListener('input',()=>{visibleCount=6;renderProducts();});
-    document.getElementById('moreBtn').addEventListener('click',()=>{visibleCount+=4;renderProducts();});
-
-    document.getElementById('grid').addEventListener('click',e=>{if(e.target.classList.contains('btn-primary')){const id=e.target.dataset.id;currentProduct=productsData.find(p=>p.id==id);if(!currentProduct)return;mTitle.textContent=strings.modalTitle+' — '+currentProduct.name;mName.value='';mPhone.value='';mFrom.value='';mTo.value='';mNote.value='';orderModal.classList.add('show');mName.focus();}});
-    mCancel.addEventListener('click',()=>{orderModal.classList.remove('show');if(currentProduct){const el=document.getElementById('prod'+currentProduct.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}});
-
-    async function sendTelegram(text){await new Promise(r=>setTimeout(r,800));return true}
-
-    mSend.addEventListener('click',async()=>{if(!currentProduct)return;const name=mName.value.trim(),phone=mPhone.value.trim(),from=mFrom.value.trim(),to=mTo.value.trim();if(!name||!phone||!from||!to){toast(strings.fillAll,"#f44336");return;}mSend.disabled=true;setTimeout(()=>mSend.disabled=false,2000);const note=mNote.value.trim()||'—';const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});const text=`🛒 Nouvelle commande (Produits)
-📦 Article: ${currentProduct.name}
-🏷 Catégorie: ${currentProduct.cat}
-💶 Prix: ${formatPrice(currentProduct.price)}
-👤 Client: ${name}
-📞 Téléphone: ${phone}
-📍 Collecte: ${from}
-🏁 Livraison: ${to}
-📝 Note: ${note}
-⏱️ Commande envoyée le ${now}`;const ok=await sendTelegram(text);toast(ok?strings.sentOk:strings.sentErr,ok?"#4caf50":"#f44336");if(ok){saveOrder({productName:currentProduct.name,cat:currentProduct.cat,price:currentProduct.price,name,phone,from,to,note,date:now});orderModal.classList.remove('show');const el=document.getElementById('prod'+currentProduct.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}});
-
-    document.getElementById('btn-fr-lang').addEventListener('click',()=>{setLang('fr');drawer.classList.remove('open');btnMenu.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
-    document.getElementById('btn-en-lang').addEventListener('click',()=>{setLang('en');drawer.classList.remove('open');btnMenu.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
-
-    document.getElementById('tab-products-btn').addEventListener('click',()=>{tabProductsBtn.classList.add('active');tabOrdersBtn.classList.remove('active');tabProductsBtn.setAttribute('aria-selected','true');tabOrdersBtn.setAttribute('aria-selected','false');tabProducts.removeAttribute('hidden');tabOrders.setAttribute('hidden','true');});
-    document.getElementById('tab-orders-btn').addEventListener('click',()=>{tabOrdersBtn.classList.add('active');tabProductsBtn.classList.remove('active');tabOrdersBtn.setAttribute('aria-selected','true');tabProductsBtn.setAttribute('aria-selected','false');tabOrders.removeAttribute('hidden');tabProducts.setAttribute('hidden','true');});
-
-    window.addEventListener('scroll',()=>{document.getElementById('btn-top').style.display=window.scrollY>300?'flex':'none';});
-    document.getElementById('btn-top').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
-
-    renderFilters();setLang('fr');
-  </script>
-
-  <div class="loader" id="loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:150">⏳ Envoi en cours...</div>
-</body>
+  </main>    <div class="footer">© AlexLivraison</div>  <div class="modal" id="orderModal">  
+    <div class="sheet">  
+      <h3 id="m_title">Commander</h3>  
+      <div class="muted" id="m_sub">Complétez vos informations pour finaliser la demande.</div>  
+      <div class="grid2">  
+        <div>  
+          <label id="m_label_name">Nom du client</label>  
+          <input id="m_name" placeholder="Jean Dupont">  
+        </div>  
+        <div>  
+          <label id="m_label_phone">Téléphone</label>  
+          <input id="m_phone" placeholder="+33 6 12 34 56 78">  
+        </div>  
+      </div>  
+      <label id="m_label_from">Adresse de départ (magasin)</label>  
+      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">  
+      <label id="m_label_to">Adresse de destination</label>  
+      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">  
+      <label id="m_label_note">Remarque</label>  
+      <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>  
+      <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>  
+      <div class="actions">  
+        <button class="btn btn-ghost" id="m_cancel">Annuler</button>  
+        <button class="btn btn-primary" id="m_send">Envoyer</button>  
+      </div>  
+    </div>  
+  </div>    <script>  
+    const drawer=document.getElementById('drawer');  
+    const shade=document.getElementById('shade');  
+    const btnMenu=document.getElementById('btn-menu');  
+    btnMenu.addEventListener('click',()=>drawer.classList.add('open'));  
+    shade.addEventListener('click',()=>drawer.classList.remove('open'));  
+  
+    const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";  
+    const TELEGRAM_CHAT_ID   = "7129872491";  
+  
+    const productsData = [  
+      {id:1, cat:"Supermarchés", name:"Panier fruits frais", price:9.90, img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop", desc:"Sélection quotidienne de fruits de saison."},  
+      {id:2, cat:"Boulangeries", name:"Baguette tradition x3", price:3.20, img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop", desc:"Farine locale, croustillante à souhait."},  
+      {id:3, cat:"Pharmacies", name:"Paracétamol 500mg", price:2.99, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop", desc:"Respect des conditions de délivrance."},  
+      {id:4, cat:"Restaurants", name:"Sushi mix 18 pcs", price:14.90, img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop", desc:"Assortiment chef, sauce soja & wasabi."},  
+      {id:5, cat:"Épiceries", name:"Huile d’olive AOP 75cl", price:8.50, img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop", desc:"Pression à froid, goût fruité."},  
+      {id:6, cat:"Commerçants", name:"Bouquet de fleurs", price:12.00, img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop", desc:"Composition artisanale, à la demande."},  
+      {id:7, cat:"Boulangeries", name:"Croissants x6", price:6.00, img:"https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=1200&auto=format&fit=crop", desc:"Pur beurre AOP, tout juste sortis du four."},  
+      {id:8, cat:"Supermarchés", name:"Pack eau minérale 6x1,5L", price:3.10, img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop", desc:"Hydratation au quotidien, livraison à l’étage."}  
+    ];  
+  
+    const grid=document.getElementById('grid');  
+    const q=document.getElementById('q');  
+    const filters=document.getElementById('filters');  
+    let activeCat='all';  
+  
+    function formatPrice(v){return (Number(v).toFixed(2)+' €').replace('.',',')}  
+  
+    function render(){  
+      const term=q.value.trim().toLowerCase();  
+      grid.innerHTML='';  
+      productsData  
+        .filter(p => (activeCat==='all' || p.cat===activeCat))  
+        .filter(p => !term || (p.name.toLowerCase().includes(term) || (p.desc || '').toLowerCase().includes(term)))  
+        .forEach(p=>{  
+          const card=document.createElement('div');  
+          card.className='card';  
+          const pic=document.createElement('div');  
+          pic.className='pic';  
+          const im=document.createElement('img');  
+          im.src=p.img; im.alt=p.name;  
+          pic.appendChild(im);  
+          const body=document.createElement('div');  
+          body.className='body';  
+          const title=document.createElement('div');  
+          title.className='title';  
+          title.textContent=p.name;  
+          const desc=document.createElement('div');  
+          desc.className='desc';  
+          desc.textContent=p.desc||'';  
+          const row=document.createElement('div');  
+          row.className='row';  
+          const price=document.createElement('div');  
+          price.className='price';  
+          price.textContent=formatPrice(p.price);  
+          const btn=document.createElement('button');  
+          btn.className='btn btn-primary';  
+          btn.textContent=strings.orderBtn;  
+          btn.onclick=()=>openOrder(p);  
+          row.appendChild(price);  
+          row.appendChild(btn);  
+          body.appendChild(title);  
+          body.appendChild(desc);  
+          body.appendChild(row);  
+          card.appendChild(pic);  
+          card.appendChild(body);  
+          grid.appendChild(card);  
+        });  
+    }  
+  
+    filters.addEventListener('click',e=>{  
+      if(e.target.classList.contains('chip')){  
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));  
+        e.target.classList.add('active');  
+        activeCat=e.target.dataset.cat||'all';  
+        render();  
+      }  
+    });  
+    q.addEventListener('input',render);  
+  
+    const orderModal=document.getElementById('orderModal');  
+    const m_title=document.getElementById('m_title');  
+    const m_sub=document.getElementById('m_sub');  
+    const m_name=document.getElementById('m_name');  
+    const m_phone=document.getElementById('m_phone');  
+    const m_from=document.getElementById('m_from');  
+    const m_to=document.getElementById('m_to');  
+    const m_note=document.getElementById('m_note');  
+    const m_cancel=document.getElementById('m_cancel');  
+    const m_send=document.getElementById('m_send');  
+  
+    let currentProduct=null;  
+  
+    function openOrder(p){  
+      currentProduct=p;  
+      m_title.textContent = strings.modalTitle + ' — ' + p.name;  
+      m_sub.textContent   = strings.modalSub;  
+      m_name.value=''; m_phone.value=''; m_from.value=''; m_to.value=''; m_note.value='';  
+      orderModal.classList.add('show');  
+    }  
+    m_cancel.onclick=()=>orderModal.classList.remove('show');  
+  
+    async function sendTelegram(text){  
+      try{  
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,{  
+          method:"POST",  
+          headers:{"Content-Type":"application/json"},  
+          body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text})  
+        });  
+        return true;  
+      }catch(e){ return false; }  
+    }  
+  
+    m_send.onclick=async()=>{  
+      if(!currentProduct) return;  
+      const name=m_name.value.trim();  
+      const phone=m_phone.value.trim();  
+      const from =m_from.value.trim();  
+      const to   =m_to.value.trim();  
+      if(!name||!phone||!from||!to){ alert(strings.fillAll); return; }  
+  
+      const text =  
+`🛒 Nouvelle commande (Produits)  
+📦 Article: ${currentProduct.name}  
+🏷 Catégorie: ${currentProduct.cat}  
+💶 Prix: ${formatPrice(currentProduct.price)}  
+👤 Client: ${name}  
+📞 Téléphone: ${phone}  
+📍 Collecte: ${from}  
+🏁 Livraison: ${to}  
+📝 Note: ${m_note.value.trim()||'—'}  
+⏱️ Créée: ${new Date().toLocaleString('fr-FR')}`;  
+  
+      const ok = await sendTelegram(text);  
+      if(ok){  
+        alert(strings.sentOk);  
+        orderModal.classList.remove('show');  
+      }else{  
+        alert(strings.sentErr);  
+      }  
+    };  
+  
+    const btnFr=document.getElementById('btn-fr');  
+    const btnEn=document.getElementById('btn-en');  
+  
+    const i18n = {  
+      fr: {  
+        eyebrow:'Catalogue',  
+        title:'Produits & Boutiques',  
+        desc:'Trouvez vos produits et commandez en 30 secondes.',  
+        all:'Tous', sup:'Supermarchés', bou:'Boulangeries', res:'Restaurants', pha:'Pharmacies', epi:'Épiceries', com:'Commerçants',  
+        search:'Rechercher un produit…',  
+        orderBtn:'Commander',  
+        modalTitle:'Commander',  
+        modalSub:'Complétez vos informations pour finaliser la demande.',  
+        name:'Nom du client', phone:'Téléphone',  
+        from:'Adresse de départ (magasin)',  
+        to:'Adresse de destination',  
+        note:'Remarque',  
+        hint:'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',  
+        cancel:'Annuler', send:'Envoyer',  
+        fillAll:"Veuillez compléter tous les champs obligatoires.",  
+        sentOk:"Commande envoyée ✅ Nous vous recontactons rapidement.",  
+        sentErr:"Erreur lors de l’envoi. Réessayez."  
+      },  
+      en: {  
+        eyebrow:'Catalog',  
+        title:'Products & Shops',  
+        desc:'Find your items and order in 30 seconds.',  
+        all:'All', sup:'Supermarkets', bou:'Bakeries', res:'Restaurants', pha:'Pharmacies', epi:'Delicatessens', com:'Local merchants',  
+        search:'Search a product…',  
+        orderBtn:'Order',  
+        modalTitle:'Order',  
+        modalSub:'Fill in your details to finalize the request.',  
+        name:'Customer name', phone:'Phone',  
+        from:'Pickup address (shop)',  
+        to:'Delivery address',  
+        note:'Note',  
+        hint:'A summary will be sent to AlexLivraison (Telegram).',  
+        cancel:'Cancel', send:'Send',  
+        fillAll:"Please fill in all required fields.",  
+        sentOk:"Order sent ✅ We’ll contact you shortly.",  
+        sentErr:"Sending error. Please retry."  
+      }  
+    };  
+    let strings = i18n.fr;  
+  
+    function setLang(lang){  
+      strings = (lang==='en') ? i18n.en : i18n.fr;  
+      document.documentElement.lang = (lang==='en')?'en':'fr';  
+      document.getElementById('hero-eyebrow').textContent = strings.eyebrow;  
+      document.getElementById('hero-title').textContent   = strings.title;  
+      document.getElementById('hero-desc').textContent    = strings.desc;  
+      document.getElementById('f_all').textContent = strings.all;  
+      document.getElementById('f_sup').textContent = strings.sup;  
+      document.getElementById('f_bou').textContent = strings.bou;  
+      document.getElementById('f_res').textContent = strings.res;  
+      document.getElementById('f_pha').textContent = strings.pha;  
+      document.getElementById('f_epi').textContent = strings.epi;  
+      document.getElementById('f_com').textContent = strings.com;  
+      q.placeholder = strings.search;  
+      document.getElementById('m_title').textContent = strings.modalTitle;  
+      document.getElementById('m_sub').textContent = strings.modalSub;  
+      document.getElementById('m_label_name').textContent = strings.name;  
+      document.getElementById('m_label_phone').textContent = strings.phone;  
+      document.getElementById('m_label_from').textContent = strings.from;  
+      document.getElementById('m_label_to').textContent = strings.to;  
+      document.getElementById('m_label_note').textContent = strings.note;  
+      document.getElementById('m_hint').textContent = strings.hint;  
+      document.getElementById('m_cancel').textContent = strings.cancel;  
+      document.getElementById('m_send').textContent = strings.send;  
+      render();  
+    }  
+    btnFr.addEventListener('click',()=>{ setLang('fr'); drawer.classList.remove('open'); });  
+    btnEn.addEventListener('click',()=>{ setLang('en'); drawer.classList.remove('open'); });  
+  
+    setLang('fr');  
+    render();  
+  </script>  
+</body>  
 </html>
- 
