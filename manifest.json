@@ -1,0 +1,20 @@
+{
+  "name": "AlexLivraison",
+  "short_name": "AlexLivraison",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#32006b",
+  "theme_color": "#6b23ff",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
