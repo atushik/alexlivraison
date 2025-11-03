@@ -2,160 +2,148 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>Produits & Boutiques | AlexLivraison</title>
-  <meta name="description" content="Commandez vos produits et boutiques locales en 30 secondes grâce à AlexLivraison. Livraison rapide et fiable.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Produits Partenaires | AlexLivraison</title>
+  <meta name="description" content="Découvrez les produits et offres de nos partenaires — restaurants, commerces et artisans à Toulon & La Seyne-sur-Mer. Commandez en un clic avec AlexLivraison.">
   <meta name="theme-color" content="#6b23ff">
-  <meta property="og:title" content="Produits & Boutiques | AlexLivraison">
-  <meta property="og:description" content="Trouvez vos produits et commandez en 30 secondes avec AlexLivraison. Livraison rapide et fiable.">
-  <meta property="og:image" content="logo.jpg">
-  <link rel="apple-touch-icon" href="logo.jpg">
   <link rel="icon" href="logo.jpg">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <style>
-    :root {
-      --violet: #6b23ff;
-      --violet-dark: #32006b;
-      --green: #4caf50;
-      --ring: #ffffff35;
+    body {
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:linear-gradient(180deg,#32006b,#7a2cf5);
+      color:#fff; display:flex; flex-direction:column; min-height:100vh;
     }
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      background: linear-gradient(180deg,#32006b,#7a2cf5);
-      background-attachment: fixed;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    header {
+      background:rgba(255,255,255,.05);
+      padding:18px; text-align:center;
+      border-bottom:1px solid rgba(255,255,255,.2);
     }
-    .wrap { width: 100%; max-width: 1060px; margin: 0 auto; padding: 16px; }
-    .topbar { position: sticky; top: 0; z-index: 60; width: 100%; backdrop-filter: saturate(160%) blur(12px); background: linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52)); border-bottom: 1px solid var(--ring); }
-    .topbar-inner { display: flex; align-items: center; gap: 14px; justify-content: space-between; padding: 12px 16px; }
-    .brand img { width: 120px; height: auto; cursor: pointer; }
-    .hamb { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: #ffffff12; border: 1px solid #ffffff33; cursor: pointer; position: relative; }
-    .hamb span,.hamb::before,.hamb::after { content: ""; position: absolute; width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: .3s; }
-    .hamb span { top: 50%; transform: translateY(-50%); }
-    .hamb::before { top: 9px; }
-    .hamb::after { bottom: 9px; }
-    .hamb.open span { opacity: 0; }
-    .hamb.open::before { transform: rotate(45deg); top: 19px; }
-    .hamb.open::after { transform: rotate(-45deg); bottom: 19px; }
-    .drawer { position: fixed; inset: 0; z-index: 70; pointer-events: none; }
-    .drawer .shade { position: absolute; inset: 0; background: #0009; opacity: 0; transition: opacity .3s; }
-    .drawer .panel { position: absolute; left: -320px; top: 0; bottom: 0; width: 320px; background: #14002b; color: #fff; box-shadow: 8px 0 30px #0008; padding: 18px 14px; display: flex; flex-direction: column; gap: 14px; transition: left .3s; overflow-y: auto; }
-    .drawer.open { pointer-events: auto; }
-    .drawer.open .shade { opacity: 1; }
-    .drawer.open .panel { left: 0; }
-    .drawer a { color: #fff; text-decoration: none; padding: 12px; border-radius: 10px; background: #ffffff12; border: 1px solid #ffffff22; text-align: center; transition: background .3s; }
-    .drawer a:hover { background: #ffffff26; }
-    .drawer .langs { margin-top: auto; display: flex; gap: 8px; }
-    .drawer .langs button { flex: 1; background: #ffffff14; border: 1px solid #ffffff33; color: #fff; padding: 10px; border-radius: 10px; cursor: pointer; transition: background .3s; }
-    .drawer .langs button:hover { background: var(--violet); }
-    .hero { padding: 28px 16px; color: #fff; text-align: center; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 14px; margin: 12px 0 20px; }
-    .card { background: #fff; border-radius: 14px; box-shadow: 0 10px 34px rgba(0,0,0,.18); overflow: hidden; display: flex; flex-direction: column; transition: transform .2s; }
-    .card:hover { transform: translateY(-4px); }
-    .pic { height: 160px; background: #f4f4fb; display: grid; place-items: center; }
-    .body { padding: 12px 14px; }
-    .title { font-weight: 900; }
-    .desc { opacity: .8; font-size: 14px; margin-top: 4px; min-height: 40px; }
-    .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-    .price { font-weight: 900; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 12px; border-radius: 12px; border: none; cursor: pointer; transition: background .2s; }
-    .btn-primary { background: var(--violet); color: #fff; }
-    .btn-primary:hover { background: var(--violet-dark); }
-    .footer { color: #cfc5ff; text-align: center; margin: 18px 0 38px; font-size: 14px; }
-    #preloader { position: fixed; inset: 0; background: linear-gradient(135deg,#32006b,#7a2cf5); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; color: #fff; font-weight: 700; font-size: 18px; }
-    #preloader-logo { width: 80px; height: 80px; margin-bottom: 12px; }
+    header h1 { margin:0; font-size:1.8rem; }
+    header p { color:#d7cfff; margin:6px 0 0; }
+    .search-bar {
+      margin:18px auto; max-width:600px; display:flex; gap:8px;
+    }
+    .search-bar input {
+      flex:1; padding:10px; border:none; border-radius:10px;
+      outline:none; font-size:1rem;
+    }
+    main {
+      flex:1; max-width:1200px; margin:auto; padding:20px;
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px;
+    }
+    .card {
+      background:#fff; color:#222; border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+      overflow:hidden; display:flex; flex-direction:column;
+      transition:transform .3s;
+    }
+    .card:hover { transform:translateY(-4px); }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card-body { padding:12px; display:flex; flex-direction:column; flex:1; }
+    .card-body h3 { margin:0; font-size:1.1rem; }
+    .desc { flex:1; color:#444; font-size:.9rem; margin:6px 0 10px; }
+    .price { font-weight:700; color:#32006b; margin-bottom:8px; }
+    .btn {
+      background:#6b23ff; color:#fff; border:none;
+      border-radius:8px; padding:10px; cursor:pointer;
+      font-weight:700; transition:.3s;
+    }
+    .btn:hover { background:#32006b; }
+    footer {
+      text-align:center; color:#d4cfff; font-size:.9rem;
+      padding:16px; margin-top:auto;
+    }
+    .back-btn {
+      position:fixed; top:16px; left:16px;
+      background:#ffffff22; color:#fff; border:none;
+      padding:8px 12px; border-radius:8px;
+      font-weight:700; cursor:pointer; backdrop-filter:blur(8px);
+    }
+    .back-btn:hover { background:#ffffff33; }
   </style>
 </head>
 <body>
-  <div id="preloader">
-    <div id="preloader-logo">
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="32" fill="#6b23ff"/><path d="M25 12 L39 32 L27 32 L39 52 Z" fill="white"/></svg>
-    </div>
-    Chargement…
-  </div>
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅ Retour</button>
 
-  <div class="topbar">
-    <div class="topbar-inner wrap">
-      <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-      <div class="hamb" id="btn-menu"><span></span></div>
+  <header>
+    <h1>🛍 Produits des Partenaires</h1>
+    <p>Commandez directement auprès de nos commerces et artisans locaux</p>
+    <div class="search-bar">
+      <input id="search" type="text" placeholder="Rechercher un produit, une boutique...">
     </div>
-  </div>
-
-  <div class="drawer" id="drawer">
-    <div class="shade" id="shade"></div>
-    <div class="panel">
-      <a href="index.html">🏠 Accueil</a>
-      <a href="partenaires.html">🤝 Partenaires</a>
-      <a href="produits.html">🛒 Produits</a>
-      <div class="langs">
-        <button id="btn-fr-lang">FR</button>
-        <button id="btn-en-lang">EN</button>
-      </div>
-    </div>
-  </div>
-
-  <header class="hero wrap">
-    <h1>Produits & Boutiques</h1>
-    <p>Trouvez vos produits et commandez en 30 secondes.</p>
   </header>
 
-  <main class="wrap" id="grid"></main>
+  <main id="grid"></main>
 
-  <div class="footer">© 2025 AlexLivraison — Livraison locale rapide</div>
+  <footer>© 2025 AlexLivraison — Livraison locale et partenaires à Toulon & La Seyne-sur-Mer</footer>
 
   <script>
-    window.addEventListener('load',()=>{
-      const p=document.getElementById('preloader');
-      p.style.opacity='0';setTimeout(()=>p.style.display='none',400);
-    });
-    const btnMenu=document.getElementById('btn-menu'),drawer=document.getElementById('drawer'),shade=document.getElementById('shade');
-    btnMenu.addEventListener('click',()=>{btnMenu.classList.toggle('open');drawer.classList.toggle('open');});
-    shade.addEventListener('click',()=>{drawer.classList.remove('open');btnMenu.classList.remove('open');});
+    const API_URL = "https://alexlivraison-api.onrender.com/products"; // Render API
+    const TELEGRAM_URL = "https://alexlivraison-api.onrender.com/send"; // Telegram proxy
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search");
 
-    const grid=document.getElementById('grid');
-    const products=[
-      {name:"Panier fruits frais",price:9.90,img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600",desc:"Sélection de fruits frais."},
-      {name:"Baguette tradition",price:1.20,img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=600",desc:"Baguette artisanale croustillante."},
-      {name:"Pizza 4 fromages",price:11.50,img:"https://images.unsplash.com/photo-1601924638867-3ec4a62ec07d?q=80&w=600",desc:"Authentique pizza italienne."},
-      {name:"Paracétamol 500mg",price:2.99,img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600",desc:"Médicament sans ordonnance."}
-    ];
+    async function loadProducts() {
+      grid.innerHTML = "<p style='text-align:center;width:100%'>Chargement des produits...</p>";
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        displayProducts(data);
+      } catch (err) {
+        grid.innerHTML = "<p style='text-align:center;color:#ff9;'>⚠️ Erreur de connexion au serveur.</p>";
+      }
+    }
 
-    products.forEach(p=>{
-      const c=document.createElement('div');
-      c.className='card';
-      c.innerHTML=`
-      <div class="pic"><img src="${p.img}" alt="${p.name}"></div>
-      <div class="body">
-        <div class="title">${p.name}</div>
-        <div class="desc">${p.desc}</div>
-        <div class="row"><div class="price">${p.price.toFixed(2).replace('.',',')} €</div>
-        <button class="btn btn-primary">Commander</button></div>
-      </div>`;
-      grid.appendChild(c);
-      c.querySelector('.btn').addEventListener('click',()=>sendTelegram(`🛒 Commande produit\n${p.name} - ${p.price} €`));
-    });
+    function displayProducts(list) {
+      const q = search.value.toLowerCase();
+      const filtered = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q) ||
+        p.partner.toLowerCase().includes(q)
+      );
 
-    async function sendTelegram(text){
-      try{
-        const res=await fetch("https://alexlivraison-api.onrender.com/send",{
+      grid.innerHTML = "";
+      filtered.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${p.image || 'default.jpg'}" alt="${p.name}">
+          <div class="card-body">
+            <h3>${p.name}</h3>
+            <div class="desc">${p.desc || ""}</div>
+            <div class="price">${p.price ? p.price.toFixed(2).replace('.', ',') + " €" : ""}</div>
+            <button class="btn">Commander</button>
+          </div>`;
+        card.querySelector(".btn").addEventListener("click",()=>sendTelegram(p));
+        grid.appendChild(card);
+      });
+
+      if (!filtered.length)
+        grid.innerHTML = "<p style='text-align:center;width:100%'>Aucun produit trouvé.</p>";
+    }
+
+    async function sendTelegram(p) {
+      const text = `🛒 Nouvelle commande partenaire :
+🏪 Partenaire : ${p.partner || '—'}
+📦 Produit : ${p.name}
+💶 Prix : ${p.price} €
+📝 Description : ${p.desc || '-'}
+⏱ ${new Date().toLocaleString('fr-FR')}`;
+
+      try {
+        await fetch(TELEGRAM_URL, {
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({text})
         });
-        if(res.ok)alert("Commande envoyée ✅");
-        else alert("Erreur d’envoi ⚠️");
-      }catch(e){alert("Connexion impossible ❌");}
+        alert("✅ Commande envoyée à AlexLivraison !");
+      } catch(e) {
+        alert("⚠️ Erreur d’envoi vers Telegram.");
+      }
     }
+
+    search.addEventListener("input", loadProducts);
+    loadProducts();
   </script>
 </body>
 </html>
