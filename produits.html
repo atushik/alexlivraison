@@ -1,10 +1,11 @@
+., [03/11/2025 02:44]
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>Produits Partenaires | AlexLivraison</title>
+  <title>Produits & Boutiques | AlexLivraison</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
@@ -12,6 +13,7 @@
     *{box-sizing:border-box}
     img{max-width:100%;height:auto;display:block}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
+
     .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
     .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
     .brand img{width:120px;height:auto}
@@ -20,6 +22,7 @@
     .hamb span{top:50%;transform:translateY(-50%)}
     .hamb::before{top:9px}
     .hamb::after{bottom:9px}
+
     .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
     .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
     .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
@@ -29,15 +32,18 @@
     .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center}
     .drawer .langs{margin-top:auto;display:flex;gap:8px}
     .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
+
     .hero{padding:28px 16px;color:#fff;text-align:center}
     .h1{color:#fff;margin:4px 0 6px 0;font-weight:900}
     .muted{color:#cfc5ff}
+
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px 0}
     .filters{display:flex;flex-wrap:wrap;gap:8px}
     .chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700}
     .chip.active{background:#fff;color:#32006b}
     .search{flex:1;min-width:220px}
     .search input{width:100%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}
+
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 20px 0}
     .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column}
     .card .pic{height:160px;background:#f4f4fb;display:grid;place-items:center}
@@ -50,6 +56,18 @@
     .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:12px;border:none;cursor:pointer}
     .btn-primary{background:#6b23ff;color:#fff}
     .btn-ghost{background:#ececf4}
+
+., [03/11/2025 02:44]
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:70}
+    .modal.show{display:flex}
+    .sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+    .sheet h3{margin:0 0 8px 0}
+    .sheet .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .sheet label{display:block;margin-top:8px;font-weight:700}
+    .sheet input, .sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
+    .sheet .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+    .note{font-size:12px;opacity:.7;margin-top:6px}
+
     .footer{color:#cfc5ff;text-align:center;margin:18px 0 26px 0}
     @media(max-width:900px){.wrap{padding:12px}}
   </style>
@@ -61,6 +79,7 @@
       <div class="hamb" id="btn-menu"><span></span></div>
     </div>
   </div>
+
   <div class="drawer" id="drawer">
     <div class="shade" id="shade"></div>
     <div class="panel">
@@ -76,21 +95,63 @@
       </div>
     </div>
   </div>
+
   <header class="hero wrap">
     <div class="muted" id="hero-eyebrow">Catalogue</div>
-    <h1 class="h1" id="hero-title">Produits Partenaires</h1>
-    <div class="muted" id="hero-desc">Trouvez vos produits partenaires et commandez facilement.</div>
+    <h1 class="h1" id="hero-title">Produits & Boutiques</h1>
+    <div class="muted" id="hero-desc">Trouvez vos produits et commandez en 30 secondes.</div>
   </header>
+
   <main class="wrap">
     <div class="controls">
-      <div class="filters" id="filters"></div>
+      <div class="filters" id="filters">
+        <button class="chip active" data-cat="all" id="f_all">Tous</button>
+        <button class="chip" data-cat="Supermarchés" id="f_sup">Supermarchés</button>
+        <button class="chip" data-cat="Boulangeries" id="f_bou">Boulangeries</button>
+        <button class="chip" data-cat="Restaurants" id="f_res">Restaurants</button>
+        <button class="chip" data-cat="Pharmacies" id="f_pha">Pharmacies</button>
+        <button class="chip" data-cat="Épiceries" id="f_epi">Épiceries</button>
+        <button class="chip" data-cat="Commerçants" id="f_com">Commerçants</button>
+      </div>
       <div class="search">
         <input id="q" placeholder="Rechercher un produit…">
       </div>
     </div>
+
     <div class="grid" id="grid"></div>
   </main>
+
   <div class="footer">© AlexLivraison</div>
+
+., [03/11/2025 02:44]
+<div class="modal" id="orderModal">
+    <div class="sheet">
+      <h3 id="m_title">Commander</h3>
+      <div class="muted" id="m_sub">Complétez vos informations pour finaliser la demande.</div>
+      <div class="grid2">
+        <div>
+          <label id="m_label_name">Nom du client</label>
+          <input id="m_name" placeholder="Jean Dupont">
+        </div>
+        <div>
+          <label id="m_label_phone">Téléphone</label>
+          <input id="m_phone" placeholder="+33 6 12 34 56 78">
+        </div>
+      </div>
+      <label id="m_label_from">Adresse de départ (magasin)</label>
+      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">
+      <label id="m_label_to">Adresse de destination</label>
+      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
+      <label id="m_label_note">Remarque</label>
+      <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
+      <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="m_cancel">Annuler</button>
+        <button class="btn btn-primary" id="m_send">Envoyer</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const drawer=document.getElementById('drawer');
     const shade=document.getElementById('shade');
@@ -98,64 +159,71 @@
     btnMenu.addEventListener('click',()=>drawer.classList.add('open'));
     shade.addEventListener('click',()=>drawer.classList.remove('open'));
 
-    const partnerPages = ['supermarches.html', 'boulangeries.html', 'pharmacies.html', 'restaurants.html', 'epiceries.html', 'commercants.html'];
-    let productsData = [];
-    const grid = document.getElementById('grid');
-    const filters = document.getElementById('filters');
-    const q = document.getElementById('q');
-    let activeCat = 'all';
+    const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+    const TELEGRAM_CHAT_ID   = "7129872491";
+
+    const productsData = [
+      {id:1, cat:"Supermarchés", name:"Panier fruits frais", price:9.90, img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop", desc:"Sélection quotidienne de fruits de saison."},
+      {id:2, cat:"Boulangeries", name:"Baguette tradition x3", price:3.20, img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop", desc:"Farine locale, croustillante à souhait."},
+      {id:3, cat:"Pharmacies", name:"Paracétamol 500mg", price:2.99, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop", desc:"Respect des conditions de délivrance."},
+      {id:4, cat:"Restaurants", name:"Sushi mix 18 pcs", price:14.90, img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop", desc:"Assortiment chef, sauce soja & wasabi."},
+      {id:5, cat:"Épiceries", name:"Huile d’olive AOP 75cl", price:8.50, img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop", desc:"Pression à froid, goût fruité."},
+      {id:6, cat:"Commerçants", name:"Bouquet de fleurs", price:12.00, img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop", desc:"Composition artisanale, à la demande."},
+      {id:7, cat:"Boulangeries", name:"Croissants x6", price:6.00, img:"https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=1200&auto=format&fit=crop", desc:"Pur beurre AOP, tout juste sortis du four."},
+      {id:8, cat:"Supermarchés", name:"Pack eau minérale 6x1,5L", price:3.10, img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop", desc:"Hydratation au quotidien, livraison à l’étage."}
+    ];
+
+    const grid=document.getElementById('grid');
+    const q=document.getElementById('q');
+    const filters=document.getElementById('filters');
+    let activeCat='all';
 
     function formatPrice(v){return (Number(v).toFixed(2)+' €').replace('.',',')}
 
-    async function loadPartnerProducts(url) {
-      const res = await fetch(url);
-      const text = await res.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-      // Адаптировать селектор под структуру партнерских html
-      const items = Array.from(doc.querySelectorAll('.card'));
-      const partnerProducts = items.map(item => {
-        return {
-          name: item.querySelector('.title')?.textContent.trim() || '',
-          price: parseFloat((item.querySelector('.price')?.textContent || '0').replace(/[^\d,\.]/g,'').replace(',', '.')) || 0,
-          img: item.querySelector('.pic img')?.src || '',
-          cat: url.replace('.html','') || 'Sans catégorie'
-        };
-      });
-      return partnerProducts;
+., [03/11/2025 02:44]
+function render(){
+      const term=q.value.trim().toLowerCase();
+      grid.innerHTML='';
+      productsData
+        .filter(p => (activeCat==='all'  p.cat===activeCat))
+        .filter(p => !term  (p.name.toLowerCase().includes(term)  (p.desc'').toLowerCase().includes(term)))
+        .forEach(p=>{
+          const card=document.createElement('div');
+          card.className='card';
+          const pic=document.createElement('div');
+          pic.className='pic';
+          const im=document.createElement('img');
+          im.src=p.img; im.alt=p.name;
+          pic.appendChild(im);
+          const body=document.createElement('div');
+          body.className='body';
+          const title=document.createElement('div');
+          title.className='title';
+          title.textContent=p.name;
+          const desc=document.createElement('div');
+          desc.className='desc';
+          desc.textContent=p.desc||'';
+          const row=document.createElement('div');
+          row.className='row';
+          const price=document.createElement('div');
+          price.className='price';
+          price.textContent=formatPrice(p.price);
+          const btn=document.createElement('button');
+          btn.className='btn btn-primary';
+          btn.textContent=strings.orderBtn;
+          btn.onclick=()=>openOrder(p);
+          row.appendChild(price);
+          row.appendChild(btn);
+          body.appendChild(title);
+          body.appendChild(desc);
+          body.appendChild(row);
+          card.appendChild(pic);
+          card.appendChild(body);
+          grid.appendChild(card);
+        });
     }
 
-    async function loadAllPartners() {
-      const allProducts = [];
-      for(const url of partnerPages){
-        try{
-          const partnerProducts = await loadPartnerProducts(url);
-          allProducts.push(...partnerProducts);
-        }catch(e){
-          console.error(`Failed to load ${url}`, e);
-        }
-      }
-      return allProducts;
-    }
-
-    function setFilters(){
-      const cats = Array.from(new Set(productsData.map(p=>p.cat)));
-      filters.innerHTML = '';
-      const btnAll = document.createElement('button');
-      btnAll.className = 'chip active';
-      btnAll.dataset.cat = 'all';
-      btnAll.textContent = 'Tous';
-      filters.appendChild(btnAll);
-      cats.forEach(c=>{
-        const btn=document.createElement('button');
-        btn.className='chip';
-        btn.dataset.cat=c;
-        btn.textContent=c;
-        filters.appendChild(btn);
-      });
-    }
-
-    filters.addEventListener('click', e => {
+    filters.addEventListener('click',e=>{
       if(e.target.classList.contains('chip')){
         document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
         e.target.classList.add('active');
@@ -163,46 +231,147 @@
         render();
       }
     });
-    q.addEventListener('input', render);
+    q.addEventListener('input',render);
 
-    function render(){
-      const term=q.value.trim().toLowerCase();
-      grid.innerHTML='';
-      productsData
-        .filter(p => activeCat==='all' || p.cat === activeCat)
-        .filter(p => !term || p.name.toLowerCase().includes(term))
-        .forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          const pic = document.createElement('div');
-          pic.className = 'pic';
-          const im = document.createElement('img');
-          im.src = p.img;
-          im.alt = p.name;
-          pic.appendChild(im);
-          const body = document.createElement('div');
-          body.className = 'body';
-          const title = document.createElement('div');
-          title.className = 'title';
-          title.textContent = p.name;
-          const price = document.createElement('div');
-          price.className = 'price';
-          price.textContent = formatPrice(p.price);
-          body.appendChild(title);
-          body.appendChild(price);
-          card.appendChild(pic);
-          card.appendChild(body);
-          grid.appendChild(card);
+    const orderModal=document.getElementById('orderModal');
+    const m_title=document.getElementById('m_title');
+    const m_sub=document.getElementById('m_sub');
+    const m_name=document.getElementById('m_name');
+    const m_phone=document.getElementById('m_phone');
+    const m_from=document.getElementById('m_from');
+    const m_to=document.getElementById('m_to');
+    const m_note=document.getElementById('m_note');
+    const m_cancel=document.getElementById('m_cancel');
+    const m_send=document.getElementById('m_send');
+
+    let currentProduct=null;
+
+    function openOrder(p){
+      currentProduct=p;
+      m_title.textContent = strings.modalTitle + ' — ' + p.name;
+      m_sub.textContent   = strings.modalSub;
+      m_name.value=''; m_phone.value=''; m_from.value=''; m_to.value=''; m_note.value='';
+      orderModal.classList.add('show');
+    }
+    m_cancel.onclick=()=>orderModal.classList.remove('show');
+
+    async function sendTelegram(text){
+      try{
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text})
         });
+        return true;
+      }catch(e){ return false; }
     }
 
-    async function init(){
-      productsData = await loadAllPartners();
-      setFilters();
+    m_send.onclick=async()=>{
+      if(!currentProduct) return;
+      const name=m_name.value.trim();
+      const phone=m_phone.value.trim();
+      const from =m_from.value.trim();
+      const to   =m_to.value.trim();
+      if(!name||!phone||!from||!to){ alert(strings.fillAll); return; }
+
+      const text =
+`🛒 Nouvelle commande (Produits)
+📦 Article: ${currentProduct.name}
+🏷 Catégorie: ${currentProduct.cat}
+💶 Prix: ${formatPrice(currentProduct.price)}
+👤 Client: ${name}
+📞 Téléphone: ${phone}
+📍 Collecte: ${from}
+🏁 Livraison: ${to}
+📝 Note: ${m_note.value.trim()||'—'}
+⏱️ Créée: ${new Date().toLocaleString('fr-FR')}`;
+
+      const ok = await sendTelegram(text);
+      if(ok){
+        alert(strings.sentOk);
+        orderModal.classList.remove('show');
+      }else{
+        alert(strings.sentErr);
+      }
+    };
+
+., [03/11/2025 02:44]
+const btnFr=document.getElementById('btn-fr');
+    const btnEn=document.getElementById('btn-en');
+
+    const i18n = {
+      fr: {
+        eyebrow:'Catalogue',
+        title:'Produits & Boutiques',
+        desc:'Trouvez vos produits et commandez en 30 secondes.',
+        all:'Tous', sup:'Supermarchés', bou:'Boulangeries', res:'Restaurants', pha:'Pharmacies', epi:'Épiceries', com:'Commerçants',
+        search:'Rechercher un produit…',
+        orderBtn:'Commander',
+        modalTitle:'Commander',
+        modalSub:'Complétez vos informations pour finaliser la demande.',
+        name:'Nom du client', phone:'Téléphone',
+        from:'Adresse de départ (magasin)',
+        to:'Adresse de destination',
+        note:'Remarque',
+        hint:'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',
+        cancel:'Annuler', send:'Envoyer',
+        fillAll:"Veuillez compléter tous les champs obligatoires.",
+        sentOk:"Commande envoyée ✅ Nous vous recontactons rapidement.",
+        sentErr:"Erreur lors de l’envoi. Réessayez."
+      },
+      en: {
+        eyebrow:'Catalog',
+        title:'Products & Shops',
+        desc:'Find your items and order in 30 seconds.',
+        all:'All', sup:'Supermarkets', bou:'Bakeries', res:'Restaurants', pha:'Pharmacies', epi:'Delicatessens', com:'Local merchants',
+        search:'Search a product…',
+        orderBtn:'Order',
+        modalTitle:'Order',
+        modalSub:'Fill in your details to finalize the request.',
+        name:'Customer name', phone:'Phone',
+        from:'Pickup address (shop)',
+        to:'Delivery address',
+        note:'Note',
+        hint:'A summary will be sent to AlexLivraison (Telegram).',
+        cancel:'Cancel', send:'Send',
+        fillAll:"Please fill in all required fields.",
+        sentOk:"Order sent ✅ We’ll contact you shortly.",
+        sentErr:"Sending error. Please retry."
+      }
+    };
+    let strings = i18n.fr;
+
+    function setLang(lang){
+      strings = (lang==='en') ? i18n.en : i18n.fr;
+      document.documentElement.lang = (lang==='en')?'en':'fr';
+      document.getElementById('hero-eyebrow').textContent = strings.eyebrow;
+      document.getElementById('hero-title').textContent   = strings.title;
+      document.getElementById('hero-desc').textContent    = strings.desc;
+      document.getElementById('f_all').textContent = strings.all;
+      document.getElementById('f_sup').textContent = strings.sup;
+      document.getElementById('f_bou').textContent = strings.bou;
+      document.getElementById('f_res').textContent = strings.res;
+      document.getElementById('f_pha').textContent = strings.pha;
+      document.getElementById('f_epi').textContent = strings.epi;
+      document.getElementById('f_com').textContent = strings.com;
+      q.placeholder = strings.search;
+      document.getElementById('m_title').textContent = strings.modalTitle;
+      document.getElementById('m_sub').textContent = strings.modalSub;
+      document.getElementById('m_label_name').textContent = strings.name;
+      document.getElementById('m_label_phone').textContent = strings.phone;
+      document.getElementById('m_label_from').textContent = strings.from;
+      document.getElementById('m_label_to').textContent = strings.to;
+      document.getElementById('m_label_note').textContent = strings.note;
+      document.getElementById('m_hint').textContent = strings.hint;
+      document.getElementById('m_cancel').textContent = strings.cancel;
+      document.getElementById('m_send').textContent = strings.send;
       render();
     }
+    btnFr.addEventListener('click',()=>{ setLang('fr'); drawer.classList.remove('open'); });
+    btnEn.addEventListener('click',()=>{ setLang('en'); drawer.classList.remove('open'); });
 
-    init();
+    setLang('fr');
+    render();
   </script>
 </body>
 </html>
