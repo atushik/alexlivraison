@@ -295,7 +295,15 @@
       const phone=$("#clientPhone").value.trim();
       const time=$("#time").value;
       const date=$("#date").value;
-      await sendToTelegram(`🆕 ${currentText.newOrderCash}\n👤 ${currentText.name}: ${name}\n📞 ${currentText.phone}: ${phone}\n📅 ${currentText.date}: ${date}\n🕒 ${currentText.time}: ${time}\n📍 ${currentText.from}: ${lastCalc.from}\n🏁 ${currentText.to}: ${lastCalc.to}\n📦 ${currentText.distanceShort}: ${lastCalc.dist} km\n💶 ${currentText.priceShort}: ${lastCalc.price} €`);
+      await sendToTelegram(`🆕 ${currentText.newOrderCash}
+👤 ${currentText.name}: ${name}
+📞 ${currentText.phone}: ${phone}
+📅 ${currentText.date}: ${date}
+🕒 ${currentText.time}: ${time}
+📍 ${currentText.from}: ${lastCalc.from}
+🏁 ${currentText.to}: ${lastCalc.to}
+📦 ${currentText.distanceShort}: ${lastCalc.dist} km
+💶 ${currentText.priceShort}: ${lastCalc.price} €`);
       alert(currentText.cashOk);
     });
 
@@ -305,7 +313,15 @@
       const phone=$("#clientPhone").value.trim();
       const time=$("#time").value;
       const date=$("#date").value;
-      await sendToTelegram(`🆕 ${currentText.newOrderCard}\n👤 ${currentText.name}: ${name}\n📞 ${currentText.phone}: ${phone}\n📅 ${currentText.date}: ${date}\n🕒 ${currentText.time}: ${time}\n📍 ${currentText.from}: ${lastCalc.from}\n🏁 ${currentText.to}: ${lastCalc.to}\n📦 ${currentText.distanceShort}: ${lastCalc.dist} km\n💳 ${currentText.priceShort}: ${lastCalc.price} €`);
+      await sendToTelegram(`🆕 ${currentText.newOrderCard}
+👤 ${currentText.name}: ${name}
+📞 ${currentText.phone}: ${phone}
+📅 ${currentText.date}: ${date}
+🕒 ${currentText.time}: ${time}
+📍 ${currentText.from}: ${lastCalc.from}
+🏁 ${currentText.to}: ${lastCalc.to}
+📦 ${currentText.distanceShort}: ${lastCalc.dist} km
+💳 ${currentText.priceShort}: ${lastCalc.price} €`);
       const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -322,9 +338,9 @@
       fr:{
         heroTitle:"Livraison locale rapide à Toulon & La Seyne",
         heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.",
-        navCalc:"Calcul & Commande",
-        navPartners:"Partenaires",
-        navContact:"Contact",
+        navCalc:"Produits & Partenaires",
+        navPartners:"À propos",
+        navContact:"Chat",
         calcTitle:"Calcul du prix et commande",
         lblName:"Nom du client (optionnel)",
         lblPhone:"Numéro de téléphone du client",
@@ -380,9 +396,9 @@
       en:{
         heroTitle:"Fast & reliable local delivery in Toulon & La Seyne",
         heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds.",
-        navCalc:"Price & Order",
-        navPartners:"Partners",
-        navContact:"Contact",
+        navCalc:"Products & Partners",
+        navPartners:"About",
+        navContact:"Chat",
         calcTitle:"Price calculation & order",
         lblName:"Customer name (optional)",
         lblPhone:"Customer phone number",
