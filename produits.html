@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Produits & Boutiques | AlexLivraison</title>
   <meta name="description" content="Commandez vos produits et boutiques locales en 30 secondes grâce à AlexLivraison. Livraison rapide et fiable.">
   <meta name="theme-color" content="#6b23ff">
-  <meta property="og:title" content="Produits & Boutiques | AlexLivraison"/>
-  <meta property="og:description" content="Trouvez vos produits et commandez en 30 secondes avec AlexLivraison. Livraison rapide et fiable."/>
-  <meta property="og:image" content="https://yourdomain.com/path/to/logo.jpg"/>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡%3c/text%3e%3c/svg%3e"/>
+  <meta property="og:title" content="Produits & Boutiques | AlexLivraison">
+  <meta property="og:description" content="Trouvez vos produits et commandez en 30 secondes avec AlexLivraison. Livraison rapide et fiable.">
+  <meta property="og:image" content="https://yourdomain.com/path/to/logo.jpg">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡️%3c/text%3e%3c/svg%3e">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <style>
@@ -111,7 +111,7 @@
 
   <div class="topbar">
     <div class="topbar-inner wrap">
-      <div class="brand" role="banner"><img src="logo.jpg" alt="AlexLivraison" tabindex="0" style="outline:none;"/></div>
+      <div class="brand" role="banner"><img src="logo.jpg" alt="AlexLivraison" tabindex="0" style="outline:none;"></div>
       <div class="hamb" id="btn-menu" aria-label="Ouvrir le menu principal" role="button" tabindex="0" aria-expanded="false"><span></span></div>
     </div>
   </div>
@@ -119,7 +119,7 @@
   <div class="drawer" id="drawer" role="region" aria-label="Menu latéral navigation">
     <div class="shade" id="shade" tabindex="-1"></div>
     <div class="panel" tabindex="0">
-      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px" aria-hidden="true"/>
+      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px" aria-hidden="true">
       <div class="tabnav" role="tablist" aria-label="Sections menu">
         <button role="tab" aria-selected="true" tabindex="0" class="active" id="tab-products-btn">Produits</button>
         <button role="tab" aria-selected="false" tabindex="-1" id="tab-orders-btn">Mes commandes récentes</button>
@@ -163,7 +163,7 @@
   </main>
 
   <div class="footer" aria-label="Pied de page">
-    © AlexLivraison – Livraison locale rapide<br/>
+    © AlexLivraison – Livraison locale rapide<br>
     Dernière mise à jour : novembre 2025
   </div>
 
@@ -174,17 +174,17 @@
       <div class="grid2">
         <div>
           <label id="m_label_name" for="m_name">Nom du client</label>
-          <input id="m_name" placeholder="Jean Dupont" autocomplete="name"/>
+          <input id="m_name" placeholder="Jean Dupont" autocomplete="name">
         </div>
         <div>
           <label id="m_label_phone" for="m_phone">Téléphone</label>
-          <input id="m_phone" placeholder="+33 6 12 34 56 78" autocomplete="tel"/>
+          <input id="m_phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
         </div>
       </div>
       <label id="m_label_from" for="m_from">Adresse de départ (magasin)</label>
-      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon" autocomplete="off"/>
+      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon" autocomplete="off">
       <label id="m_label_to" for="m_to">Adresse de destination</label>
-      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne" autocomplete="off"/>
+      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne" autocomplete="off">
       <label id="m_label_note" for="m_note">Remarque</label>
       <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
       <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
@@ -211,7 +211,7 @@
     const shade = document.getElementById('shade');
     btnMenu.addEventListener('click', () => {
       btnMenu.classList.toggle('open');
-      drawer.classList.add('open');
+      drawer.classList.toggle('open');
       btnMenu.setAttribute('aria-expanded', btnMenu.classList.contains('open'));
       if(drawer.classList.contains('open')) drawer.querySelector('.panel').focus();
     });
@@ -296,6 +296,7 @@
       }
     };
     let strings = i18n.fr;
+    let activeLang = 'fr';
 
     const grid = document.getElementById('grid'),
           q = document.getElementById('q'),
@@ -359,7 +360,7 @@
         card.className = 'card';
         card.id = 'prod' + p.id;
         card.innerHTML = `
-          <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy" /></div>
+          <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
           <div class="body">
             <div class="title">${p.name}</div>
             <div class="desc">${p.desc}</div>
@@ -379,7 +380,7 @@
       document.getElementById('hero-eyebrow').textContent = strings.eyebrow;
       document.getElementById('hero-title').textContent = strings.title;
       document.getElementById('hero-desc').textContent = strings.desc;
-      document.getElementById('filters').children[0].textContent = strings.all;
+      filters.children[0].textContent = strings.all;
       q.placeholder = strings.search;
       mTitle.textContent = strings.modalTitle;
       mSub.textContent = strings.modalSub;
@@ -566,7 +567,6 @@
       tabProducts.setAttribute('hidden', 'true');
     });
 
-    // Retour en haut button
     window.addEventListener('scroll', () => {
       if (window.scrollY > 300) {
         btnTop.style.display = 'flex';
