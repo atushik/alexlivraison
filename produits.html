@@ -1,150 +1,189 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Produits & Boutiques | AlexLivraison</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#6b23ff">
+  <meta name="description" content="Catalogue et boutique partenaires AlexLivraison. Commandez des produits locaux et faites-vous livrer rapidement.">
+  <link rel="apple-touch-icon" href="logo.jpg">
+  <link rel="manifest" href="manifest.json">
+  <title>Produits partenaires | AlexLivraison</title>
   <style>
-    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
-    html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}
+    :root{--violet:#6b23ff;--violet-dark:#32006b;--bg1:#32006b;--bg2:#7a2cf5;--ring:#ffffff2e;--text:#1b1b1f;--muted:#cfc5ff;--soft:#ffffff18;--white:#fff;--green:#28a745;--red:#f44336}
+    html,body{height:100%;margin:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));background-attachment:fixed;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
     *{box-sizing:border-box}
-    img{max-width:100%;height:auto;display:block}
-    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-
-    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
-    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
-    .brand img{width:120px;height:auto}
-    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative}
-    .hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+    img{max-width:100%;display:block}
+    .wrap{width:100%;max-width:1160px;margin:0 auto;padding:16px}
+    .topbar{position:sticky;top:0;z-index:60;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px}
+    .brand img{width:120px;height:auto;cursor:pointer}
+    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative;transition:.25s}
+    .hamb:hover{background:#ffffff26}
+    .hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s}
     .hamb span{top:50%;transform:translateY(-50%)}
     .hamb::before{top:9px}
     .hamb::after{bottom:9px}
-
-    .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
+    .hamb.open span{opacity:0}
+    .hamb.open::before{transform:rotate(45deg);top:19px}
+    .hamb.open::after{transform:rotate(-45deg);bottom:19px}
+    .drawer{position:fixed;inset:0;z-index:70;pointer-events:none}
     .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
-    .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
+    .drawer .panel{position:absolute;left:-320px;top:0;bottom:0;width:320px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:12px;transition:.25s;overflow-y:auto}
     .drawer.open{pointer-events:auto}
     .drawer.open .shade{opacity:1}
     .drawer.open .panel{left:0}
     .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center}
-    .drawer .langs{margin-top:auto;display:flex;gap:8px}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
-
+    .drawer a:hover{background:#ffffff26}
+    .langs{margin-top:auto;display:flex;gap:8px}
+    .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
+    .langs button:hover{background:#6b23ff}
     .hero{padding:28px 16px;color:#fff;text-align:center}
-    .h1{color:#fff;margin:4px 0 6px 0;font-weight:900}
-    .muted{color:#cfc5ff}
-
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px 0}
+    .h1{color:#fff;margin:6px 0 6px;font-weight:900}
+    .muted{color:var(--muted)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px}
     .filters{display:flex;flex-wrap:wrap;gap:8px}
     .chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700}
     .chip.active{background:#fff;color:#32006b}
     .search{flex:1;min-width:220px}
     .search input{width:100%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 20px 0}
-    .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column}
-    .card .pic{height:160px;background:#f4f4fb;display:grid;place-items:center}
-    .card .pic img{width:100%;height:100%;object-fit:cover}
+    .sort{background:#ffffff18;color:#fff;border:none;padding:10px 14px;border-radius:12px;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 24px}
+    .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;transition:.2s;scroll-margin-top:110px}
+    .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.25)}
+    .card .pic{height:170px;background:#f4f4fb;display:grid;place-items:center}
     .card .body{padding:12px 14px}
     .title{font-weight:900}
-    .desc{opacity:.8;font-size:14px;margin-top:4px;min-height:40px}
-    .row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+    .desc{opacity:.85;font-size:14px;margin-top:6px;min-height:40px}
+    .row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
     .price{font-weight:900}
     .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:12px;border:none;cursor:pointer}
     .btn-primary{background:#6b23ff;color:#fff}
+    .btn-primary:hover{background:#5a14e0}
     .btn-ghost{background:#ececf4}
-
-., [03/11/2025 15:22]
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:70}
+    .toast{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(15px);transition:.25s;z-index:200;pointer-events:none;font-weight:700}
+    .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+    .footer{color:#cfc5ff;text-align:center;margin:18px 0 40px;font-size:14px}
+    .modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:80}
     .modal.show{display:flex}
-    .sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
-    .sheet h3{margin:0 0 8px 0}
+    .sheet{background:#fff;border-radius:16px;max-width:560px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+    .sheet h3{margin:0 0 8px}
     .sheet .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .sheet label{display:block;margin-top:8px;font-weight:700}
-    .sheet input, .sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
+    .sheet input,.sheet textarea,.sheet select{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
     .sheet .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
-    .note{font-size:12px;opacity:.7;margin-top:6px}
-
-    .footer{color:#cfc5ff;text-align:center;margin:18px 0 26px 0}
+    .note{font-size:12px;opacity:.75;margin-top:6px}
+    .fab{position:fixed;bottom:92px;right:20px;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e5e7eb;box-shadow:0 12px 30px rgba(0,0,0,.24);cursor:pointer;z-index:110}
+    .fab .badge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:999px;font-size:11px;font-weight:900;padding:4px 7px}
+    .cart{position:fixed;top:0;right:-420px;width:400px;max-width:86vw;height:100vh;background:#fff;z-index:120;box-shadow:-16px 0 40px rgba(0,0,0,.35);transition:.3s;display:flex;flex-direction:column}
+    .cart.open{right:0}
+    .cart-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px;border-bottom:1px solid #ececf4}
+    .cart-body{padding:12px;overflow:auto;flex:1}
+    .cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;border-bottom:1px solid #f0f0f5;padding:10px 0}
+    .qty{display:flex;align-items:center;gap:8px}
+    .qty button{width:28px;height:28px;border-radius:8px;border:1px solid #d7d7e4;background:#fff;cursor:pointer}
+    .cart-foot{padding:12px;border-top:1px solid #ececf4;background:#fafafa}
+    .sumrow{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
+    .total{font-weight:900;font-size:18px}
+    .promoline{display:flex;gap:8px;margin-top:6px}
+    .promoline input{flex:1}
+    .checkout{margin-top:10px;display:grid;gap:8px}
+    .radio{display:flex;gap:10px;align-items:center}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .contact-fixed{position:fixed;left:20px;bottom:20px;z-index:110;background:#10b981;color:#fff;border-radius:999px;padding:10px 14px;text-decoration:none;display:flex;gap:8px;align-items:center;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+    .contact-fixed:hover{filter:brightness(.95)}
+    #btn-top{position:fixed;bottom:20px;right:20px;background:#6b23ff;color:#fff;border:none;border-radius:50%;width:56px;height:56px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:20px;z-index:100;box-shadow:0 12px 30px rgba(0,0,0,.24)}
+    #btn-top.show{display:flex}
     @media(max-width:900px){.wrap{padding:12px}}
   </style>
 </head>
 <body>
   <div class="topbar">
     <div class="topbar-inner wrap">
-      <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-      <div class="hamb" id="btn-menu"><span></span></div>
+      <div class="brand"><img src="logo.jpg" alt="AlexLivraison" onclick="window.scrollTo({top:0,behavior:'smooth'})"></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="btn-fr" class="btn" style="background:#ffffff18;color:#fff;border:1px solid #ffffff33;border-radius:10px">FR</button>
+        <button id="btn-en" class="btn" style="background:#ffffff18;color:#fff;border:1px solid #ffffff33;border-radius:10px">EN</button>
+        <div class="hamb" id="btn-menu" aria-label="Menu"><span></span></div>
+      </div>
     </div>
   </div>
 
   <div class="drawer" id="drawer">
     <div class="shade" id="shade"></div>
     <div class="panel">
-      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">
+      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:8px">
       <a href="index.html">Accueil / Commander</a>
-      <a href="supermarches.html" target="_blank">Partenaires – Supermarchés</a>
-      <a href="restaurants.html" target="_blank">Partenaires – Restaurants</a>
-      <a href="pharmacies.html" target="_blank">Partenaires – Pharmacies</a>
-      <a href="boulangeries.html" target="_blank">Partenaires – Boulangeries</a>
+      <a href="supermarches.html" target="_blank">Supermarchés</a>
+      <a href="restaurants.html" target="_blank">Restaurants</a>
+      <a href="pharmacies.html" target="_blank">Pharmacies</a>
+      <a href="boulangeries.html" target="_blank">Boulangeries</a>
       <div class="langs">
-        <button id="btn-fr">FR</button>
-        <button id="btn-en">EN</button>
+        <button id="d-fr">FR</button>
+        <button id="d-en">EN</button>
       </div>
     </div>
   </div>
 
   <header class="hero wrap">
     <div class="muted" id="hero-eyebrow">Catalogue</div>
-    <h1 class="h1" id="hero-title">Produits & Boutiques</h1>
+    <h1 class="h1" id="hero-title">Produits partenaires</h1>
     <div class="muted" id="hero-desc">Trouvez vos produits et commandez en 30 secondes.</div>
   </header>
 
   <main class="wrap">
     <div class="controls">
-      <div class="filters" id="filters">
-        <button class="chip active" data-cat="all" id="f_all">Tous</button>
-        <button class="chip" data-cat="Supermarchés" id="f_sup">Supermarchés</button>
-        <button class="chip" data-cat="Boulangeries" id="f_bou">Boulangeries</button>
-        <button class="chip" data-cat="Restaurants" id="f_res">Restaurants</button>
-        <button class="chip" data-cat="Pharmacies" id="f_pha">Pharmacies</button>
-        <button class="chip" data-cat="Épiceries" id="f_epi">Épiceries</button>
-        <button class="chip" data-cat="Commerçants" id="f_com">Commerçants</button>
-      </div>
-      <div class="search">
-        <input id="q" placeholder="Rechercher un produit…">
-      </div>
+      <div class="filters" id="filters"><button class="chip active" data-cat="all">Tous</button></div>
+      <select class="sort" id="sort">
+        <option value="default">Trier</option>
+        <option value="asc">Prix croissant</option>
+        <option value="desc">Prix décroissant</option>
+      </select>
+      <div class="search"><input id="q" placeholder="Rechercher un produit…"></div>
     </div>
-
     <div class="grid" id="grid"></div>
   </main>
 
-  <div class="footer">© AlexLivraison</div>
+  <div class="footer">© 2025 AlexLivraison – Livraison locale rapide</div>
+
+  <div class="modal" id="productModal">
+    <div class="sheet">
+      <h3 id="pm_title"></h3>
+      <div class="muted" id="pm_desc" style="margin-bottom:8px"></div>
+      <div class="grid2">
+        <div>
+          <label id="pm_qty_label">Quantité</label>
+          <input id="pm_qty" type="number" min="1" value="1">
+        </div>
+        <div>
+          <label id="pm_price_label">Prix</label>
+          <input id="pm_price" disabled>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="pm_cancel">Fermer</button>
+        <button class="btn btn-primary" id="pm_add">Ajouter au panier</button>
+      </div>
+    </div>
+  </div>
 
   <div class="modal" id="orderModal">
     <div class="sheet">
       <h3 id="m_title">Commander</h3>
       <div class="muted" id="m_sub">Complétez vos informations pour finaliser la demande.</div>
       <div class="grid2">
-        <div>
-          <label id="m_label_name">Nom du client</label>
-          <input id="m_name" placeholder="Jean Dupont">
-        </div>
-        <div>
-          <label id="m_label_phone">Téléphone</label>
-          <input id="m_phone" placeholder="+33 6 12 34 56 78">
-        </div>
+        <div><label id="m_label_name">Nom</label><input id="m_name" autocomplete="name" placeholder="Jean Dupont"></div>
+        <div><label id="m_label_phone">Téléphone</label><input id="m_phone" autocomplete="tel" placeholder="+33 6 12 34 56 78"></div>
       </div>
-      <label id="m_label_from">Adresse de départ (magasin)</label>
-      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">
-      <label id="m_label_to">Adresse de destination</label>
-      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
-      <label id="m_label_note">Remarque</label>
-      <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
-
-., [03/11/2025 15:22]
-<div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
+      <label id="m_label_from">Adresse de départ</label><input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">
+      <label id="m_label_to">Adresse de destination</label><input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
+      <div class="grid2">
+        <div><label id="m_label_time">Heure souhaitée</label><input id="m_time" type="time"></div>
+        <div><label id="m_label_pay">Paiement</label><select id="m_pay"><option value="cash">Espèces</option><option value="card">Carte</option></select></div>
+      </div>
+      <label id="m_label_note">Remarque</label><textarea id="m_note" placeholder="Code porte, étage…"></textarea>
+      <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
       <div class="actions">
         <button class="btn btn-ghost" id="m_cancel">Annuler</button>
         <button class="btn btn-primary" id="m_send">Envoyer</button>
@@ -152,228 +191,140 @@
     </div>
   </div>
 
+  <button class="fab" id="cartFab" aria-label="Ouvrir le panier">🧺<span class="badge" id="cartCount">0</span></button>
+  <div class="cart" id="cartPanel">
+    <div class="cart-head">
+      <div id="cartTitle">Panier</div>
+      <button class="btn" id="cartClose">✕</button>
+    </div>
+    <div class="cart-body" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="promoline"><input id="promo" placeholder="Code promo"><button class="btn" id="applyPromo">OK</button></div>
+      <div class="sumrow"><div id="subLabel">Sous-total</div><div id="subVal">0 €</div></div>
+      <div class="sumrow"><div id="delLabel">Livraison</div><div id="delVal">0 €</div></div>
+      <div class="sumrow"><div id="discLabel">Remise</div><div id="discVal">0 €</div></div>
+      <div class="sumrow total"><div id="totLabel">Total</div><div id="totVal">0 €</div></div>
+      <div class="checkout">
+        <div class="radio"><input type="radio" name="pay2" id="payCash" checked><label for="payCash" id="payCashLabel">Paiement à la livraison (espèces)</label></div>
+        <div class="radio"><input type="radio" name="pay2" id="payCard"><label for="payCard" id="payCardLabel">Carte</label></div>
+        <button class="btn btn-primary" id="checkoutBtn">Passer la commande</button>
+      </div>
+    </div>
+  </div>
+
+  <a class="contact-fixed" href="https://t.me/alexlivraison_bot" target="_blank" rel="noopener">💬 Contacter AlexLivraison</a>
+  <button id="btn-top">▲</button>
+
+  <div id="toast" class="toast"></div>
+
   <script>
-    const drawer=document.getElementById('drawer');
-    const shade=document.getElementById('shade');
-    const btnMenu=document.getElementById('btn-menu');
-    btnMenu.addEventListener('click',()=>drawer.classList.add('open'));
-    shade.addEventListener('click',()=>drawer.classList.remove('open'));
+    const btnMenu=document.getElementById('btn-menu');const drawer=document.getElementById('drawer');const shade=document.getElementById('shade');btnMenu.onclick=()=>{btnMenu.classList.toggle('open');drawer.classList.add('open')};shade.onclick=()=>{btnMenu.classList.remove('open');drawer.classList.remove('open')};document.getElementById('d-fr').onclick=()=>document.getElementById('btn-fr').click();document.getElementById('d-en').onclick=()=>document.getElementById('btn-en').click();
 
-    const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-    const TELEGRAM_CHAT_ID   = "7129872491";
+    const i18n={fr:{eyebrow:"Catalogue",title:"Produits partenaires",desc:"Trouvez vos produits et commandez en 30 secondes.",all:"Tous",sort:"Trier",asc:"Prix croissant",descO:"Prix décroissant",search:"Rechercher un produit…",add:"Ajouter",orderBtn:"Commander",modalTitle:"Commander",modalSub:"Complétez vos informations pour finaliser la demande.",name:"Nom",phone:"Téléphone",from:"Adresse de départ",to:"Adresse de destination",time:"Heure souhaitée",pay:"Paiement",note:"Remarque",hint:"Un récapitulatif sera envoyé à AlexLivraison (Telegram).",cancel:"Annuler",send:"Envoyer",cart:"Panier",subtotal:"Sous-total",delivery:"Livraison",discount:"Remise",total:"Total",payCash:"Paiement à la livraison (espèces)",payCard:"Carte",checkout:"Passer la commande",qty:"Quantité",price:"Prix",added:"Ajouté au panier",empty:"Le panier est vide.",codeOk:"Code promo appliqué",codeBad:"Code promo invalide",sentOk:"Commande envoyée ✅",sentErr:"Erreur d’envoi ❌",fillAll:"Complétez tous les champs obligatoires."},en:{eyebrow:"Catalog",title:"Partner products",desc:"Find items and order in 30 seconds.",all:"All",sort:"Sort",asc:"Price: Low–High",descO:"Price: High–Low",search:"Search a product…",add:"Add",orderBtn:"Order",modalTitle:"Order",modalSub:"Fill in your details.",name:"Name",phone:"Phone",from:"Pickup address",to:"Delivery address",time:"Preferred time",pay:"Payment",note:"Note",hint:"A summary will be sent to AlexLivraison (Telegram).",cancel:"Cancel",send:"Send",cart:"Cart",subtotal:"Subtotal",delivery:"Delivery",discount:"Discount",total:"Total",payCash:"Pay on delivery (cash)",payCard:"Card",checkout:"Checkout",qty:"Quantity",price:"Price",added:"Added to cart",empty:"Cart is empty.",codeOk:"Promo applied",codeBad:"Invalid promo code",sentOk:"Order sent ✅",sentErr:"Error ❌",fillAll:"Please fill all required fields."}};
+    let lang="fr",strings=i18n.fr;
+    const el=(id)=>document.getElementById(id);
+    const heroEy=el('hero-eyebrow'),heroTi=el('hero-title'),heroDe=el('hero-desc'),sortSel=el('sort'),q=el('q');
+    function setLang(l){lang=l;strings=l==='en'?i18n.en:i18n.fr;document.documentElement.lang=l==='en'?'en':'fr';heroEy.textContent=strings.eyebrow;heroTi.textContent=strings.title;heroDe.textContent=strings.desc;sortSel.options[0].text=strings.sort;sortSel.options[1].text=strings.asc;sortSel.options[2].text=strings.descO;q.placeholder=strings.search;el('m_title').textContent=strings.modalTitle;el('m_sub').textContent=strings.modalSub;el('m_label_name').textContent=strings.name;el('m_label_phone').textContent=strings.phone;el('m_label_from').textContent=strings.from;el('m_label_to').textContent=strings.to;el('m_label_time').textContent=strings.time;el('m_label_pay').textContent=strings.pay;el('m_label_note').textContent=strings.note;el('m_hint').textContent=strings.hint;el('m_cancel').textContent=strings.cancel;el('m_send').textContent=strings.send;el('cartTitle').textContent=strings.cart;el('subLabel').textContent=strings.subtotal;el('delLabel').textContent=strings.delivery;el('discLabel').textContent=strings.discount;el('totLabel').textContent=strings.total;el('payCashLabel').textContent=strings.payCash;el('payCardLabel').textContent=strings.payCard;el('checkoutBtn').textContent=strings.checkout;el('pm_qty_label').textContent=strings.qty;el('pm_price_label').textContent=strings.price;render()}
+    el('btn-fr').onclick=()=>setLang('fr');el('btn-en').onclick=()=>setLang('en');
 
-    const productsData = [
-      {id:1, cat:"Supermarchés", name:"Panier fruits frais", price:9.90, img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop", desc:"Sélection quotidienne de fruits de saison."},
-      {id:2, cat:"Boulangeries", name:"Baguette tradition x3", price:3.20, img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop", desc:"Farine locale, croustillante à souhait."},
-      {id:3, cat:"Pharmacies", name:"Paracétamol 500mg", price:2.99, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop", desc:"Respect des conditions de délivrance."},
-      {id:4, cat:"Restaurants", name:"Sushi mix 18 pcs", price:14.90, img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop", desc:"Assortiment chef, sauce soja & wasabi."},
-      {id:5, cat:"Épiceries", name:"Huile d’olive AOP 75cl", price:8.50, img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop", desc:"Pression à froid, goût fruité."},
-      {id:6, cat:"Commerçants", name:"Bouquet de fleurs", price:12.00, img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop", desc:"Composition artisanale, à la demande."},
-      {id:7, cat:"Boulangeries", name:"Croissants x6", price:6.00, img:"https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=1200&auto=format&fit=crop", desc:"Pur beurre AOP, tout juste sortis du four."},
-      {id:8, cat:"Supermarchés", name:"Pack eau minérale 6x1,5L", price:3.10, img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop", desc:"Hydratation au quotidien, livraison à l’étage."}
+    const toastEl=el('toast');function toast(msg,bg){toastEl.textContent=msg;if(bg)toastEl.style.background=bg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2600)}
+
+    const grid=el('grid'),filters=el('filters'),sort=el('sort');
+    let products=[],activeCat='all';
+
+    const fallbackProducts=[
+      {id:"p1",cat:"Supermarchés",name:"Panier fruits frais",price:9.9,img:"https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=1200&auto=format&fit=crop",desc:"Fruits de saison"},
+      {id:"p2",cat:"Boulangeries",name:"Baguette tradition x3",price:3.2,img:"https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1200&auto=format&fit=crop",desc:"Farine locale"},
+      {id:"p3",cat:"Restaurants",name:"Sushi mix 18 pcs",price:14.9,img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",desc:"Assortiment du chef"},
+      {id:"p4",cat:"Pharmacies",name:"Paracétamol 500mg",price:2.99,img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",desc:"Respect délivrance"},
+      {id:"p5",cat:"Épiceries",name:"Huile d’olive 75cl",price:8.5,img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1200&auto=format&fit=crop",desc:"Pression à froid"},
+      {id:"p6",cat:"Commerçants",name:"Bouquet de fleurs",price:12,img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop",desc:"Composition artisanale"},
+      {id:"p7",cat:"Boulangeries",name:"Croissants x6",price:6,img:"https://images.unsplash.com/photo-1509440159598-8b09d4199d72?q=80&w=1200&auto=format&fit=crop",desc:"Pur beurre"},
+      {id:"p8",cat:"Supermarchés",name:"Pack eau 6x1,5L",price:3.1,img:"https://images.unsplash.com/photo-1548839140-29a749e1cf4d?q=80&w=1200&auto=format&fit=crop",desc:"Hydratation quotidienne"}
     ];
 
-    const grid=document.getElementById('grid');
-    const q=document.getElementById('q');
-    const filters=document.getElementById('filters');
-    let activeCat='all';
+    async function loadProducts(){
+      try{
+        const r=await fetch('data/produits.json',{cache:'no-store'});
+        if(!r.ok) throw 0;
+        const json=await r.json();
+        products=Array.isArray(json)&&json.length?json:fallbackProducts
+      }catch(e){products=fallbackProducts}
+      buildFilters();render()
+    }
+
+    function buildFilters(){
+      const cats=[...new Set(products.map(p=>p.cat))];
+      cats.forEach(c=>{const b=document.createElement('button');b.className='chip';b.dataset.cat=c;b.textContent=c;filters.appendChild(b)})
+    }
 
     function formatPrice(v){return (Number(v).toFixed(2)+' €').replace('.',',')}
-
     function render(){
       const term=q.value.trim().toLowerCase();
+      let data=products.filter(p=>activeCat==='all'||p.cat===activeCat);
+      if(term)data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));
+      if(sort.value==='asc')data.sort((a,b)=>a.price-b.price);else if(sort.value==='desc')data.sort((a,b)=>b.price-a.price);
       grid.innerHTML='';
-      productsData
-        .filter(p => (activeCat==='all' || p.cat===activeCat))
-        .filter(p => !term  (p.name.toLowerCase().includes(term)  (p.desc||'').toLowerCase().includes(term)))
-        .forEach(p=>{
-          const card=document.createElement('div');
-          card.className='card';
-          const pic=document.createElement('div');
-          pic.className='pic';
-          const im=document.createElement('img');
-          im.src=p.img; im.alt=p.name;
-          pic.appendChild(im);
-          const body=document.createElement('div');
-          body.className='body';
-          const title=document.createElement('div');
-          title.className='title';
-          title.textContent=p.name;
-          const desc=document.createElement('div');
-          desc.className='desc';
-          desc.textContent=p.desc||'';
-          const row=document.createElement('div');
-          row.className='row';
-
-., [03/11/2025 15:22]
-const price=document.createElement('div');
-          price.className='price';
-          price.textContent=formatPrice(p.price);
-          const btn=document.createElement('button');
-          btn.className='btn btn-primary';
-          btn.textContent=strings.orderBtn;
-          btn.onclick=()=>openOrder(p);
-          row.appendChild(price);
-          row.appendChild(btn);
-          body.appendChild(title);
-          body.appendChild(desc);
-          body.appendChild(row);
-          card.appendChild(pic);
-          card.appendChild(body);
-          grid.appendChild(card);
-        });
+      if(!data.length){grid.innerHTML=`<p style="color:white;text-align:center">${lang==='en'?'No products':'Aucun produit'}</p>`;return}
+      data.forEach(p=>{
+        const card=document.createElement('div');card.className='card';card.id='prod'+p.id;
+        const img=`<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=AlexLivraison'">`;
+        card.innerHTML=`<div class="pic">${img}</div><div class="body"><div class="title">${p.name}</div><div class="desc">${p.desc||''}</div><div class="row"><div class="price">${formatPrice(p.price)}</div><button class="btn btn-primary" data-id="${p.id}">${strings.add}</button></div></div>`;
+        grid.appendChild(card)
+      })
     }
 
-    filters.addEventListener('click',e=>{
-      if(e.target.classList.contains('chip')){
-        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-        e.target.classList.add('active');
-        activeCat=e.target.dataset.cat||'all';
-        render();
-      }
-    });
-    q.addEventListener('input',render);
+    filters.addEventListener('click',e=>{if(e.target.classList.contains('chip')){[...filters.children].forEach(c=>c.classList.remove('active'));e.target.classList.add('active');activeCat=e.target.dataset.cat||'all';render()}});
+    q.addEventListener('input',render);sort.addEventListener('change',render);
 
-    const orderModal=document.getElementById('orderModal');
-    const m_title=document.getElementById('m_title');
-    const m_sub=document.getElementById('m_sub');
-    const m_name=document.getElementById('m_name');
-    const m_phone=document.getElementById('m_phone');
-    const m_from=document.getElementById('m_from');
-    const m_to=document.getElementById('m_to');
-    const m_note=document.getElementById('m_note');
-    const m_cancel=document.getElementById('m_cancel');
-    const m_send=document.getElementById('m_send');
+    const productModal=el('productModal');const pmTitle=el('pm_title');const pmDesc=el('pm_desc');const pmQty=el('pm_qty');const pmPrice=el('pm_price');const pmCancel=el('pm_cancel');const pmAdd=el('pm_add');let currentProduct=null;
+    grid.addEventListener('click',e=>{if(e.target.matches('.btn-primary')){const id=e.target.dataset.id;currentProduct=products.find(p=>String(p.id)===String(id));if(!currentProduct)return;pmTitle.textContent=currentProduct.name;pmDesc.textContent=currentProduct.desc||'';pmQty.value=1;pmPrice.value=formatPrice(currentProduct.price);productModal.classList.add('show')}});
+    pmCancel.onclick=()=>productModal.classList.remove('show');pmQty.oninput=()=>{let qv=parseInt(pmQty.value||'1');if(qv<1)qv=1;pmQty.value=qv;pmPrice.value=formatPrice(currentProduct.price*qv)};
+    pmAdd.onclick=()=>{addToCart(currentProduct,parseInt(pmQty.value||'1'));productModal.classList.remove('show');toast(strings.added)};
 
-    let currentProduct=null;
+    const cartFab=el('cartFab'),cartPanel=el('cartPanel'),cartItems=el('cartItems'),cartClose=el('cartClose'),cartCount=el('cartCount'),promo=el('promo'),applyPromo=el('applyPromo'),subVal=el('subVal'),delVal=el('delVal'),discVal=el('discVal'),totVal=el('totVal'),checkoutBtn=el('checkoutBtn'),payCash=el('payCash'),payCard=el('payCard');
+    let cart=JSON.parse(localStorage.getItem('alexCart')||'[]');let promoState={code:null,discount:0,free:false};
 
-    function openOrder(p){
-      currentProduct=p;
-      m_title.textContent = strings.modalTitle + ' — ' + p.name;
-      m_sub.textContent   = strings.modalSub;
-      m_name.value=''; m_phone.value=''; m_from.value=''; m_to.value=''; m_note.value='';
-      orderModal.classList.add('show');
-    }
-    m_cancel.onclick=()=>orderModal.classList.remove('show');
+    function saveCart(){localStorage.setItem('alexCart',JSON.stringify(cart))}
+    function addToCart(p,qty){const found=cart.find(i=>i.id===p.id);if(found)found.qty+=qty;else cart.push({id:p.id,name:p.name,price:p.price,img:p.img,qty});saveCart();renderCartIcon()}
+    function changeQty(id,delta){const it=cart.find(i=>i.id===id);if(!it)return;it.qty+=delta;if(it.qty<=0){cart=cart.filter(i=>i.id!==id)}saveCart();renderCart()}
+    function removeItem(id){cart=cart.filter(i=>i.id!==id);saveCart();renderCart()}
+    function renderCartIcon(){const count=cart.reduce((s,i)=>s+i.qty,0);cartCount.textContent=count}
+    function renderCart(){renderCartIcon();cartItems.innerHTML='';if(!cart.length){cartItems.innerHTML=`<div style="padding:12px;color:#6b7280">${strings.empty}</div>`}cart.forEach(i=>{const row=document.createElement('div');row.className='cart-item';row.innerHTML=`<img src="${i.img}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px" onerror="this.onerror=null;this.src='https://via.placeholder.com/128?text=No+Img'"><div><div style="font-weight:900">${i.name}</div><div style="opacity:.75">${formatPrice(i.price)}</div></div><div style="display:flex;flex-direction:column;align-items:end;gap:6px"><div class="qty"><button data-a="minus" data-id="${i.id}">−</button><div>${i.qty}</div><button data-a="plus" data-id="${i.id}">+</button></div><button class="btn" data-a="rm" data-id="${i.id}">✕</button></div>`;cartItems.appendChild(row)});cartItems.querySelectorAll('button').forEach(b=>b.onclick=(e)=>{const id=e.target.dataset.id;const a=e.target.dataset.a;if(a==='minus')changeQty(id,-1);if(a==='plus')changeQty(id,1);if(a==='rm')removeItem(id)});updateTotals()}
+    function calcDelivery(sub){return sub>39?0:3.5}
+    function updateTotals(){const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);const del=calcDelivery(sub);let disc=0;if(promoState.code==='ALEX5')disc=sub*0.05;if(promoState.code==='FREELIV')disc+=del;const total=Math.max(0,sub+del-disc);subVal.textContent=formatPrice(sub);delVal.textContent=formatPrice(del);discVal.textContent='-'+formatPrice(disc).replace('-','');totVal.textContent=formatPrice(total)}
+    applyPromo.onclick=()=>{const v=promo.value.trim().toUpperCase();if(['ALEX5','FREELIV'].includes(v)){promoState.code=v;toast(strings.codeOk,'#10b981')}else{promoState.code=null;toast(strings.codeBad,'#f43f5e')}updateTotals()}
 
-    async function sendTelegram(text){
-      try{
-        await fetch(https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage,{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text})
-        });
-        return true;
-      }catch(e){ return false; }
-    }
+    cartFab.onclick=()=>{renderCart();cartPanel.classList.add('open')};cartClose.onclick=()=>cartPanel.classList.remove('open');
 
-    m_send.onclick=async()=>{
-      if(!currentProduct) return;
-      const name=m_name.value.trim();
-      const phone=m_phone.value.trim();
-      const from =m_from.value.trim();
-      const to   =m_to.value.trim();
-      if(!name!phone!from||!to){ alert(strings.fillAll); return; }
+    checkoutBtn.onclick=()=>{cartPanel.classList.remove('open');openOrderFromCart()};
+    function openOrderFromCart(){el('m_pay').value=payCard.checked?'card':'cash';el('m_time').value='';el('m_note').value='';orderModal.classList.add('show')}
+    const orderModal=el('orderModal'),mCancel=el('m_cancel'),mSend=el('m_send');mCancel.onclick=()=>orderModal.classList.remove('show');
 
-      const text =
-🛒 Nouvelle commande (Produits)
-📦 Article: ${currentProduct.name}
-🏷️ Catégorie: ${currentProduct.cat}
-💶 Prix: ${formatPrice(currentProduct.price)}
-👤 Client: ${name}
-📞 Téléphone: ${phone}
-📍 Collecte: ${from}
-🏁 Livraison: ${to}
-📝 Note: ${m_note.value.trim()||'—'}
-⏱️ Créée: ${new Date().toLocaleString('fr-FR')};
+    async function sendTelegram(text){try{const r=await fetch('https://alexrelay-script-proxy.glitch.me/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});return r.ok}catch(e){return false}}
+    function orderSummary(){return cart.map(i=>`• ${i.name} x${i.qty} — ${formatPrice(i.price*i.qty)}`).join('\n')}
+    function totalNow(){const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);const del=calcDelivery(sub);let disc=0;if(promoState.code==='ALEX5')disc=sub*0.05;if(promoState.code==='FREELIV')disc+=del;return {sub,del,disc,total:Math.max(0,sub+del-disc)}}
 
-      const ok = await sendTelegram(text);
-      if(ok){
-        alert(strings.sentOk);
-        orderModal.classList.remove('show');
-      }else{
-        alert(strings.sentErr);
-      }
-    };
+    mSend.onclick=async()=>{const name=el('m_name').value.trim();const phone=el('m_phone').value.trim();const from=el('m_from').value.trim();const to=el('m_to').value.trim();const time=el('m_time').value.trim();if(!name||!phone||!from||!to){toast(strings.fillAll,'#f43f5e');return}mSend.disabled=true;setTimeout(()=>{mSend.disabled=false},2000);const note=el('m_note').value.trim()||'—';const pay=el('m_pay').value;const t=totalNow();const text=`🛍 Nouvelle commande boutique
+${orderSummary()}
+Sous-total: ${formatPrice(t.sub)}
+Livraison: ${formatPrice(t.del)}
+Remise: -${formatPrice(t.disc).replace('-','')}
+Total: ${formatPrice(t.total)}
+Client: ${name}
+Téléphone: ${phone}
+De: ${from}
+À: ${to}
+Heure: ${time||'—'}
+Paiement: ${pay==='card'?'Carte':'Espèces'}
+Note: ${note}
+Horodatage: ${new Date().toLocaleString('fr-FR')}`;const ok=await sendTelegram(text);toast(ok?strings.sentOk:strings.sentErr,ok?'#10b981':'#f43f5e');if(ok){cart=[];saveCart();renderCart();orderModal.classList.remove('show')}};
 
-    const btnFr=document.getElementById('btn-fr');
-    const btnEn=document.getElementById('btn-en');
+    window.addEventListener('scroll',()=>{if(window.scrollY>300)el('btn-top').classList.add('show');else el('btn-top').classList.remove('show')});el('btn-top').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
-    const i18n = {
-      fr: {
-        eyebrow:'Catalogue',
-        title:'Produits & Boutiques',
-        desc:'Trouvez vos produits et commandez en 30 secondes.',
-        all:'Tous', sup:'Supermarchés', bou:'Boulangeries', res:'Restaurants', pha:'Pharmacies', epi:'Épiceries', com:'Commerçants',
-        search:'Rechercher un produit…',
-        orderBtn:'Commander',
-        modalTitle:'Commander',
-        modalSub:'Complétez vos informations pour finaliser la demande.',
-        name:'Nom du client', phone:'Téléphone',
-        from:'Adresse de départ (magasin)',
-        to:'Adresse de destination',
-        note:'Remarque',
-        hint:'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',
+    renderCartIcon();loadProducts();setLang('fr');
 
-., [03/11/2025 15:22]
-cancel:'Annuler', send:'Envoyer',
-        fillAll:"Veuillez compléter tous les champs obligatoires.",
-        sentOk:"Commande envoyée ✅ Nous vous recontactons rapidement.",
-        sentErr:"Erreur lors de l’envoi. Réessayez."
-      },
-      en: {
-        eyebrow:'Catalog',
-        title:'Products & Shops',
-        desc:'Find your items and order in 30 seconds.',
-        all:'All', sup:'Supermarkets', bou:'Bakeries', res:'Restaurants', pha:'Pharmacies', epi:'Delicatessens', com:'Local merchants',
-        search:'Search a product…',
-        orderBtn:'Order',
-        modalTitle:'Order',
-        modalSub:'Fill in your details to finalize the request.',
-        name:'Customer name', phone:'Phone',
-        from:'Pickup address (shop)',
-        to:'Delivery address',
-        note:'Note',
-        hint:'A summary will be sent to AlexLivraison (Telegram).',
-        cancel:'Cancel', send:'Send',
-        fillAll:"Please fill in all required fields.",
-        sentOk:"Order sent ✅ We’ll contact you shortly.",
-        sentErr:"Sending error. Please retry."
-      }
-    };
-    let strings = i18n.fr;
-
-    function setLang(lang){
-      strings = (lang==='en') ? i18n.en : i18n.fr;
-      document.documentElement.lang = (lang==='en')?'en':'fr';
-      document.getElementById('hero-eyebrow').textContent = strings.eyebrow;
-      document.getElementById('hero-title').textContent   = strings.title;
-      document.getElementById('hero-desc').textContent    = strings.desc;
-      document.getElementById('f_all').textContent = strings.all;
-      document.getElementById('f_sup').textContent = strings.sup;
-      document.getElementById('f_bou').textContent = strings.bou;
-      document.getElementById('f_res').textContent = strings.res;
-      document.getElementById('f_pha').textContent = strings.pha;
-      document.getElementById('f_epi').textContent = strings.epi;
-      document.getElementById('f_com').textContent = strings.com;
-      q.placeholder = strings.search;
-      document.getElementById('m_title').textContent = strings.modalTitle;
-      document.getElementById('m_sub').textContent = strings.modalSub;
-      document.getElementById('m_label_name').textContent = strings.name;
-      document.getElementById('m_label_phone').textContent = strings.phone;
-      document.getElementById('m_label_from').textContent = strings.from;
-      document.getElementById('m_label_to').textContent = strings.to;
-      document.getElementById('m_label_note').textContent = strings.note;
-      document.getElementById('m_hint').textContent = strings.hint;
-      document.getElementById('m_cancel').textContent = strings.cancel;
-      document.getElementById('m_send').textContent = strings.send;
-      render();
-    }
-    btnFr.addEventListener('click',()=>{ setLang('fr'); drawer.classList.remove('open'); });
-    btnEn.addEventListener('click',()=>{ setLang('en'); drawer.classList.remove('open'); });
-
-    setLang('fr');
-    render();
+    if('serviceWorker'in navigator){fetch('sw.js',{method:'HEAD'}).then(r=>{if(r.ok)navigator.serviceWorker.register('sw.js')}).catch(()=>{})}
   </script>
 </body>
 </html>
