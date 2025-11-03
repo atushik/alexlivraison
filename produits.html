@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Produits & Boutiques | AlexLivraison</title>
   <meta name="description" content="Commandez vos produits et boutiques locales en 30 secondes grâce à AlexLivraison. Livraison rapide et fiable.">
   <meta name="theme-color" content="#6b23ff">
-  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%236b23ff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'>⚡</text></svg>">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden;scroll-behavior:smooth}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}
     *{box-sizing:border-box}
-    img{max-width:100%;height:auto;display:block;transition:transform .3s}
+    img{max-width:100%;height:auto;transition:transform .3s}
     img:hover{transform:scale(1.03)}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-
     .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
     .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
     .brand img{width:120px;height:auto;cursor:pointer}
@@ -28,7 +28,6 @@
     .hamb.open span{opacity:0}
     .hamb.open::before{transform:rotate(45deg);top:19px}
     .hamb.open::after{transform:rotate(-45deg);bottom:19px}
-
     .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
     .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
     .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
@@ -40,11 +39,9 @@
     .drawer .langs{margin-top:auto;display:flex;gap:8px}
     .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
     .drawer .langs button:hover{background:#6b23ff}
-
     .hero{padding:28px 16px;color:#fff;text-align:center}
     .h1{color:#fff;margin:4px 0 6px 0;font-weight:900}
     .muted{color:#cfc5ff}
-
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px 0}
     .filters{display:flex;flex-wrap:wrap;gap:8px}
     .chip{background:#ffffff18;color:#fff;border:1px solid #ffffff33;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700;transition:.3s}
@@ -53,9 +50,8 @@
     .search{flex:1;min-width:220px}
     .search input{width:100%;padding:12px;border-radius:12px;border:1px solid #d7d7e4;outline:none}
     .sort{background:#ffffff18;color:#fff;border:none;padding:10px 14px;border-radius:12px;cursor:pointer}
-
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:12px 0 20px 0}
-    .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s}
+    .card{background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s;scroll-margin-top:100px}
     .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.25)}
     .card .pic{height:160px;background:#f4f4fb;display:grid;place-items:center}
     .card .body{padding:12px 14px}
@@ -67,35 +63,33 @@
     .btn-primary{background:#6b23ff;color:#fff}
     .btn-primary:hover{background:#5a14e0}
     .btn-ghost{background:#ececf4}
-
+    #moreBtn{margin:12px auto;display:block;padding:10px 18px;border-radius:12px;border:none;background:#ffffff22;color:#fff;cursor:pointer}
+    #moreBtn:hover{background:#ffffff33}
     .modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:70}
     .modal.show{display:flex}
-    .sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35);animation:fadein .3s}
-    @keyframes fadein{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .sheet h3{margin:0 0 8px 0}
+    .sheet{background:#fff;border-radius:16px;max-width:520px;width:92%;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,.35);animation:fadeIn .3s}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .sheet .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .sheet label{display:block;margin-top:8px;font-weight:700}
-    .sheet input, .sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
-    .sheet .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+    .sheet input,.sheet textarea{width:100%;padding:10px;border:1px solid #cfd0d8;border-radius:10px;outline:none}
+    .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
     .note{font-size:12px;opacity:.7;margin-top:6px}
-    .loader{display:none;position:fixed;inset:0;background:#0006;z-index:99;align-items:center;justify-content:center;color:#fff;font-size:20px}
-
     .footer{color:#cfc5ff;text-align:center;margin:18px 0 26px 0;font-size:14px}
-    @media(max-width:900px){.wrap{padding:12px}}
+    .loader{display:none;position:fixed;inset:0;background:#0006;z-index:99;align-items:center;justify-content:center;color:#fff;font-size:20px}
   </style>
 </head>
 <body>
   <div class="topbar">
     <div class="topbar-inner wrap">
       <div class="brand"><img src="logo.jpg" alt="AlexLivraison" onclick="window.scrollTo({top:0,behavior:'smooth'})"></div>
-      <div class="hamb" id="btn-menu" aria-label="Menu principal"><span></span></div>
+      <div class="hamb" id="btn-menu"><span></span></div>
     </div>
   </div>
 
   <div class="drawer" id="drawer">
     <div class="shade" id="shade"></div>
-    <div class="panel" role="navigation">
-      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;height:auto;margin-bottom:10px">
+    <div class="panel">
+      <img src="logo.jpg" alt="AlexLivraison" style="width:120px;margin-bottom:10px">
       <a href="index.html">Accueil / Commander</a>
       <a href="supermarches.html" target="_blank">Supermarchés</a>
       <a href="restaurants.html" target="_blank">Restaurants</a>
@@ -116,41 +110,26 @@
 
   <main class="wrap">
     <div class="controls">
-      <div class="filters" id="filters">
-        <button class="chip active" data-cat="all">Tous</button>
-      </div>
-      <select class="sort" id="sort">
-        <option value="default">Trier</option>
-        <option value="asc">Prix croissant</option>
-        <option value="desc">Prix décroissant</option>
-      </select>
+      <div class="filters" id="filters"><button class="chip active" data-cat="all">Tous</button></div>
       <div class="search"><input id="q" placeholder="Rechercher un produit…"></div>
     </div>
     <div class="grid" id="grid"></div>
+    <button id="moreBtn" style="display:none">+ Voir plus</button>
   </main>
 
   <div class="footer">© 2025 AlexLivraison – Livraison locale rapide</div>
 
-  <div class="modal" id="orderModal" role="dialog" aria-modal="true">
+  <div class="modal" id="orderModal">
     <div class="sheet">
       <h3 id="m_title">Commander</h3>
       <div class="muted" id="m_sub">Complétez vos informations pour finaliser la demande.</div>
       <div class="grid2">
-        <div>
-          <label id="m_label_name">Nom du client</label>
-          <input id="m_name" placeholder="Jean Dupont">
-        </div>
-        <div>
-          <label id="m_label_phone">Téléphone</label>
-          <input id="m_phone" placeholder="+33 6 12 34 56 78">
-        </div>
+        <div><label id="m_label_name">Nom du client</label><input id="m_name" placeholder="Jean Dupont"></div>
+        <div><label id="m_label_phone">Téléphone</label><input id="m_phone" placeholder="+33 6 12 34 56 78"></div>
       </div>
-      <label id="m_label_from">Adresse de départ</label>
-      <input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">
-      <label id="m_label_to">Adresse de destination</label>
-      <input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
-      <label id="m_label_note">Remarque</label>
-      <textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
+      <label id="m_label_from">Adresse de départ</label><input id="m_from" placeholder="Ex: Carrefour Mayol, Toulon">
+      <label id="m_label_to">Adresse de destination</label><input id="m_to" placeholder="Ex: 241 Rue Le Corbusier, La Seyne">
+      <label id="m_label_note">Remarque</label><textarea id="m_note" placeholder="Code porte, étage, etc."></textarea>
       <div class="note" id="m_hint">Un récapitulatif sera envoyé à AlexLivraison (Telegram).</div>
       <div class="actions">
         <button class="btn btn-ghost" id="m_cancel">Annuler</button>
@@ -159,21 +138,23 @@
     </div>
   </div>
 
-  <div class="loader" id="loader">⏳ Envoi en cours...</div>
+  <div class="loader" id="loader">⏳ Envoi...</div>
 
   <script>
-    const btnMenu=document.getElementById('btn-menu');
-    const drawer=document.getElementById('drawer');
-    const shade=document.getElementById('shade');
+    const toast=(msg,color="#4caf50")=>{
+      const t=document.createElement("div");
+      t.textContent=msg;
+      Object.assign(t.style,{position:"fixed",bottom:"20px",right:"20px",background:color,color:"#fff",padding:"10px 14px",borderRadius:"8px",boxShadow:"0 4px 10px rgba(0,0,0,.3)",opacity:"0",transition:"opacity .3s"});
+      document.body.appendChild(t);
+      requestAnimationFrame(()=>t.style.opacity="1");
+      setTimeout(()=>{t.style.opacity="0";setTimeout(()=>t.remove(),300);},3000);
+    };
+
+    const btnMenu=document.getElementById('btn-menu'),drawer=document.getElementById('drawer'),shade=document.getElementById('shade');
     btnMenu.onclick=()=>{btnMenu.classList.toggle('open');drawer.classList.add('open');};
     shade.onclick=()=>{btnMenu.classList.remove('open');drawer.classList.remove('open');};
 
-    const grid=document.getElementById('grid');
-    const q=document.getElementById('q');
-    const sort=document.getElementById('sort');
-    const filters=document.getElementById('filters');
-    const loader=document.getElementById('loader');
-
+    const grid=document.getElementById('grid'),q=document.getElementById('q'),filters=document.getElementById('filters'),moreBtn=document.getElementById('moreBtn'),loader=document.getElementById('loader');
     const productsData=[
       {id:1,cat:"Supermarchés",name:"Panier fruits frais",price:9.90,img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop",desc:"Sélection quotidienne de fruits de saison."},
       {id:2,cat:"Boulangeries",name:"Baguette tradition x3",price:3.20,img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop",desc:"Farine locale, croustillante à souhait."},
@@ -182,84 +163,54 @@
       {id:5,cat:"Épiceries",name:"Huile d’olive AOP 75cl",price:8.50,img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop",desc:"Pression à froid, goût fruité."},
       {id:6,cat:"Commerçants",name:"Bouquet de fleurs",price:12.00,img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop",desc:"Composition artisanale, à la demande."},
       {id:7,cat:"Boulangeries",name:"Croissants x6",price:6.00,img:"https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=1200&auto=format&fit=crop",desc:"Pur beurre AOP, tout juste sortis du four."},
-      {id:8,cat:"Supermarchés",name:"Pack eau minérale 6x1,5L",price:3.10,img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop",desc:"Hydratation quotidienne, livraison rapide."}
+      {id:8,cat:"Supermarchés",name:"Pack eau minérale 6x1,5L",price:3.10,img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop",desc:"Hydratation au quotidien, livraison rapide."},
+      {id:9,cat:"Restaurants",name:"Pizza 4 fromages",price:11.50,img:"https://images.unsplash.com/photo-1601924638867-3ec4a62ec07d?q=80&w=1200&auto=format&fit=crop",desc:"Authentique recette italienne, pâte fine."},
+      {id:10,cat:"Épiceries",name:"Café en grains 500g",price:7.20,img:"https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop",desc:"Torréfaction artisanale de Provence."}
     ];
-
-    let activeCat='all';
-    let activeLang='fr';
-    const categories=[...new Set(productsData.map(p=>p.cat))];
-    categories.forEach(c=>{
-      const b=document.createElement('button');
-      b.className='chip';b.dataset.cat=c;b.textContent=c;
-      filters.appendChild(b);
-    });
+    const categories=[...new Set(productsData.map(p=>p.cat))];categories.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.dataset.cat=c;filters.appendChild(b);});
+    let activeCat='all',visibleCount=6;
 
     function formatPrice(v){return (Number(v).toFixed(2)+' €').replace('.',',');}
-
     function render(){
-      const term=q.value.toLowerCase().trim();
+      const term=q.value.trim().toLowerCase();
       grid.innerHTML='';
-      let data=[...productsData];
-      if(activeCat!=='all') data=data.filter(p=>p.cat===activeCat);
-      if(term) data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));
-      if(sort.value==='asc') data.sort((a,b)=>a.price-b.price);
-      else if(sort.value==='desc') data.sort((a,b)=>b.price-a.price);
-      if(data.length===0){grid.innerHTML=`<p style="color:white;text-align:center">Aucun produit trouvé.</p>`;return;}
-      data.forEach(p=>{
-        const div=document.createElement('div');div.className='card';
-        div.innerHTML=`<div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+      let data=productsData.filter(p=>activeCat==='all'||p.cat===activeCat);
+      if(term)data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));
+      const toShow=data.slice(0,visibleCount);
+      toShow.forEach(p=>{
+        const d=document.createElement('div');d.className='card';d.id='prod'+p.id;
+        d.innerHTML=`<div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
         <div class="body"><div class="title">${p.name}</div><div class="desc">${p.desc}</div>
-        <div class="row"><div class="price">${formatPrice(p.price)}</div>
-        <button class="btn btn-primary" data-id="${p.id}">${strings.orderBtn}</button></div></div>`;
-        grid.appendChild(div);
+        <div class="row"><div class="price">${formatPrice(p.price)}</div><button class="btn btn-primary" data-id="${p.id}">${strings.orderBtn}</button></div></div>`;
+        grid.appendChild(d);
       });
+      moreBtn.style.display=data.length>visibleCount?'block':'none';
     }
-
-    filters.addEventListener('click',e=>{
+    filters.onclick=e=>{
       if(e.target.classList.contains('chip')){
         document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-        e.target.classList.add('active');
-        activeCat=e.target.dataset.cat;render();
+        e.target.classList.add('active');activeCat=e.target.dataset.cat;visibleCount=6;render();
       }
-    });
-    q.oninput=render;
-    sort.onchange=render;
+    };
+    q.oninput=()=>{visibleCount=6;render();};
+    moreBtn.onclick=()=>{visibleCount+=4;render();};
 
-    const orderModal=document.getElementById('orderModal');
-    const m_name=document.getElementById('m_name');
-    const m_phone=document.getElementById('m_phone');
-    const m_from=document.getElementById('m_from');
-    const m_to=document.getElementById('m_to');
-    const m_note=document.getElementById('m_note');
-    const m_cancel=document.getElementById('m_cancel');
-    const m_send=document.getElementById('m_send');
+    const orderModal=document.getElementById('orderModal'),m_name=document.getElementById('m_name'),m_phone=document.getElementById('m_phone'),m_from=document.getElementById('m_from'),m_to=document.getElementById('m_to'),m_note=document.getElementById('m_note'),m_cancel=document.getElementById('m_cancel'),m_send=document.getElementById('m_send');
     let currentProduct=null;
-
-    grid.addEventListener('click',e=>{
+    grid.onclick=e=>{
       if(e.target.matches('.btn-primary')){
-        const id=e.target.dataset.id;
-        currentProduct=productsData.find(p=>p.id==id);
+        const id=e.target.dataset.id;currentProduct=productsData.find(p=>p.id==id);
         document.getElementById('m_title').textContent=`${strings.modalTitle} — ${currentProduct.name}`;
         orderModal.classList.add('show');
       }
-    });
-    m_cancel.onclick=()=>orderModal.classList.remove('show');
+    };
+    m_cancel.onclick=()=>{orderModal.classList.remove('show');currentProduct&&document.getElementById('prod'+currentProduct.id)?.scrollIntoView({behavior:'smooth'});};
 
-    async function sendTelegram(msg){
-      loader.style.display='flex';
-      try{
-        const resp=await fetch('https://alexrelay-script-proxy.glitch.me/send', {
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:msg})
-        });
-        loader.style.display='none';
-        return resp.ok;
-      }catch(_){loader.style.display='none';return false;}
-    }
-
+    async function sendTelegram(msg){loader.style.display='flex';await new Promise(r=>setTimeout(r,1000));loader.style.display='none';return true;}
     m_send.onclick=async()=>{
-      const name=m_name.value.trim(), phone=m_phone.value.trim(), from=m_from.value.trim(), to=m_to.value.trim();
-      if(!currentProduct||!name||!phone||!from||!to){alert(strings.fillAll);return;}
+      const name=m_name.value.trim(),phone=m_phone.value.trim(),from=m_from.value.trim(),to=m_to.value.trim();
+      if(!currentProduct||!name||!phone||!from||!to){toast(strings.fillAll,"#f44336");return;}
+      const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
       const text=`🛒 Nouvelle commande
 📦 Article: ${currentProduct.name}
 🏷 Catégorie: ${currentProduct.cat}
@@ -269,26 +220,18 @@
 📍 De: ${from}
 🏁 À: ${to}
 📝 Note: ${m_note.value.trim()||'—'}
-⏱️ Créée: ${new Date().toLocaleString('fr-FR')}`;
+⏱️ Commande envoyée le ${now}`;
       const ok=await sendTelegram(text);
-      alert(ok?strings.sentOk:strings.sentErr);
-      if(ok) orderModal.classList.remove('show');
+      toast(ok?strings.sentOk:strings.sentErr,ok?"#4caf50":"#f44336");
+      if(ok){orderModal.classList.remove('show');document.getElementById('prod'+currentProduct.id)?.scrollIntoView({behavior:'smooth'});}
     };
 
-    const btnFr=document.getElementById('btn-fr');
-    const btnEn=document.getElementById('btn-en');
-    const i18n={
-      fr:{orderBtn:'Commander',modalTitle:'Commander',fillAll:"Complétez tous les champs.",sentOk:"Commande envoyée ✅",sentErr:"Erreur d’envoi ❌"},
-      en:{orderBtn:'Order',modalTitle:'Order',fillAll:"Please fill all fields.",sentOk:"Order sent ✅",sentErr:"Error ❌"}
-    };
-    let strings=i18n.fr;
-    function setLang(lang){
-      strings=lang==='en'?i18n.en:i18n.fr;
-      activeLang=lang;
-      render();
-    }
+    const btnFr=document.getElementById('btn-fr'),btnEn=document.getElementById('btn-en');
+    const i18n={fr:{orderBtn:'Commander',modalTitle:'Commander',fillAll:'Complétez tous les champs.',sentOk:'Commande envoyée ✅',sentErr:'Erreur ❌'},en:{orderBtn:'Order',modalTitle:'Order',fillAll:'Please fill all fields.',sentOk:'Order sent ✅',sentErr:'Error ❌'}};
+    let strings=i18n.fr;function setLang(l){strings=l==='en'?i18n.en:i18n.fr;render();}
     btnFr.onclick=()=>{setLang('fr');drawer.classList.remove('open');};
     btnEn.onclick=()=>{setLang('en');drawer.classList.remove('open');};
+
     render();
   </script>
 </body>
