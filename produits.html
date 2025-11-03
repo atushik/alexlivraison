@@ -3,21 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#6b23ff">
   <title>Produits & Boutiques | AlexLivraison</title>
   <meta name="description" content="Commandez vos produits et boutiques locales en 30 secondes grâce à AlexLivraison. Livraison rapide et fiable.">
-  <meta name="theme-color" content="#6b23ff">
   <meta property="og:title" content="Produits & Boutiques | AlexLivraison">
   <meta property="og:description" content="Trouvez vos produits et commandez en 30 secondes avec AlexLivraison. Livraison rapide et fiable.">
-  <meta property="og:image" content="https://yourdomain.com/path/to/logo.jpg">
+  <meta property="og:image" content="logo.jpg">
   <link rel="apple-touch-icon" href="logo.jpg">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡️%3c/text%3e%3c/svg%3e">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3e%3ccircle cx='32' cy='32' r='32' fill='%236b23ff'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='34' fill='white'%3e⚡%3c/text%3e%3c/svg%3e">
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden;scroll-behavior:smooth;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;display:flex;flex-direction:column;align-items:center}
-    *, *::before, *::after{box-sizing:border-box}
+    *,*::before,*::after{box-sizing:border-box}
     img{max-width:100%;height:auto;display:block;transition:transform .3s}
     img:hover{transform:scale(1.03)}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
@@ -131,14 +130,14 @@
         <a href="restaurants.html" target="_blank" rel="noopener">Restaurants</a>
         <a href="pharmacies.html" target="_blank" rel="noopener">Pharmacies</a>
         <a href="boulangeries.html" target="_blank" rel="noopener">Boulangeries</a>
-        <div class="langs" style="margin-top:auto; display:flex; gap: 8px;">
+        <div class="langs" style="margin-top:auto;display:flex;gap:8px">
           <button id="btn-fr-lang" aria-label="Changer la langue en Français">FR</button>
           <button id="btn-en-lang" aria-label="Changer la langue en Anglais">EN</button>
         </div>
       </div>
       <div class="tabcontent" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-btn" hidden>
         <div id="recent-orders" aria-live="polite" aria-relevant="additions"></div>
-        <p id="no-orders-msg" style="color:#bbb; font-size:14px; margin-top: 12px;">Aucune commande récente.</p>
+        <p id="no-orders-msg" style="color:#bbb;font-size:14px;margin-top:12px">Aucune commande récente.</p>
       </div>
     </div>
   </div>
@@ -160,12 +159,11 @@
     </div>
 
     <div class="grid" id="grid" aria-live="polite"></div>
-    <button id="moreBtn" style="display:none;" aria-label="Voir plus de produits">+ Voir plus</button>
+    <button id="moreBtn" style="display:none" aria-label="Voir plus de produits">+ Voir plus</button>
   </main>
 
   <div class="footer" aria-label="Pied de page">
-    © AlexLivraison – Livraison locale rapide<br>
-    Dernière mise à jour : novembre 2025
+    © AlexLivraison – Livraison locale rapide<br>Dernière mise à jour : novembre 2025
   </div>
 
   <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="m_title" aria-describedby="m_sub" tabindex="-1">
@@ -196,332 +194,63 @@
     </div>
   </div>
 
-  <div id="toast-container" aria-live="assertive" aria-atomic="true" style="position:fixed; bottom:20px; right:20px; z-index:200;"></div>
-
+  <div id="toast-container" aria-live="assertive" aria-atomic="true" style="position:fixed;bottom:20px;right:20px;z-index:200"></div>
   <button id="btn-top" aria-label="Retour en haut" title="Retour en haut">&#8679;</button>
 
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js").catch(()=>{});
-      });
-    }
+    window.addEventListener('load',()=>{const p=document.getElementById('preloader');p.style.opacity='0';setTimeout(()=>p.style.display='none',400)});
+    if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js').then(()=>console.log('Service Worker enregistré')).catch(()=>console.log('SW non disponible'));});}
 
-    window.addEventListener('load', () => {
-      const preloader = document.getElementById('preloader');
-      preloader.style.opacity = '0';
-      setTimeout(() => preloader.style.display = 'none', 400);
-    });
+    const btnMenu=document.getElementById('btn-menu'),drawer=document.getElementById('drawer'),shade=document.getElementById('shade');
+    btnMenu.addEventListener('click',()=>{btnMenu.classList.toggle('open');drawer.classList.toggle('open');btnMenu.setAttribute('aria-expanded',btnMenu.classList.contains('open'));if(drawer.classList.contains('open'))drawer.querySelector('.panel').focus();});
+    shade.addEventListener('click',()=>{btnMenu.classList.remove('open');drawer.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
 
-    const btnMenu = document.getElementById('btn-menu');
-    const drawer = document.getElementById('drawer');
-    const shade = document.getElementById('shade');
-    btnMenu.addEventListener('click', () => {
-      btnMenu.classList.toggle('open');
-      drawer.classList.toggle('open');
-      btnMenu.setAttribute('aria-expanded', btnMenu.classList.contains('open'));
-      if(drawer.classList.contains('open')) drawer.querySelector('.panel').focus();
-    });
-    shade.addEventListener('click', () => {
-      btnMenu.classList.remove('open');
-      drawer.classList.remove('open');
-      btnMenu.setAttribute('aria-expanded', 'false');
-    });
+    const toastContainer=document.getElementById('toast-container');
+    function toast(message,color="#4caf50"){const t=document.createElement('div');t.className='toast';t.style.backgroundColor=color;t.textContent=message;toastContainer.appendChild(t);setTimeout(()=>t.classList.add('show'),50);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);}
 
-    const toastContainer = document.getElementById('toast-container');
-    function toast(message, color = "#4caf50") {
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.style.backgroundColor = color;
-      t.textContent = message;
-      toastContainer.appendChild(t);
-      setTimeout(() => t.classList.add('show'), 50);
-      setTimeout(() => {
-        t.classList.remove('show');
-        setTimeout(() => t.remove(), 300);
-      }, 3000);
-    }
-
-    const productsData = [
-      {id:1, cat:"Supermarchés", name:"Panier fruits frais", price:9.90, img:"https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop", desc:"Sélection quotidienne de fruits de saison."},
-      {id:2, cat:"Boulangeries", name:"Baguette tradition x3", price:3.20, img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop", desc:"Farine locale, croustillante à souhait."},
-      {id:3, cat:"Pharmacies", name:"Paracétamol 500mg", price:2.99, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop", desc:"Respect des conditions de délivrance."},
-      {id:4, cat:"Restaurants", name:"Sushi mix 18 pcs", price:14.90, img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop", desc:"Assortiment chef, sauce soja & wasabi."},
-      {id:5, cat:"Épiceries", name:"Huile d’olive AOP 75cl", price:8.50, img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop", desc:"Pression à froid, goût fruité."},
-      {id:6, cat:"Commerçants", name:"Bouquet de fleurs", price:12.00, img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop", desc:"Composition artisanale, à la demande."},
-      {id:7, cat:"Boulangeries", name:"Croissants x6", price:6.00, img:"https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=1200&auto=format&fit=crop", desc:"Pur beurre AOP, tout juste sortis du four."},
-      {id:8, cat:"Supermarchés", name:"Pack eau minérale 6x1,5L", price:3.10, img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop", desc:"Hydratation au quotidien, livraison rapide."},
-      {id:9, cat:"Restaurants", name:"Pizza 4 fromages", price:11.50, img:"https://images.unsplash.com/photo-1601924638867-3ec4a62ec07d?q=80&w=1200&auto=format&fit=crop", desc:"Authentique recette italienne, pâte fine."},
-      {id:10, cat:"Épiceries", name:"Café en grains 500g", price:7.20, img:"https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop", desc:"Torréfaction artisanale de Provence."}
+    const productsData=[
+      {id:1,cat:"Supermarchés",name:"Panier fruits frais",price:9.90,img:"https://images.unsplash.com/photo-1587049352851-8d4e89133930?q=80&w=1200&auto=format&fit=crop",desc:"Sélection quotidienne de fruits de saison."},
+      {id:2,cat:"Boulangeries",name:"Baguette tradition x3",price:3.20,img:"https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop",desc:"Farine locale, croustillante à souhait."},
+      {id:3,cat:"Pharmacies",name:"Paracétamol 500mg",price:2.99,img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",desc:"Respect des conditions de délivrance."},
+      {id:4,cat:"Restaurants",name:"Sushi mix 18 pcs",price:14.90,img:"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",desc:"Assortiment chef, sauce soja & wasabi."},
+      {id:5,cat:"Épiceries",name:"Huile d’olive AOP 75cl",price:8.50,img:"https://images.unsplash.com/photo-1546549039-49e368d2ed3c?q=80&w=1200&auto=format&fit=crop",desc:"Pression à froid, goût fruité."},
+      {id:6,cat:"Commerçants",name:"Bouquet de fleurs",price:12.00,img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop",desc:"Composition artisanale, à la demande."},
+      {id:7,cat:"Boulangeries",name:"Croissants x6",price:6.00,img:"https://images.unsplash.com/photo-1519680772-8b5b0b0c5b38?q=80&w=1200&auto=format&fit=crop",desc:"Pur beurre AOP, tout juste sortis du four."},
+      {id:8,cat:"Supermarchés",name:"Pack eau minérale 6x1,5L",price:3.10,img:"https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=1200&auto=format&fit=crop",desc:"Hydratation au quotidien, livraison rapide."},
+      {id:9,cat:"Restaurants",name:"Pizza 4 fromages",price:11.50,img:"https://images.unsplash.com/photo-1601924638867-3ec4a62ec07d?q=80&w=1200&auto=format&fit=crop",desc:"Authentique recette italienne, pâte fine."},
+      {id:10,cat:"Épiceries",name:"Café en grains 500g",price:7.20,img:"https://images.unsplash.com/photo-1509043759401-136742328bb3?q=80&w=1200&auto=format&fit=crop",desc:"Torréfaction artisanale de Provence."}
     ];
-    const categories = [...new Set(productsData.map(p => p.cat))];
+    const categories=[...new Set(productsData.map(p=>p.cat))];
 
-    const i18n = {
-      fr: {
-        eyebrow: 'Catalogue',
-        title: 'Produits & Boutiques',
-        desc: 'Trouvez vos produits et commandez en 30 secondes.',
-        all: 'Tous', sup: 'Supermarchés', bou: 'Boulangeries', res: 'Restaurants', pha: 'Pharmacies', epi: 'Épiceries', com: 'Commerçants',
-        search: 'Rechercher un produit…',
-        orderBtn: 'Commander',
-        modalTitle: 'Commander',
-        modalSub: 'Complétez vos informations pour finaliser la demande.',
-        name: 'Nom du client',
-        phone: 'Téléphone',
-        from: 'Adresse de départ (magasin)',
-        to: 'Adresse de destination',
-        note: 'Remarque',
-        hint: 'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',
-        cancel: 'Annuler',
-        send: 'Envoyer',
-        fillAll: "Veuillez compléter tous les champs obligatoires.",
-        sentOk: "Commande envoyée ✅ Nous vous recontactons rapidement.",
-        sentErr: "Erreur lors de l’envoi. Réessayez.",
-        noOrders: "Aucune commande récente."
-      },
-      en: {
-        eyebrow: 'Catalog',
-        title: 'Products & Shops',
-        desc: 'Find your items and order in 30 seconds.',
-        all: 'All', sup: 'Supermarkets', bou: 'Bakeries', res: 'Restaurants', pha: 'Pharmacies', epi: 'Delicatessens', com: 'Local merchants',
-        search: 'Search a product…',
-        orderBtn: 'Order',
-        modalTitle: 'Order',
-        modalSub: 'Fill in your details to finalize the request.',
-        name: 'Customer name',
-        phone: 'Phone',
-        from: 'Pickup address (shop)',
-        to: 'Delivery address',
-        note: 'Note',
-        hint: 'A summary will be sent to AlexLivraison (Telegram).',
-        cancel: 'Cancel',
-        send: 'Send',
-        fillAll: "Please fill in all required fields.",
-        sentOk: "Order sent ✅ We’ll contact you shortly.",
-        sentErr: "Sending error. Please retry.",
-        noOrders: "No recent orders."
-      }
-    };
-    let strings = i18n.fr;
-    let activeLang = 'fr';
+    const i18n={fr:{eyebrow:'Catalogue',title:'Produits & Boutiques',desc:'Trouvez vos produits et commandez en 30 secondes.',all:'Tous',search:'Rechercher un produit…',orderBtn:'Commander',modalTitle:'Commander',modalSub:'Complétez vos informations pour finaliser la demande.',name:'Nom du client',phone:'Téléphone',from:'Adresse de départ (magasin)',to:'Adresse de destination',note:'Remarque',hint:'Un récapitulatif sera envoyé à AlexLivraison (Telegram).',cancel:'Annuler',send:'Envoyer',fillAll:'Veuillez compléter tous les champs obligatoires.',sentOk:'Commande envoyée ✅ Nous vous recontactons rapidement.',sentErr:'Erreur lors de l’envoi. Réessayez.',noOrders:'Aucun produit trouvé.'},en:{eyebrow:'Catalog',title:'Products & Shops',desc:'Find your items and order in 30 seconds.',all:'All',search:'Search a product…',orderBtn:'Order',modalTitle:'Order',modalSub:'Fill in your details to finalize the request.',name:'Customer name',phone:'Phone',from:'Pickup address (shop)',to:'Delivery address',note:'Note',hint:'A summary will be sent to AlexLivraison (Telegram).',cancel:'Cancel',send:'Send',fillAll:'Please fill in all required fields.',sentOk:'Order sent ✅ We’ll contact you shortly.',sentErr:'Sending error. Please retry.',noOrders:'No products found.'}};
+    let strings=i18n.fr,activeLang='fr';
 
-    const grid = document.getElementById('grid'),
-          q = document.getElementById('q'),
-          filters = document.getElementById('filters'),
-          moreBtn = document.getElementById('moreBtn'),
-          orderModal = document.getElementById('orderModal'),
-          mTitle = document.getElementById('m_title'),
-          mSub = document.getElementById('m_sub'),
-          mName = document.getElementById('m_name'),
-          mPhone = document.getElementById('m_phone'),
-          mFrom = document.getElementById('m_from'),
-          mTo = document.getElementById('m_to'),
-          mNote = document.getElementById('m_note'),
-          mCancel = document.getElementById('m_cancel'),
-          mSend = document.getElementById('m_send'),
-          btnFrLang = document.getElementById('btn-fr-lang'),
-          btnEnLang = document.getElementById('btn-en-lang'),
-          tabProductsBtn = document.getElementById('tab-products-btn'),
-          tabOrdersBtn = document.getElementById('tab-orders-btn'),
-          tabProducts = document.getElementById('tab-products'),
-          tabOrders = document.getElementById('tab-orders'),
-          recentOrdersContainer = document.getElementById('recent-orders'),
-          noOrdersMsg = document.getElementById('no-orders-msg'),
-          btnTop = document.getElementById('btn-top');
+    const grid=document.getElementById('grid'),q=document.getElementById('q'),filters=document.getElementById('filters'),moreBtn=document.getElementById('moreBtn'),orderModal=document.getElementById('orderModal'),mTitle=document.getElementById('m_title'),mSub=document.getElementById('m_sub'),mName=document.getElementById('m_name'),mPhone=document.getElementById('m_phone'),mFrom=document.getElementById('m_from'),mTo=document.getElementById('m_to'),mNote=document.getElementById('m_note'),mCancel=document.getElementById('m_cancel'),mSend=document.getElementById('m_send'),btnFrLang=document.getElementById('btn-fr-lang'),btnEnLang=document.getElementById('btn-en-lang'),tabProductsBtn=document.getElementById('tab-products-btn'),tabOrdersBtn=document.getElementById('tab-orders-btn'),tabProducts=document.getElementById('tab-products'),tabOrders=document.getElementById('tab-orders'),recentOrdersContainer=document.getElementById('recent-orders'),noOrdersMsg=document.getElementById('no-orders-msg'),btnTop=document.getElementById('btn-top');
 
-    let activeCat = 'all';
-    let visibleCount = 6;
-    let currentProduct = null;
-    let recentOrders = [];
+    let activeCat='all',visibleCount=6,currentProduct=null,recentOrders=[];
 
-    function formatPrice(value) {
-      return value.toFixed(2).replace('.', ',') + ' €';
-    }
+    function formatPrice(v){return v.toFixed(2).replace('.',',')+' €';}
 
-    function renderFilters() {
-      categories.forEach(cat => {
-        if ([...filters.children].some(c => c.dataset.cat === cat)) return;
-        const btn = document.createElement('button');
-        btn.className = 'chip';
-        btn.textContent = cat;
-        btn.dataset.cat = cat;
-        filters.appendChild(btn);
-      });
-    }
+    function renderFilters(){categories.forEach(cat=>{if([...filters.children].some(c=>c.dataset.cat===cat))return;const b=document.createElement('button');b.className='chip';b.textContent=cat;b.dataset.cat=cat;filters.appendChild(b);});}
 
-    function renderProducts() {
-      const term = q.value.trim().toLowerCase();
-      grid.innerHTML = '';
-      let data = productsData.filter(p => activeCat === 'all' || p.cat === activeCat);
-      if (term) {
-        data = data.filter(p => p.name.toLowerCase().includes(term) || p.desc.toLowerCase().includes(term));
-      }
-      const toShow = data.slice(0, visibleCount);
-      if (toShow.length === 0) {
-        grid.innerHTML = `<p style="color:white;text-align:center">${strings.noOrders}</p>`;
-        moreBtn.style.display = 'none';
-        return;
-      }
-      toShow.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.id = 'prod' + p.id;
-        card.innerHTML = `
-          <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
-          <div class="body">
-            <div class="title">${p.name}</div>
-            <div class="desc">${p.desc}</div>
-            <div class="row">
-              <div class="price">${formatPrice(p.price)}</div>
-              <button class="btn btn-primary" data-id="${p.id}">${strings.orderBtn}</button>
-            </div>
-          </div>`;
-        grid.appendChild(card);
-      });
-      moreBtn.style.display = data.length > visibleCount ? 'block' : 'none';
-    }
+    function renderProducts(){const term=q.value.trim().toLowerCase();grid.innerHTML='';let data=productsData.filter(p=>activeCat==='all'||p.cat===activeCat);if(term){data=data.filter(p=>p.name.toLowerCase().includes(term)||p.desc.toLowerCase().includes(term));}const toShow=data.slice(0,visibleCount);if(toShow.length===0){grid.innerHTML=`<p style="color:white;text-align:center">${strings.noOrders}</p>`;moreBtn.style.display='none';return;}toShow.forEach(p=>{const card=document.createElement('div');card.className='card';card.id='prod'+p.id;card.innerHTML=`<div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy"></div><div class="body"><div class="title">${p.name}</div><div class="desc">${p.desc}</div><div class="row"><div class="price">${formatPrice(p.price)}</div><button class="btn btn-primary" data-id="${p.id}">${strings.orderBtn}</button></div></div>`;grid.appendChild(card);});moreBtn.style.display=data.length>visibleCount?'block':'none';}
 
-    function setLang(lang) {
-      strings = lang === 'en' ? i18n.en : i18n.fr;
-      activeLang = lang;
-      document.getElementById('hero-eyebrow').textContent = strings.eyebrow;
-      document.getElementById('hero-title').textContent = strings.title;
-      document.getElementById('hero-desc').textContent = strings.desc;
-      filters.children[0].textContent = strings.all;
-      q.placeholder = strings.search;
-      mTitle.textContent = strings.modalTitle;
-      mSub.textContent = strings.modalSub;
-      document.getElementById('m_label_name').textContent = strings.name;
-      document.getElementById('m_label_phone').textContent = strings.phone;
-      document.getElementById('m_label_from').textContent = strings.from;
-      document.getElementById('m_label_to').textContent = strings.to;
-      document.getElementById('m_label_note').textContent = strings.note;
-      document.getElementById('m_hint').textContent = strings.hint;
-      mCancel.textContent = strings.cancel;
-      mSend.textContent = strings.send;
-      renderProducts();
-      renderRecentOrders();
-    }
+    function setLang(lang){strings=lang==='en'?i18n.en:i18n.fr;activeLang=lang;document.getElementById('hero-eyebrow').textContent=strings.eyebrow;document.getElementById('hero-title').textContent=strings.title;document.getElementById('hero-desc').textContent=strings.desc;filters.children[0].textContent=strings.all;q.placeholder=strings.search;mTitle.textContent=strings.modalTitle;mSub.textContent=strings.modalSub;document.getElementById('m_label_name').textContent=strings.name;document.getElementById('m_label_phone').textContent=strings.phone;document.getElementById('m_label_from').textContent=strings.from;document.getElementById('m_label_to').textContent=strings.to;document.getElementById('m_label_note').textContent=strings.note;document.getElementById('m_hint').textContent=strings.hint;mCancel.textContent=strings.cancel;mSend.textContent=strings.send;renderProducts();renderRecentOrders();}
 
-    function renderRecentOrders() {
-      recentOrders = JSON.parse(localStorage.getItem('alexRecentOrders') || '[]');
-      recentOrdersContainer.innerHTML = '';
-      if (recentOrders.length === 0) {
-        noOrdersMsg.style.display = 'block';
-        return;
-      } else {
-        noOrdersMsg.style.display = 'none';
-      }
-      recentOrders.forEach((order, index) => {
-        const div = document.createElement('div');
-        div.className = 'order-item';
-        div.innerHTML = `
-          <div><strong>${order.productName}</strong> - ${formatPrice(order.price)}</div>
-          <div>Client: ${order.name}</div>
-          <div>Téléphone: ${order.phone}</div>
-          <div>De: ${order.from}</div>
-          <div>À: ${order.to}</div>
-          <div>Date: ${order.date}</div>
-          <div class="order-actions">
-            <button class="btn-reorder" data-index="${index}">Re-commander</button>
-          </div>`;
-        recentOrdersContainer.appendChild(div);
-      });
-      recentOrdersContainer.querySelectorAll('.btn-reorder').forEach(btn =>
-        btn.addEventListener('click', e => {
-          const idx = parseInt(e.target.dataset.index);
-          const order = recentOrders[idx];
-          if (!order) return;
-          currentProduct = productsData.find(p => p.name === order.productName) || null;
-          if (!currentProduct) return toast("Produit non trouvé", "#f44336");
-          mTitle.textContent = strings.modalTitle + ' — ' + currentProduct.name;
-          mName.value = order.name;
-          mPhone.value = order.phone;
-          mFrom.value = order.from;
-          mTo.value = order.to;
-          mNote.value = order.note || '';
-          orderModal.classList.add('show');
-        })
-      );
-    }
+    function renderRecentOrders(){recentOrders=JSON.parse(localStorage.getItem('alexRecentOrders')||'[]');recentOrdersContainer.innerHTML='';if(recentOrders.length===0){noOrdersMsg.style.display='block';return;}noOrdersMsg.style.display='none';recentOrders.forEach((order,index)=>{const div=document.createElement('div');div.className='order-item';div.innerHTML=`<div><strong>${order.productName}</strong> - ${formatPrice(order.price)}</div><div>Client: ${order.name}</div><div>Téléphone: ${order.phone}</div><div>De: ${order.from}</div><div>À: ${order.to}</div><div>Date: ${order.date}</div><div class="order-actions"><button class="btn-reorder" data-index="${index}">Re-commander</button></div>`;recentOrdersContainer.appendChild(div);});recentOrdersContainer.querySelectorAll('.btn-reorder').forEach(btn=>btn.addEventListener('click',e=>{const idx=parseInt(e.target.dataset.index);const order=recentOrders[idx];if(!order)return;currentProduct=productsData.find(p=>p.name===order.productName)||null;if(!currentProduct)return toast("Produit non trouvé","#f44336");mTitle.textContent=strings.modalTitle+' — '+currentProduct.name;mName.value=order.name;mPhone.value=order.phone;mFrom.value=order.from;mTo.value=order.to;mNote.value=order.note||'';orderModal.classList.add('show');}));}
 
-    function saveOrder(order) {
-      recentOrders = JSON.parse(localStorage.getItem('alexRecentOrders') || '[]');
-      recentOrders.unshift(order);
-      if (recentOrders.length > 5) recentOrders.pop();
-      localStorage.setItem('alexRecentOrders', JSON.stringify(recentOrders));
-      renderRecentOrders();
-    }
+    function saveOrder(order){recentOrders=JSON.parse(localStorage.getItem('alexRecentOrders')||'[]');recentOrders.unshift(order);if(recentOrders.length>5)recentOrders.pop();localStorage.setItem('alexRecentOrders',JSON.stringify(recentOrders));renderRecentOrders();}
 
-    filters.addEventListener('click', e => {
-      if (e.target.classList.contains('chip')) {
-        Array.from(filters.children).forEach(c => {
-          c.classList.remove('active');
-          c.setAttribute('aria-pressed', 'false');
-        });
-        e.target.classList.add('active');
-        e.target.setAttribute('aria-pressed', 'true');
-        activeCat = e.target.dataset.cat || 'all';
-        visibleCount = 6;
-        renderProducts();
-      }
-    });
-    q.addEventListener('input', () => {
-      visibleCount = 6;
-      renderProducts();
-    });
-    moreBtn.addEventListener('click', () => {
-      visibleCount += 4;
-      renderProducts();
-    });
+    filters.addEventListener('click',e=>{if(e.target.classList.contains('chip')){Array.from(filters.children).forEach(c=>{c.classList.remove('active');c.setAttribute('aria-pressed','false');});e.target.classList.add('active');e.target.setAttribute('aria-pressed','true');activeCat=e.target.dataset.cat||'all';visibleCount=6;renderProducts();}});
+    q.addEventListener('input',()=>{visibleCount=6;renderProducts();});
+    document.getElementById('moreBtn').addEventListener('click',()=>{visibleCount+=4;renderProducts();});
 
-    grid.addEventListener('click', e => {
-      if (e.target.classList.contains('btn-primary')) {
-        const id = e.target.dataset.id;
-        currentProduct = productsData.find(p => p.id == id);
-        if (!currentProduct) return;
-        mTitle.textContent = strings.modalTitle + ' — ' + currentProduct.name;
-        mName.value = '';
-        mPhone.value = '';
-        mFrom.value = '';
-        mTo.value = '';
-        mNote.value = '';
-        orderModal.classList.add('show');
-        mName.focus();
-      }
-    });
+    document.getElementById('grid').addEventListener('click',e=>{if(e.target.classList.contains('btn-primary')){const id=e.target.dataset.id;currentProduct=productsData.find(p=>p.id==id);if(!currentProduct)return;mTitle.textContent=strings.modalTitle+' — '+currentProduct.name;mName.value='';mPhone.value='';mFrom.value='';mTo.value='';mNote.value='';orderModal.classList.add('show');mName.focus();}});
+    mCancel.addEventListener('click',()=>{orderModal.classList.remove('show');if(currentProduct){const el=document.getElementById('prod'+currentProduct.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}});
 
-    mCancel.addEventListener('click', () => {
-      orderModal.classList.remove('show');
-      if(currentProduct){
-        const el = document.getElementById('prod' + currentProduct.id);
-        if(el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
-      }
-    });
+    async function sendTelegram(text){await new Promise(r=>setTimeout(r,800));return true}
 
-    async function sendTelegram(text) {
-      const loader = document.getElementById('loader');
-      loader.style.display = "flex";
-      await new Promise(r => setTimeout(r, 1000));
-      loader.style.display = "none";
-      return true;
-    }
-
-    mSend.addEventListener('click', async () => {
-      if (!currentProduct) return;
-      const name = mName.value.trim();
-      const phone = mPhone.value.trim();
-      const from = mFrom.value.trim();
-      const to = mTo.value.trim();
-      if (!name || !phone || !from || !to) {
-        toast(strings.fillAll, "#f44336");
-        return;
-      }
-      mSend.disabled = true;
-      setTimeout(()=>{ mSend.disabled = false; }, 2000);
-      const note = mNote.value.trim() || '—';
-      const now = new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
-      const text = `🛒 Nouvelle commande (Produits)
+    mSend.addEventListener('click',async()=>{if(!currentProduct)return;const name=mName.value.trim(),phone=mPhone.value.trim(),from=mFrom.value.trim(),to=mTo.value.trim();if(!name||!phone||!from||!to){toast(strings.fillAll,"#f44336");return;}mSend.disabled=true;setTimeout(()=>mSend.disabled=false,2000);const note=mNote.value.trim()||'—';const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});const text=`🛒 Nouvelle commande (Produits)
 📦 Article: ${currentProduct.name}
 🏷 Catégorie: ${currentProduct.cat}
 💶 Prix: ${formatPrice(currentProduct.price)}
@@ -530,72 +259,20 @@
 📍 Collecte: ${from}
 🏁 Livraison: ${to}
 📝 Note: ${note}
-⏱️ Commande envoyée le ${now}`;
-      const ok = await sendTelegram(text);
-      toast(ok ? strings.sentOk : strings.sentErr, ok ? "#4caf50" : "#f44336");
-      if (ok) {
-        saveOrder({
-          productName: currentProduct.name,
-          cat: currentProduct.cat,
-          price: currentProduct.price,
-          name, phone, from, to, note, date: now
-        });
-        orderModal.classList.remove('show');
-        const el = document.getElementById('prod' + currentProduct.id);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
+⏱️ Commande envoyée le ${now}`;const ok=await sendTelegram(text);toast(ok?strings.sentOk:strings.sentErr,ok?"#4caf50":"#f44336");if(ok){saveOrder({productName:currentProduct.name,cat:currentProduct.cat,price:currentProduct.price,name,phone,from,to,note,date:now});orderModal.classList.remove('show');const el=document.getElementById('prod'+currentProduct.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}});
 
-    btnFrLang.addEventListener('click', () => {
-      setLang('fr');
-      drawer.classList.remove('open');
-      btnMenu.classList.remove('open');
-      btnMenu.setAttribute('aria-expanded', 'false');
-    });
-    btnEnLang.addEventListener('click', () => {
-      setLang('en');
-      drawer.classList.remove('open');
-      btnMenu.classList.remove('open');
-      btnMenu.setAttribute('aria-expanded', 'false');
-    });
+    document.getElementById('btn-fr-lang').addEventListener('click',()=>{setLang('fr');drawer.classList.remove('open');btnMenu.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
+    document.getElementById('btn-en-lang').addEventListener('click',()=>{setLang('en');drawer.classList.remove('open');btnMenu.classList.remove('open');btnMenu.setAttribute('aria-expanded','false');});
 
-    tabProductsBtn.addEventListener('click', () => {
-      tabProductsBtn.classList.add('active');
-      tabOrdersBtn.classList.remove('active');
-      tabProductsBtn.setAttribute('aria-selected', 'true');
-      tabOrdersBtn.setAttribute('aria-selected', 'false');
-      tabProducts.removeAttribute('hidden');
-      tabOrders.setAttribute('hidden', 'true');
-    });
-    tabOrdersBtn.addEventListener('click', () => {
-      tabOrdersBtn.classList.add('active');
-      tabProductsBtn.classList.remove('active');
-      tabOrdersBtn.setAttribute('aria-selected', 'true');
-      tabProductsBtn.setAttribute('aria-selected', 'false');
-      tabOrders.removeAttribute('hidden');
-      tabProducts.setAttribute('hidden', 'true');
-    });
+    document.getElementById('tab-products-btn').addEventListener('click',()=>{tabProductsBtn.classList.add('active');tabOrdersBtn.classList.remove('active');tabProductsBtn.setAttribute('aria-selected','true');tabOrdersBtn.setAttribute('aria-selected','false');tabProducts.removeAttribute('hidden');tabOrders.setAttribute('hidden','true');});
+    document.getElementById('tab-orders-btn').addEventListener('click',()=>{tabOrdersBtn.classList.add('active');tabProductsBtn.classList.remove('active');tabOrdersBtn.setAttribute('aria-selected','true');tabProductsBtn.setAttribute('aria-selected','false');tabOrders.removeAttribute('hidden');tabProducts.setAttribute('hidden','true');});
 
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        btnTop.style.display = 'flex';
-      } else {
-        btnTop.style.display = 'none';
-      }
-    });
-    btnTop.onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+    window.addEventListener('scroll',()=>{document.getElementById('btn-top').style.display=window.scrollY>300?'flex':'none';});
+    document.getElementById('btn-top').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
-    renderFilters();
-    setLang('fr');
+    renderFilters();setLang('fr');
   </script>
 
-  <div class="loader" id="loader" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); color:#fff; font-size:22px; display:flex;align-items:center;justify-content:center; z-index:150;">⏳ Envoi en cours...</div>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('✅ Service Worker enregistré'))
-    .catch(err => console.log('❌ SW erreur :', err));
-}
-</script>
+  <div class="loader" id="loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:150">⏳ Envoi en cours...</div>
 </body>
 </html>
