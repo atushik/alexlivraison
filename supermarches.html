@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Partenaires • Pharmacies | AlexLivraison</title>
+<title>Partenaires • Supermarchés | AlexLivraison</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
 <style>
 :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
@@ -47,25 +47,22 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     <div><a class="btn btn-ghost" href="index.html" target="_blank">Ouvrir le site</a></div>
   </div>
 </div>
-
 <main class="wrap">
-  <h1 class="h1">Pharmacies • Portail Partenaire</h1>
-
+  <h1 class="h1">Supermarchés • Portail Partenaire</h1>
   <section class="card">
     <h2 class="h2">Présentation</h2>
-    <div class="muted">Livraison de médicaments et produits santé avec vérifications et attente en officine si nécessaire. Respect de la confidentialité.</div>
+    <div class="muted">Livraison de courses et produits alimentaires avec ponctualité et hygiène. Respect des chaînes du froid.</div>
     <div class="row-actions">
-      <span class="badge">Discrétion</span>
-      <span class="badge">Température contrôlée</span>
-      <span class="badge">Priorité</span>
+      <span class="badge">Frais</span>
+      <span class="badge">Rapidité</span>
+      <span class="badge">Confiance</span>
     </div>
   </section>
-
   <section id="step1" class="card">
     <h2 class="h2">Formulaire de collaboration</h2>
     <div class="grid2">
       <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
-      <div><label>Catégorie</label><input id="f_cat" value="Pharmacie" readonly></div>
+      <div><label>Catégorie</label><input id="f_cat" value="Supermarché" readonly></div>
     </div>
     <div class="grid3">
       <div><label>Nom et prénom du responsable</label><input id="f_resp"></div>
@@ -82,7 +79,6 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     </div>
     <div class="row-actions"><button id="btn_step1" class="btn btn-primary">Valider l’étape 1</button></div>
   </section>
-
   <section id="step2" class="card lock">
     <h2 class="h2">Convention de Collaboration</h2>
     <div class="grid2">
@@ -100,7 +96,6 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     </div>
     <div class="notice">Après génération, vous pourrez télécharger la convention signée. Un exemplaire est archivé par AlexLivraison.</div>
   </section>
-
   <section id="step3" class="card lock">
     <h2 class="h2">Ajout de produits</h2>
     <form id="product-form" class="grid3">
@@ -108,40 +103,34 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
       <div><label>Prix (€)</label><input name="price" type="number" step="0.01"></div>
       <div><label>Photo</label><input name="photo" type="file" accept="image/*"></div>
       <div style="grid-column:1/4"><label>Description</label><textarea name="desc"></textarea></div>
-      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Pharmacie" readonly></div>
+      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarché" readonly></div>
       <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
     </form>
     <div id="result"></div>
   </section>
 </main>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const TELEGRAM_CHAT_ID="7129872491";
 const loadImage=src=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src});
 const addWrapped=(doc,text,x,y,maxW,lh)=>{const lines=doc.splitTextToSize(text,maxW);doc.text(lines,x,y);return y+lines.length*lh};
-
 document.getElementById('btn_step1').onclick=()=>{for(const id of['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail']){if(!document.getElementById(id).value.trim()){alert('Veuillez remplir tous les champs.');return}}document.getElementById('step2').classList.remove('lock');};
-
 const signDate=document.getElementById('sign_date');signDate.valueAsDate=new Date();
 const canvas=document.getElementById('signature');const ctx=canvas.getContext('2d');let drawing=false;
 function pos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#000';ctx.stroke()}function end(){drawing=false}
 canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
 canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchend',end);
 document.getElementById('sig_clear').onclick=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
-
 document.getElementById('gen_pdf').onclick=async()=>{
 const name=document.getElementById('sign_name').value.trim();if(!name)return alert('Nom requis.');
 if(!document.getElementById('agree').checked)return alert('Veuillez accepter la convention.');
-
 const sigData=canvas.toDataURL('image/png');
 const logo=await loadImage('logo.jpg');
 const stamp=await loadImage('stamp-alex.jpg');
 const mySign=await loadImage('sinature-alex.jpg');
 const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'pt',format:'a4'});
 let margin=48,y=50;
-
 doc.addImage(logo,'JPEG',480,40,70,70);
 doc.setFont('helvetica','bold');doc.setFontSize(18);
 doc.text('Convention de Collaboration',margin,y+60);
@@ -155,19 +144,16 @@ const siret=document.getElementById('f_siret').value.trim();
 const addr=document.getElementById('f_addr').value.trim();
 const tel=document.getElementById('f_tel').value.trim();
 const mail=document.getElementById('f_mail').value.trim();
-
 y=addWrapped(doc,`Entre AlexLivraison et ${enseigne} (${cat}). Responsable: ${resp}`,margin,y,520,16);
 y=addWrapped(doc,`SIREN: ${siren} — SIRET: ${siret}`,margin,y,520,16);
 y=addWrapped(doc,`Adresse: ${addr}`,margin,y,520,16);
 y=addWrapped(doc,`Téléphone: ${tel} — E-mail: ${mail}`,margin,y,520,16);
-
 y+=8;doc.setFont('helvetica','bold');doc.text('Offre et durée',margin,y);y+=16;
 doc.setFont('helvetica','');
 y=addWrapped(doc,'Le partenaire bénéficie de 5 livraisons gratuites à la signature. Collaboration d’un an, reconductible, période d’essai 2 semaines.',margin,y,520,16);
 y+=8;doc.setFont('helvetica','bold');doc.text('Engagements',margin,y);y+=16;
 doc.setFont('helvetica','');
 y=addWrapped(doc,"Confidentialité, rapidité, traçabilité, communication efficace. Préavis 15 jours en cas de rupture après la période d’essai.",margin,y,520,16);
-
 y+=20;doc.line(margin,y,margin+520,y);y+=12;
 doc.setFont('helvetica','bold');doc.text('Signatures',margin,y);y+=14;
 const col1=margin;const col2=margin+280;
@@ -181,13 +167,11 @@ doc.text(`Date: ${signDate.value}`,col2,y);y+=10;
 doc.addImage(sigData,'PNG',col1,y,220,110);
 doc.addImage(mySign,'JPEG',col2+90,y-20,70,70);
 doc.addImage(stamp,'JPEG',col2+80,y+40,90,90);
-
 const blob=doc.output('blob');
 const url=URL.createObjectURL(blob);
 document.getElementById('dl_partner').href=url;
 document.getElementById('dl_partner').style.display='inline-block';
 document.getElementById('step3').classList.remove('lock');
-
 const fd=new FormData();
 fd.append('chat_id',TELEGRAM_CHAT_ID);
 fd.append('caption',`Convention signée: ${enseigne} (${cat})`);
