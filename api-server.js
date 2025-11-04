@@ -6,7 +6,6 @@ import path from 'path';
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
-
 const PRODUCTS_FILE = './products.json';
 
 app.use(cors());
@@ -18,7 +17,6 @@ const readProducts = () => {
   }
   return [];
 };
-
 const writeProducts = (products) => {
   fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
 };
