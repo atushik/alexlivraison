@@ -46,10 +46,8 @@
       <div><a class="btn btn-ghost" href="index.html" target="_blank">Ouvrir le site</a></div>
     </div>
   </div>
-
   <main class="wrap">
     <h1 class="h1">Boulangeries • Portail Partenaire</h1>
-
     <section class="card">
       <h2 class="h2">Présentation</h2>
       <div class="muted">Livraison quotidienne de produits boulangers aux clients du partenaire. Respect de la confidentialité et de la qualité.</div>
@@ -59,7 +57,6 @@
         <span class="badge">Proximité</span>
       </div>
     </section>
-
     <section id="step1" class="card">
       <h2 class="h2">Formulaire de collaboration</h2>
       <div class="grid2">
@@ -83,7 +80,6 @@
         <button id="btn_step1" class="btn btn-primary">Valider l’étape 1</button>
       </div>
     </section>
-
     <section id="step2" class="card lock">
       <h2 class="h2">Convention de Collaboration</h2>
       <div class="grid2">
@@ -101,7 +97,6 @@
       </div>
       <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
     </section>
-
     <section id="step3" class="card lock">
       <h2 class="h2">Ajout de produits</h2>
       <form id="product-form" class="grid3" enctype="multipart/form-data">
@@ -227,22 +222,22 @@
     };
   </script>
   <script>
-  document.getElementById('product-form').addEventListener('submit', async function(e){
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
-      method: 'POST',
-      body: formData
+    document.getElementById('product-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if(data.success){
+        document.getElementById('result').textContent = 'Success';
+        form.reset();
+      } else {
+        document.getElementById('result').textContent = 'Error';
+      }
     });
-    const data = await res.json();
-    if(data.success){
-      document.getElementById('result').textContent = 'Success';
-      form.reset();
-    } else {
-      document.getElementById('result').textContent = 'Error';
-    }
-  });
   </script>
 </body>
 </html>
