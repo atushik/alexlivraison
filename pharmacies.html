@@ -50,6 +50,10 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 <main class="wrap">
   <h1 class="h1">Pharmacies • Portail Partenaire</h1>
   <section class="card">
+    <h2 class="h2">Produits des pharmacies</h2>
+    <div id="products" class="list"></div>
+  </section>
+  <section class="card">
     <h2 class="h2">Présentation</h2>
     <div class="muted">Livraison de médicaments et produits santé avec vérifications et attente en officine si nécessaire. Respect de la confidentialité.</div>
     <div class="row-actions">
@@ -111,72 +115,126 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+async function showProducts(){
+  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+  const arr = await res.json();
+  const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "pharmacie");
+  let html = "";
+  for(const p of my){
+    html += `<div class="item"><img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
+  }
+  document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
+}
+showProducts();
+</script>
+<script>
 const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const TELEGRAM_CHAT_ID="7129872491";
-const loadImage=src=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src});
-const addWrapped=(doc,text,x,y,maxW,lh)=>{const lines=doc.splitTextToSize(text,maxW);doc.text(lines,x,y);return y+lines.length*lh};
-document.getElementById('btn_step1').onclick=()=>{for(const id of['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail']){if(!document.getElementById(id).value.trim()){alert('Veuillez remplir tous les champs.');return}}document.getElementById('step2').classList.remove('lock');};
-const signDate=document.getElementById('sign_date');signDate.valueAsDate=new Date();
-const canvas=document.getElementById('signature');const ctx=canvas.getContext('2d');let drawing=false;
-function pos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#000';ctx.stroke()}function end(){drawing=false}
-canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
-canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});canvas.addEventListener('touchend',end);
-document.getElementById('sig_clear').onclick=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
-document.getElementById('gen_pdf').onclick=async()=>{
-const name=document.getElementById('sign_name').value.trim();if(!name)return alert('Nom requis.');
-if(!document.getElementById('agree').checked)return alert('Veuillez accepter la convention.');
-const sigData=canvas.toDataURL('image/png');
-const logo=await loadImage('logo.jpg');
-const stamp=await loadImage('stamp-alex.jpg');
-const mySign=await loadImage('sinature-alex.jpg');
-const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'pt',format:'a4'});
-let margin=48,y=50;
-doc.addImage(logo,'JPEG',480,40,70,70);
-doc.setFont('helvetica','bold');doc.setFontSize(18);
-doc.text('Convention de Collaboration',margin,y+60);
-doc.setFont('helvetica','');doc.setFontSize(12);
-y=140;
-const enseigne=document.getElementById('f_enseigne').value.trim();
-const cat=document.getElementById('f_cat').value.trim();
-const resp=document.getElementById('f_resp').value.trim();
-const siren=document.getElementById('f_siren').value.trim();
-const siret=document.getElementById('f_siret').value.trim();
-const addr=document.getElementById('f_addr').value.trim();
-const tel=document.getElementById('f_tel').value.trim();
-const mail=document.getElementById('f_mail').value.trim();
-y=addWrapped(doc,`Entre AlexLivraison et ${enseigne} (${cat}). Responsable: ${resp}`,margin,y,520,16);
-y=addWrapped(doc,`SIREN: ${siren} — SIRET: ${siret}`,margin,y,520,16);
-y=addWrapped(doc,`Adresse: ${addr}`,margin,y,520,16);
-y=addWrapped(doc,`Téléphone: ${tel} — E-mail: ${mail}`,margin,y,520,16);
-y+=8;doc.setFont('helvetica','bold');doc.text('Offre et durée',margin,y);y+=16;
-doc.setFont('helvetica','');
-y=addWrapped(doc,'Le partenaire bénéficie de 5 livraisons gratuites à la signature. Collaboration d’un an, reconductible, période d’essai 2 semaines.',margin,y,520,16);
-y+=8;doc.setFont('helvetica','bold');doc.text('Engagements',margin,y);y+=16;
-doc.setFont('helvetica','');
-y=addWrapped(doc,"Confidentialité, rapidité, traçabilité, communication efficace. Préavis 15 jours en cas de rupture après la période d’essai.",margin,y,520,16);
-y+=20;doc.line(margin,y,margin+520,y);y+=12;
-doc.setFont('helvetica','bold');doc.text('Signatures',margin,y);y+=14;
-const col1=margin;const col2=margin+280;
-doc.setFont('helvetica','');
-doc.text('Pour le Partenaire',col1,y);
-doc.text('Pour AlexLivraison',col2,y);y+=10;
-doc.text(`Nom: ${name}`,col1,y);
-doc.text('Nom: Atabek ZAKIROV',col2,y);y+=14;
-doc.text(`Date: ${signDate.value}`,col1,y);
-doc.text(`Date: ${signDate.value}`,col2,y);y+=10;
-doc.addImage(sigData,'PNG',col1,y,220,110);
-doc.addImage(mySign,'JPEG',col2+90,y-20,70,70);
-doc.addImage(stamp,'JPEG',col2+80,y+40,90,90);
-const blob=doc.output('blob');
-const url=URL.createObjectURL(blob);
-document.getElementById('dl_partner').href=url;
-document.getElementById('dl_partner').style.display='inline-block';
-document.getElementById('step3').classList.remove('lock');
-const fd=new FormData();
-fd.append('chat_id',TELEGRAM_CHAT_ID);
-fd.append('caption',`Convention signée: ${enseigne} (${cat})`);
-fd.append('document',new File([blob],`Convention_${enseigne}.pdf`,{type:'application/pdf'}));
-await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:'POST',body:fd});
+const step1Btn=document.getElementById('btn_step1');
+const step2=document.getElementById('step2');
+const step3=document.getElementById('step3');
+const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
+const signName=document.getElementById('sign_name');
+const signDate=document.getElementById('sign_date');
+signDate.valueAsDate=new Date();
+const canvas=document.getElementById('signature');
+const ctx=canvas.getContext('2d');
+let drawing=false;
+function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
+function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
+function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
+function end(){drawing=false}
+canvas.addEventListener('mousedown',start);
+canvas.addEventListener('mousemove',move);
+canvas.addEventListener('mouseup',end);
+canvas.addEventListener('mouseleave',end);
+canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
+canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
+canvas.addEventListener('touchend',end);
+document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
+const agree=document.getElementById('agree');
+const gen=document.getElementById('gen_pdf');
+const dlPartner=document.getElementById('dl_partner');
+gen.onclick=async()=>{
+  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
+  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
+  if(!agree.checked){alert('Veuillez accepter la convention.');return}
+  const sigData=canvas.toDataURL('image/png');
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const margin=48;
+  let y=margin;
+  doc.addImage("logo.jpg","JPEG",430,20,100,100);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text('Convention de Collaboration',margin,y);
+  y+=30;
+  doc.setFont('helvetica','');
+  doc.setFontSize(12);
+  const enseigne=document.getElementById('f_enseigne').value.trim();
+  const cat=document.getElementById('f_cat').value.trim();
+  const resp=document.getElementById('f_resp').value.trim();
+  const siren=document.getElementById('f_siren').value.trim();
+  const siret=document.getElementById('f_siret').value.trim();
+  const addr=document.getElementById('f_addr').value.trim();
+  const tel=document.getElementById('f_tel').value.trim();
+  const mail=document.getElementById('f_mail').value.trim();
+  const lines=[
+    `Entre AlexLivraison et ${enseigne} (${cat}).`,
+    `Responsable: ${resp}`,
+    `SIREN: ${siren} — SIRET: ${siret}`,
+    `Adresse: ${addr}`,
+    `Téléphone: ${tel} — E-mail: ${mail}`,
+    '',
+    '--- Informations AlexLivraison ---',
+    'Responsable: Atabek ZAKIROV',
+    'SIREN: 953281288 — SIRET: 95328128800011',
+    'Adresse: 241 Rue Le Corbusier, 83500 La Seyne-sur-Mer',
+    'Téléphone: +33 6 77 17 11 88 — E-mail: atushbek020185@gmail.com',
+    '',
+    'Offre et durée:',
+    'Le partenaire bénéficie de 5 livraisons gratuites à la signature.',
+    'Collaboration d’un an, reconductible, avec période d’essai de 2 semaines.',
+    '',
+    'Engagements:',
+    'Confidentialité, rapidité, traçabilité, qualité du service.',
+    'Préavis 15 jours en cas de rupture après la période d’essai.',
+    '',
+    'Signature électronique ci-dessous.'
+  ];
+  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
+  y+=20;
+  doc.text(`Date: ${signDate.value}`,margin,y);
+  y+=8;
+  doc.text(`Signataire: ${signName.value}`,margin,y);
+  y+=12;
+  doc.addImage(sigData,'PNG',margin,y,220,110);
+  y+=140;
+  doc.text('Pour AlexLivraison',margin+300,y);
+  y+=16;
+  doc.text('Nom: Atabek ZAKIROV',margin+300,y);
+  y+=16;
+  doc.text(`Date: ${signDate.value}`,margin+300,y);
+  y+=6;
+  doc.addImage("sinature-alex.jpg","JPEG",margin+300,y,150,70);
+  doc.addImage("stamp-alex.jpg","JPEG",margin+460,y-20,90,90);
+  y+=100;
+  doc.setDrawColor(200);
+  doc.line(margin,y,margin+520,y);
+  const pdfBlob=doc.output('blob');
+  const url=URL.createObjectURL(pdfBlob);
+  dlPartner.href=url;
+  dlPartner.style.display='inline-block';
+  step3.classList.remove('lock');
+  const formData=new FormData();
+  formData.append("chat_id",TELEGRAM_CHAT_ID);
+  formData.append("document",new File([pdfBlob],"Convention_Pharmacy.pdf",{type:"application/pdf"}));
+  formData.append("caption",`🧾 Nouvelle convention signée (Pharmacie)\n👤 ${signName.value}\n🏢 ${enseigne}`);
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:"POST",body:formData});
 };
 </script>
 <script>
@@ -192,6 +250,7 @@ document.getElementById('product-form').addEventListener('submit', async functio
   if(data.success){
     document.getElementById('result').textContent = 'Success';
     form.reset();
+    showProducts();
   } else {
     document.getElementById('result').textContent = 'Error';
   }
