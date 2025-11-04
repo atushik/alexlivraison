@@ -98,12 +98,12 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
   </section>
   <section id="step3" class="card lock">
     <h2 class="h2">Ajout de produits</h2>
-    <form id="product-form" class="grid3">
-      <div><label>Nom du produit</label><input name="name"></div>
-      <div><label>Prix (€)</label><input name="price" type="number" step="0.01"></div>
-      <div><label>Photo</label><input name="photo" type="file" accept="image/*"></div>
-      <div style="grid-column:1/4"><label>Description</label><textarea name="desc"></textarea></div>
-      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarché" readonly></div>
+    <form id="product-form" class="grid3" enctype="multipart/form-data">
+      <div><label>Nom du produit</label><input name="name" required></div>
+      <div><label>Prix (€)</label><input name="price" type="number" step="0.01" required></div>
+      <div><label>Photo</label><input name="photo" type="file" accept="image/*" required></div>
+      <div style="grid-column:1/4"><label>Description</label><textarea name="desc" required></textarea></div>
+      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarché" readonly required></div>
       <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
     </form>
     <div id="result"></div>
