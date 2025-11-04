@@ -112,7 +112,7 @@
     }
 
     function setFilters(){
-      const cats=Array.from(new Set(productsData.map(p=>p.cat)));
+      const cats=Array.from(new Set(productsData.map(p=>p.cat).filter(Boolean)));
       filters.innerHTML='';
       let btnAll=document.createElement('button');
       btnAll.className='chip active';
@@ -151,7 +151,7 @@
           const pic=document.createElement('div');
           pic.className='pic';
           const im=document.createElement('img');
-          im.src=p.img;
+          im.src=p.img?'https://alexlivraison-api-v2.onrender.com'+p.img:'';
           im.alt=p.name;
           pic.appendChild(im);
           const body=document.createElement('div');
@@ -159,10 +159,13 @@
           const title=document.createElement('div');
           title.className='title';
           title.textContent=p.name;
+          const cat=document.createElement('div');
+          cat.textContent=p.cat||'';
           const price=document.createElement('div');
           price.className='price';
           price.textContent=formatPrice(p.price);
           body.appendChild(title);
+          body.appendChild(cat);
           body.appendChild(price);
           card.appendChild(pic);
           card.appendChild(body);
