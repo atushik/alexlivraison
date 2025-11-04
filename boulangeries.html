@@ -104,34 +104,29 @@
 
     <section id="step3" class="card lock">
       <h2 class="h2">Ajout de produits</h2>
-      <div class="grid3">
-        <div><label>Nom du produit</label><input id="p_name"></div>
-        <div><label>Prix (€)</label><input id="p_price" type="number" step="0.01"></div>
-        <div><label>Photo</label><input id="p_photo" type="file" accept="image/*"></div>
-      </div>
-      <div><label>Description</label><textarea id="p_desc"></textarea></div>
-      <div class="row-actions">
-        <button id="add_product" class="btn btn-primary">Ajouter le produit</button>
-      </div>
-      <div id="list" class="list"></div>
+      <form id="product-form" class="grid3" enctype="multipart/form-data">
+        <div><label>Nom du produit</label><input name="name" required></div>
+        <div><label>Prix (€)</label><input name="price" type="number" step="0.01" required></div>
+        <div><label>Photo</label><input name="photo" type="file" accept="image/*" required></div>
+        <div style="grid-column:1/4"><label>Description</label><textarea name="desc" required></textarea></div>
+        <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Boulangerie" readonly required></div>
+        <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
+      </form>
+      <div id="result"></div>
     </section>
   </main>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID="7129872491";
-
     const step1Btn=document.getElementById('btn_step1');
     const step2=document.getElementById('step2');
     const step3=document.getElementById('step3');
     const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
     step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
-
     const signName=document.getElementById('sign_name');
     const signDate=document.getElementById('sign_date');
     signDate.valueAsDate=new Date();
-
     const canvas=document.getElementById('signature');
     const ctx=canvas.getContext('2d');
     let drawing=false;
@@ -150,22 +145,18 @@
     canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
     canvas.addEventListener('touchend',end);
     document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
-
     const agree=document.getElementById('agree');
     const gen=document.getElementById('gen_pdf');
     const dlPartner=document.getElementById('dl_partner');
-
     gen.onclick=async()=>{
       for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
       if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
       if(!agree.checked){alert('Veuillez accepter la convention.');return}
-
       const sigData=canvas.toDataURL('image/png');
       const {jsPDF}=window.jspdf;
       const doc=new jsPDF({unit:'pt',format:'a4'});
       const margin=48;
       let y=margin;
-
       doc.addImage("logo.jpg","JPEG",430,20,100,100);
       doc.setFont('helvetica','bold');
       doc.setFontSize(18);
@@ -173,7 +164,6 @@
       y+=30;
       doc.setFont('helvetica','');
       doc.setFontSize(12);
-
       const enseigne=document.getElementById('f_enseigne').value.trim();
       const cat=document.getElementById('f_cat').value.trim();
       const resp=document.getElementById('f_resp').value.trim();
@@ -182,7 +172,6 @@
       const addr=document.getElementById('f_addr').value.trim();
       const tel=document.getElementById('f_tel').value.trim();
       const mail=document.getElementById('f_mail').value.trim();
-
       const lines=[
         `Entre AlexLivraison et ${enseigne} (${cat}).`,
         `Responsable: ${resp}`,
@@ -206,16 +195,13 @@
         '',
         'Signature électronique ci-dessous.'
       ];
-
       lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
-
       y+=20;
       doc.text(`Date: ${signDate.value}`,margin,y);
       y+=8;
       doc.text(`Signataire: ${signName.value}`,margin,y);
       y+=12;
       doc.addImage(sigData,'PNG',margin,y,220,110);
-
       y+=140;
       doc.text('Pour AlexLivraison',margin+300,y);
       y+=16;
@@ -225,23 +211,38 @@
       y+=6;
       doc.addImage("sinature-alex.jpg","JPEG",margin+300,y,150,70);
       doc.addImage("stamp-alex.jpg","JPEG",margin+460,y-20,90,90);
-
       y+=100;
       doc.setDrawColor(200);
       doc.line(margin,y,margin+520,y);
-
       const pdfBlob=doc.output('blob');
       const url=URL.createObjectURL(pdfBlob);
       dlPartner.href=url;
       dlPartner.style.display='inline-block';
       step3.classList.remove('lock');
-
       const formData=new FormData();
       formData.append("chat_id",TELEGRAM_CHAT_ID);
       formData.append("document",new File([pdfBlob],"Convention_Boulangerie.pdf",{type:"application/pdf"}));
       formData.append("caption",`🧾 Nouvelle convention signée (Boulangerie)\n👤 ${signName.value}\n🏢 ${enseigne}`);
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:"POST",body:formData});
     };
+  </script>
+  <script>
+  document.getElementById('product-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if(data.success){
+      document.getElementById('result').textContent = 'Success';
+      form.reset();
+    } else {
+      document.getElementById('result').textContent = 'Error';
+    }
+  });
   </script>
 </body>
 </html>
