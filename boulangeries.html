@@ -49,6 +49,10 @@
   <main class="wrap">
     <h1 class="h1">Boulangeries • Portail Partenaire</h1>
     <section class="card">
+      <h2 class="h2">Produits des boulangeries</h2>
+      <div id="products" class="list"></div>
+    </section>
+    <section class="card">
       <h2 class="h2">Présentation</h2>
       <div class="muted">Livraison quotidienne de produits boulangers aux clients du partenaire. Respect de la confidentialité et de la qualité.</div>
       <div class="row-actions">
@@ -111,6 +115,19 @@
     </section>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    async function showProducts(){
+      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+      const arr = await res.json();
+      const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "boulangerie");
+      let html = "";
+      for(const p of my){
+        html += `<div class="item"><img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
+      }
+      document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
+    }
+    showProducts();
+  </script>
   <script>
     const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
     const TELEGRAM_CHAT_ID="7129872491";
@@ -234,6 +251,7 @@
       if(data.success){
         document.getElementById('result').textContent = 'Success';
         form.reset();
+        showProducts();
       } else {
         document.getElementById('result').textContent = 'Error';
       }
