@@ -27,9 +27,11 @@
     .drawer.open{pointer-events:auto}
     .drawer.open .shade{opacity:1}
     .drawer.open .panel{left:0}
-    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center}
+    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600}
+    .drawer a:hover{background:#ffffff22}
     .drawer .langs{margin-top:auto;display:flex;gap:8px}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
+    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700}
+    .drawer .langs button:hover{background:#ffffff33}
     .hero{padding:28px 16px 8px;color:#fff;text-align:center}
     .h2{color:#fff;margin:0 0 12px 0;font-weight:900;text-align:center}
     .muted{color:#cfc5ff;opacity:1;text-align:center}
@@ -41,24 +43,52 @@
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
     .service{border:1px solid #e5e7ef;border-radius:10px;padding:8px;font-size:14px}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;margin-top:10px;cursor:pointer}
+    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;margin-top:10px;cursor:pointer;font-weight:700;transition:.2s}
     #calc{background:#6b23ff;color:#fff}
+    #calc:hover{background:#5a1dd9}
     #payCard{background:#4caf50;color:#fff}
+    #payCard:hover{background:#3d8b40}
     #payCash{background:#ececf4}
+    #payCash:hover{background:#d8d8e8}
     #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:10px;padding:12px}
     #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
     .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%}
     .qr-block{display:grid;place-items:center;flex:1 1 240px}
     .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:10px}
-
-.banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:20px;text-align:center;font-weight:800;line-height:1.35}
+    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:20px;text-align:center;font-weight:800;line-height:1.35}
     .banner-box .l1{font-size:18px}
     .banner-box .l2{font-size:22px}
     .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
     .footer{color:#cfc5ff;text-align:center;margin:8px 0 24px 0}
-    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:100%}
-    .partner{background:#fff;border-radius:12px;padding:18px;display:grid;place-items:center;height:90px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
-    .partner span{opacity:.75;text-align:center}
+    
+    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;width:100%;margin-top:16px}
+    .partner{
+      background:linear-gradient(135deg, #fff 0%, #f5f0ff 100%);
+      border-radius:16px;
+      padding:24px 14px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:120px;
+      box-shadow:0 10px 30px rgba(107,35,255,.15);
+      text-decoration:none;
+      transition:transform .2s, box-shadow .2s;
+      border:2px solid transparent;
+    }
+    .partner:hover{
+      transform:translateY(-4px);
+      box-shadow:0 16px 40px rgba(107,35,255,.25);
+      border-color:#6b23ff;
+    }
+    .partner span{
+      font-size:1.1rem;
+      font-weight:700;
+      color:#32006b;
+      text-align:center;
+      line-height:1.4;
+    }
+    
     @media(max-width:900px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.hero{text-align:center}}
   </style>
 </head>
@@ -128,13 +158,13 @@
           <div><label id="lbl-time">Heure de livraison souhaitée</label><select id="time"></select></div>
         </div>
 
-<label id="lbl-add">Services additionnels</label>
+        <label id="lbl-add">Services additionnels</label>
         <div class="grid">
           <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
           <label class="service"><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
           <label class="service"><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
           <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
-          </div>
+        </div>
 
         <label id="lbl-total">Montant total (€)</label>
         <input id="total" readonly>
@@ -165,9 +195,9 @@
           AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
         </div>
         <div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">
-          <a href="https://wa.me/33677171188" target="_blank">💬 WhatsApp</a>
-          <a href="tel:+33677171188">📲 Appeler</a>
-          <a href="mailto:atushbek020185@gmail.com">✉️ E-mail</a>
+          <a href="https://wa.me/33677171188" target="_blank" style="padding:10px 16px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">💬 WhatsApp</a>
+          <a href="tel:+33677171188" style="padding:10px 16px;background:#6b23ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">📲 Appeler</a>
+          <a href="mailto:atushbek020185@gmail.com" style="padding:10px 16px;background:#32006b;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">✉️ E-mail</a>
         </div>
       </div>
     </section>
