@@ -2,209 +2,194 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Supermarchés - Partenaires | AlexLivraison</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>Supermarchés | AlexLivraison</title>
   <style>
-    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
-    html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:radial-gradient(circle 75vw 60vh at 50% 20%,#7a2cf5 30%,#482497 100%,#1d0038 140%)}
-    *{box-sizing:border-box}
-    img{max-width:100%;height:auto;display:block}
-    .wrap{width:100%;max-width:1080px;margin:0 auto;padding:20px}
-    .topbar{position:sticky;top:0;z-index:60;width:100%;backdrop-filter:saturate(140%) blur(9px);background:linear-gradient(180deg,rgba(20,0,45,.89),rgba(70,30,120,.47));border-bottom:1px solid var(--ring)}
-    .topbar-inner{display:flex;align-items:center;gap:18px;justify-content:space-between;padding:11px 20px;color:#fff}
-    .brand img{width:128px;height:auto}
-    .btn{display:inline-block;padding:13px 21px;border-radius:12px;border:none;cursor:pointer;font-weight:700;background:#6b23ff;color:#fff;text-decoration:none;}
-    .btn:hover{background:#3d0b9b}
-    .panel{max-width:1040px;margin:24px auto 0 auto;}
-    .h1{font-size:2.2rem;font-weight:900;color:#fff;letter-spacing:-1.3px;margin:18px 0 0 0;background:linear-gradient(91deg,#ffe200 18%,#6b23ff 81%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-    .h2{margin:0 0 12px 0;font-weight:900}
-    .muted{color:#3f3089;font-size:1.05em}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0 10px 0;}
-    .filters input,.filters select{padding:9px 16px;border-radius:11px;border:1.7px solid #aeaaea;font-size:1em;}
-    .filters select{font-weight:700}
-    .products-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(222px,1fr));gap:17px;margin:15px 0 0 0}
-    .product-card{background:#fff;border-radius:16px;box-shadow:0 9px 29px #2f147914;padding:15px;display:flex;flex-direction:column;align-items:center;transition:.13s;position:relative;}
-    .product-card:hover{transform:translateY(-2px) scale(1.035);box-shadow:0 13px 42px #8559f93d}
-    .product-card img{width:95%;height:135px;object-fit:cover;border-radius:11px;margin-bottom:7px;background:#f4f2ff}
-    .product-name{font-size:1.13em;font-weight:800;color:#2a1565;text-align:center;margin-bottom:4px;}
-    .product-cat{font-size:13px;color:#633ec3;font-weight:700;margin-bottom:3px;}
-    .product-desc{font-size:0.95em;color:#34336c;min-height:38px;text-align:center}
-    .product-price{font-weight:800;font-size:1em;color:#32ac40;margin:6px 0 2px;}
-    .add-banner{margin:23px 0 12px 0;text-align:center;background:#fff5c1;color:#661a35;font-weight:800;padding:13px 12px;border-radius:13px;box-shadow:0 4px 21px #ebc8475a}
-    .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.13);margin:18px 0}
-    .form-label{font-weight:700;color:#3a056c;}
-    .form-row{display:flex;gap:13px;margin-bottom:12px;}
-    .form-row input,.form-row textarea{flex:1;font-size:1em}
-    .form-row textarea{min-height:80px;resize:vertical;}
-    .section-title{font-size:1.25em;font-weight:900;color:#6429d6;margin:11px 0 13px 0;}
-    .lang-select{display:flex;gap:0.7em;align-items:center;justify-content:flex-end;margin-bottom:10px;}
-    .lang-select button{background:#e2e2ff;color:#370089;font-weight:700;border-radius:8px;border:none;padding:6px 13px;cursor:pointer;box-shadow:0 2px 9px #674eff10;}
-    .lang-select button.active{background:#6b23ff;color:#fff}
-    .notice{color:#a694ff;background:#eee2ff;border-radius:12px;font-size:1.05em;text-align:center;padding:9px;margin:10px 0}
+    :root{--violet:#6b23ff;--bg:#f6f6fc;}
+    html,body{height:100%;margin:0;padding:0;background:var(--bg);}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;}
+    *{box-sizing:border-box;}
+    .wrap{max-width:480px;margin:0 auto;padding-bottom:56px;}
+    .topbar{position:sticky;top:0;z-index:30;background:#fff;padding:7px 0 1px 0;box-shadow:0 2px 10px #210c3812;}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:7px 15px 0 15px;}
+    .brand img{height:40px;}
+    .lang-switch{display:flex;gap:8px;}
+    .lang-switch button{background:#ececfa;border:none;padding:7px 13px;border-radius:9px;cursor:pointer;font-weight:700;color:#6b23ff;transition:.14s;}
+    .lang-switch button.active{background:#6b23ff;color:#fff;}
+    .search-block{padding:7px 14px;}
+    .search{width:100%;padding:12px;margin-bottom:7px;border-radius:12px;border:1.3px solid #dcddfa;background:#f7f7ff;font-size:1.03em;}
+    .tabs{display:flex;gap:7px;margin:9px 0 0 0;}
+    .tab{padding:9px 17px;font-weight:700;border-radius:13px;background:#ececff;color:#591be7;cursor:pointer;font-size:1em;}
+    .tab.active{background:#6b23ff;color:#fff;}
+    .section-title{font-size:1.19em;font-weight:900;margin-top:13px;margin-bottom:7px;color:#391ba3;}
+    .shops-row{display:flex;gap:10px;overflow-x:auto;padding:4px 0 9px 2px;}
+    .shop{min-width:185px;background:#fff;border-radius:16px;box-shadow:0 2px 22px #53006517;overflow:hidden;display:flex;flex-direction:column;flex:0 0 auto;}
+    .shop-img{height:85px;object-fit:cover;width:100%;}
+    .shop-meta{padding:10px;display:flex;flex-direction:column;gap:2px;}
+    .shop-title{font-weight:900;margin-bottom:2px;font-size:1.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#2a127a;}
+    .shop-row{font-size:0.98em;color:#661bc2;}
+    .shop-desc{font-size:0.98em;color:#3b3681;margin-bottom:2px;}
+    .shop-rate{color:#eabd0f;margin-right:7px;}
+    .empty-msg{color:#abb;display:block;text-align:center;padding:31px 0 8px;font-size:1.17em;}
+    .section-promo{margin:11px 0;}
+    .promo{background:#ffeeda;border-radius:12px;padding:11px 0 7px 0;text-align:center;font-weight:700;color:#ca9100;font-size:1.04em;}
+    .section-cats{display:flex;gap:13px;overflow-x:auto;padding-left:6px;margin:7px 0 13px 0;}
+    .cat-btn{background:#fff;border:1px solid #ececff;padding:9px 16px;border-radius:11px;font-weight:700;cursor:pointer;color:#381784;}
+    .cat-btn.active{background:#6b23ff;color:#fff;}
+    .footer-nav{position:fixed;bottom:0;left:0;right:0;padding:0 0 0 0;display:flex;justify-content:space-around;gap:2px;background:#fff;z-index:99;box-shadow:0 -1.5px 12px #41009f11;}
+    .nav-link{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:11px 0;font-size:0.9em;color:#5c438e;text-decoration:none;}
+    .nav-link.active{color:#6b23ff;}
+    @media(min-width:700px){.wrap{max-width:590px;}}
   </style>
 </head>
 <body>
   <div class="topbar">
-    <div class="topbar-inner wrap">
+    <div class="topbar-inner">
       <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-      <div class="lang-select">
-        <button id="lang-fr" class="active">FR</button>
-        <button id="lang-en">EN</button>
+      <div class="lang-switch">
+        <button id="btn-fr" class="active">FR</button>
+        <button id="btn-en">EN</button>
       </div>
-      <a class="btn" href="index.html">Accueil</a>
+    </div>
+    <div class="search-block">
+      <input type="text" class="search" id="search" placeholder="Rechercher un magasin ou produit">
+      <div class="tabs">
+        <div class="tab active" id="tab-supermarkets">Supermarchés</div>
+        <div class="tab" id="tab-restaurants">Restaurants</div>
+        <div class="tab" id="tab-pharmacies">Pharmacies</div>
+        <div class="tab" id="tab-boulangeries">Boulangeries</div>
+      </div>
     </div>
   </div>
-  <div class="panel">
-    <h1 class="h1" id="main-title">Supermarchés partenaires</h1>
-    <div class="filters" id="filters-block">
-      <input type="text" id="search" placeholder="Recherche produit/n°"/>
-      <select id="filter-cat">
-        <option value="">Toutes catégories</option>
-        <option value="Alimentation">Alimentation</option>
-        <option value="Boissons">Boissons</option>
-        <option value="Hygiène">Hygiène</option>
-        <option value="Électronique">Électronique</option>
-      </select>
-      <select id="filter-sort">
-        <option value="def">Tri par défaut</option>
-        <option value="asc">Prix croissant</option>
-        <option value="desc">Prix décroissant</option>
-      </select>
+  <div class="wrap">
+    <div class="section-title" id="main-head">Supermarchés populaires</div>
+    <div class="shops-row" id="shops-list"></div>
+    <span class="empty-msg" id="empty-msg">Aucun supermarché pour l’instant.</span>
+    <div class="section-promo">
+      <div class="promo" id="promo-txt">🎉 5 premières livraisons gratuites !</div>
     </div>
-    <div class="products-list" id="products-list"></div>
-  </div>
-  <div class="add-banner" id="banner-products">Vous êtes un supermarché local ou avez des produits à livrer ?</div>
-  <div class="card">
-    <div class="section-title" id="add-title">Publiez vos produits et promotions</div>
-    <form id="product-form" enctype="multipart/form-data" autocomplete="off">
-      <div class="form-row">
-        <input name="name" placeholder="Nom du produit" required>
-        <input name="price" placeholder="Prix (€)" type="number" step="0.01" required>
-        <input name="cat" placeholder="Catégorie" value="Supermarché">
-      </div>
-      <div class="form-row">
-        <input name="photo" type="file" accept="image/*" required>
-      </div>
-      <div class="form-row">
-        <textarea name="desc" placeholder="Description" required></textarea>
-      </div>
-      <div class="form-row">
-        <button type="submit" class="btn" style="flex:1;" id="add-btn">Ajouter le produit</button>
-      </div>
-      <div id="result"></div>
-    </form>
-  </div>
-  <div class="card">
-    <div class="section-title" id="desc-title">Pourquoi choisir nos partenaires supermarchés?</div>
-    <div class="muted" id="desc-block">Produits toujours frais, livraison rapide, respecte la chaîne du froid. Votre commande en toute confiance.</div>
-    <div class="row-actions" style="margin-top:10px;display:flex;gap:10px;">
-      <span class="badge">Fraîcheur</span>
-      <span class="badge">Qualité</span>
-      <span class="badge">Prix attractifs</span>
-      <span class="badge">Livraison rapide</span>
+    <div class="section-title" id="cat-title">Catégories</div>
+    <div class="section-cats">
+      <div class="cat-btn active" id="cat-all">Tous</div>
+      <div class="cat-btn" id="cat-alim">Alimentation</div>
+      <div class="cat-btn" id="cat-boisson">Boissons</div>
+      <div class="cat-btn" id="cat-frais">Produits frais</div>
+      <div class="cat-btn" id="cat-bio">Bio & Healthy</div>
+      <div class="cat-btn" id="cat-promo">Promotions</div>
     </div>
+    <div class="section-title" id="products-head">Produits populaires</div>
+    <div class="shops-row" id="products-list"></div>
+    <span class="empty-msg" id="empty-products-msg">Aucun produit pour l’instant.</span>
   </div>
-  <div class="notice">Contactez-nous pour toute question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b></div>
+  <nav class="footer-nav">
+    <a href="index.html" class="nav-link"><span>🏠</span>Accueil</a>
+    <a href="supermarches.html" class="nav-link active"><span>🛒</span>Supermarchés</a>
+    <a href="restaurants.html" class="nav-link"><span>🍽️</span>Restaurants</a>
+    <a href="pharmacies.html" class="nav-link"><span>💊</span>Pharmacies</a>
+    <a href="boulangeries.html" class="nav-link"><span>🥖</span>Boulangeries</a>
+  </nav>
   <script>
-    let lang='fr';
+    let lang='fr',cat='all';
     const dict={
       fr:{
-        mainTitle:"Supermarchés partenaires",
-        searchPh:"Recherche produit/n°",
-        filterCat:"Toutes catégories",
-        addBanner:"Vous êtes un supermarché local ou avez des produits à livrer ?",
-        addTitle:"Publiez vos produits et promotions",
-        addBtn:"Ajouter le produit",
-        descTitle:"Pourquoi choisir nos partenaires supermarchés?",
-        descBlock:"Produits toujours frais, livraison rapide, respecte la chaîne du froid. Votre commande en toute confiance.",
-        badge:["Fraîcheur","Qualité","Prix attractifs","Livraison rapide"],
-        notice:'Contactez-nous pour toute question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b>'
+        head:"Supermarchés populaires",
+        productsHead:"Produits populaires",
+        catTitle:"Catégories",
+        promo:"🎉 5 premières livraisons gratuites !",
+        noShop:"Aucun supermarché pour l’instant.",
+        noProd:"Aucun produit pour l’instant.",
+        searchPh:"Rechercher un magasin ou produit"
       },
       en:{
-        mainTitle:"Partner supermarkets",
-        searchPh:"Search product/#",
-        filterCat:"All categories",
-        addBanner:"Are you a local supermarket or want to deliver your products?",
-        addTitle:"Post your items and specials",
-        addBtn:"Add product",
-        descTitle:"Why choose our supermarket partners?",
-        descBlock:"Always fresh products, fast delivery, cold chain respected. Order with confidence.",
-        badge:["Freshness","Quality","Best value","Fast delivery"],
-        notice:'Contact us with any question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b>'
+        head:"Popular supermarkets",
+        productsHead:"Popular products",
+        catTitle:"Categories",
+        promo:"🎉 First 5 deliveries free!",
+        noShop:"No supermarkets yet.",
+        noProd:"No products yet.",
+        searchPh:"Search store or product"
       }
     }
-    document.getElementById('lang-fr').onclick=()=>{
-      lang='fr';
-      document.getElementById('lang-fr').classList.add('active');
-      document.getElementById('lang-en').classList.remove('active');
-      setLang();
+    document.getElementById('btn-fr').onclick=()=>{
+      lang='fr';setLang();
     };
-    document.getElementById('lang-en').onclick=()=>{
-      lang='en';
-      document.getElementById('lang-en').classList.add('active');
-      document.getElementById('lang-fr').classList.remove('active');
-      setLang();
+    document.getElementById('btn-en').onclick=()=>{
+      lang='en';setLang();
     };
     function setLang(){
-      document.getElementById('main-title').textContent=dict[lang].mainTitle;
+      document.getElementById('btn-fr').classList.toggle('active',lang==='fr');
+      document.getElementById('btn-en').classList.toggle('active',lang==='en');
+      document.getElementById('main-head').textContent=dict[lang].head;
+      document.getElementById('promo-txt').textContent=dict[lang].promo;
+      document.getElementById('cat-title').textContent=dict[lang].catTitle;
+      document.getElementById('products-head').textContent=dict[lang].productsHead;
+      document.getElementById('empty-msg').textContent=dict[lang].noShop;
       document.getElementById('search').placeholder=dict[lang].searchPh;
-      document.getElementById('filter-cat').options[0].text=dict[lang].filterCat;
-      document.getElementById('banner-products').textContent=dict[lang].addBanner;
-      document.getElementById('add-title').textContent=dict[lang].addTitle;
-      document.getElementById('add-btn').textContent=dict[lang].addBtn;
-      document.getElementById('desc-title').textContent=dict[lang].descTitle;
-      document.getElementById('desc-block').textContent=dict[lang].descBlock;
-      document.querySelector('.notice').innerHTML=dict[lang].notice;
-      const badges=document.querySelectorAll('.badge');
-      badges.forEach((el,i)=>el.textContent=dict[lang].badge[i]);
+      document.getElementById('empty-products-msg').textContent=dict[lang].noProd;
     }
     setLang();
-    async function loadProducts(){
-      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-      const arr = await res.json();
-      let products = arr.filter(p => p.cat && p.cat.toLowerCase() === "supermarché");
-      const catF=document.getElementById('filter-cat').value;
-      const sortF=document.getElementById('filter-sort').value;
-      const searchV=document.getElementById('search').value.toLowerCase().trim();
-      if(catF){products=products.filter(x=>x.cat===catF);}
-      if(searchV){products=products.filter(x=>(x.name&&x.name.toLowerCase().includes(searchV))||(x.desc&&x.desc.toLowerCase().includes(searchV)));}
-      if(sortF==="asc"){products=products.sort((a,b)=>(+a.price)-(+b.price));}
-      if(sortF==="desc"){products=products.sort((a,b)=>(+b.price)-(+a.price));}
+    const demoShops = [
+      // Примеры. Добавляй новые магазины в будущем, формат оставь как есть.
+      {img:'https://cdn.pixabay.com/photo/2015/11/07/11/46/basket-1033849_1280.jpg',name:'Epicerie Du Littoral',desc:'Livraison rapide, choix varié',rate:4.8,deliv:'10 min.',stars:480},
+      {img:'https://cdn.pixabay.com/photo/2016/03/05/19/02/supermarket-1233130_1280.jpg',name:'Alim la Seyne',desc:'Supérette de quartier',rate:4.6,deliv:'10 min.',stars:75}
+    ];
+    const demoProds = [
+      // Продукты — можно расширять вручную
+      {img:'https://cdn.pixabay.com/photo/2017/04/23/21/52/salad-2256467_1280.jpg',name:'Salade fraîche',cat:'Frais',price:'2.80€'},
+      {img:'https://cdn.pixabay.com/photo/2017/05/07/08/56/snack-2291862_1280.jpg',name:'Snack du jour',cat:'Alimentation',price:'1.35€'},
+      {img:'https://cdn.pixabay.com/photo/2017/01/03/11/52/tomato-1955660_1280.jpg',name:'Tomates premium',cat:'Bio',price:'3.95€'}
+    ];
+    function renderShops(){
       let html='';
-      for(const p of products){
-        html+=`<div class="product-card">
-          <img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt="">
-          <div class="product-name">${p.name||""}</div>
-          <div class="product-cat">${p.cat||""}</div>
-          <div class="product-desc">${p.desc||""}</div>
-          <div class="product-price">${p.price||""} €</div>
+      let f=query=>demoShops.filter(x=>x.name.toLowerCase().includes(query)||x.desc.toLowerCase().includes(query));
+      let val=document.getElementById('search').value.toLowerCase().trim();
+      let res=(val?f(val):demoShops);
+      res=res.filter(x=>(cat==='all')||x.cat===cat||cat==='alim'&&x.cat!=='Boissons');
+      for(let s of res){
+        html+=`<div class="shop">
+          <img src="${s.img}" class="shop-img" alt="">
+          <div class="shop-meta">
+            <div class="shop-title">${s.name}</div>
+            <div class="shop-desc">${s.desc}</div>
+            <div class="shop-row"><span class="shop-rate">★${s.rate}</span>· ${s.stars} · ${s.deliv}</div>
+          </div>
         </div>`;
       }
-      document.getElementById('products-list').innerHTML=html||(lang==='fr'?'Aucun produit':'No products');
+      document.getElementById('shops-list').innerHTML=html;
+      document.getElementById('empty-msg').style.display=res.length?'none':'block';
     }
-    document.getElementById('search').oninput=loadProducts;
-    document.getElementById('filter-cat').onchange=loadProducts;
-    document.getElementById('filter-sort').onchange=loadProducts;
-    loadProducts();
-    document.getElementById('product-form').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if(data.success){
-        document.getElementById('result').textContent = lang==='fr'?'Ajouté.':'Added.';
-        form.reset();
-        loadProducts();
-      } else {
-        document.getElementById('result').textContent = lang==='fr'?'Erreur':'Error';
+    function renderProds(){
+      let html='';
+      let f=query=>demoProds.filter(x=>x.name.toLowerCase().includes(query)||x.cat.toLowerCase().includes(query));
+      let val=document.getElementById('search').value.toLowerCase().trim();
+      let res=(val?f(val):demoProds);
+      res=res.filter(x=>cat==='all'||(cat==='alim'?x.cat!=='Boissons':x.cat.toLowerCase()===cat));
+      for(let p of res){
+        html+=`<div class="shop">
+          <img src="${p.img}" class="shop-img" alt="">
+          <div class="shop-meta">
+            <div class="shop-title">${p.name}</div>
+            <div class="shop-desc">${p.cat||''}</div>
+            <div class="shop-row">${p.price}</div>
+          </div>
+        </div>`;
+      }
+      document.getElementById('products-list').innerHTML=html;
+      document.getElementById('empty-products-msg').style.display=res.length?'none':'block';
+    }
+    document.getElementById('search').oninput=()=>{renderShops();renderProds();}
+    let cats=['all','alim','boisson','frais','bio','promo'];
+    cats.forEach(c=>{
+      document.getElementById('cat-'+c).onclick=()=>{
+        cats.forEach(c2=>document.getElementById('cat-'+c2).classList.toggle('active',c===c2));
+        cat=c;renderShops();renderProds();
       }
     });
+    renderShops();renderProds();
+    document.getElementById('tab-supermarkets').onclick=()=>location.href='supermarches.html';
+    document.getElementById('tab-restaurants').onclick=()=>location.href='restaurants.html';
+    document.getElementById('tab-pharmacies').onclick=()=>location.href='pharmacies.html';
+    document.getElementById('tab-boulangeries').onclick=()=>location.href='boulangeries.html';
   </script>
 </body>
 </html>
