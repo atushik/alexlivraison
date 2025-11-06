@@ -9,7 +9,7 @@
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}
+    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center}
     *{box-sizing:border-box}
     img{max-width:100%;height:auto;display:block}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
@@ -32,65 +32,74 @@
     .drawer .langs{margin-top:auto;display:flex;gap:8px}
     .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700}
     .drawer .langs button:hover{background:#ffffff33}
-    .hero{padding:28px 16px 8px;color:#fff;text-align:center}
-    .h2{color:#fff;margin:0 0 12px 0;font-weight:900;text-align:center}
-    .muted{color:#cfc5ff;opacity:1;text-align:center}
-    .section{padding:18px 0;width:100%}
-    .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);width:100%}
-    label{display:block;margin-top:10px;font-weight:700}
-    input,select{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
+    .hero{padding:32px 16px 12px;color:#fff;text-align:center}
+    .h2{color:#fff;margin:0 0 16px 0;font-weight:900;text-align:center;font-size:2.3em;letter-spacing:-1px}
+    .muted{color:#efecfb;opacity:.93;text-align:center;font-size:1.2em;max-width:620px;margin:0 auto}
+    .section{padding:23px 0;width:100%}
+    .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px}
+    label{display:block;margin-top:10px;font-weight:700;}
+    input,select{width:100%;padding:14px;margin-top:6px;border-radius:11px;border:1px solid #cfd0d8;outline:none;font-size:1.1em;}
     input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-    .service{border:1px solid #e5e7ef;border-radius:10px;padding:8px;font-size:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px}
+    .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);}
+    .service input{margin-right:7px}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;margin-top:10px;cursor:pointer;font-weight:700;transition:.2s}
-    #calc{background:#6b23ff;color:#fff}
-    #calc:hover{background:#5a1dd9}
-    #payCard{background:#4caf50;color:#fff}
-    #payCard:hover{background:#3d8b40}
-    #payCash{background:#ececf4}
-    #payCash:hover{background:#d8d8e8}
-    #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:10px;padding:12px}
+    button{width:100%;padding:15px;border:none;border-radius:12px;font-size:1.13em;margin-top:10px;font-weight:800;cursor:pointer;transition:.2s}
+    #calc{background:linear-gradient(90deg,#6b23ff 60%,#8968fb);color:#fff;}
+    #payCard{background:#4caf50;color:#fff;}
+    #payCash{background:#f3f1ff;color:#6b23ff;border:1.5px solid #6b23ff}
+    #calc:hover{background:#6b23ff;}
+    #payCard:hover{background:#3d8b40;}
+    #payCash:hover{background:#dccffd;color:#45329b}
+    #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:9px;padding:13px;font-size:1.12em;color:#280a68}
     #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
     .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%}
-    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:20px;text-align:center;font-weight:800;line-height:1.35}
-    .banner-box .l1{font-size:18px}
-    .banner-box .l2{font-size:22px;margin-bottom:10px;}
-    .qr-block{display:grid;place-items:center;flex:1 1 240px}
-    .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:17px;box-shadow:0 12px 34px rgba(0,0,0,.25);padding:10px}
-    .qr-block .site{margin-top:8px;color:#221756;font-size:1.2em;font-weight:800;text-align:center}
-    .qr-block .sticker{font-size:2.2em;margin-top:9px;}
-    .year{color:#cfc5ff;text-align:center;margin:8px 0 0 0;font-weight:700}
-    .footer{color:#cfc5ff;text-align:center;margin:8px 0 24px 0}
-    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;width:100%;margin-top:22px}
+    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:23px 20px;text-align:center;font-weight:800;line-height:1.32}
+    .banner-box .l1{font-size:19px;}
+    .banner-box .l2{font-size:25px;margin:7px 0 12px 0;font-weight:900;color:#874cff;}
+    .qr-block{display:grid;place-items:center;flex:1 1 240px;padding-top:9px;}
+    .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:17px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:10px}
+    .qr-block .site{margin-top:8px;color:#5947a5;font-size:1.13em;font-weight:800;text-align:center;text-shadow:1px 2px 6px #ccbff94c;}
+    .qr-block .sticker{font-size:2.2em;margin-top:10px;}
+    .year{color:#cfc5ff;text-align:center;margin:10px 0 0 0;font-weight:700;font-size:1.12em}
+    .footer{color:#cfc5ff;text-align:center;margin:10px 0 24px 0;font-size:1.07em;}
+    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px;width:100%;margin-top:30px}
     .partner{
-      background:linear-gradient(135deg, #fff 0%, #f5f0ff 100%);
-      border-radius:18px;
-      padding:30px 14px 24px 14px;
+      background:linear-gradient(135deg,#fafdff 0%,#ece5ff 100%);
+      border-radius:20px;
+      padding:36px 14px 27px 14px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
       min-height:120px;
-      box-shadow:0 12px 38px rgba(107,35,255,.16);
+      box-shadow:0 11px 33px rgba(107,35,255,.10);
       text-decoration:none;
-      transition:transform .16s, box-shadow .16s;
-      border:2px solid transparent;
-      font-size: 1.12em;
+      transition:transform .14s, box-shadow .14s;
+      border:2.2px solid transparent;
+      font-size: 1.19em;
       position:relative;
     }
     .partner:hover{
-      transform:translateY(-4px) scale(1.025);
-      box-shadow:0 18px 46px rgba(107,35,255,.22);
+      transform:translateY(-3px) scale(1.04);
+      box-shadow:0 15px 38px #5224aa15;
       border-color:#6b23ff;
     }
     .partner span{
       font-size:1.19em;
       font-weight:900;
-      display:flex;flex-direction:column;align-items:center;gap:5px;
-      color: #280a68;
+      display:flex;flex-direction:column;align-items:center;gap:6px;color:#280a68;letter-spacing:0.01em;
+      text-shadow:1px 1.5px 6px #d1d0e74c;
     }
-    @media(max-width:900px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.hero{text-align:center}}
+    @media(max-width:850px){.h2{font-size:1.4em;}.banner-box .l2{font-size:19px;}}
+    @media(max-width:650px){
+      .topbar-inner{padding:10px;}
+      .h2{font-size:1.08em;}
+      .wrap{padding:5px;}
+      .partners{gap:13px;}
+      .card{padding:12px;}
+      .banner-box{padding:11px 8px;}
+      .qr-block img{width:120px;height:120px;}
+    }
   </style>
 </head>
 <body>
@@ -114,24 +123,24 @@
     </div>
   </div>
   <header class="hero wrap">
-    <h1 class="h2" id="hero-title">Livraison locale rapide à Toulon & La Seyne</h1>
-    <p class="muted" id="hero-desc">Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.</p>
+    <h1 class="h2" id="hero-title">🚲 Livraison locale rapide à Toulon & La Seyne</h1>
+    <p class="muted" id="hero-desc">Repas, courses, colis et petits envois&nbsp;—&nbsp;à&nbsp;vélo, scooter, auto. <span style="white-space:nowrap">Commande en 30 secondes</span> !</p>
   </header>
   <main class="wrap">
     <section id="calc-section" class="section">
-      <h2 class="h2" id="calc-title">Calcul du prix et commande</h2>
+      <h2 class="h2" id="calc-title">💸 Calcul du prix – Commandez en 1 клик!</h2>
       <div class="card">
-        <label id="lbl-name">Nom du client (optionnel)</label>
-        <input id="clientName" placeholder="Jean Dupont">
-        <label id="lbl-phone">Numéro de téléphone du client</label>
+        <label id="lbl-name">👤 Nom (optionnel)</label>
+        <input id="clientName" placeholder="Alex, Emma…">
+        <label id="lbl-phone">📱 Téléphone client</label>
         <input id="clientPhone" placeholder="+33 6 12 34 56 78" required>
-        <label id="lbl-from">Adresse de départ</label>
+        <label id="lbl-from">🧭 Adresse de départ</label>
         <input id="from" placeholder="2 Rue Beaussier, Toulon">
-        <label id="lbl-to">Adresse de destination</label>
+        <label id="lbl-to">🏁 Adresse d’arrivée</label>
         <input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
         <div class="grid">
           <div>
-            <label id="lbl-size">Taille du colis</label>
+            <label id="lbl-size">📦 Taille colis</label>
             <select id="size">
               <option value="S" id="opt-s">Petit (S)</option>
               <option value="M" selected id="opt-m">Moyen (M)</option>
@@ -140,27 +149,27 @@
             </select>
           </div>
           <div>
-            <label id="lbl-floor">Étage</label>
+            <label id="lbl-floor">🏢 Étage</label>
             <select id="floor">
-              <option value="0" id="opt-f0">RDC / 1er (0 €)</option>
-              <option value="2" id="opt-f2">2e–5e (+2 €)</option>
-              <option value="2.5" id="opt-f25">6e–10e (+2,5 €)</option>
-              <option value="3" id="opt-f3">11e–15e (+3 €)</option>
+              <option value="0" id="opt-f0">RDC/1er (0 €)</option>
+              <option value="2" id="opt-f2">2e–5e (+2 €)</option>
+              <option value="2.5" id="opt-f25">6e–10e (+2,5 €)</option>
+              <option value="3" id="opt-f3">11e–15e (+3 €)</option>
             </select>
           </div>
         </div>
         <div class="grid">
-          <div><label id="lbl-date">Date de livraison</label><input type="date" id="date"></div>
-          <div><label id="lbl-time">Heure de livraison souhaitée</label><select id="time"></select></div>
+          <div><label id="lbl-date">📅 Date livraison</label><input type="date" id="date"></div>
+          <div><label id="lbl-time">⏰ Heure souhaitée</label><select id="time"></select></div>
         </div>
-        <label id="lbl-add">Services additionnels</label>
+        <label id="lbl-add">🔧 Services (+)</label>
         <div class="grid">
-          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
+          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv1">Fragile (+2 €)</span></label>
+          <label class="service"><input type="checkbox" class="srv" data-fee="3"><span id="srv2">Urgente (+3 €)</span></label>
+          <label class="service"><input type="checkbox" class="srv" data-fee="1"><span id="srv3">Attente 5 min (+1 €)</span></label>
+          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv4">Attente 10 min (+2 €)</span></label>
         </div>
-        <label id="lbl-total">Montant total (€)</label>
+        <label id="lbl-total">💶 Montant total</label>
         <input id="total" readonly>
         <button id="calc">🧮 Calculer le prix</button>
         <button id="payCard">💳 Paiement par carte</button>
@@ -170,7 +179,7 @@
       </div>
     </section>
     <section id="partners" class="section">
-      <h2 class="h2" id="partners-title">Partenaires (exemples)</h2>
+      <h2 class="h2" id="partners-title">Produits Partenaires</h2>
       <div class="partners">
         <a href="supermarches.html" target="_blank" class="partner"><span id="p1">🛒<br>Supermarchés</span></a>
         <a href="boulangeries.html" target="_blank" class="partner"><span id="p2">🥐<br>Boulangeries</span></a>
@@ -181,15 +190,15 @@
       </div>
     </section>
     <section id="contact" class="section">
-      <h2 class="h2" id="contact-title">Contact</h2>
+      <h2 class="h2" id="contact-title">📬 Contact</h2>
       <div class="card">
-        <div class="muted" style="margin-bottom:10px;color:#333;text-align:center">
-          AlexLivraison — La Seyne-sur-Mer / Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
+        <div class="muted" style="margin-bottom:13px;color:#47346c;text-align:center;font-size:1.09em;">
+          AlexLivraison — La Seyne-sur-Mer/Toulon<br>📞 06 77 17 11 88 · 📧 atushbek020185@gmail.com
         </div>
-        <div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">
-          <a href="https://wa.me/33677171188" target="_blank" style="padding:10px 16px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">💬 WhatsApp</a>
-          <a href="tel:+33677171188" style="padding:10px 16px;background:#6b23ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">📲 Appeler</a>
-          <a href="mailto:atushbek020185@gmail.com" style="padding:10px 16px;background:#32006b;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">✉️ E-mail</a>
+        <div class="contact-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:9px">
+          <a href="https://wa.me/33677171188" target="_blank" style="padding:11px 16px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:800;font-size:1.05em;">💬 WhatsApp</a>
+          <a href="tel:+33677171188" style="padding:11px 16px;background:#6b23ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:800;font-size:1.07em;">📲 Appeler</a>
+          <a href="mailto:atushbek020185@gmail.com" style="padding:11px 16px;background:#32006b;color:#fff;border-radius:10px;text-decoration:none;font-weight:800;font-size:1.03em;">✉️ E-mail</a>
         </div>
       </div>
     </section>
@@ -197,7 +206,7 @@
       <div class="banner-box">
         <div class="l1" id="bn1">🎉 Offres partenaires</div>
         <div class="l2" id="bn2">ÉNORMES RÉDUCTIONS</div>
-        <div class="l1" id="bn3">ET LES 5 PREMIÈRES LIVRAISONS GRATUITES !</div>
+        <div class="l1" id="bn3">5 livraisons gratuites pour chaque client</div>
       </div>
       <div class="qr-block">
         <img src="QR-code.jpg" alt="QR AlexLivraison">
@@ -342,35 +351,35 @@
     document.getElementById("to").value="241 Rue Le Corbusier, La Seyne-sur-Mer";
     const dict={
       fr:{
-        heroTitle:"Livraison locale rapide à Toulon & La Seyne",
-        heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter ou véhicule léger. Commande en 30 secondes.",
+        heroTitle:"🚲 Livraison locale rapide à Toulon & La Seyne",
+        heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !",
         navCalc:"Produits D’affiliation",
         navPartners:"À propos",
         navContact:"Chat",
-        calcTitle:"Calcul du prix et commande",
-        lblName:"Nom du client (optionnel)",
-        lblPhone:"Numéro de téléphone du client",
-        lblFrom:"Adresse de départ",
-        lblTo:"Adresse de destination",
-        lblSize:"Taille du colis",
+        calcTitle:"💸 Calcul du prix – Commandez en 1 клик!",
+        lblName:"👤 Nom (optionnel)",
+        lblPhone:"📱 Téléphone client",
+        lblFrom:"🧭 Adresse de départ",
+        lblTo:"🏁 Adresse d’arrivée",
+        lblSize:"📦 Taille colis",
         optS:"Petit (S)",
         optM:"Moyen (M)",
         optL:"Grand (L)",
         optXL:"Très grand (XL)",
-        lblFloor:"Étage",
-        optF0:"RDC / 1er (0 €)",
-        optF2:"2e–5e (+2 €)",
-        optF25:"6e–10e (+2,5 €)",
-        optF3:"11e–15e (+3 €)",
-        lblDate:"Date de livraison",
-        lblTime:"Heure de livraison souhaitée",
-        lblAdd:"Services additionnels",
-        srv1:" Colis fragile (+2 €)",
-        srv2:" Livraison urgente (+3 €)",
-        srv3:" Attente 5 min (+1 €)",
-        srv4:" Attente 10 min (+2 €)",
-        lblTotal:"Montant total (€)",
-        partnersTitle:"Partenaires (exemples)",
+        lblFloor:"🏢 Étage",
+        optF0:"RDC/1er (0 €)",
+        optF2:"2e–5e (+2 €)",
+        optF25:"6e–10e (+2,5 €)",
+        optF3:"11e–15e (+3 €)",
+        lblDate:"📅 Date livraison",
+        lblTime:"⏰ Heure souhaitée",
+        lblAdd:"🔧 Services (+)",
+        srv1:"Fragile (+2 €)",
+        srv2:"Urgente (+3 €)",
+        srv3:"Attente 5 min (+1 €)",
+        srv4:"Attente 10 min (+2 €)",
+        lblTotal:"💶 Montant total",
+        partnersTitle:"Produits Partenaires",
         p1:"🛒 Supermarchés",
         p2:"🥐 Boulangeries",
         p3:"💊 Pharmacies",
@@ -379,7 +388,7 @@
         p6:"📦 Commerçants locaux",
         bn1:"🎉 Offres partenaires",
         bn2:"ÉNORMES RÉDUCTIONS",
-        bn3:"ET LES 5 PREMIÈRES LIVRAISONS GRATUITES !",
+        bn3:"5 livraisons gratuites pour chaque client",
         distance:"Distance:",
         price:"Prix estimé:",
         nonPrecise:"Non précisé",
@@ -400,35 +409,35 @@
         payError:"Erreur de paiement."
       },
       en:{
-        heroTitle:"Fast & reliable local delivery in Toulon & La Seyne",
-        heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds.",
+        heroTitle:"🚲 Fast & reliable local delivery in Toulon & La Seyne",
+        heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds!",
         navCalc:"Affiliate Products",
         navPartners:"About",
         navContact:"Chat",
-        calcTitle:"Price calculation & order",
-        lblName:"Customer name (optional)",
-        lblPhone:"Customer phone number",
-        lblFrom:"Pickup address",
-        lblTo:"Drop-off address",
-        lblSize:"Parcel size",
+        calcTitle:"💸 Price calculation & order",
+        lblName:"👤 Name (optional)",
+        lblPhone:"📱 Phone",
+        lblFrom:"🧭 Pickup address",
+        lblTo:"🏁 Drop-off address",
+        lblSize:"📦 Parcel size",
         optS:"Small (S)",
         optM:"Medium (M)",
         optL:"Large (L)",
         optXL:"Extra large (XL)",
-        lblFloor:"Floor",
-        optF0:"Ground/1st (0 €)",
-        optF2:"2nd–5th (+2 €)",
-        optF25:"6th–10th (+2.5 €)",
-        optF3:"11th–15th (+3 €)",
-        lblDate:"Delivery date",
-        lblTime:"Preferred delivery time",
-        lblAdd:"Additional services",
-        srv1:" Fragile parcel (+2 €)",
-        srv2:" Express delivery (+3 €)",
-        srv3:" Waiting 5 min (+1 €)",
-        srv4:" Waiting 10 min (+2 €)",
-        lblTotal:"Total amount (€)",
-        partnersTitle:"Partners (examples)",
+        lblFloor:"🏢 Floor",
+        optF0:"Ground/1st (0 €)",
+        optF2:"2nd–5th (+2 €)",
+        optF25:"6th–10th (+2.5 €)",
+        optF3:"11th–15th (+3 €)",
+        lblDate:"📅 Delivery date",
+        lblTime:"⏰ Preferred time",
+        lblAdd:"🔧 Extra services",
+        srv1:"Fragile (+2 €)",
+        srv2:"Express (+3 €)",
+        srv3:"Wait 5 min (+1 €)",
+        srv4:"Wait 10 min (+2 €)",
+        lblTotal:"💶 Total price",
+        partnersTitle:"Partner Products",
         p1:"🛒 Supermarkets",
         p2:"🥐 Bakeries",
         p3:"💊 Pharmacies",
@@ -437,7 +446,7 @@
         p6:"📦 Local merchants",
         bn1:"🎉 Partner deals",
         bn2:"HUGE DISCOUNTS",
-        bn3:"AND THE FIRST 5 DELIVERIES FREE!",
+        bn3:"5 free deliveries for every client",
         distance:"Distance:",
         price:"Estimated price:",
         nonPrecise:"Not specified",
