@@ -1,260 +1,210 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Partenaires • Supermarchés | AlexLivraison</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
-<style>
-:root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
-html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
-*{box-sizing:border-box}
-img{max-width:100%;height:auto;display:block}
-.wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-.topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
-.topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px;color:#fff}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:120px;height:auto}
-.btn{display:inline-block;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
-.btn-primary{background:#6b23ff;color:#fff}
-.btn-ghost{background:#ffffff14;color:#fff;border:1px solid #ffffff33}
-.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);margin:14px 0}
-.h1{color:#fff;margin:18px 0 8px 0;font-weight:900}
-.h2{margin:0 0 12px 0;font-weight:900}
-.muted{color:#000}
-label{display:block;margin-top:10px;font-weight:700}
-input,select,textarea{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
-textarea{min-height:110px;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.lock{opacity:.5;pointer-events:none;filter:grayscale(20%)}
-.row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.sig-wrap{border:1px dashed #b6b4d6;border-radius:12px;overflow:hidden;background:#fff}
-canvas#signature{width:100%;height:220px;display:block;touch-action:none}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
-.item{background:#fff;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.12);padding:12px}
-.item img{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;background:#f3f3f8}
-.badge{display:inline-block;background:#eae6ff;color:#3a2a88;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
-.notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>Supermarchés - Partenaires | AlexLivraison</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <style>
+    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
+    html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:radial-gradient(circle 75vw 60vh at 50% 20%,#7a2cf5 30%,#482497 100%,#1d0038 140%)}
+    *{box-sizing:border-box}
+    img{max-width:100%;height:auto;display:block}
+    .wrap{width:100%;max-width:1080px;margin:0 auto;padding:20px}
+    .topbar{position:sticky;top:0;z-index:60;width:100%;backdrop-filter:saturate(140%) blur(9px);background:linear-gradient(180deg,rgba(20,0,45,.89),rgba(70,30,120,.47));border-bottom:1px solid var(--ring)}
+    .topbar-inner{display:flex;align-items:center;gap:18px;justify-content:space-between;padding:11px 20px;color:#fff}
+    .brand img{width:128px;height:auto}
+    .btn{display:inline-block;padding:13px 21px;border-radius:12px;border:none;cursor:pointer;font-weight:700;background:#6b23ff;color:#fff;text-decoration:none;}
+    .btn:hover{background:#3d0b9b}
+    .panel{max-width:1040px;margin:24px auto 0 auto;}
+    .h1{font-size:2.2rem;font-weight:900;color:#fff;letter-spacing:-1.3px;margin:18px 0 0 0;background:linear-gradient(91deg,#ffe200 18%,#6b23ff 81%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .h2{margin:0 0 12px 0;font-weight:900}
+    .muted{color:#3f3089;font-size:1.05em}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0 10px 0;}
+    .filters input,.filters select{padding:9px 16px;border-radius:11px;border:1.7px solid #aeaaea;font-size:1em;}
+    .filters select{font-weight:700}
+    .products-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(222px,1fr));gap:17px;margin:15px 0 0 0}
+    .product-card{background:#fff;border-radius:16px;box-shadow:0 9px 29px #2f147914;padding:15px;display:flex;flex-direction:column;align-items:center;transition:.13s;position:relative;}
+    .product-card:hover{transform:translateY(-2px) scale(1.035);box-shadow:0 13px 42px #8559f93d}
+    .product-card img{width:95%;height:135px;object-fit:cover;border-radius:11px;margin-bottom:7px;background:#f4f2ff}
+    .product-name{font-size:1.13em;font-weight:800;color:#2a1565;text-align:center;margin-bottom:4px;}
+    .product-cat{font-size:13px;color:#633ec3;font-weight:700;margin-bottom:3px;}
+    .product-desc{font-size:0.95em;color:#34336c;min-height:38px;text-align:center}
+    .product-price{font-weight:800;font-size:1em;color:#32ac40;margin:6px 0 2px;}
+    .add-banner{margin:23px 0 12px 0;text-align:center;background:#fff5c1;color:#661a35;font-weight:800;padding:13px 12px;border-radius:13px;box-shadow:0 4px 21px #ebc8475a}
+    .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.13);margin:18px 0}
+    .form-label{font-weight:700;color:#3a056c;}
+    .form-row{display:flex;gap:13px;margin-bottom:12px;}
+    .form-row input,.form-row textarea{flex:1;font-size:1em}
+    .form-row textarea{min-height:80px;resize:vertical;}
+    .section-title{font-size:1.25em;font-weight:900;color:#6429d6;margin:11px 0 13px 0;}
+    .lang-select{display:flex;gap:0.7em;align-items:center;justify-content:flex-end;margin-bottom:10px;}
+    .lang-select button{background:#e2e2ff;color:#370089;font-weight:700;border-radius:8px;border:none;padding:6px 13px;cursor:pointer;box-shadow:0 2px 9px #674eff10;}
+    .lang-select button.active{background:#6b23ff;color:#fff}
+    .notice{color:#a694ff;background:#eee2ff;border-radius:12px;font-size:1.05em;text-align:center;padding:9px;margin:10px 0}
+  </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="topbar-inner wrap">
-    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-    <div><a class="btn btn-ghost" href="index.html" target="_blank">Ouvrir le site</a></div>
+  <div class="topbar">
+    <div class="topbar-inner wrap">
+      <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
+      <div class="lang-select">
+        <button id="lang-fr" class="active">FR</button>
+        <button id="lang-en">EN</button>
+      </div>
+      <a class="btn" href="index.html">Accueil</a>
+    </div>
   </div>
-</div>
-<main class="wrap">
-  <h1 class="h1">Supermarchés • Portail Partenaire</h1>
-  <section class="card">
-    <h2 class="h2">Produits du supermarché</h2>
-    <div id="products" class="list"></div>
-  </section>
-  <section class="card">
-    <h2 class="h2">Présentation</h2>
-    <div class="muted">Livraison de courses et produits alimentaires avec ponctualité et hygiène. Respect des chaînes du froid.</div>
-    <div class="row-actions">
-      <span class="badge">Frais</span>
-      <span class="badge">Rapidité</span>
-      <span class="badge">Confiance</span>
+  <div class="panel">
+    <h1 class="h1" id="main-title">Supermarchés partenaires</h1>
+    <div class="filters" id="filters-block">
+      <input type="text" id="search" placeholder="Recherche produit/n°"/>
+      <select id="filter-cat">
+        <option value="">Toutes catégories</option>
+        <option value="Alimentation">Alimentation</option>
+        <option value="Boissons">Boissons</option>
+        <option value="Hygiène">Hygiène</option>
+        <option value="Électronique">Électronique</option>
+      </select>
+      <select id="filter-sort">
+        <option value="def">Tri par défaut</option>
+        <option value="asc">Prix croissant</option>
+        <option value="desc">Prix décroissant</option>
+      </select>
     </div>
-  </section>
-  <section id="step1" class="card">
-    <h2 class="h2">Formulaire de collaboration</h2>
-    <div class="grid2">
-      <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
-      <div><label>Catégorie</label><input id="f_cat" value="Supermarché" readonly></div>
-    </div>
-    <div class="grid3">
-      <div><label>Nom et prénom du responsable</label><input id="f_resp"></div>
-      <div><label>SIREN</label><input id="f_siren"></div>
-      <div><label>SIRET</label><input id="f_siret"></div>
-    </div>
-    <div class="grid2">
-      <div><label>Adresse complète</label><input id="f_addr"></div>
-      <div><label>Téléphone</label><input id="f_tel"></div>
-    </div>
-    <div class="grid2">
-      <div><label>E-mail</label><input id="f_mail"></div>
-      <div><label>Message</label><input id="f_msg"></div>
-    </div>
-    <div class="row-actions"><button id="btn_step1" class="btn btn-primary">Valider l’étape 1</button></div>
-  </section>
-  <section id="step2" class="card lock">
-    <h2 class="h2">Convention de Collaboration</h2>
-    <div class="grid2">
-      <div><label>Nom du signataire</label><input id="sign_name"></div>
-      <div><label>Date</label><input id="sign_date" type="date"></div>
-    </div>
-    <div class="sig-wrap" style="margin-top:10px"><canvas id="signature"></canvas></div>
-    <div class="row-actions">
-      <button id="sig_clear" class="btn">Effacer la signature</button>
-      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="agree"> J’accepte la convention</label>
-    </div>
-    <div class="row-actions">
-      <button id="gen_pdf" class="btn btn-primary">Signer et générer la convention (PDF)</button>
-      <a id="dl_partner" class="btn" download="Convention_AlexLivraison_Supermarché.pdf" style="display:none">Télécharger (Partenaire)</a>
-    </div>
-    <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
-  </section>
-  <section id="step3" class="card lock">
-    <h2 class="h2">Ajout de produits</h2>
-    <form id="product-form" class="grid3" enctype="multipart/form-data">
-      <div><label>Nom du produit</label><input name="name" required></div>
-      <div><label>Prix (€)</label><input name="price" type="number" step="0.01" required></div>
-      <div><label>Photo</label><input name="photo" type="file" accept="image/*" required></div>
-      <div style="grid-column:1/4"><label>Description</label><textarea name="desc" required></textarea></div>
-      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarché" readonly required></div>
-      <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
+    <div class="products-list" id="products-list"></div>
+  </div>
+  <div class="add-banner" id="banner-products">Vous êtes un supermarché local ou avez des produits à livrer ?</div>
+  <div class="card">
+    <div class="section-title" id="add-title">Publiez vos produits et promotions</div>
+    <form id="product-form" enctype="multipart/form-data" autocomplete="off">
+      <div class="form-row">
+        <input name="name" placeholder="Nom du produit" required>
+        <input name="price" placeholder="Prix (€)" type="number" step="0.01" required>
+        <input name="cat" placeholder="Catégorie" value="Supermarché">
+      </div>
+      <div class="form-row">
+        <input name="photo" type="file" accept="image/*" required>
+      </div>
+      <div class="form-row">
+        <textarea name="desc" placeholder="Description" required></textarea>
+      </div>
+      <div class="form-row">
+        <button type="submit" class="btn" style="flex:1;" id="add-btn">Ajouter le produit</button>
+      </div>
+      <div id="result"></div>
     </form>
-    <div id="result"></div>
-  </section>
-</main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-async function showProducts(){
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-  const arr = await res.json();
-  const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "supermarché");
-  let html = "";
-  for(const p of my){
-    html += `<div class="item"><img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
-  }
-  document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
-}
-showProducts();
-</script>
-<script>
-const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-const TELEGRAM_CHAT_ID="7129872491";
-const step1Btn=document.getElementById('btn_step1');
-const step2=document.getElementById('step2');
-const step3=document.getElementById('step3');
-const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
-const signName=document.getElementById('sign_name');
-const signDate=document.getElementById('sign_date');
-signDate.valueAsDate=new Date();
-const canvas=document.getElementById('signature');
-const ctx=canvas.getContext('2d');
-let drawing=false;
-function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
-function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
-function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
-function end(){drawing=false}
-canvas.addEventListener('mousedown',start);
-canvas.addEventListener('mousemove',move);
-canvas.addEventListener('mouseup',end);
-canvas.addEventListener('mouseleave',end);
-canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
-canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
-canvas.addEventListener('touchend',end);
-document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
-const agree=document.getElementById('agree');
-const gen=document.getElementById('gen_pdf');
-const dlPartner=document.getElementById('dl_partner');
-gen.onclick=async()=>{
-  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
-  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
-  if(!agree.checked){alert('Veuillez accepter la convention.');return}
-  const sigData=canvas.toDataURL('image/png');
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:'pt',format:'a4'});
-  const margin=48;
-  let y=margin;
-  doc.addImage("logo.jpg","JPEG",430,20,100,100);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(18);
-  doc.text('Convention de Collaboration',margin,y);
-  y+=30;
-  doc.setFont('helvetica','');
-  doc.setFontSize(12);
-  const enseigne=document.getElementById('f_enseigne').value.trim();
-  const cat=document.getElementById('f_cat').value.trim();
-  const resp=document.getElementById('f_resp').value.trim();
-  const siren=document.getElementById('f_siren').value.trim();
-  const siret=document.getElementById('f_siret').value.trim();
-  const addr=document.getElementById('f_addr').value.trim();
-  const tel=document.getElementById('f_tel').value.trim();
-  const mail=document.getElementById('f_mail').value.trim();
-  const lines=[
-    `Entre AlexLivraison et ${enseigne} (${cat}).`,
-    `Responsable: ${resp}`,
-    `SIREN: ${siren} — SIRET: ${siret}`,
-    `Adresse: ${addr}`,
-    `Téléphone: ${tel} — E-mail: ${mail}`,
-    '',
-    '--- Informations AlexLivraison ---',
-    'Responsable: Atabek ZAKIROV',
-    'SIREN: 953281288 — SIRET: 95328128800011',
-    'Adresse: 241 Rue Le Corbusier, 83500 La Seyne-sur-Mer',
-    'Téléphone: +33 6 77 17 11 88 — E-mail: atushbek020185@gmail.com',
-    '',
-    'Offre et durée:',
-    'Le partenaire bénéficie de 5 livraisons gratuites à la signature.',
-    'Collaboration d’un an, reconductible, avec période d’essai de 2 semaines.',
-    '',
-    'Engagements:',
-    'Confidentialité, rapidité, traçabilité, qualité du service.',
-    'Préavis 15 jours en cas de rupture après la période d’essai.',
-    '',
-    'Signature électronique ci-dessous.'
-  ];
-  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
-  y+=20;
-  doc.text(`Date: ${signDate.value}`,margin,y);
-  y+=8;
-  doc.text(`Signataire: ${signName.value}`,margin,y);
-  y+=12;
-  doc.addImage(sigData,'PNG',margin,y,220,110);
-  y+=140;
-  doc.text('Pour AlexLivraison',margin+300,y);
-  y+=16;
-  doc.text('Nom: Atabek ZAKIROV',margin+300,y);
-  y+=16;
-  doc.text(`Date: ${signDate.value}`,margin+300,y);
-  y+=6;
-  doc.addImage("sinature-alex.jpg","JPEG",margin+300,y,150,70);
-  doc.addImage("stamp-alex.jpg","JPEG",margin+460,y-20,90,90);
-  y+=100;
-  doc.setDrawColor(200);
-  doc.line(margin,y,margin+520,y);
-  const pdfBlob=doc.output('blob');
-  const url=URL.createObjectURL(pdfBlob);
-  dlPartner.href=url;
-  dlPartner.style.display='inline-block';
-  step3.classList.remove('lock');
-  const formData=new FormData();
-  formData.append("chat_id",TELEGRAM_CHAT_ID);
-  formData.append("document",new File([pdfBlob],"Convention_Supermarche.pdf",{type:"application/pdf"}));
-  formData.append("caption",`🧾 Nouvelle convention signée (Supermarché)\n👤 ${signName.value}\n🏢 ${enseigne}`);
-  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,{method:"POST",body:formData});
-};
-</script>
-<script>
-document.getElementById('product-form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
-    method: 'POST',
-    body: formData
-  });
-  const data = await res.json();
-  if(data.success){
-    document.getElementById('result').textContent = 'Success';
-    form.reset();
-    showProducts();
-  } else {
-    document.getElementById('result').textContent = 'Error';
-  }
-});
-</script>
+  </div>
+  <div class="card">
+    <div class="section-title" id="desc-title">Pourquoi choisir nos partenaires supermarchés?</div>
+    <div class="muted" id="desc-block">Produits toujours frais, livraison rapide, respecte la chaîne du froid. Votre commande en toute confiance.</div>
+    <div class="row-actions" style="margin-top:10px;display:flex;gap:10px;">
+      <span class="badge">Fraîcheur</span>
+      <span class="badge">Qualité</span>
+      <span class="badge">Prix attractifs</span>
+      <span class="badge">Livraison rapide</span>
+    </div>
+  </div>
+  <div class="notice">Contactez-nous pour toute question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b></div>
+  <script>
+    let lang='fr';
+    const dict={
+      fr:{
+        mainTitle:"Supermarchés partenaires",
+        searchPh:"Recherche produit/n°",
+        filterCat:"Toutes catégories",
+        addBanner:"Vous êtes un supermarché local ou avez des produits à livrer ?",
+        addTitle:"Publiez vos produits et promotions",
+        addBtn:"Ajouter le produit",
+        descTitle:"Pourquoi choisir nos partenaires supermarchés?",
+        descBlock:"Produits toujours frais, livraison rapide, respecte la chaîne du froid. Votre commande en toute confiance.",
+        badge:["Fraîcheur","Qualité","Prix attractifs","Livraison rapide"],
+        notice:'Contactez-nous pour toute question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b>'
+      },
+      en:{
+        mainTitle:"Partner supermarkets",
+        searchPh:"Search product/#",
+        filterCat:"All categories",
+        addBanner:"Are you a local supermarket or want to deliver your products?",
+        addTitle:"Post your items and specials",
+        addBtn:"Add product",
+        descTitle:"Why choose our supermarket partners?",
+        descBlock:"Always fresh products, fast delivery, cold chain respected. Order with confidence.",
+        badge:["Freshness","Quality","Best value","Fast delivery"],
+        notice:'Contact us with any question: <b>06 77 17 11 88</b> · <b><a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a></b>'
+      }
+    }
+    document.getElementById('lang-fr').onclick=()=>{
+      lang='fr';
+      document.getElementById('lang-fr').classList.add('active');
+      document.getElementById('lang-en').classList.remove('active');
+      setLang();
+    };
+    document.getElementById('lang-en').onclick=()=>{
+      lang='en';
+      document.getElementById('lang-en').classList.add('active');
+      document.getElementById('lang-fr').classList.remove('active');
+      setLang();
+    };
+    function setLang(){
+      document.getElementById('main-title').textContent=dict[lang].mainTitle;
+      document.getElementById('search').placeholder=dict[lang].searchPh;
+      document.getElementById('filter-cat').options[0].text=dict[lang].filterCat;
+      document.getElementById('banner-products').textContent=dict[lang].addBanner;
+      document.getElementById('add-title').textContent=dict[lang].addTitle;
+      document.getElementById('add-btn').textContent=dict[lang].addBtn;
+      document.getElementById('desc-title').textContent=dict[lang].descTitle;
+      document.getElementById('desc-block').textContent=dict[lang].descBlock;
+      document.querySelector('.notice').innerHTML=dict[lang].notice;
+      const badges=document.querySelectorAll('.badge');
+      badges.forEach((el,i)=>el.textContent=dict[lang].badge[i]);
+    }
+    setLang();
+    async function loadProducts(){
+      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+      const arr = await res.json();
+      let products = arr.filter(p => p.cat && p.cat.toLowerCase() === "supermarché");
+      const catF=document.getElementById('filter-cat').value;
+      const sortF=document.getElementById('filter-sort').value;
+      const searchV=document.getElementById('search').value.toLowerCase().trim();
+      if(catF){products=products.filter(x=>x.cat===catF);}
+      if(searchV){products=products.filter(x=>(x.name&&x.name.toLowerCase().includes(searchV))||(x.desc&&x.desc.toLowerCase().includes(searchV)));}
+      if(sortF==="asc"){products=products.sort((a,b)=>(+a.price)-(+b.price));}
+      if(sortF==="desc"){products=products.sort((a,b)=>(+b.price)-(+a.price));}
+      let html='';
+      for(const p of products){
+        html+=`<div class="product-card">
+          <img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt="">
+          <div class="product-name">${p.name||""}</div>
+          <div class="product-cat">${p.cat||""}</div>
+          <div class="product-desc">${p.desc||""}</div>
+          <div class="product-price">${p.price||""} €</div>
+        </div>`;
+      }
+      document.getElementById('products-list').innerHTML=html||(lang==='fr'?'Aucun produit':'No products');
+    }
+    document.getElementById('search').oninput=loadProducts;
+    document.getElementById('filter-cat').onchange=loadProducts;
+    document.getElementById('filter-sort').onchange=loadProducts;
+    loadProducts();
+    document.getElementById('product-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if(data.success){
+        document.getElementById('result').textContent = lang==='fr'?'Ajouté.':'Added.';
+        form.reset();
+        loadProducts();
+      } else {
+        document.getElementById('result').textContent = lang==='fr'?'Erreur':'Error';
+      }
+    });
+  </script>
 </body>
 </html>
