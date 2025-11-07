@@ -9,7 +9,22 @@
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
-    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed;display:flex;flex-direction:column;align-items:center;}
+    body{
+      font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;
+      color:#222;
+      background:linear-gradient(120deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);
+      background-size:180% 180%;
+      animation:anim-bg 13s ease-in-out infinite;
+      background-attachment:fixed;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    @keyframes anim-bg {
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
     *{box-sizing:border-box}
     img{max-width:100%;height:auto;display:block}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px;}
@@ -52,6 +67,12 @@
     .form-label-row .label-anim{font-size:1.35em;display:inline-block;animation:animlabel 2s infinite alternate;}
     @keyframes animlabel{0%{transform:translateY(0);}100%{transform:translateY(-8px);}}
     .form-label-row .sticker{font-size:1.4em;animation:bounce 1.7s infinite alternate;}
+    .sticker-anim{animation:sticker-jump 1.17s infinite alternate;}
+    @keyframes sticker-jump{
+      0%{transform:translateY(0) scale(1);}
+      60%{transform:translateY(-7px) scale(1.08);}
+      100%{transform:translateY(0) scale(1);}
+    }
     input,select{width:100%;padding:14px;margin-top:6px;border-radius:11px;border:1px solid #cfd0d8;outline:none;font-size:1.1em;}
     input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px;}
@@ -163,9 +184,9 @@
         <div class="form-label-row"><span class="sticker">🔧</span><label id="lbl-add">Services additionnels</label></div>
         <div class="grid">
           <label class="service"><span class="sticker">🩵</span><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
-          <label class="service"><span class="sticker">🚨</span><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
-          <label class="service"><span class="sticker">⏱️</span><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
-          <label class="service"><span class="sticker">⏱️</span><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
+          <label class="service"><span class="sticker sticker-anim">🚨</span><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
+          <label class="service"><span class="sticker sticker-anim">⏱️</span><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
+          <label class="service"><span class="sticker sticker-anim">⏱️</span><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
         </div>
         <div class="form-label-row"><span class="sticker">💶</span><label id="lbl-total">Montant total (€)</label></div>
         <input id="total" readonly>
