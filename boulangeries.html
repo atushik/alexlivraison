@@ -117,7 +117,23 @@
         {img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',name:'Pain Complet Bio',desc:'Pain frais du jour',cat:'Pains',price:'2.50€'},
         {img:'https://images.unsplash.com/photo-2014/11/15/23/06/bread-532243_1280.jpg',name:'Pain de campagne',desc:'Levain naturel',cat:'Pains',price:'2.10€'},
         {img:'https://cdn.pixabay.com/photo/2017/01/03/11/50/cake-1955659_1280.jpg',name:'Tarte du jour',desc:'Gâteau pomme',cat:'Pâtisseries',price:'2.50€'},
-        {img:'https://cdn.pixabay.com/photo/2017/05/07/08/56/snack-2291862_1280.jpg',name:'Sandwich au saumon',desc:'Bagel frais, fromage à la crème',cat:'Viennoiseries',price:'4.20€'}
+        {img:'https://cdn.pixabay.com/photo/2017/05/07/08/56/snack-2291862_1280.jpg',name:'Sandwich au saumon',desc:'Bagel frais, fromage à la crème',cat:'Viennoiseries',price:'4.20€'},
+        {img:'https://cdn.pixabay.com/photo/2017/05/07/07/53/food-2291766_1280.jpg',name:'Croissant classique',desc:'Pur beurre',cat:'Viennoiseries',price:'1.30€'},
+        {img:'https://cdn.pixabay.com/photo/2017/06/02/18/24/pastry-2365873_1280.jpg',name:'Chocolatine',desc:'Chocolat noir fondant',cat:'Viennoiseries',price:'1.35€'},
+        {img:'https://cdn.pixabay.com/photo/2015/03/26/09/54/baguet-690334_1280.jpg',name:'Baguette Tradition',desc:'Farine française',cat:'Pains',price:'1.05€'},
+        {img:'https://cdn.pixabay.com/photo/2016/03/05/18/54/bread-1238611_1280.jpg',name:'Pain de seigle',desc:'Seigle complet',cat:'Pains',price:'2.30€'},
+        {img:'https://cdn.pixabay.com/photo/2014/12/21/23/59/cake-579801_1280.jpg',name:'Éclair au chocolat',desc:'Crème chocolat',cat:'Pâtisseries',price:'2.20€'},
+        {img:'https://cdn.pixabay.com/photo/2017/06/20/12/47/bread-2420749_1280.jpg',name:'Pain aux noix',desc:'Noix et céréales',cat:'Pains',price:'2.60€'},
+        {img:'https://cdn.pixabay.com/photo/2015/09/30/17/25/pastries-917664_1280.jpg',name:'Palmier géant',desc:'Feuilletage caramélisé',cat:'Viennoiseries',price:'1.50€'},
+        {img:'https://cdn.pixabay.com/photo/2016/03/05/19/02/eclair-1238644_1280.jpg',name:'Tartelette aux fraises',desc:'Base sablée, fraises fraîches',cat:'Pâtisseries',price:'2.95€'},
+        {img:'https://cdn.pixabay.com/photo/2016/04/17/12/48/cupcake-1335043_1280.jpg',name:'Cupcake vanille',desc:'Crémeux vanille',cat:'Pâtisseries',price:'2.00€'},
+        {img:'https://cdn.pixabay.com/photo/2016/02/19/11/19/bread-1208718_1280.jpg',name:'Pain aux raisins',desc:'Raisins blonds',cat:'Viennoiseries',price:'1.45€'},
+        {img:'https://cdn.pixabay.com/photo/2015/04/01/13/10/bread-703697_1280.jpg',name:'Pain nordique',desc:'Graines et céréales',cat:'Pains',price:'2.75€'},
+        {img:'https://cdn.pixabay.com/photo/2014/07/08/15/10/bread-387006_1280.jpg',name:'Pain complet spécial',desc:'Graines de lin',cat:'Pains',price:'2.40€'},
+        {img:'https://cdn.pixabay.com/photo/2016/11/22/19/32/cake-1845542_1280.jpg',name:'Moelleux chocolat',desc:'Gâteau fondant',cat:'Pâtisseries',price:'2.60€'},
+        {img:'https://cdn.pixabay.com/photo/2017/02/07/20/56/bread-2044306_1280.jpg',name:'Pain au lait',desc:'Lait entier',cat:'Pains',price:'1.95€'},
+        {img:'https://cdn.pixabay.com/photo/2016/07/27/20/00/bread-1545640_1280.jpg',name:'Pain ciabatta',desc:'Style italien',cat:'Pains',price:'2.10€'},
+        {img:'https://cdn.pixabay.com/photo/2017/05/09/21/13/pastry-2296793_1280.jpg',name:'Brioche tressée',desc:'Levure naturelle',cat:'Viennoiseries',price:'1.60€'}
       ];
     }
     function renderProducts(){
@@ -125,7 +141,7 @@
       let catF=document.getElementById('filter-cat').value;
       let term=document.getElementById('search').value.toLowerCase().trim();
       let res=boulProds.filter(x=>(!catF||x.cat===catF)&&(!term||x.name.toLowerCase().includes(term)||x.desc.toLowerCase().includes(term)));
-      if(res.length<6){while(res.length<6){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Nouveaux partenaires',cat:'Nouveau',price:'—'})}}
+      if(res.length<20){while(res.length<20){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Nouveaux partenaires',cat:'Nouveau',price:'—'})}}
       for(let p of res){
         html+=`<div class="product-card">
           <img src="${p.img}" class="product-img" alt="">
