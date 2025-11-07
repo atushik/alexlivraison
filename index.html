@@ -7,24 +7,26 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
   <style>
-    :root{--violet:#6b23ff;--green:#43dfb8}
-    html,body{height:100%;margin:0;padding:0;overflow-x:hidden;background:linear-gradient(180deg,#32006b,#7a2cf5 90%,#fae5ff 100%)}
-    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;display:flex;flex-direction:column;align-items:center;}
-    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px;box-sizing:border-box;}
-    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid #ffffff35}
-    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 18px}
-    .brand img{width:120px;height:auto}
-    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative}
+    :root{--violet:#6b23ff;--green:#43dfb8;}
+    html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5 93%,#fae5ff 100%);background-attachment:fixed;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px;}
+    @media(max-width:1100px){.wrap{max-width:98vw;}}
+    @media(max-width:820px){.wrap{max-width:100vw;padding:7px;}}
+    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid #ffffff35;}
+    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 18px;}
+    .brand img{width:120px;height:auto;}
+    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative;}
     .hamb span{position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;top:50%;transform:translateY(-50%)}
-    .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
-    .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
-    .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
-    .drawer.open{pointer-events:auto}
-    .drawer.open .shade{opacity:1}
-    .drawer.open .panel{left:0}
-    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600}
-    .drawer .langs{margin-top:auto;display:flex;gap:8px}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700}
+    .drawer{position:fixed;inset:0;z-index:60;pointer-events:none;}
+    .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s;}
+    .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s;}
+    .drawer.open{pointer-events:auto;}
+    .drawer.open .shade{opacity:1;}
+    .drawer.open .panel{left:0;}
+    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600;}
+    .drawer .langs{margin-top:auto;display:flex;gap:8px;}
+    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;}
     .drawer .langs button.active{background:#6b23ff;}
     .hero{padding:40px 18px 12px;color:#fff;text-align:center;position:relative;}
     .hero-bg{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:0;pointer-events:none;}
@@ -37,49 +39,43 @@
     @keyframes slide-in-top{0%{transform:translateY(-50px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
     @keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-8px);}}
     .btn-coursier{margin:22px auto 7px auto;display:block;background:linear-gradient(90deg,#43dfb8 40%,#6b23ff 100%);color:#fff;border:none;font-weight:900;padding:18px 44px;border-radius:100px;font-size:1.36em;box-shadow:0 10px 32px #6b23ff1a;transition:.16s;cursor:pointer;letter-spacing:0.03em;}
-    .btn-coursier:hover{background:linear-gradient(89deg,#36b4fc 50%,#5a32e8 100%);}
-    .section{padding:23px 0;width:100%}
-    .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px;animation:fade-in-card 0.9s;}
-    @keyframes fade-in-card{0%{opacity:0;transform:translateY(22px);}100%{opacity:1;transform:translateY(0);}}
-    label,.form-label-row{display:block;margin-top:10px;font-weight:700;}
-    .form-label-row{display:flex;align-items:center;gap:12px;}
+    .section{padding:23px 0;width:100%;}
+    .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px;}
+    .form-label-row{display:flex;align-items:center;gap:15px;margin-top:10px;font-weight:700;}
     .form-label-row .sticker{font-size:1.4em;animation:bounce 1.7s infinite alternate;}
     input,select{width:100%;padding:14px;margin-top:6px;border-radius:11px;border:1px solid #cfd0d8;outline:none;font-size:1.1em;}
-    input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px}
-    @media(max-width:800px){.promo-banner{padding:11px;}.partners{gap:13px;}}
-    @media(max-width:650px){
-      .topbar-inner{padding:7px;}
-      .h2{font-size:1.08em;}
-      .wrap{padding:5px;}
-      .partners{gap:13px;}
-      .card{padding:12px;}
-      .banner-box{padding:11px 8px;}
-      .hero{padding:15px 3vw 8px;}
+    input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px;}
+    @media(max-width:840px){.promo-banner{padding:11px;}.partners{gap:13px;} .wrap{padding:5px;}}
+    @media(max-width:650px){.h2{font-size:1.08em;}.wrap{padding:3px;} .card{padding:9px;} .promo-banner{padding:7px;}
+      .hero{padding:13px 2vw 9px;}
+      .form-label-row{gap:9px;}
+      .grid{grid-template-columns:1fr;gap:5px;}
     }
-    .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);transition:.18s;display:flex;align-items:center;gap:8px;color:#63007b;}
-    .service input{margin-right:7px}
+    .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);transition:.18s;display:flex;align-items:center;gap:8px;}
+    .service .sticker{font-size:1.15em;margin-right:6px;}
+    .service input{margin-right:7px;}
     .service:hover{background:#ececf4;}
-    button{width:100%;padding:15px;border:none;border-radius:12px;font-size:1.13em;margin-top:10px;font-weight:800;cursor:pointer;transition:.2s}
+    button{width:100%;padding:15px;border:none;border-radius:12px;font-size:1.13em;margin-top:10px;font-weight:800;cursor:pointer;transition:.2s;}
     #calc{background:linear-gradient(90deg,#6b23ff 60%,#8968fb);color:#fff;}
     #payCard{background:#4caf50;color:#fff;}
-    #payCash{background:#f3f1ff;color:#6b23ff;border:1.5px solid #6b23ff}
-    #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:9px;padding:13px;font-size:1.12em;color:#280a68}
-    #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
-    .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%}
-    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:23px 20px;text-align:center;font-weight:800;line-height:1.32}
+    #payCash{background:#f3f1ff;color:#6b23ff;border:1.5px solid #6b23ff;}
+    #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:9px;padding:13px;font-size:1.12em;color:#280a68;}
+    #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%;}
+    .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%;}
+    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:23px 20px;text-align:center;font-weight:800;line-height:1.32;}
     .qr-block{display:grid;place-items:center;flex:1 1 240px;padding-top:9px;}
-    .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:17px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:10px}
+    .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:17px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:10px;}
     .qr-block .site{margin-top:8px;color:#5947a5;font-size:1.13em;font-weight:800;text-align:center;text-shadow:1px 2px 6px #ccbff94c;animation:glow 2.5s infinite alternate;}
     .qr-block .sticker{font-size:2.4em;margin-top:10px;animation:bounce 1.42s infinite alternate;}
     @keyframes glow{0%{color:#5947a5;text-shadow:1px 2px 6px #ccbff94c;}100%{color:#6b23ff;text-shadow:0 0 9px #b18fff;}}
-    .year{color:#cfc5ff;text-align:center;margin:10px 0 0 0;font-weight:700;font-size:1.12em}
+    .year{color:#cfc5ff;text-align:center;margin:10px 0 0 0;font-weight:700;font-size:1.12em;}
     .footer{color:#cfc5ff;text-align:center;margin:10px 0 24px 0;font-size:1.07em;}
-    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px;width:100%;margin-top:30px}
+    .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px;width:100%;margin-top:30px;}
     .partner{background:linear-gradient(135deg,#fafdff 0%,#ece5ff 100%);border-radius:20px;padding:36px 14px 27px 14px;display:flex;flex-direction:column;align-items:center;min-height:120px;box-shadow:0 11px 33px rgba(107,35,255,.10);text-decoration:none;transition:.14s;border:2.2px solid transparent;font-size:1.19em;position:relative;overflow:hidden;}
-    .partner:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 15px 38px #5224aa15;border-color:#6b23ff;background:linear-gradient(135deg,#fafdff 0%,#e1edfd 100%);}
-    .partner span{font-size:1.29em;font-weight:900;display:flex;flex-direction:column;align-items:center;gap:6px;color:#280a68;letter-spacing:0.01em;text-shadow:1px 1.5px 6px #d1d0e74c;z-index:2;}
+    .partner span{font-size:1.29em;font-weight:900;display:flex;flex-direction:column;align-items:center;gap:8px;color:#280a68;letter-spacing:0.01em;text-shadow:1px 1.5px 6px #d1d0e74c;z-index:2;}
     .partner .stic{font-size:2.3em;margin-bottom:3px;z-index:2;animation:bounce 1.53s infinite alternate;}
+    .partner:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 15px 38px #5224aa15;border-color:#6b23ff;background:linear-gradient(135deg,#fafdff 0%,#e1edfd 100%);}
     .partner:hover .stic{color:#361185;}
     .partner::after{content:'';position:absolute;bottom:10px;right:-22px;width:65px;height:65px;pointer-events:none;opacity:.075;background:url("data:image/svg+xml,%3Csvg width='65' height='65' fill='none' viewBox='0 0 65 65' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='65' height='65' rx='15' fill='%235a32e8'/%3E%3C/svg%3E") center/cover no-repeat;transition:.4s;}
     .partner:hover::after{opacity:.17;}
@@ -110,7 +106,9 @@
     <h1 class="h2" id="hero-title">🚲 Livraison locale rapide à Toulon & La Seyne</h1>
     <p class="muted" id="hero-desc">Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !</p>
   </header>
-  <div class="promo-banner"><div class="promo-info"><span>🎉 Nouveautés 2025 :</span>5 LIVRAISONS GRATUITES pour chaque nouveau client ! <br><span style="color:#51d18e;font-size:1.04em;">Offres partenaires, prix réduits и cadeaux chaque semaine !</span></div><div class="promo-emoji">🎁</div></div>
+  <div class="promo-banner">
+    <div class="promo-info"><span>🎉 Nouveautés 2025 :</span>5 LIVRAISONS GRATUITES pour chaque nouveau client ! <br><span style="color:#51d18e;font-size:1.04em;">Offres partenaires, prix réduits и cadeaux chaque semaine !</span></div><div class="promo-emoji">🎁</div>
+  </div>
   <button class="btn-coursier" onclick="window.location.href='devenir-coursier.html';">🚀 Devenir coursier</button>
   <main class="wrap">
     <section id="calc-section" class="section">
@@ -179,16 +177,8 @@
       </div>
     </section>
     <div class="qr-banner">
-      <div class="banner-box">
-        <div class="l1" id="bn1">🎉 Offres partenaires</div>
-        <div class="l2" id="bn2">ÉНORMES РÉDUCTIONS</div>
-        <div class="l1" id="bn3">5 livraisons gratuites pour chaque client</div>
-      </div>
-      <div class="qr-block">
-        <img src="QR-code.jpg" alt="QR AlexLivraison">
-        <div class="site">alexlivraison.shop</div>
-        <div class="sticker">🚀</div>
-      </div>
+      <div class="banner-box"><div class="l1" id="bn1">🎉 Offres partenaires</div><div class="l2" id="bn2">ÉНORMЕС РÉDUCTIONS</div><div class="l1" id="bn3">5 livraisons gratuites pour chaque client</div></div>
+      <div class="qr-block"><img src="QR-code.jpg" alt="QR AlexLivraison"><div class="site">alexlivraison.shop</div><div class="sticker">🚀</div></div>
     </div>
     <div class="year">2025</div>
     <div class="footer">© AlexLivraison</div>
@@ -217,7 +207,7 @@
     const TELEGRAM_CHAT_ID="7129872491";
     const MAPBOX_TOKEN="pk.eyJ1IjoiYWxleGxpdnJldXIiLCJhIjoiY21oZjRsODBxMDFpMTJrc2NuM3JyY2VrdyJ9.kErrSMRoIXzWqp9wnlayMg";
     const $=s=>document.querySelector(s);
-    const res=$("#result");const mapDiv=$("#map");let lastCalc=null;const timeSel=$("#time");const dateInput=$("#date");
+    const res=$("#result"),mapDiv=$("#map");let lastCalc=null;const timeSel=$("#time");const dateInput=$("#date");
     const now=new Date();
     if(dateInput){const t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffset());dateInput.value=t.toISOString().slice(0,10);}
     if(timeSel){for(let i=0;i<48;i++){const t=new Date(now.getTime()+i*30*60000);const label=t.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});const opt=document.createElement("option");opt.value=label;opt.textContent=label;timeSel.appendChild(opt);}}
@@ -243,13 +233,13 @@
     }
     function euro(v){return v.toFixed(2).replace(".", ",")+" €";}
     async function calc(){
-      const from=$("#from").value.trim();const to=$("#to").value.trim();const clientPhone=$("#clientPhone").value.trim();
+      const from=$("#from").value.trim(),to=$("#to").value.trim(),clientPhone=$("#clientPhone").value.trim();
       if(!from||!to||!clientPhone){alert(currentText.alertFill);return;}
-      const size=$("#size").value;const floorFee=parseFloat($("#floor").value);let extras=0;
+      const size=$("#size").value,floorFee=parseFloat($("#floor").value);let extras=0;
       document.querySelectorAll(".srv").forEach(x=>{if(x.checked)extras+=parseFloat(x.dataset.fee);});
       try{
         const[A,B]=await Promise.all([geocode(from),geocode(to)]);
-        const r=await route(A.lat,A.lon,B.lat,B.lon);const dist=Math.round(r.km*100)/100;
+        const r=await route(A.lat,A.lon,B.lat,B.lon),dist=Math.round(r.km*100)/100;
         const price=Math.round(dist*PRICE_PER_KM+SIZE_FEES[size]+floorFee+extras);lastCalc={from,to,dist,price,size};
         res.style.display="block";
         res.innerHTML=`<b>${currentText.distance}</b> ${dist} km<br><b>${currentText.price}</b> ${euro(price)}`;
@@ -310,7 +300,7 @@
         p5:"🧀 Épiceries fines",
         p6:"📦 Commerçants locaux",
         bn1:"🎉 Offres partenaires",
-        bn2:"ÉНORMES РÉDUCTIONS",
+        bn2:"ÉНORMЕС РÉDUCTIONS",
         bn3:"5 livraisons gratuites pour chaque client",
         distance:"Distance:",
         price:"Prix estimé:",
