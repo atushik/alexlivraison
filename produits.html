@@ -16,11 +16,14 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .hamburger::before,.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
 .hamburger::before{top:0}
 .hamburger::after{bottom:0}
-.menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:rgba(50,0,107,.98);padding:60px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto}
+.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:60px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
 .menu.open{right:0}
-.close-menu{position:absolute;top:20px;right:20px;font-size:32px;cursor:pointer;color:#fff}
-.menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 0;font-size:18px;border-bottom:1px solid rgba(255,255,255,.1);transition:.3s}
-.menu nav a:hover{padding-left:10px;color:#b88aff}
+.close-menu{position:absolute;top:20px;right:20px;font-size:32px;cursor:pointer;color:#fff;transition:.3s}
+.close-menu:hover{color:#b88aff;transform:rotate(90deg)}
+.menu-section{margin-bottom:30px}
+.menu-section h3{font-size:16px;color:#b88aff;margin-bottom:15px;text-transform:uppercase;letter-spacing:1px}
+.menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
+.menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
 .lang-switch{margin-top:30px;padding-top:20px;border-top:2px solid rgba(255,255,255,.2)}
 .lang-switch p{font-size:14px;margin-bottom:15px;color:#b88aff}
 .lang-btns{display:flex;gap:10px}
@@ -30,6 +33,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .page-header{text-align:center;margin:40px 0;animation:slide-in-top .6s}
 .page-header h1{font-size:42px;margin-bottom:10px}
 .page-header .sticker{font-size:50px;display:inline-block;animation:bounce 2s infinite}
+.promo-banner{background:linear-gradient(135deg,#ff6b6b,#ff8e53);padding:20px;border-radius:20px;text-align:center;margin:30px 0;animation:glow 2s infinite;box-shadow:0 5px 25px rgba(255,107,107,.4)}
+.promo-banner h2{font-size:28px;margin-bottom:10px}
+.promo-banner p{font-size:16px;opacity:.9}
 .filters{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin:30px 0;animation:fade-in-card .8s}
 .filter-btn{padding:12px 25px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:25px;font-size:16px;transition:.3s;display:flex;align-items:center;gap:8px}
 .filter-btn .emoji{display:inline-block;animation:bounce 2s infinite}
@@ -47,17 +53,24 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .product-desc{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:15px;line-height:1.4}
 .btn-order{width:100%;padding:12px;background:linear-gradient(135deg,#6b23ff,#b88aff);border:none;color:#fff;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
 .btn-order:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(107,35,255,.4)}
+.partner-cta{background:rgba(255,255,255,.1);border-radius:20px;padding:30px;text-align:center;margin:40px 0;border:2px solid rgba(255,255,255,.3);animation:fade-in-card 1.2s}
+.partner-cta h2{font-size:32px;margin-bottom:15px}
+.partner-cta p{font-size:18px;margin-bottom:25px;color:rgba(255,255,255,.9)}
+.partner-cta .btn-partner{padding:15px 40px;background:linear-gradient(135deg,#ff6b6b,#ff8e53);border:none;color:#fff;font-size:18px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
+.partner-cta .btn-partner:hover{transform:scale(1.05);box-shadow:0 5px 25px rgba(255,107,107,.5)}
 footer{text-align:center;padding:30px 0;border-top:2px solid rgba(255,255,255,.2);margin-top:50px}
 footer p{color:rgba(255,255,255,.7);font-size:14px}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7)}}
 @media(max-width:768px){
 .wrap{padding:15px}
 .page-header h1{font-size:32px}
 .filters{gap:10px}
 .filter-btn{padding:10px 18px;font-size:14px}
 .products-grid{grid-template-columns:1fr;gap:20px}
+.menu{width:280px}
 }
 </style>
 </head>
@@ -71,18 +84,27 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </header>
 <div class="menu" id="menu">
 <span class="close-menu" id="closeMenu">×</span>
+<div class="menu-section">
+<h3 data-fr="Navigation" data-en="Navigation">Navigation</h3>
 <nav>
-<a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
-<a href="produits.html" data-fr="Produits D'affiliation" data-en="Affiliate Products">Produits D'affiliation</a>
-<a href="supermarches.html" data-fr="Supermarchés" data-en="Supermarkets">🛒 Supermarchés</a>
-<a href="boulangeries.html" data-fr="Boulangeries" data-en="Bakeries">🥖 Boulangeries</a>
-<a href="boucheries.html" data-fr="Boucheries" data-en="Butcheries">🥩 Boucheries</a>
-<a href="poissonneries.html" data-fr="Poissonneries" data-en="Fishmongers">🐟 Poissonneries</a>
-<a href="pharmacies.html" data-fr="Pharmacies" data-en="Pharmacies">💊 Pharmacies</a>
-<a href="restaurants.html" data-fr="Restaurants" data-en="Restaurants">🍽️ Restaurants</a>
-<a href="devenir-coursier.html" data-fr="Devenir coursier" data-en="Become a courier">Devenir coursier</a>
-<a href="about.html" data-fr="À propos" data-en="About">À propos</a>
+<a href="index.html" data-fr="🏠 Retour à l'accueil" data-en="🏠 Back to home">🏠 Retour à l'accueil</a>
+<a href="produits.html" data-fr="🛍️ Produits d'affiliation" data-en="🛍️ Affiliate products">🛍️ Produits d'affiliation</a>
 </nav>
+</div>
+<div class="menu-section">
+<h3 data-fr="Devenir partenaire" data-en="Become partner">Devenir partenaire</h3>
+<nav>
+<a href="form-supermarches.html" data-fr="🛒 Partenaire vendeur" data-en="🛒 Seller partner">🛒 Partenaire vendeur</a>
+<a href="devenir-coursier.html" data-fr="🚴 Partenaire coursier" data-en="🚴 Courier partner">🚴 Partenaire coursier</a>
+</nav>
+</div>
+<div class="menu-section">
+<h3 data-fr="Informations" data-en="Information">Informations</h3>
+<nav>
+<a href="about.html" data-fr="ℹ️ À propos de nous" data-en="ℹ️ About us">ℹ️ À propos de nous</a>
+<a href="index.html#contact" data-fr="📞 Contactez-nous" data-en="📞 Contact us">📞 Contactez-nous</a>
+</nav>
+</div>
 <div class="lang-switch">
 <p data-fr="Langue / Language" data-en="Language">Langue / Language</p>
 <div class="lang-btns">
@@ -96,6 +118,10 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <h1 data-fr="Produits D'affiliation" data-en="Affiliate Products">Produits D'affiliation</h1>
 <div class="sticker">✨</div>
 </div>
+<div class="promo-banner">
+<h2 data-fr="🎉 Promotion spéciale!" data-en="🎉 Special promotion!">🎉 Promotion spéciale!</h2>
+<p data-fr="Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!" data-en="Free delivery on all partner orders this month!">Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
+</div>
 <div class="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span data-fr="Tous les produits" data-en="All products">Tous les produits</span></button>
 <button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span data-fr="Supermarchés" data-en="Supermarkets">Supermarchés</span></button>
@@ -106,24 +132,15 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span data-fr="Restaurants" data-en="Restaurants">Restaurants</span></button>
 </div>
 <div class="products-grid" id="productsGrid"></div>
+<div class="partner-cta">
+<h2 data-fr="Devenez notre partenaire!" data-en="Become our partner!">Devenez notre partenaire!</h2>
+<p data-fr="Rejoignez notre réseau de partenaires et développez votre activité" data-en="Join our partner network and grow your business">Rejoignez notre réseau de partenaires et développez votre activité</p>
+<button class="btn-partner" onclick="window.location.href='form-supermarches.html'" data-fr="Devenir partenaire vendeur" data-en="Become seller partner">Devenir partenaire vendeur</button>
+</div>
 <footer>
 <p data-fr="© 2025 AlexLivraison - Tous droits réservés" data-en="© 2025 AlexLivraison - All rights reserved">© 2025 AlexLivraison - Tous droits réservés</p>
 </footer>
 </div>
 <script>
 const products=[
-{name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
-{name:'Croissant Artisanal',price:1.80,category:'boulangeries',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',desc:'Pur beurre, croustillant'},
-{name:'Baguette Tradition',price:1.20,category:'boulangeries',img:'https://images.unsplash.com/photo-1534620808146-d33bb39128b2?w=400',desc:'Cuite au feu de bois'},
-{name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
-{name:'Fruits de Saison',price:4.50,category:'supermarches',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400',desc:'Sélection du marché'},
-{name:'Pâtes Italiennes',price:2.90,category:'supermarches',img:'https://images.unsplash.com/photo-1551462147-37abc8ea0954?w=400',desc:'500g, qualité premium'},
-{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
-{name:'Poulet Fermier',price:12.00,category:'boucheries',img:'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400',desc:'1,2kg, élevé en plein air'},
-{name:'Saucisson Artisanal',price:8.50,category:'boucheries',img:'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=400',desc:'300g, fabrication maison'},
-{name:'Saumon Frais',price:22.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400',desc:'500g, pêche du jour'},
-{name:'Crevettes Roses',price:15.50,category:'poissonneries',img:'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400',desc:'300g, fraîches'},
-{name:'Dorade Royale',price:19.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1580959375944-1ab5ddc7e2bf?w=400',desc:'Entière, 800g'},
-{name:'Paracétamol 1g',price:4.20,category:'pharmacies',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400',desc:'Boîte de 20 comprimés'},
-{name:'Vitamine C',price:8.50,category:'pharmacies',img:'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400',desc:'60 gélules, immunité'},
-{name:'
+{name:'Pain Complet Bio
