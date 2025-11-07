@@ -9,16 +9,13 @@
   <style>
     :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
-    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;background:linear-gradient(180deg,#361185 0%,#965df8 55%,#fae5ff 100%);background-attachment:fixed;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+    body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;background:linear-gradient(180deg,#361185 0%,#965df8 55%,#fae5ff 100%);background-attachment:fixed;min-height:100vh;}
     .wrap{width:100%;max-width:1060px;box-sizing:border-box;margin:0 auto;padding:16px;}
     @media(max-width:1100px){.wrap{max-width:97vw;}}
-    @media(max-width:650px){.wrap{max-width:100vw;padding:5px;}}
+    @media(max-width:700px){.wrap{max-width:100vw;padding:4vw;}}
     .topbar{position:sticky;top:0;z-index:50;width:100vw;background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring);}
     .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:9px 16px;max-width:1060px;margin:0 auto;}
     .brand img{width:110px;height:auto;}
-    .langs-bar{display:flex;gap:7px;}
-    .langs-bar button{background:#ffffff20;border:1.6px solid #fff;color:#fff;border-radius:10px;padding:7px 17px;font-weight:700;font-size:1.07em;cursor:pointer;}
-    .langs-bar button.active{background:#6b23ff;}
     .hamb{width:39px;height:39px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative;}
     .hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s;}
     .hamb span{top:50%;transform:translateY(-50%)}
@@ -33,9 +30,9 @@
     .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600;}
     .drawer a:hover{background:#ffffff22;}
     .drawer .langs{margin-top:auto;display:flex;gap:8px;}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;}
+    .drawer .langs button{flex:1;background:#ffffff14;border:1.4px solid #fff;color:#fff;padding:9px 0;border-radius:10px;cursor:pointer;font-weight:700;font-size:1.06em;transition:background .14s;}
     .drawer .langs button.active{background:#6b23ff;}
-    .hero{position:relative;padding:34px 16px 10px;color:#fff;text-align:center;}
+    .hero{position:relative;padding:34px 16px 10px;color:#fff;text-align:center;max-width:1060px;margin:0 auto;}
     .stickers-row{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;margin-bottom:-5px;margin-top:8px;}
     .sticker-anim{font-size:2.5em;display:inline-block;animation:float 2.6s infinite alternate cubic-bezier(.81,.09,.75,.98);}
     .sticker-anim.left {animation-delay:.18s;}
@@ -45,7 +42,7 @@
     .h2{color:#fff;margin:18px 0 15px 0;font-weight:900;text-align:center;font-size:2em;letter-spacing:-1px;position:relative;z-index:2;}
     .muted{color:#efecfb;opacity:.93;text-align:center;font-size:1.12em;max-width:650px;margin:0 auto;position:relative;z-index:2;}
     .promo-banner{display:grid;grid-template-columns:1fr min-content;align-items:center;gap:32px;background:linear-gradient(90deg,#f5edff 0%,#e7fbfc 100%);border-radius:22px;box-shadow:0 10px 32px #6b23ff0e;padding:29px 10vw 25px 10vw;margin:14px auto 22px auto;max-width:840px;}
-    .promo-info{font-size:1.17em;color:#2d147a;font-weight:bold;line-height:1.34;}
+    .promo-info{font-size:1.17em;color:#2d147a;font-weight:bold;line-height:1.32;}
     .promo-info span{display:block;font-weight:800;font-size:1.13em;letter-spacing:-0.4px;}
     .promo-emoji{font-size:3.2em;text-shadow:1px 6px 22px #c5b2ef4c;color:#875bf6;animation:bounce 1.42s infinite alternate;}
     @keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-11px);}}
@@ -100,10 +97,6 @@
   <div class="topbar">
     <div class="topbar-inner">
       <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-      <div class="langs-bar">
-        <button id="lang-fr" class="active">FR</button>
-        <button id="lang-en">EN</button>
-      </div>
       <div class="hamb" id="btn-menu"><span></span></div>
     </div>
   </div>
@@ -115,8 +108,8 @@
       <a href="about.html" id="nav-partners">À propos</a>
       <a href="#" id="nav-contact">Chat</a>
       <div class="langs">
-        <button id="btn-fr-drawer">FR</button>
-        <button id="btn-en-drawer">EN</button>
+        <button id="btn-fr">FR</button>
+        <button id="btn-en">EN</button>
       </div>
     </div>
   </div>
@@ -220,10 +213,8 @@
     const btnMenu=document.getElementById('btn-menu');
     btnMenu.addEventListener('click',()=>drawer.classList.add('open'));
     shade.addEventListener('click',()=>drawer.classList.remove('open'));
-    document.getElementById('lang-fr').addEventListener('click',function(){setLang('fr');this.classList.add('active');document.getElementById('lang-en').classList.remove('active');});
-    document.getElementById('lang-en').addEventListener('click',function(){setLang('en');this.classList.add('active');document.getElementById('lang-fr').classList.remove('active');});
-    document.getElementById('btn-fr-drawer').addEventListener('click',function(){setLang('fr');drawer.classList.remove('open');});
-    document.getElementById('btn-en-drawer').addEventListener('click',function(){setLang('en');drawer.classList.remove('open');});
+    document.getElementById('btn-fr').addEventListener('click',function(){setLang('fr');drawer.classList.remove('open');});
+    document.getElementById('btn-en').addEventListener('click',function(){setLang('en');drawer.classList.remove('open');});
     const PRICE_PER_KM=0.9;
     const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
     const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
@@ -511,8 +502,8 @@
       document.getElementById('bn1').textContent=currentText.bn1;
       document.getElementById('bn2').textContent=currentText.bn2;
       document.getElementById('bn3').textContent=currentText.bn3;
-      document.getElementById('lang-fr').classList.toggle('active', lang==='fr');
-      document.getElementById('lang-en').classList.toggle('active', lang==='en');
+      document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
+      document.getElementById('btn-en').classList.toggle('active', lang==='en');
       localStorage.setItem('alex_lang',lang);
     }
     const savedLang=localStorage.getItem('alex_lang')||'fr';
