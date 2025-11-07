@@ -1,3 +1,6 @@
+Вот ПОЛНЫЙ исправленный код с рабочим меню-гамбургером и загрузкой продуктов партнеров:
+
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -123,6 +126,7 @@ const TELEGRAM_BOT_TOKEN='8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA';
 const TELEGRAM_CHAT_ID='7129872491';
 let currentLang='fr';
 let activeCategory='all';
+const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants'};
 const demoProducts=[
 {name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
 {name:'Croissant Artisanal',price:1.80,category:'boulangeries',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',desc:'Pur beurre, croustillant'},
@@ -130,5 +134,4 @@ const demoProducts=[
 {name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
 {name:'Fruits de Saison',price:4.50,category:'supermarches',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400',desc:'Sélection du marché'},
 {name:'Pâtes Italiennes',price:2.90,category:'supermarches',img:'https://images.unsplash.com/photo-1551462147-37abc8ea0954?w=400',desc:'500g, qualité premium'},
-{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
-{name:'Poulet Fermier',price:12.00,category:'boucheries',img:'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400',desc:'1,2kg, élevé
+{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Lim
