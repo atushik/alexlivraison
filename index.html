@@ -12,50 +12,71 @@
     body{
       font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;
       color:#222;
-      background: linear-gradient(180deg,#361185 0%,#965df8 55%,#fae5ff 100%);
+      background:linear-gradient(180deg,#361185 0%,#965df8 55%,#fae5ff 100%);
       background-attachment:fixed;
       min-height:100vh;
       display:flex;flex-direction:column;align-items:center;
     }
-    *{box-sizing:border-box}
-    img{max-width:100%;height:auto;display:block}
     .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
-    .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
-    .brand img{width:120px;height:auto}
-    .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative}
-    .hamb span,.hamb::before,.hamb::after{content:"";position:absolute;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
-    .hamb span{top:50%;transform:translateY(-50%)}
-    .hamb::before{top:9px}
-    .hamb::after{bottom:9px}
-    .drawer{position:fixed;inset:0;z-index:60;pointer-events:none}
-    .drawer .shade{position:absolute;inset:0;background:#0009;opacity:0;transition:.25s}
-    .drawer .panel{position:absolute;left:-280px;top:0;bottom:0;width:280px;background:#14002b;color:#fff;box-shadow:8px 0 30px #0006;padding:18px 14px;display:flex;flex-direction:column;gap:14px;transition:.25s}
-    .drawer.open{pointer-events:auto}
-    .drawer.open .shade{opacity:1}
-    .drawer.open .panel{left:0}
-    .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600}
-    .drawer a:hover{background:#ffffff22}
-    .drawer .langs{margin-top:auto;display:flex;gap:8px}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1px solid #ffffff33;color:#fff;padding:10px;border-radius:10px;cursor:pointer;font-weight:700}
-    .drawer .langs button:hover{background:#ffffff33}
-    .hero{padding:34px 16px 10px;color:#fff;text-align:center;position:relative;}
-    .h2{color:#fff;margin:0 0 15px 0;font-weight:900;text-align:center;font-size:2.3em;letter-spacing:-1px;position:relative;z-index:2;}
+    .hero{position:relative;padding:34px 16px 10px;color:#fff;text-align:center;}
+    .stickers-row{
+      display:flex;justify-content:space-between;align-items:center;
+      position:relative;z-index:2;
+      margin-bottom:-5px;
+      margin-top:8px;
+    }
+    .sticker-anim{
+      font-size:2.5em;display:inline-block;
+      animation:float 2.6s infinite alternate cubic-bezier(.81,.09,.75,.98);
+    }
+    .sticker-anim.left {animation-delay:.22s;}
+    .sticker-anim.right {animation-delay:.7s;}
+    @keyframes float{
+      0%{transform:translateY(0)}
+      100%{transform:translateY(-15px)}
+    }
+    .hero-title-main{
+      font-size:2.25em;font-weight:900;letter-spacing:-1.3px;
+      color:#fff;z-index:2;display:inline-block;
+      background:rgba(80,36,179,.12);
+      border-radius:22px;padding:13px 24px;
+    }
+    .h2{color:#fff;margin:18px 0 15px 0;font-weight:900;text-align:center;font-size:2.1em;letter-spacing:-1px;position:relative;z-index:2;}
     .muted{color:#efecfb;opacity:.93;text-align:center;font-size:1.18em;max-width:650px;margin:0 auto;position:relative;z-index:2;}
-    .promo-banner{display:grid;grid-template-columns:1fr min-content;align-items:center;gap:32px;background:linear-gradient(90deg,#f5edff 0%,#e7fbfc 100%);border-radius:22px;box-shadow:0 10px 32px #6b23ff0e;padding:31px 38px 28px 40px;margin:14px auto 22px auto;max-width:820px;}
+    .promo-banner{
+      display:grid;grid-template-columns:1fr min-content;align-items:center;gap:32px;
+      background:linear-gradient(90deg,#f5edff 0%,#e7fbfc 100%);
+      border-radius:22px;box-shadow:0 10px 32px #6b23ff0e;
+      padding:31px 38px 28px 40px;margin:14px auto 22px auto;max-width:820px;
+    }
     .promo-info{font-size:1.27em;color:#2d147a;font-weight:bold;line-height:1.34;}
     .promo-info span{display:block;font-weight:800;font-size:1.13em;letter-spacing:-0.4px;}
-    .promo-emoji{font-size:3.3em;text-shadow:1px 6px 22px #c5b2ef4c;color:#875bf6;}
+    .promo-emoji{font-size:3.3em;text-shadow:1px 6px 22px #c5b2ef4c;color:#875bf6;animation:bounce 1.3s infinite alternate;}
+    @keyframes bounce{
+      0%{transform:translateY(0);}
+      100%{transform:translateY(-12px);}
+    }
     .btn-coursier{margin:22px auto 7px auto;display:block;background:linear-gradient(90deg,#43dfb8 40%,#6b23ff 100%);color:#fff;border:none;font-weight:900;padding:18px 44px;border-radius:100px;font-size:1.36em;box-shadow:0 10px 32px #6b23ff1a;transition:.16s;cursor:pointer;letter-spacing:0.03em;}
     .btn-coursier:hover{background:linear-gradient(89deg,#36b4fc 50%,#5a32e8 100%);box-shadow:0 5px 22px #4caf501a;transform:scale(1.045);}
     .section{padding:23px 0;width:100%}
     .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px}
-    label{display:block;margin-top:10px;font-weight:700;}
+    .form-label-row{
+      display:flex;align-items:center;gap:13px;
+      margin-top:10px;font-weight:700;
+      font-size:1.09em;
+    }
+    .form-label-row .form-label-sticker{
+      font-size:1.3em;
+      animation:floatStic 1.7s infinite alternate;
+    }
+    @keyframes floatStic{0%{transform:translateY(0);}100%{transform:translateY(-6px);}}
     input,select{width:100%;padding:14px;margin-top:6px;border-radius:11px;border:1px solid #cfd0d8;outline:none;font-size:1.1em;}
     input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px}
-    .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);transition:.18s;}
+    .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);transition:.18s;display:flex;align-items:center;gap:9px;}
     .service input{margin-right:7px}
+    .service .srv-sticker{font-size:1.2em;margin-right:5px;vertical-align:middle;
+      animation:floatStic 1.7s infinite alternate;}
     .service:hover{background:#ececf4;}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     button{width:100%;padding:15px;border:none;border-radius:12px;font-size:1.13em;margin-top:10px;font-weight:800;cursor:pointer;transition:.2s}
@@ -67,16 +88,7 @@
     #payCash:hover{background:#dccffd;color:#45329b}
     #result{display:none;background:#f7f7ff;border-radius:12px;border:1px dashed #b6b4d6;margin-top:9px;padding:13px;font-size:1.12em;color:#280a68}
     #map{display:none;height:320px;border-radius:12px;margin-top:12px;width:100%}
-    .qr-banner{display:flex;justify-content:center;align-items:stretch;gap:24px;flex-wrap:wrap;padding:20px;width:100%}
-    .banner-box{flex:1 1 240px;display:grid;place-items:center;background:#fff;color:#32006b;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.22);padding:23px 20px;text-align:center;font-weight:800;line-height:1.32}
-    .banner-box .l1{font-size:19px;}
-    .banner-box .l2{font-size:25px;margin:7px 0 12px 0;font-weight:900;color:#874cff;}
-    .qr-block{display:grid;place-items:center;flex:1 1 240px;padding-top:9px;}
-    .qr-block img{width:180px;height:180px;object-fit:contain;background:#fff;border-radius:17px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:10px}
-    .qr-block .site{margin-top:8px;color:#5947a5;font-size:1.13em;font-weight:800;text-align:center;text-shadow:1px 2px 6px #ccbff94c;}
-    .qr-block .sticker{font-size:2.4em;margin-top:10px;}
-    .year{color:#cfc5ff;text-align:center;margin:10px 0 0 0;font-weight:700;font-size:1.12em}
-    .footer{color:#cfc5ff;text-align:center;margin:10px 0 24px 0;font-size:1.07em;}
+    .qr-banner, .banner-box, .qr-block, .year, .footer {display:none!important;}
     .partners{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px;width:100%;margin-top:30px}
     .partner{
       background:linear-gradient(135deg,#fafdff 0%,#ece5ff 100%);
@@ -117,16 +129,15 @@
       transition:.4s;
     }
     .partner:hover::after{opacity:.17;}
-    @media(max-width:850px){.h2{font-size:1.4em;}.banner-box .l2{font-size:19px;}}
+    @media(max-width:850px){.h2{font-size:1.4em;}.promo-info{font-size:1em;}.promo-banner{padding:12px;} .hero-title-main{font-size:1.1em;padding:5px 12px;}}
     @media(max-width:650px){
       .topbar-inner{padding:10px;}
       .h2{font-size:1.08em;}
       .wrap{padding:5px;}
       .partners{gap:13px;}
       .card{padding:12px;}
-      .banner-box{padding:11px 8px;}
-      .qr-block img{width:120px;height:120px;}
-      .promo-banner{padding:9px;}
+      .promo-banner{padding:5px;}
+      .hero-title-main{font-size:1em;padding:3px 8px;}
     }
   </style>
 </head>
@@ -151,7 +162,11 @@
     </div>
   </div>
   <header class="hero wrap">
-    <h1 class="h2" id="hero-title">🚲 Livraison locale rapide à Toulon & La Seyne</h1>
+    <div class="stickers-row">
+      <span class="sticker-anim left">🛵</span>
+      <span class="hero-title-main">🚲 Livraison locale rapide à Toulon & La Seyne 🚗</span>
+      <span class="sticker-anim right">📦</span>
+    </div>
     <p class="muted" id="hero-desc">Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !</p>
   </header>
   <div class="promo-banner">
@@ -167,17 +182,17 @@
     <section id="calc-section" class="section">
       <h2 class="h2" id="calc-title">Calcul du prix et commande</h2>
       <div class="card">
-        <label id="lbl-name">Nom du client (optionnel)</label>
+        <div class="form-label-row"><span class="form-label-sticker">🧑‍💼</span><label id="lbl-name">Nom du client (optionnel)</label></div>
         <input id="clientName" placeholder="Jean Dupont">
-        <label id="lbl-phone">Numéro de téléphone du client</label>
+        <div class="form-label-row"><span class="form-label-sticker">📱</span><label id="lbl-phone">Numéro de téléphone du client</label></div>
         <input id="clientPhone" placeholder="+33 6 12 34 56 78" required>
-        <label id="lbl-from">Adresse de départ</label>
+        <div class="form-label-row"><span class="form-label-sticker">🏁</span><label id="lbl-from">Adresse de départ</label></div>
         <input id="from" placeholder="2 Rue Beaussier, Toulon">
-        <label id="lbl-to">Adresse de destination</label>
+        <div class="form-label-row"><span class="form-label-sticker">📦</span><label id="lbl-to">Adresse de destination</label></div>
         <input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
         <div class="grid">
           <div>
-            <label id="lbl-size">Taille du colis</label>
+            <div class="form-label-row"><span class="form-label-sticker">🛍️</span><label id="lbl-size">Taille du colis</label></div>
             <select id="size">
               <option value="S" id="opt-s">Petit (S)</option>
               <option value="M" selected id="opt-m">Moyen (M)</option>
@@ -186,7 +201,7 @@
             </select>
           </div>
           <div>
-            <label id="lbl-floor">Étage</label>
+            <div class="form-label-row"><span class="form-label-sticker">🏢</span><label id="lbl-floor">Étage</label></div>
             <select id="floor">
               <option value="0" id="opt-f0">RDC / 1er (0 €)</option>
               <option value="2" id="opt-f2">2e–5e (+2 €)</option>
@@ -196,17 +211,17 @@
           </div>
         </div>
         <div class="grid">
-          <div><label id="lbl-date">Date de livraison</label><input type="date" id="date"></div>
-          <div><label id="lbl-time">Heure de livraison souhaitée</label><select id="time"></select></div>
+          <div><div class="form-label-row"><span class="form-label-sticker">📅</span><label id="lbl-date">Date de livraison</label></div><input type="date" id="date"></div>
+          <div><div class="form-label-row"><span class="form-label-sticker">⏰</span><label id="lbl-time">Heure de livraison souhaitée</label></div><select id="time"></select></div>
         </div>
-        <label id="lbl-add">Services additionnels</label>
+        <div class="form-label-row"><span class="form-label-sticker">🔧</span><label id="lbl-add">Services additionnels</label></div>
         <div class="grid">
-          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
-          <label class="service"><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
+          <label class="service"><span class="srv-sticker">🩵</span><input type="checkbox" class="srv" data-fee="2"><span id="srv1"> Colis fragile (+2 €)</span></label>
+          <label class="service"><span class="srv-sticker">🚨</span><input type="checkbox" class="srv" data-fee="3"><span id="srv2"> Livraison urgente (+3 €)</span></label>
+          <label class="service"><span class="srv-sticker">⏱️</span><input type="checkbox" class="srv" data-fee="1"><span id="srv3"> Attente 5 min (+1 €)</span></label>
+          <label class="service"><span class="srv-sticker">⏱️</span><input type="checkbox" class="srv" data-fee="2"><span id="srv4"> Attente 10 min (+2 €)</span></label>
         </div>
-        <label id="lbl-total">Montant total (€)</label>
+        <div class="form-label-row"><span class="form-label-sticker">💶</span><label id="lbl-total">Montant total (€)</label></div>
         <input id="total" readonly>
         <button id="calc">🧮 Calculer le prix</button>
         <button id="payCard">💳 Paiement par carte</button>
@@ -239,20 +254,6 @@
         </div>
       </div>
     </section>
-    <div class="qr-banner">
-      <div class="banner-box">
-        <div class="l1" id="bn1">🎉 Offres partenaires</div>
-        <div class="l2" id="bn2">ÉNORMES RÉDUCTIONS</div>
-        <div class="l1" id="bn3">5 livraisons gratuites pour chaque client</div>
-      </div>
-      <div class="qr-block">
-        <img src="QR-code.jpg" alt="QR AlexLivraison">
-        <div class="site">alexlivraison.shop</div>
-        <div class="sticker">🚀</div>
-      </div>
-    </div>
-    <div class="year">2025</div>
-    <div class="footer">© AlexLivraison</div>
   </main>
   <script>
     const drawer=document.getElementById('drawer');
@@ -388,7 +389,7 @@
     document.getElementById("to").value="241 Rue Le Corbusier, La Seyne-sur-Mer";
     const dict={
       fr:{
-        heroTitle:"🚲 Livraison locale rapide à Toulon & La Seyne",
+        heroTitle:"🚲 Livraison locale rapide à Toulon & La Seyne 🚗",
         heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !",
         navCalc:"Produits D’affiliation",
         navPartners:"À propos",
@@ -446,7 +447,7 @@
         payError:"Erreur de paiement."
       },
       en:{
-        heroTitle:"🚲 Fast & reliable local delivery in Toulon & La Seyne",
+        heroTitle:"🚲 Fast & reliable local delivery in Toulon & La Seyne 🚗",
         heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds!",
         navCalc:"Affiliate Products",
         navPartners:"About",
