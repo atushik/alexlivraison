@@ -59,19 +59,11 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 footer{text-align:center;padding:30px 0;border-top:2px solid rgba(255,255,255,.2);margin-top:50px}
 footer p{color:rgba(255,255,255,.7);font-size:14px}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}
-}
+@keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 @keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7)}}
 @media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){
-.wrap{padding:15px}
-.page-header h1{font-size:26px}
-.filters{gap:10px}
-.filter-btn{padding:10px 18px;font-size:14px}
-.products-grid{grid-template-columns:1fr;gap:20px}
-.menu{width:260px}
-}
+@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
 </style>
 </head>
 <body>
@@ -112,12 +104,12 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 
 <div class="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
+<button class="filter-btn" data-category="supermarches" onclick="window.location.href='supermarches.html'"><span class="emoji">🛒</span><span>Supermarchés</span></button>
+<button class="filter-btn" data-category="boulangeries" onclick="window.location.href='boulangeries.html'"><span class="emoji">🥖</span><span>Boulangeries</span></button>
+<button class="filter-btn" data-category="boucheries" onclick="window.location.href='boucheries.html'"><span class="emoji">🥩</span><span>Boucheries</span></button>
+<button class="filter-btn" data-category="poissonneries" onclick="window.location.href='poissonneries.html'"><span class="emoji">🐟</span><span>Poissonneries</span></button>
+<button class="filter-btn" data-category="pharmacies" onclick="window.location.href='pharmacies.html'"><span class="emoji">💊</span><span>Pharmacies</span></button>
+<button class="filter-btn" data-category="restaurants" onclick="window.location.href='restaurants.html'"><span class="emoji">🍽</span><span>Restaurants</span></button>
 </div>
 
 <div class="products-grid" id="productsGrid"></div>
@@ -134,20 +126,17 @@ closeMenu.addEventListener('click',()=>{menu.classList.remove('open');hamburger.
 
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
-let activeCategory='all';
 const categoryNames={
-supermarches:'Supermarchés',
-boulangeries:'Boulangeries',
-boucheries:'Boucheries',
-poissonneries:'Poissonneries',
-pharmacies:'Pharmacies',
-restaurants:'Restaurants'
+  supermarches:'Supermarchés',
+  boulangeries:'Boulangeries',
+  boucheries:'Boucheries',
+  poissonneries:'Poissonneries',
+  pharmacies:'Pharmacies',
+  restaurants:'Restaurants'
 };
 
 let allProducts;
-try{
-allProducts=JSON.parse(localStorage.getItem('produits'))||[];
-}catch{allProducts=[];}
+try{allProducts=JSON.parse(localStorage.getItem('produits'))||[];}catch{allProducts=[];}
 if(!allProducts.length){
 allProducts=[
 {name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
@@ -158,6 +147,7 @@ allProducts=[
 {name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
 ];
 }
+
 function afficherProduits(cat){
 productsGrid.innerHTML='';
 const produitsAffiches=cat==='all'?allProducts:allProducts.filter(p=>p.category===cat);
@@ -170,8 +160,7 @@ div.innerHTML=`
 <div class="product-name">${p.name}</div>
 <div class="product-price">${p.price.toFixed(2)} €</div>
 <div class="product-desc">${p.desc}</div>
-<button class="btn-order">Commander</button>
-`;
+<button class="btn-order">Commander</button>`;
 productsGrid.appendChild(div);
 });
 }
@@ -180,6 +169,7 @@ filterBtns.forEach(btn=>{
 btn.addEventListener('click',()=>{
 filterBtns.forEach(b=>b.classList.remove('active'));
 btn.classList.add('active');
+if(btn.hasAttribute('onclick')) return;
 afficherProduits(btn.dataset.category);
 });
 });
