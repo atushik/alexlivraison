@@ -41,7 +41,11 @@
     .promo-emoji{font-size:3.3em;text-shadow:1px 6px 22px #c5b2ef4c;color:#875bf6;animation:bounce 1.3s infinite alternate;}
     @keyframes slide-in-top{0%{transform:translateY(-50px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
     @keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-8px);}}
-    .btn-coursier{margin:22px auto 7px auto;display:block;background:linear-gradient(90deg,#43dfb8 40%,#6b23ff 100%);color:#fff;border:none;font-weight:900;padding:18px 44px;border-radius:100px;font-size:1.36em;box-shadow:0 10px 32px #6b23ff1a;transition:.16s;cursor:pointer;letter-spacing:0.03em;}
+    @keyframes carMove{0%{transform:translateX(0);}100%{transform:translateX(18px);}}
+    #emoji-car{margin-left:8px;font-size:1.05em;}
+    #emoji-biker{margin-right:8px;font-size:1.09em;}
+
+.btn-coursier{margin:22px auto 7px auto;display:block;background:linear-gradient(90deg,#43dfb8 40%,#6b23ff 100%);color:#fff;border:none;font-weight:900;padding:18px 44px;border-radius:100px;font-size:1.36em;box-shadow:0 10px 32px #6b23ff1a;transition:.16s;cursor:pointer;letter-spacing:0.03em;}
     .btn-coursier:hover{background:linear-gradient(89deg,#36b4fc 50%,#5a32e8 100%);}
     .section{padding:23px 0;width:100%}
     .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px;}
@@ -105,7 +109,11 @@
   </div>
   <header class="hero wrap">
     <svg class="hero-bg" width="128" height="128" viewBox="0 0 128 128"><circle cx="64" cy="64" r="55" fill="#6b23ff" opacity="0.08"/><circle cx="40" cy="88" r="28" fill="#43dfb8" opacity="0.07"/></svg>
-    <h1 class="h2" id="hero-title">🚲 Livraison locale rapide à Toulon & La Seyne</h1>
+    <h1 class="h2" id="hero-title">
+      <span id="emoji-biker" style="display:inline-block;animation:bounce 1.2s infinite alternate;">🚴🏻‍♂️</span>
+      <span id="hero-text">Livraison locale rapide à Toulon & La Seyne</span>
+      <span id="emoji-car" style="display:inline-block;animation:carMove 1.2s infinite alternate;">🚗</span>
+    </h1>
     <p class="muted" id="hero-desc">Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !</p>
   </header>
   <div class="promo-banner">
@@ -135,7 +143,7 @@
         <input id="to" placeholder="241 Rue Le Corbusier, La Seyne-sur-Mer">
         <div class="grid">
           <div>
-            <div class="form-label-row"><span class="sticker">🛍️</span><label id="lbl-size">Taille du colis</label></div>
+            <div class="form-label-row"><span class="sticker">🛍</span><label id="lbl-size">Taille du colis</label></div>
             <select id="size">
               <option value="S" id="opt-s">Petit (S)</option>
               <option value="M" selected id="opt-m">Moyen (M)</option>
@@ -200,6 +208,9 @@
     <div class="year">2025</div>
     <div class="footer">© AlexLivraison</div>
   </main>
+  <div style="display:flex;justify-content:center;margin:30px 0 0 0;">
+    <img src="QR-code.jpg" alt="QR Code" style="width:130px;height:auto;border-radius:14px;box-shadow:0 8px 32px #6b23ff26;">
+  </div>
   <script>
     const drawer=document.getElementById('drawer');
     const shade=document.getElementById('shade');
@@ -259,21 +270,21 @@
         const r=await route(A.lat,A.lon,B.lat,B.lon),dist=Math.round(r.km*100)/100;
         const price=Math.round(dist*PRICE_PER_KM+SIZE_FEES[size]+floorFee+extras);lastCalc={from,to,dist,price,size};
         res.style.display="block";
-        res.innerHTML=`<b>${currentText.distance}</b> ${dist} km<br><b>${currentText.price}</b> ${euro(price)}`;
+        res.innerHTML='<b>'+currentText.distance+'</b> '+dist+' km<br><b>'+currentText.price+'</b> '+euro(price);
         $("#total").value=price.toFixed(2);showMap(A.lat,A.lon,B.lat,B.lon,r.geo);
       }catch(e){alert(currentText.alertError);}
     }
     $("#calc").addEventListener("click",calc);
     $("#payCash").addEventListener("click",async()=>{
       if(!lastCalc){alert(currentText.alertCalcFirst);return;}
-      const name=$("#clientName").value.trim()||currentText.nonPrecise;const phone=$("#clientPhone").value.trim();const time=$("#time").value;const date=$("#date").value;
-      await sendToTelegram(`🆕 ${currentText.newOrderCash}\n👤 ${currentText.name}: ${name}\n📞 ${currentText.phone}: ${phone}\n📅 ${currentText.date}: ${date}\n🕒 ${currentText.time}: ${time}\n📍 ${currentText.from}: ${lastCalc.from}\n🏁 ${currentText.to}: ${lastCalc.to}\n📦 ${currentText.distanceShort}: ${lastCalc.dist} km\n💶 ${currentText.priceShort}: ${lastCalc.price} €`);
+      const name=$("#clientName").value.trim()currentText.nonPrecise;const phone=$("#clientPhone").value.trim();const time=$("#time").value;const date=$("#date").value;
+      await sendToTelegram('🆕 '+currentText.newOrderCash+'\n👤 '+currentText.name+': '+name+'\n📞 '+currentText.phone+': '+phone+'\n📅 '+currentText.date+': '+date+'\n🕒 '+currentText.time+': '+time+'\n📍 '+currentText.from+': '+lastCalc.from+'\n🏁 '+currentText.to+': '+lastCalc.to+'\n📦 '+currentText.distanceShort+': '+lastCalc.dist+' km\n💶 '+currentText.priceShort+': '+lastCalc.price+' €');
       alert(currentText.cashOk);
     });
     $("#payCard").addEventListener("click",async()=>{
       if(!lastCalc){alert(currentText.alertCalcFirst);return;}
       const name=$("#clientName").value.trim()||currentText.nonPrecise;const phone=$("#clientPhone").value.trim();const time=$("#time").value;const date=$("#date").value;
-      await sendToTelegram(`🆕 ${currentText.newOrderCard}\n👤 ${currentText.name}: ${name}\n📞 ${currentText.phone}: ${phone}\n📅 ${currentText.date}: ${date}\n🕒 ${currentText.time}: ${time}\n📍 ${currentText.from}: ${lastCalc.from}\n🏁 ${currentText.to}: ${lastCalc.to}\n📦 ${currentText.distanceShort}: ${lastCalc.dist} km\n💳 ${currentText.priceShort}: ${lastCalc.price} €`);
+      await sendToTelegram('🆕 '+currentText.newOrderCard+'\n👤 '+currentText.name+': '+name+'\n📞 '+currentText.phone+': '+phone+'\n📅 '+currentText.date+': '+date+'\n🕒 '+currentText.time+': '+time+'\n📍 '+currentText.from+': '+lastCalc.from+'\n🏁 '+currentText.to+': '+lastCalc.to+'\n📦 '+currentText.distanceShort+': '+lastCalc.dist+' km\n💳 '+currentText.priceShort+': '+lastCalc.price+' €');
       const response=await fetch("https://alexlivraison-api.onrender.com/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:lastCalc.price,name,phone})});
       const data=await response.json();if(data.checkout_url)window.open(data.checkout_url,"_blank");else alert(currentText.payError);
     });
@@ -340,7 +351,7 @@
       },
       en:{
         heroTitle:"🚲 Fast & reliable local delivery in Toulon & La Seyne",
-        heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds!",
+        heroDesc:"Meals, groceries, parcels and small items — by bike, scooter or light vehicle. Order in 30 seconds\n!",
         navCalc:"Affiliate Products",
         navPartners:"About",
         navContact:"Chat",
@@ -401,7 +412,7 @@
     function setLang(lang){
       currentText=dict[lang]||dict.fr;
       document.documentElement.lang=lang==='en'?'en':'fr';
-      document.getElementById('hero-title').textContent=currentText.heroTitle;
+      document.getElementById('hero-title').innerHTML='<span id="emoji-biker" style="display:inline-block;animation:bounce 1.2s infinite alternate;">🚴🏻‍♂️</span>'+'<span id="hero-text">'+currentText.heroTitle.replace('🚲 ','').replace('🚲','')+'</span>'+'<span id="emoji-car" style="display:inline-block;animation:carMove 1.2s infinite alternate;">🚗</span>';
       document.getElementById('hero-desc').textContent=currentText.heroDesc;
       document.getElementById('nav-calc').textContent=currentText.navCalc;
       document.getElementById('nav-partners').textContent=currentText.navPartners;
@@ -438,7 +449,7 @@
       document.getElementById('p6').textContent=currentText.p6;
       document.getElementById('contact-title').textContent=currentText.navContact;
     }
-    const savedLang=localStorage.getItem('alex_lang')||'fr';
+    const savedLang=localStorage.getItem('alex_lang')'fr';
     setLang(savedLang);
   </script>
 </body>
