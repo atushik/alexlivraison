@@ -30,7 +30,7 @@
     .drawer a{color:#fff;text-decoration:none;padding:12px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff22;text-align:center;font-weight:600;}
     .drawer a:hover{background:#ffffff22;}
     .drawer .langs{margin-top:auto;display:flex;gap:8px;}
-    .drawer .langs button{flex:1;background:#ffffff14;border:1.4px solid #fff;color:#fff;padding:9px 0;border-radius:10px;cursor:pointer;font-weight:700;font-size:1.06em;transition:background .14s;}
+    .drawer .langs button{flex:1;background:#ffffff14;border:1.4px solid #fff;color:#fff;padding:10px 0;border-radius:10px;cursor:pointer;font-weight:700;font-size:1.09em;transition:background .14s;}
     .drawer .langs button.active{background:#6b23ff;}
     .hero{position:relative;padding:34px 16px 10px;color:#fff;text-align:center;max-width:1060px;margin:0 auto;}
     .stickers-row{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;margin-bottom:-5px;margin-top:8px;}
@@ -213,8 +213,14 @@
     const btnMenu=document.getElementById('btn-menu');
     btnMenu.addEventListener('click',()=>drawer.classList.add('open'));
     shade.addEventListener('click',()=>drawer.classList.remove('open'));
-    document.getElementById('btn-fr').addEventListener('click',function(){setLang('fr');drawer.classList.remove('open');});
-    document.getElementById('btn-en').addEventListener('click',function(){setLang('en');drawer.classList.remove('open');});
+    function activateLang(lang){
+      setLang(lang);
+      document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
+      document.getElementById('btn-en').classList.toggle('active', lang==='en');
+      drawer.classList.remove('open');
+    }
+    document.getElementById('btn-fr').addEventListener('click',()=>activateLang('fr'));
+    document.getElementById('btn-en').addEventListener('click',()=>activateLang('en'));
     const PRICE_PER_KM=0.9;
     const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
     const TELEGRAM_BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
@@ -227,20 +233,8 @@
     const timeSel=$("#time");
     const dateInput=$("#date");
     const now=new Date();
-    if(dateInput){
-      const t=new Date();
-      t.setMinutes(t.getMinutes()-t.getTimezoneOffset());
-      dateInput.value=t.toISOString().slice(0,10);
-    }
-    if(timeSel){
-      for(let i=0;i<48;i++){
-        const t=new Date(now.getTime()+i*30*60000);
-        const label=t.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
-        const opt=document.createElement("option");
-        opt.value=label;opt.textContent=label;
-        timeSel.appendChild(opt);
-      }
-    }
+    if(dateInput){const t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffset());dateInput.value=t.toISOString().slice(0,10);}
+    if(timeSel){for(let i=0;i<48;i++){const t=new Date(now.getTime()+i*30*60000);const label=t.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});const opt=document.createElement("option");opt.value=label;opt.textContent=label;timeSel.appendChild(opt);}}
     async function geocode(q){
       const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?limit=1&language=fr&access_token=${MAPBOX_TOKEN}`;
       const r=await fetch(url);
