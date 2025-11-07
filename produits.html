@@ -75,46 +75,46 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 
 <div class="menu" id="menu">
 <span class="close-menu" id="closeMenu">×</span>
-<nav>
-<a href="form-supermarches.html">🛒 Devenir partenaire vendeur</a>
-<a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
-<a href="index.html">🏠 Retour à la page d'accueil</a>
-<a href="index.html#contact">📞 Contactez-nous</a>
-<a href="about.html">ℹ️ À propos de nous</a>
+<nav id="menuNav">
+<a href="form-supermarches.html" data-key="menuSeller">🛒 Devenir partenaire vendeur</a>
+<a href="devenir-coursier.html" data-key="menuCourier">🚴 Devenir partenaire coursier</a>
+<a href="index.html" data-key="menuHome">🏠 Retour à la page d'accueil</a>
+<a href="index.html#contact" data-key="menuContact">📞 Contactez-nous</a>
+<a href="about.html" data-key="menuAbout">ℹ️ À propos de nous</a>
 </nav>
 <div class="lang-switch">
-<p>Langue / Language</p>
+<p id="langLabel">Langue / Language</p>
 <div class="lang-btns">
-<button class="active" id="langFr">FR</button>
-<button id="langEn">EN</button>
+<button class="active" id="langFr" data-lang="fr">FR</button>
+<button id="langEn" data-lang="en">EN</button>
 </div>
 </div>
 </div>
 
 <div class="page-header">
 <div class="sticker">🛍️</div>
-<h1>Bienvenue dans notre section de produits partenaires !</h1>
+<h1 id="mainTitle">Bienvenue dans notre section de produits partenaires !</h1>
 <div class="sticker">✨</div>
 </div>
 
 <div class="promo-banner">
-<h2>🎉 Promotion spéciale!</h2>
-<p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
+<h2 id="promoTitle">🎉 Promotion spéciale!</h2>
+<p id="promoText">Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
 
-<div class="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span>Restaurants</span></button>
+<div class="filters" id="filters">
+<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span class="filter-label" data-key="filterAll">Tous les produits</span></button>
+<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span class="filter-label" data-key="filterSuper">Supermarchés</span></button>
+<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span class="filter-label" data-key="filterBakery">Boulangeries</span></button>
+<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span class="filter-label" data-key="filterButchery">Boucheries</span></button>
+<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span class="filter-label" data-key="filterFish">Poissonneries</span></button>
+<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span class="filter-label" data-key="filterPharm">Pharmacies</span></button>
+<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span class="filter-label" data-key="filterRest">Restaurants</span></button>
 </div>
 
 <div class="products-grid" id="productsGrid"></div>
 
-<footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
+<footer><p id="footerText">© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
 
 <script>
@@ -124,11 +124,83 @@ const closeMenu=document.getElementById('closeMenu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
 closeMenu.addEventListener('click',()=>{menu.classList.remove('open');hamburger.classList.remove('active');});
 
+const langFrBtn=document.getElementById('langFr');
+const langEnBtn=document.getElementById('langEn');
+
+const translations={
+fr:{
+htmlLang:'fr',
+mainTitle:'Bienvenue dans notre section de produits partenaires !',
+promoTitle:'🎉 Promotion spéciale!',
+promoText:'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',
+filterAll:'Tous les produits',
+filterSuper:'Supermarchés',
+filterBakery:'Boulangeries',
+filterButchery:'Boucheries',
+filterFish:'Poissonneries',
+filterPharm:'Pharmacies',
+filterRest:'Restaurants',
+menuSeller:'🛒 Devenir partenaire vendeur',
+menuCourier:'🚴 Devenir partenaire coursier',
+menuHome:'🏠 Retour à la page d'accueil',
+menuContact:'📞 Contactez-nous',
+menuAbout:'ℹ️ À propos de nous',
+promoBannerButton:'Commander',
+footer:'© 2025 AlexLivraison - Tous droits réservés',
+langLabel:'Langue / Language'
+},
+en:{
+htmlLang:'en',
+mainTitle:'Welcome to our partner products section!',
+promoTitle:'🎉 Special Promotion!',
+promoText:'Free delivery on all partner orders this month!',
+filterAll:'All products',
+filterSuper:'Supermarkets',
+filterBakery:'Bakeries',
+filterButchery:'Butchers',
+filterFish:'Fishmongers',
+filterPharm:'Pharmacies',
+filterRest:'Restaurants',
+menuSeller:'🛒 Become a seller partner',
+menuCourier:'🚴 Become a courier partner',
+menuHome:'🏠 Back to home page',
+menuContact:'📞 Contact us',
+menuAbout:'ℹ️ About us',
+promoBannerButton:'Order',
+footer:'© 2025 AlexLivraison - All rights reserved',
+langLabel:'Lang / Langue'
+}
+};
+
+function setLanguage(lang){
+const t=translations[lang]||translations.fr;
+document.documentElement.lang=t.htmlLang;
+document.getElementById('mainTitle').textContent=t.mainTitle;
+document.getElementById('promoTitle').textContent=t.promoTitle;
+document.getElementById('promoText').textContent=t.promoText;
+document.querySelectorAll('.filter-label').forEach(el=>{
+const key=el.getAttribute('data-key');
+if(key && t[key.replace('filter','filter')]) el.textContent=t[key];
+});
+document.querySelectorAll('#menuNav a').forEach(a=>{
+const key=a.getAttribute('data-key');
+if(key && t[key]) a.textContent=t[key];
+});
+document.getElementById('footerText').textContent=t.footer;
+document.getElementById('langLabel').textContent=t.langLabel;
+if(lang==='fr'){langFrBtn.classList.add('active');langEnBtn.classList.remove('active');}
+else{langEnBtn.classList.add('active');langFrBtn.classList.remove('active');}
+localStorage.setItem('alex_lang',lang);
+}
+
+langFrBtn.addEventListener('click',()=>{setLanguage('fr');});
+langEnBtn.addEventListener('click',()=>{setLanguage('en');});
+
+const savedLang=localStorage.getItem('alex_lang')||'fr';
+setLanguage(savedLang);
+
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
-let activeCategory='all';
-const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants'};
-
 let allProducts=JSON.parse(localStorage.getItem('produits'))||[];
 if(!allProducts.length){
 allProducts=[
@@ -140,6 +212,8 @@ allProducts=[
 {name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
 ];
 }
+
+const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants'};
 
 function afficherProduits(cat){
 productsGrid.innerHTML='';
@@ -157,6 +231,7 @@ div.innerHTML=`
 productsGrid.appendChild(div);
 });
 }
+
 afficherProduits('all');
 
 filterBtns.forEach(btn=>{
