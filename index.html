@@ -7,30 +7,20 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
   <style>
+    :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
     html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
-    body {
-      font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;color:#222;
-      background: linear-gradient(90deg,#f7e2ff 5%,#fbd1c0 80%);
-      position: relative;
-      min-height: 100vh;
+    body{
+      font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;
+      color:#222;
+      background: linear-gradient(180deg,#361185 0%,#965df8 55%,#fae5ff 100%);
+      background-attachment:fixed;
+      min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;
     }
-    .custom-bg {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 53vh; pointer-events:none;
-      z-index: 0;
-      background: url('data:image/svg+xml,%3Csvg width="1920" height="420" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="100%25" height="100%25" fill="none"/%3E%3Cg opacity="0.33"%3E%3Crect x="50" y="270" width="250" height="130" rx="22" fill="%23f7b49d"/%3E%3Crect x="320" y="230" width="120" height="170" rx="19" fill="%238959f6"/%3E%3Crect x="460" y="290" width="220" height="120" rx="18" fill="%23fae987"/%3E%3Crect x="720" y="280" width="80" height="150" rx="12" fill="%23c5f5f3"/%3E%3Crect x="820" y="320" width="200" height="100" rx="25" fill="%23fc6b68"/%3E%3Crect x="1100" y="260" width="135" height="140" rx="22" fill="%239eaeff"/%3E%3Crect x="1260" y="300" width="110" height="120" rx="22" fill="%23fc99ff"/%3E%3Crect x="1390" y="269" width="190" height="121" rx="24" fill="%2383ffd1"/%3E%3Crect x="1600" y="282" width="220" height="108" rx="22" fill="%23ffb48e"/%3E%3C/g%3E%3C%2Fsvg%3E') repeat-x top;
-      background-size: cover;
-      opacity: 1;
-    }
-    .custom-bg .emoji {
-      position:absolute; z-index:2; font-size:3.8em; opacity:.12;
-      filter: blur(.4px);
-    }
-    .custom-bg .emoji.one {left:12%;top:19%;}
-    .custom-bg .emoji.two {left:23%;top:16%;font-size:4.6em;}
-    .custom-bg .emoji.three {left:67%;top:18%;}
-    .custom-bg .emoji.four {left:84%;top:23%;font-size:3em;}
-    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid #ffffff35}
+    *{box-sizing:border-box}
+    img{max-width:100%;height:auto;display:block}
+    .wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
+    .topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
     .topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px}
     .brand img{width:120px;height:auto}
     .hamb{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff33;cursor:pointer;position:relative}
@@ -141,12 +131,6 @@
   </style>
 </head>
 <body>
-  <div class="custom-bg">
-    <span class="emoji one">🚚</span>
-    <span class="emoji two">🚴‍♂️</span>
-    <span class="emoji three">📦</span>
-    <span class="emoji four">🥐</span>
-  </div>
   <div class="topbar">
     <div class="topbar-inner wrap">
       <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
