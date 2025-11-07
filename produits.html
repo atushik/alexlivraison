@@ -41,7 +41,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .filter-btn .emoji{display:inline-block;animation:bounce 2s infinite}
 .filter-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
 .filter-btn.active{background:#6b23ff;border-color:#6b23ff;box-shadow:0 0 20px rgba(107,35,255,.5)}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;margin:40px 0;animation:fade-in-card 1s}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:40px 0;animation:fade-in-card 1s}
 .product-card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;border:2px solid rgba(255,255,255,.2);transition:.4s;animation:fade-in-card .8s;position:relative;overflow:hidden}
 .product-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);opacity:0;transition:.4s}
 .product-card:hover::before{opacity:1}
@@ -56,7 +56,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .partner-cta{background:rgba(255,255,255,.1);border-radius:20px;padding:30px;text-align:center;margin:40px 0;border:2px solid rgba(255,255,255,.3);animation:fade-in-card 1.2s}
 .partner-cta h2{font-size:32px;margin-bottom:15px}
 .partner-cta p{font-size:18px;margin-bottom:25px;color:rgba(255,255,255,.9)}
-.partner-cta .btn-partner{padding:15px 40px;background:linear-gradient(135deg,#ff6b6b,#ff8e53);border:none;color:#fff;font-size:18px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
+.partner-cta .btn-partner{padding:15px 40px;background:linear-gradient(135deg,#ff6b6b,#ff8e53);border:none;color:#fff;font-size:18px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold;margin:10px}
 .partner-cta .btn-partner:hover{transform:scale(1.05);box-shadow:0 5px 25px rgba(255,107,107,.5)}
 footer{text-align:center;padding:30px 0;border-top:2px solid rgba(255,255,255,.2);margin-top:50px}
 footer p{color:rgba(255,255,255,.7);font-size:14px}
@@ -88,7 +88,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <h3 data-fr="Navigation" data-en="Navigation">Navigation</h3>
 <nav>
 <a href="index.html" data-fr="🏠 Retour à l'accueil" data-en="🏠 Back to home">🏠 Retour à l'accueil</a>
-<a href="produits.html" data-fr="🛍️ Produits d'affiliation" data-en="🛍️ Affiliate products">🛍️ Produits d'affiliation</a>
 </nav>
 </div>
 <div class="menu-section">
@@ -135,12 +134,8 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <div class="partner-cta">
 <h2 data-fr="Devenez notre partenaire!" data-en="Become our partner!">Devenez notre partenaire!</h2>
 <p data-fr="Rejoignez notre réseau de partenaires et développez votre activité" data-en="Join our partner network and grow your business">Rejoignez notre réseau de partenaires et développez votre activité</p>
-<button class="btn-partner" onclick="window.location.href='form-supermarches.html'" data-fr="Devenir partenaire vendeur" data-en="Become seller partner">Devenir partenaire vendeur</button>
+<button class="btn-partner" onclick="window.location.href='form-supermarches.html'" data-fr="👨‍💼 Devenir vendeur" data-en="👨‍💼 Become seller">👨‍💼 Devenir vendeur</button>
+<button class="btn-partner" onclick="window.location.href='devenir-coursier.html'" data-fr="🚴 Devenir coursier" data-en="🚴 Become courier">🚴 Devenir coursier</button>
 </div>
 <footer>
-<p data-fr="© 2025 AlexLivraison - Tous droits réservés" data-en="© 2025 AlexLivraison - All rights reserved">© 2025 AlexLivraison - Tous droits réservés</p>
-</footer>
-</div>
-<script>
-const products=[
-{name:'Pain Complet Bio
+<p data-fr="© 2025 AlexLivraison - Tous droits réservés" data-en="© 2025 AlexLivraison - All rights reserved">© 2025 AlexLivraison - Tous droits réservés
