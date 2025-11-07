@@ -6,24 +6,19 @@
 <title>Produits Partenaires - AlexLivraison</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh;overflow-x:hidden}
+body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh}
 .wrap{max-width:1060px;margin:0 auto;padding:20px}
 header{display:flex;justify-content:space-between;align-items:center;padding:15px 0;position:relative}
 .logo{font-size:28px;font-weight:bold;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
 .logo .emoji{display:inline-block;animation:bounce 2s infinite}
 .hamburger{width:30px;height:22px;position:relative;cursor:pointer;z-index:1001}
-.hamburger span,
-.hamburger::before,
-.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
-.hamburger span{top:50%;transform:translateY(-50%)}
+.hamburger span{display:block;width:100%;height:3px;background:#fff;position:absolute;top:50%;transform:translateY(-50%);transition:.3s}
+.hamburger::before,.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
 .hamburger::before{top:0}
 .hamburger::after{bottom:0}
-.hamburger.active span{opacity:0}
-.hamburger.active::before{transform:translateY(10px) rotate(45deg)}
-.hamburger.active::after{transform:translateY(-10px) rotate(-45deg)}
-.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
+.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:60px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
 .menu.open{right:0}
-.close-menu{position:absolute;top:20px;right:25px;font-size:32px;cursor:pointer;color:#fff;transition:.3s}
+.close-menu{position:absolute;top:20px;right:20px;font-size:32px;cursor:pointer;color:#fff;transition:.3s}
 .close-menu:hover{color:#b88aff;transform:rotate(90deg)}
 .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
 .menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
@@ -34,10 +29,10 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .lang-btns button:hover{background:rgba(255,255,255,.2)}
 .lang-btns button.active{background:#6b23ff;border-color:#6b23ff}
 .page-header{text-align:center;margin:40px 0;animation:slide-in-top .6s}
-.page-header h1{font-size:34px;margin-bottom:10px;line-height:1.3}
+.page-header h1{font-size:38px;margin-bottom:10px;line-height:1.3}
 .page-header .sticker{font-size:50px;display:inline-block;animation:bounce 2s infinite}
 .promo-banner{background:linear-gradient(135deg,#ff6b6b,#ff8e53);padding:20px;border-radius:20px;text-align:center;margin:30px 0;animation:glow 2s infinite;box-shadow:0 5px 25px rgba(255,107,107,.4)}
-.promo-banner h2{font-size:26px;margin-bottom:10px}
+.promo-banner h2{font-size:28px;margin-bottom:10px}
 .promo-banner p{font-size:16px;opacity:.9}
 .filters{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin:30px 0;animation:fade-in-card .8s}
 .filter-btn{padding:12px 25px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:25px;font-size:16px;transition:.3s;display:flex;align-items:center;gap:8px}
@@ -52,7 +47,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:linear-gradient(135deg,#6b23ff,#b88aff)}
 .product-badge{display:inline-block;padding:5px 12px;background:#6b23ff;border-radius:15px;font-size:12px;margin-bottom:10px}
 .product-name{font-size:20px;font-weight:bold;margin-bottom:8px}
-.product-price{font-size:22px;color:#b88aff;margin:10px 0;font-weight:bold}
+.product-price{font-size:24px;color:#b88aff;margin:10px 0;font-weight:bold}
 .product-desc{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:15px;line-height:1.4}
 .btn-order{width:100%;padding:12px;background:linear-gradient(135deg,#6b23ff,#b88aff);border:none;color:#fff;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
 .btn-order:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(107,35,255,.4)}
@@ -63,7 +58,7 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 @keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7)}}
 @media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
+@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:28px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:280px}}
 </style>
 </head>
 <body>
@@ -72,175 +67,60 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
 <div class="hamburger" id="hamburger"><span></span></div>
 </header>
-
 <div class="menu" id="menu">
 <span class="close-menu" id="closeMenu">×</span>
-<nav id="menuNav">
-<a href="form-supermarches.html" data-key="menuSeller">🛒 Devenir partenaire vendeur</a>
-<a href="devenir-coursier.html" data-key="menuCourier">🚴 Devenir partenaire coursier</a>
-<a href="index.html" data-key="menuHome">🏠 Retour à la page d'accueil</a>
-<a href="index.html#contact" data-key="menuContact">📞 Contactez-nous</a>
-<a href="about.html" data-key="menuAbout">ℹ️ À propos de nous</a>
+<nav>
+<a href="index.html">🏠 Retour à l'accueil</a>
+<a href="form-supermarches.html">🛒 Devenir partenaire vendeur</a>
+<a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
+<a href="about.html">ℹ️ À propos de nous</a>
+<a href="index.html#contact">📞 Contactez-nous</a>
 </nav>
 <div class="lang-switch">
-<p id="langLabel">Langue / Language</p>
+<p>Langue / Language</p>
 <div class="lang-btns">
-<button class="active" id="langFr" data-lang="fr">FR</button>
-<button id="langEn" data-lang="en">EN</button>
+<button class="active" id="langFr">FR</button>
+<button id="langEn">EN</button>
 </div>
 </div>
 </div>
-
 <div class="page-header">
 <div class="sticker">🛍️</div>
-<h1 id="mainTitle">Bienvenue dans notre section de produits partenaires !</h1>
+<h1>Bienvenue dans notre section produits partenaires!</h1>
 <div class="sticker">✨</div>
 </div>
-
 <div class="promo-banner">
-<h2 id="promoTitle">🎉 Promotion spéciale!</h2>
-<p id="promoText">Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
+<h2>🎉 Promotion spéciale!</h2>
+<p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
-
-<div class="filters" id="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span class="filter-label" data-key="filterAll">Tous les produits</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span class="filter-label" data-key="filterSuper">Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span class="filter-label" data-key="filterBakery">Boulangeries</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span class="filter-label" data-key="filterButchery">Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span class="filter-label" data-key="filterFish">Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span class="filter-label" data-key="filterPharm">Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span class="filter-label" data-key="filterRest">Restaurants</span></button>
+<div class="filters">
+<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
+<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
+<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
+<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
+<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
+<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
+<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span>Restaurants</span></button>
 </div>
-
 <div class="products-grid" id="productsGrid"></div>
-
-<footer><p id="footerText">© 2025 AlexLivraison - Tous droits réservés</p></footer>
+<footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
-
 <script>
-const hamburger=document.getElementById('hamburger');
-const menu=document.getElementById('menu');
-const closeMenu=document.getElementById('closeMenu');
-hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
-closeMenu.addEventListener('click',()=>{menu.classList.remove('open');hamburger.classList.remove('active');});
-
-const langFrBtn=document.getElementById('langFr');
-const langEnBtn=document.getElementById('langEn');
-
-const translations={
-fr:{
-htmlLang:'fr',
-mainTitle:'Bienvenue dans notre section de produits partenaires !',
-promoTitle:'🎉 Promotion spéciale!',
-promoText:'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',
-filterAll:'Tous les produits',
-filterSuper:'Supermarchés',
-filterBakery:'Boulangeries',
-filterButchery:'Boucheries',
-filterFish:'Poissonneries',
-filterPharm:'Pharmacies',
-filterRest:'Restaurants',
-menuSeller:'🛒 Devenir partenaire vendeur',
-menuCourier:'🚴 Devenir partenaire coursier',
-menuHome:'🏠 Retour à la page d'accueil',
-menuContact:'📞 Contactez-nous',
-menuAbout:'ℹ️ À propos de nous',
-promoBannerButton:'Commander',
-footer:'© 2025 AlexLivraison - Tous droits réservés',
-langLabel:'Langue / Language'
-},
-en:{
-htmlLang:'en',
-mainTitle:'Welcome to our partner products section!',
-promoTitle:'🎉 Special Promotion!',
-promoText:'Free delivery on all partner orders this month!',
-filterAll:'All products',
-filterSuper:'Supermarkets',
-filterBakery:'Bakeries',
-filterButchery:'Butchers',
-filterFish:'Fishmongers',
-filterPharm:'Pharmacies',
-filterRest:'Restaurants',
-menuSeller:'🛒 Become a seller partner',
-menuCourier:'🚴 Become a courier partner',
-menuHome:'🏠 Back to home page',
-menuContact:'📞 Contact us',
-menuAbout:'ℹ️ About us',
-promoBannerButton:'Order',
-footer:'© 2025 AlexLivraison - All rights reserved',
-langLabel:'Lang / Langue'
-}
-};
-
-function setLanguage(lang){
-const t=translations[lang]||translations.fr;
-document.documentElement.lang=t.htmlLang;
-document.getElementById('mainTitle').textContent=t.mainTitle;
-document.getElementById('promoTitle').textContent=t.promoTitle;
-document.getElementById('promoText').textContent=t.promoText;
-document.querySelectorAll('.filter-label').forEach(el=>{
-const key=el.getAttribute('data-key');
-if(key && t[key.replace('filter','filter')]) el.textContent=t[key];
-});
-document.querySelectorAll('#menuNav a').forEach(a=>{
-const key=a.getAttribute('data-key');
-if(key && t[key]) a.textContent=t[key];
-});
-document.getElementById('footerText').textContent=t.footer;
-document.getElementById('langLabel').textContent=t.langLabel;
-if(lang==='fr'){langFrBtn.classList.add('active');langEnBtn.classList.remove('active');}
-else{langEnBtn.classList.add('active');langFrBtn.classList.remove('active');}
-localStorage.setItem('alex_lang',lang);
-}
-
-langFrBtn.addEventListener('click',()=>{setLanguage('fr');});
-langEnBtn.addEventListener('click',()=>{setLanguage('en');});
-
-const savedLang=localStorage.getItem('alex_lang')||'fr';
-setLanguage(savedLang);
-
-const productsGrid=document.getElementById('productsGrid');
-const filterBtns=document.querySelectorAll('.filter-btn');
-let allProducts=JSON.parse(localStorage.getItem('produits'))||[];
-if(!allProducts.length){
-allProducts=[
-{name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
-{name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
-{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
-{name:'Saumon Frais',price:22.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400',desc:'Pêche du jour'},
-{name:'Paracétamol 1g',price:4.20,category:'pharmacies',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400',desc:'Boîte de 20 comprimés'},
-{name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
-];
-}
-
+let activeCategory='all';
+const categoryIcons={supermarches:'🛒',boulangeries:'🥖',boucheries:'🥩',poissonneries:'🐟',pharmacies:'💊',restaurants:'🍽️'};
 const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants'};
-
-function afficherProduits(cat){
-productsGrid.innerHTML='';
-const produitsAffiches=cat==='all'?allProducts:allProducts.filter(p=>p.category===cat);
-produitsAffiches.forEach(p=>{
-const div=document.createElement('div');
-div.className='product-card';
-div.innerHTML=`
-<img src="${p.img}" class="product-img" alt="${p.name}">
-<div class="product-badge">${categoryNames[p.category]||''}</div>
-<div class="product-name">${p.name}</div>
-<div class="product-price">${p.price.toFixed(2)} €</div>
-<div class="product-desc">${p.desc}</div>
-<button class="btn-order">Commander</button>`;
-productsGrid.appendChild(div);
-});
-}
-
-afficherProduits('all');
-
-filterBtns.forEach(btn=>{
-btn.addEventListener('click',()=>{
-filterBtns.forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-afficherProduits(btn.dataset.category);
-});
-});
-</script>
-</body>
-</html>
+const demoProducts=[
+{name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
+{name:'Croissant Artisanal',price:1.80,category:'boulangeries',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',desc:'Pur beurre, croustillant'},
+{name:'Baguette Tradition',price:1.20,category:'boulangeries',img:'https://images.unsplash.com/photo-1534620808146-d33bb39128b2?w=400',desc:'Cuite au feu de bois'},
+{name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
+{name:'Fruits de Saison',price:4.50,category:'supermarches',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400',desc:'Sélection du marché'},
+{name:'Pâtes Italiennes',price:2.90,category:'supermarches',img:'https://images.unsplash.com/photo-1551462147-37abc8ea0954?w=400',desc:'500g, qualité premium'},
+{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
+{name:'Poulet Fermier',price:12.00,category:'boucheries',img:'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400',desc:'1,2kg, élevé en plein air'},
+{name:'Saucisson Artisanal',price:8.50,category:'boucheries',img:'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=400',desc:'300g, fabrication maison'},
+{name:'Saumon Frais',price:22.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400',desc:'500g, pêche du jour'},
+{name:'Crevettes Roses',price:15.50,category:'poissonneries',img:'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400',desc:'300g, fraîches'},
+{name:'Dorade Royale',price:19.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1580959375944-1ab5ddc7e2bf?w=400',desc:'Entière, 800g'},
+{name:'Paracétamol 1g',price:4.20,category:'pharmacies',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400',desc:'Boîte de 20 comprimés'},
+{name:'Vitamine C',price:
