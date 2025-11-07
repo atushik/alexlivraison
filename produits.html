@@ -44,7 +44,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .product-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);opacity:0;transition:.4s}
 .product-card:hover::before{opacity:1}
 .product-card:hover{transform:translateY(-8px);border-color:#b88aff;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px}
+.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:#6b23ff}
 .product-badge{display:inline-block;padding:5px 12px;background:#6b23ff;border-radius:15px;font-size:12px;margin-bottom:10px}
 .product-name{font-size:20px;font-weight:bold;margin-bottom:8px}
 .product-price{font-size:24px;color:#b88aff;margin:10px 0;font-weight:bold}
@@ -121,4 +121,14 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <script>
 const TELEGRAM_BOT_TOKEN='8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA';
 const TELEGRAM_CHAT_ID='7129872491';
-const products=
+let currentLang='fr';
+let activeCategory='all';
+const demoProducts=[
+{name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
+{name:'Croissant Artisanal',price:1.80,category:'boulangeries',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',desc:'Pur beurre, croustillant'},
+{name:'Baguette Tradition',price:1.20,category:'boulangeries',img:'https://images.unsplash.com/photo-1534620808146-d33bb39128b2?w=400',desc:'Cuite au feu de bois'},
+{name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
+{name:'Fruits de Saison',price:4.50,category:'supermarches',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400',desc:'Sélection du marché'},
+{name:'Pâtes Italiennes',price:2.90,category:'supermarches',img:'https://images.unsplash.com/photo-1551462147-37abc8ea0954?w=400',desc:'500g, qualité premium'},
+{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
+{name:'Poulet Fermier',price:12.00,category:'boucheries',img:'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400',desc:'1,2kg, élevé
