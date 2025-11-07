@@ -1,6 +1,3 @@
-Вот ПОЛНЫЙ исправленный код с рабочим меню-гамбургером и загрузкой продуктов партнеров:
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -43,11 +40,11 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .filter-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
 .filter-btn.active{background:#6b23ff;border-color:#6b23ff;box-shadow:0 0 20px rgba(107,35,255,.5)}
 .products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:40px 0;animation:fade-in-card 1s}
-.product-card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;border:2px solid rgba(255,255,255,.2);transition:.4s;animation:fade-in-card .8s;position:relative;overflow:hidden}
+.product-card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;border:2px solid rgba(255,255,255,.2);transition:.4s;position:relative;overflow:hidden}
 .product-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);opacity:0;transition:.4s}
 .product-card:hover::before{opacity:1}
 .product-card:hover{transform:translateY(-8px);border-color:#b88aff;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:#6b23ff}
+.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:linear-gradient(135deg,#6b23ff,#b88aff)}
 .product-badge{display:inline-block;padding:5px 12px;background:#6b23ff;border-radius:15px;font-size:12px;margin-bottom:10px}
 .product-name{font-size:20px;font-weight:bold;margin-bottom:8px}
 .product-price{font-size:24px;color:#b88aff;margin:10px 0;font-weight:bold}
@@ -60,38 +57,27 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 @keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7)}}
-@media(max-width:968px){
-.products-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:768px){
-.wrap{padding:15px}
-.page-header h1{font-size:28px}
-.filters{gap:10px}
-.filter-btn{padding:10px 18px;font-size:14px}
-.products-grid{grid-template-columns:1fr;gap:20px}
-.menu{width:280px}
-}
+@media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:28px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:280px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
 <a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
-<div class="hamburger" id="hamburger">
-<span></span>
-</div>
+<div class="hamburger" id="hamburger"><span></span></div>
 </header>
 <div class="menu" id="menu">
 <span class="close-menu" id="closeMenu">×</span>
 <nav>
-<a href="index.html" data-fr="🏠 Retour à l'accueil" data-en="🏠 Back to home">🏠 Retour à l'accueil</a>
-<a href="form-supermarches.html" data-fr="🛒 Devenir partenaire vendeur" data-en="🛒 Become seller partner">🛒 Devenir partenaire vendeur</a>
-<a href="devenir-coursier.html" data-fr="🚴 Devenir partenaire coursier" data-en="🚴 Become courier partner">🚴 Devenir partenaire coursier</a>
-<a href="about.html" data-fr="ℹ️ À propos de nous" data-en="ℹ️ About us">ℹ️ À propos de nous</a>
-<a href="index.html#contact" data-fr="📞 Contactez-nous" data-en="📞 Contact us">📞 Contactez-nous</a>
+<a href="index.html">🏠 Retour à l'accueil</a>
+<a href="form-supermarches.html">🛒 Devenir partenaire vendeur</a>
+<a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
+<a href="about.html">ℹ️ À propos de nous</a>
+<a href="index.html#contact">📞 Contactez-nous</a>
 </nav>
 <div class="lang-switch">
-<p data-fr="Langue / Language" data-en="Language">Langue / Language</p>
+<p>Langue / Language</p>
 <div class="lang-btns">
 <button class="active" id="langFr">FR</button>
 <button id="langEn">EN</button>
@@ -100,33 +86,27 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </div>
 <div class="page-header">
 <div class="sticker">🛍️</div>
-<h1 data-fr="Bienvenue dans notre section produits partenaires!" data-en="Welcome to our partner products section!">Bienvenue dans notre section produits partenaires!</h1>
+<h1>Bienvenue dans notre section produits partenaires!</h1>
 <div class="sticker">✨</div>
 </div>
 <div class="promo-banner">
-<h2 data-fr="🎉 Promotion spéciale!" data-en="🎉 Special promotion!">🎉 Promotion spéciale!</h2>
-<p data-fr="Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!" data-en="Free delivery on all partner orders this month!">Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
+<h2>🎉 Promotion spéciale!</h2>
+<p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
 <div class="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span data-fr="Tous les produits" data-en="All products">Tous les produits</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span data-fr="Supermarchés" data-en="Supermarkets">Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span data-fr="Boulangeries" data-en="Bakeries">Boulangeries</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span data-fr="Boucheries" data-en="Butcheries">Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span data-fr="Poissonneries" data-en="Fishmongers">Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span data-fr="Pharmacies" data-en="Pharmacies">Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span data-fr="Restaurants" data-en="Restaurants">Restaurants</span></button>
+<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
+<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
+<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
+<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
+<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
+<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
+<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽️</span><span>Restaurants</span></button>
 </div>
 <div class="products-grid" id="productsGrid"></div>
-<footer>
-<p data-fr="© 2025 AlexLivraison - Tous droits réservés" data-en="© 2025 AlexLivraison - All rights reserved">© 2025 AlexLivraison - Tous droits réservés</p>
-</footer>
+<footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
 <script>
-const TELEGRAM_BOT_TOKEN='8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA';
-const TELEGRAM_CHAT_ID='7129872491';
-let currentLang='fr';
 let activeCategory='all';
-const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants'};
 const demoProducts=[
 {name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
 {name:'Croissant Artisanal',price:1.80,category:'boulangeries',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',desc:'Pur beurre, croustillant'},
@@ -134,4 +114,13 @@ const demoProducts=[
 {name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
 {name:'Fruits de Saison',price:4.50,category:'supermarches',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400',desc:'Sélection du marché'},
 {name:'Pâtes Italiennes',price:2.90,category:'supermarches',img:'https://images.unsplash.com/photo-1551462147-37abc8ea0954?w=400',desc:'500g, qualité premium'},
-{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Lim
+{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
+{name:'Poulet Fermier',price:12.00,category:'boucheries',img:'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400',desc:'1,2kg, élevé en plein air'},
+{name:'Saucisson Artisanal',price:8.50,category:'boucheries',img:'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=400',desc:'300g, fabrication maison'},
+{name:'Saumon Frais',price:22.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400',desc:'500g, pêche du jour'},
+{name:'Crevettes Roses',price:15.50,category:'poissonneries',img:'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400',desc:'300g, fraîches'},
+{name:'Dorade Royale',price:19.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1580959375944-1ab5ddc7e2bf?w=400',desc:'Entière, 800g'},
+{name:'Paracétamol 1g',price:4.20,category:'pharmacies',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400',desc:'Boîte de 20 comprimés'},
+{name:'Vitamine C',price:8.50,category:'pharmacies',img:'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400',desc:'60 gélules, immunité'},
+{name:'Pizza Margherita',price:11.00,category:'restaurants',img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400',desc:'Pâte maison, mozzarella'},
+{name:'Burger Gourmet',price:14.50,category:'restaurants',img:'https://images.unsplash
