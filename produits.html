@@ -23,7 +23,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .hamburger.active::after{transform:translateY(-10px) rotate(-45deg)}
 .menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
 .menu.open{right:0}
-.close-menu{position:absolute;top:20px;right:25px;font-size:32px;cursor:pointer;color:#fff;transition:.3s}
+.close-menu{position:absolute;top:20px;right:25px;font-size:32px;cursor:pointer;color:#fff;transition:.3s;display:none;}
 .close-menu:hover{color:#b88aff;transform:rotate(90deg)}
 .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
 .menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
@@ -85,7 +85,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <div class="hamburger" id="hamburger"><span></span></div>
 </header>
 <div class="menu" id="menu">
-<span class="close-menu" id="closeMenu">×</span>
 <nav>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
 <div class="submenu" id="partnerSubmenu">
@@ -135,12 +134,7 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <script>
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
-const closeMenu=document.getElementById('closeMenu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
-closeMenu.addEventListener('click',()=>{
-  menu.classList.remove('open');
-  hamburger.classList.remove('active');
-});
 const openPartnerMenu=document.getElementById('openPartnerMenu');
 const partnerSubmenu=document.getElementById('partnerSubmenu');
 openPartnerMenu.onclick=function(e){
@@ -275,4 +269,3 @@ langEn.onclick=function(){setLanguage('en');};
 </script>
 </body>
 </html>
- 
