@@ -27,6 +27,12 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .close-menu:hover{color:#b88aff;transform:rotate(90deg)}
 .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
 .menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
+.menu .submenu-trigger{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.09);font-weight:700;cursor:pointer;position:relative;}
+.menu .submenu-trigger::after{content:"▼";font-size:.87em;margin-left:6px;}
+.menu .submenu{display:none;background:rgba(98,57,174,.95);border-radius:11px;padding:7px 0;box-shadow:0 6px 20px #2a146133;margin-bottom:2px;}
+.menu .submenu.visible{display:block;}
+.menu .submenu a{padding:11px 29px;color:#fff;background:none;border-radius:7px;text-decoration:none;font-size:15px;font-weight:700;transition:.21s;text-align:left;display:block;}
+.menu .submenu a:hover{background:#6b23ff;}
 .lang-switch{margin-top:30px;padding-top:20px;border-top:2px solid rgba(255,255,255,.2)}
 .lang-switch p{font-size:14px;margin-bottom:15px;color:#b88aff}
 .lang-btns{display:flex;gap:10px}
@@ -72,11 +78,20 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
 <div class="hamburger" id="hamburger"><span></span></div>
 </header>
-
 <div class="menu" id="menu">
 <span class="close-menu" id="closeMenu">×</span>
 <nav>
-<a href="form-supermarches.html">🛒 Devenir partenaire vendeur</a>
+<a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
+<div class="submenu" id="partnerSubmenu">
+<a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
+<a href="form-boulangeries.html" target="_blank">Propriétaire de boulangerie</a>
+<a href="form-pharmacies.html" target="_blank">Propriétaire de pharmacie</a>
+<a href="form-restaurants.html" target="_blank">Propriétaire de restaurant</a>
+<a href="form-epiceries.html" target="_blank">Propriétaire d'épicerie fine</a>
+<a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
+<a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
+<a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
+</div>
 <a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
 <a href="index.html">🏠 Retour à la page d'accueil</a>
 <a href="index.html#contact">📞 Contactez-nous</a>
@@ -90,18 +105,15 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </div>
 </div>
 </div>
-
 <div class="page-header">
 <div class="sticker">🛍</div>
 <h1>Bienvenue dans notre section de produits partenaires !</h1>
 <div class="sticker">✨</div>
 </div>
-
 <div class="promo-banner">
 <h2>🎉 Promotion spéciale!</h2>
 <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
-
 <div class="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
 <button class="filter-btn" data-category="supermarches" onclick="window.location.href='supermarches.html'"><span class="emoji">🛒</span><span>Supermarchés</span></button>
@@ -111,19 +123,27 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <button class="filter-btn" data-category="pharmacies" onclick="window.location.href='pharmacies.html'"><span class="emoji">💊</span><span>Pharmacies</span></button>
 <button class="filter-btn" data-category="restaurants" onclick="window.location.href='restaurants.html'"><span class="emoji">🍽</span><span>Restaurants</span></button>
 </div>
-
 <div class="products-grid" id="productsGrid"></div>
-
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
-
 <script>
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 const closeMenu=document.getElementById('closeMenu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
 closeMenu.addEventListener('click',()=>{menu.classList.remove('open');hamburger.classList.remove('active');});
-
+const openPartnerMenu=document.getElementById('openPartnerMenu');
+const partnerSubmenu=document.getElementById('partnerSubmenu');
+openPartnerMenu.onclick=function(e){
+  e.preventDefault();
+  partnerSubmenu.classList.toggle('visible');
+  document.addEventListener('click',function handler(ev){
+    if (!ev.target.closest('#partnerSubmenu') && ev.target!==openPartnerMenu){
+      partnerSubmenu.classList.remove('visible');
+      document.removeEventListener('click',handler);
+    }
+  });
+};
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
 const categoryNames={
@@ -134,7 +154,6 @@ const categoryNames={
   pharmacies:'Pharmacies',
   restaurants:'Restaurants'
 };
-
 let allProducts;
 try{allProducts=JSON.parse(localStorage.getItem('produits'))||[];}catch{allProducts=[];}
 if(!allProducts.length){
@@ -147,7 +166,6 @@ allProducts=[
 {name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
 ];
 }
-
 function afficherProduits(cat){
 productsGrid.innerHTML='';
 const produitsAffiches=cat==='all'?allProducts:allProducts.filter(p=>p.category===cat);
