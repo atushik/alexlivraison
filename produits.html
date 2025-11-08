@@ -80,7 +80,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </header>
 <div class="menu" id="menu">
 <nav>
-<span class="close-menu" id="closeMenu">×</span>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
 <div class="submenu" id="partnerSubmenu">
 <a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
@@ -91,6 +90,7 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
 <a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
 <a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
+<a href="#" class="close-menu" id="closeMenu">×</a>
 </div>
 <a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
 <a href="index.html">🏠 Retour à la page d'accueil</a>
@@ -131,7 +131,10 @@ const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 const closeMenu=document.getElementById('closeMenu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
-closeMenu.addEventListener('click',()=>{menu.classList.remove('open');hamburger.classList.remove('active');});
+closeMenu.addEventListener('click',()=>{
+  menu.classList.remove('open');
+  hamburger.classList.remove('active');
+});
 const openPartnerMenu=document.getElementById('openPartnerMenu');
 const partnerSubmenu=document.getElementById('partnerSubmenu');
 openPartnerMenu.onclick=function(e){
@@ -191,31 +194,60 @@ if(btn.hasAttribute('onclick')) return;
 afficherProduits(btn.dataset.category);
 });
 });
+const langData = {
+  fr: {
+    lang: 'fr',
+    pageTitle: 'Produits Partenaires - AlexLivraison',
+    pageHeader: 'Bienvenue dans notre section de produits partenaires !',
+    promoH2: '🎉 Promotion spéciale!',
+    promoP: 'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',
+    menu: [
+      "🛒 Devenir partenaire vendeur",
+      "🚴 Devenir partenaire coursier",
+      "🏠 Retour à la page d'accueil",
+      "📞 Contactez-nous",
+      "ℹ️ À propos de nous"
+    ]
+  },
+  en: {
+    lang: 'en',
+    pageTitle: 'Partner Products - AlexLivraison',
+    pageHeader: 'Welcome to our partner products section!',
+    promoH2: '🎉 Special Promotion!',
+    promoP: 'Free delivery on all partner orders this month!',
+    menu: [
+      "🛒 Become a partner seller",
+      "🚴 Become a partner courier",
+      "🏠 Back to homepage",
+      "📞 Contact us",
+      "ℹ️ About us"
+    ]
+  }
+};
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
 function setLanguage(lang){
-  if(lang==='fr'){
-    document.documentElement.lang='fr';
-    langFr.classList.add('active');
-    langEn.classList.remove('active');
-    document.querySelector('.page-header h1').textContent='Bienvenue dans notre section de produits partenaires !';
-    document.querySelector('.promo-banner h2').textContent='🎉 Promotion spéciale!';
-    document.querySelector('.promo-banner p').textContent='Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!';
-    document.querySelector('.close-menu').textContent='×';
-    document.querySelector('.logo').textContent='AlexLivraison ';
-    document.querySelector('.logo').appendChild(document.createElement('span')).className='emoji';
-    document.querySelector('.logo .emoji').textContent='🚚';
-  }else{
-    document.documentElement.lang='en';
-    langEn.classList.add('active');
-    langFr.classList.remove('active');
-    document.querySelector('.page-header h1').textContent='Welcome to our partner products section!';
-    document.querySelector('.promo-banner h2').textContent='🎉 Special Promotion!';
-    document.querySelector('.promo-banner p').textContent='Free delivery on all partner orders this month!';
-    document.querySelector('.close-menu').textContent='×';
-    document.querySelector('.logo').textContent='AlexLivraison ';
-    document.querySelector('.logo').appendChild(document.createElement('span')).className='emoji';
-    document.querySelector('.logo .emoji').textContent='🚚';
+  let data = langData[lang];
+  document.documentElement.lang = data.lang;
+  document.title = data.pageTitle;
+  langFr.classList.toggle('active', lang === 'fr');
+  langEn.classList.toggle('active', lang === 'en');
+  document.querySelector('.page-header h1').textContent = data.pageHeader;
+  document.querySelector('.promo-banner h2').textContent = data.promoH2;
+  document.querySelector('.promo-banner p').textContent = data.promoP;
+  const navLinks = document.querySelectorAll('.menu nav > a:not(.submenu-trigger):not(.close-menu)');
+  if (lang === "fr") {
+    navLinks[0].textContent = langData.fr.menu[1];
+    navLinks[1].textContent = langData.fr.menu[2];
+    navLinks[2].textContent = langData.fr.menu[3];
+    navLinks[3].textContent = langData.fr.menu[4];
+    document.getElementById('openPartnerMenu').textContent = langData.fr.menu[0];
+  } else {
+    navLinks[0].textContent = langData.en.menu[1];
+    navLinks[1].textContent = langData.en.menu[2];
+    navLinks[2].textContent = langData.en.menu[3];
+    navLinks[3].textContent = langData.en.menu[4];
+    document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
   }
 }
 langFr.onclick=function(){setLanguage('fr');};
