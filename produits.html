@@ -79,8 +79,8 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <div class="hamburger" id="hamburger"><span></span></div>
 </header>
 <div class="menu" id="menu">
-<span class="close-menu" id="closeMenu">×</span>
 <nav>
+<span class="close-menu" id="closeMenu">×</span>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
 <div class="submenu" id="partnerSubmenu">
 <a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
@@ -191,22 +191,35 @@ if(btn.hasAttribute('onclick')) return;
 afficherProduits(btn.dataset.category);
 });
 });
-document.getElementById('langFr').onclick=function(){
-  document.documentElement.lang='fr';
-  document.getElementById('langFr').classList.add('active');
-  document.getElementById('langEn').classList.remove('active');
-  document.querySelector('.page-header h1').textContent='Bienvenue dans notre section de produits partenaires !';
-  document.querySelector('.promo-banner h2').textContent='🎉 Promotion spéciale!';
-  document.querySelector('.promo-banner p').textContent='Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!';
-};
-document.getElementById('langEn').onclick=function(){
-  document.documentElement.lang='en';
-  document.getElementById('langEn').classList.add('active');
-  document.getElementById('langFr').classList.remove('active');
-  document.querySelector('.page-header h1').textContent='Welcome to our partner products section!';
-  document.querySelector('.promo-banner h2').textContent='🎉 Special Promotion!';
-  document.querySelector('.promo-banner p').textContent='Free delivery on all partner orders this month!';
-};
+const langFr=document.getElementById('langFr');
+const langEn=document.getElementById('langEn');
+function setLanguage(lang){
+  if(lang==='fr'){
+    document.documentElement.lang='fr';
+    langFr.classList.add('active');
+    langEn.classList.remove('active');
+    document.querySelector('.page-header h1').textContent='Bienvenue dans notre section de produits partenaires !';
+    document.querySelector('.promo-banner h2').textContent='🎉 Promotion spéciale!';
+    document.querySelector('.promo-banner p').textContent='Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!';
+    document.querySelector('.close-menu').textContent='×';
+    document.querySelector('.logo').textContent='AlexLivraison ';
+    document.querySelector('.logo').appendChild(document.createElement('span')).className='emoji';
+    document.querySelector('.logo .emoji').textContent='🚚';
+  }else{
+    document.documentElement.lang='en';
+    langEn.classList.add('active');
+    langFr.classList.remove('active');
+    document.querySelector('.page-header h1').textContent='Welcome to our partner products section!';
+    document.querySelector('.promo-banner h2').textContent='🎉 Special Promotion!';
+    document.querySelector('.promo-banner p').textContent='Free delivery on all partner orders this month!';
+    document.querySelector('.close-menu').textContent='×';
+    document.querySelector('.logo').textContent='AlexLivraison ';
+    document.querySelector('.logo').appendChild(document.createElement('span')).className='emoji';
+    document.querySelector('.logo .emoji').textContent='🚚';
+  }
+}
+langFr.onclick=function(){setLanguage('fr');};
+langEn.onclick=function(){setLanguage('en');};
 </script>
 </body>
 </html>
