@@ -79,6 +79,7 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <div class="hamburger" id="hamburger"><span></span></div>
 </header>
 <div class="menu" id="menu">
+<span class="close-menu" id="closeMenu">×</span>
 <nav>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
 <div class="submenu" id="partnerSubmenu">
@@ -90,7 +91,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
 <a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
 <a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
-<a href="#" class="close-menu" id="closeMenu">×</a>
 </div>
 <a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
 <a href="index.html">🏠 Retour à la page d'accueil</a>
@@ -114,7 +114,7 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <h2>🎉 Promotion spéciale!</h2>
 <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
-<div class="filters">
+<div class="filters" id="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
 <button class="filter-btn" data-category="supermarches" onclick="window.location.href='supermarches.html'"><span class="emoji">🛒</span><span>Supermarchés</span></button>
 <button class="filter-btn" data-category="boulangeries" onclick="window.location.href='boulangeries.html'"><span class="emoji">🥖</span><span>Boulangeries</span></button>
@@ -169,7 +169,7 @@ allProducts=[
 {name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
 ];
 }
-function afficherProduits(cat){
+function afficherProduits(cat, lang='fr'){
 productsGrid.innerHTML='';
 const produitsAffiches=cat==='all'?allProducts:allProducts.filter(p=>p.category===cat);
 produitsAffiches.forEach(p=>{
@@ -181,17 +181,29 @@ div.innerHTML=`
 <div class="product-name">${p.name}</div>
 <div class="product-price">${p.price.toFixed(2)} €</div>
 <div class="product-desc">${p.desc}</div>
-<button class="btn-order">Commander</button>`;
+<button class="btn-order">${lang === 'en' ? 'Order' : 'Commander'}</button>`;
 productsGrid.appendChild(div);
 });
+const filters = document.getElementById('filters');
+if (filters) {
+  const btns = filters.querySelectorAll('.filter-btn');
+  btns[0].querySelector('span:last-child').textContent = lang === 'en' ? 'All products' : 'Tous les produits';
+  btns[1].querySelector('span:last-child').textContent = lang === 'en' ? 'Supermarkets' : 'Supermarchés';
+  btns[2].querySelector('span:last-child').textContent = lang === 'en' ? 'Bakeries' : 'Boulangeries';
+  btns[3].querySelector('span:last-child').textContent = lang === 'en' ? 'Butcheries' : 'Boucheries';
+  btns[4].querySelector('span:last-child').textContent = lang === 'en' ? 'Fish markets' : 'Poissonneries';
+  btns[5].querySelector('span:last-child').textContent = lang === 'en' ? 'Pharmacies' : 'Pharmacies';
+  btns[6].querySelector('span:last-child').textContent = lang === 'en' ? 'Restaurants' : 'Restaurants';
 }
-afficherProduits('all');
+}
+let currentLang = 'fr';
+afficherProduits('all', currentLang);
 filterBtns.forEach(btn=>{
 btn.addEventListener('click',()=>{
 filterBtns.forEach(b=>b.classList.remove('active'));
 btn.classList.add('active');
 if(btn.hasAttribute('onclick')) return;
-afficherProduits(btn.dataset.category);
+afficherProduits(btn.dataset.category, currentLang);
 });
 });
 const langData = {
@@ -227,6 +239,7 @@ const langData = {
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
 function setLanguage(lang){
+  currentLang = lang;
   let data = langData[lang];
   document.documentElement.lang = data.lang;
   document.title = data.pageTitle;
@@ -235,7 +248,7 @@ function setLanguage(lang){
   document.querySelector('.page-header h1').textContent = data.pageHeader;
   document.querySelector('.promo-banner h2').textContent = data.promoH2;
   document.querySelector('.promo-banner p').textContent = data.promoP;
-  const navLinks = document.querySelectorAll('.menu nav > a:not(.submenu-trigger):not(.close-menu)');
+  const navLinks = document.querySelectorAll('.menu nav > a:not(.submenu-trigger)');
   if (lang === "fr") {
     navLinks[0].textContent = langData.fr.menu[1];
     navLinks[1].textContent = langData.fr.menu[2];
@@ -249,6 +262,7 @@ function setLanguage(lang){
     navLinks[3].textContent = langData.en.menu[4];
     document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
   }
+  afficherProduits(document.querySelector('.filter-btn.active').dataset.category, lang);
 }
 langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
