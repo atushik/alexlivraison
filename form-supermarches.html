@@ -39,6 +39,24 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 .badge{display:inline-block;background:#eae6ff;color:#3a2a88;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
 .notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
 </style>
+<!-- FIREBASE CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
+  authDomain: "alex-livraison.firebaseapp.com",
+  projectId: "alex-livraison",
+  storageBucket: "alex-livraison.appspot.com",
+  messagingSenderId: "937475497279",
+  appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
+  measurementId: "G-YFQWWTBMKV"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+</script>
 </head>
 <body>
 <div class="topbar">
@@ -121,13 +139,12 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 async function showProducts(){
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-  const arr = await res.json();
-  const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "supermarché");
+  const snap = await firebase.firestore().collection('products').where('category','==','supermarches').get();
   let html = "";
-  for(const p of my){
-    html += `<div class="item"><img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
-  }
+  snap.forEach(doc=>{
+    const p = doc.data();
+    html += `<div class="item"><img src="${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
+  });
   document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
 }
 showProducts();
@@ -220,21 +237,33 @@ gen.onclick=async()=>{
   formData.append('document',new File([pdfBlob],'Convention_Supermarché.pdf',{type:'application/pdf'}));
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
 };
+// FIREBASE автоматизация загрузки товара
 document.getElementById('product-form').addEventListener('submit', async function(e){
   e.preventDefault();
   const form = e.target;
-  const formData = new FormData(form);
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
-    method: 'POST',
-    body: formData
-  });
-  const data = await res.json();
-  if(data.success){
-    document.getElementById('result').textContent = 'Success';
+  const name = form.elements['name'].value;
+  const price = parseFloat(form.elements['price'].value);
+  const desc = form.elements['desc'].value;
+  const cat = form.elements['cat'].value || "supermarches";
+  const file = form.elements['photo'].files[0];
+  const resultDiv = document.getElementById('result');
+  if(!file){resultDiv.textContent="Выберите фото товара!";return;}
+  try {
+    const storageRef = firebase.storage().ref('products/' + Date.now() + '_' + file.name);
+    await storageRef.put(file);
+    const imgUrl = await storageRef.getDownloadURL();
+    await firebase.firestore().collection('products').add({
+      name: name,
+      price: price,
+      desc: desc,
+      category: cat.toLowerCase() || "supermarches",
+      img: imgUrl
+    });
+    resultDiv.textContent = "Produit ajouté!";
     form.reset();
     showProducts();
-  } else {
-    document.getElementById('result').textContent = 'Error';
+  } catch(e){
+    resultDiv.textContent = "Erreur ajout produit";
   }
 });
 </script>
