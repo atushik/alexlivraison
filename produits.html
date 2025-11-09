@@ -23,8 +23,6 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .hamburger.active::after{transform:translateY(-10px) rotate(-45deg)}
 .menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
 .menu.open{right:0}
-.close-menu{position:absolute;top:20px;right:25px;font-size:32px;cursor:pointer;color:#fff;transition:.3s;display:none;}
-.close-menu:hover{color:#b88aff;transform:rotate(90deg)}
 .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
 .menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
 .menu .submenu-trigger{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.09);font-weight:700;cursor:pointer;position:relative;}
@@ -129,6 +127,8 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
 <button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
 <button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
+<button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
+<button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
 </div>
 <div class="products-grid" id="productsGrid"></div>
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
@@ -168,7 +168,9 @@ const categoryNames={
   boucheries:'Boucheries',
   poissonneries:'Poissonneries',
   pharmacies:'Pharmacies',
-  restaurants:'Restaurants'
+  restaurants:'Restaurants',
+  epicerie:'Épicerie',
+  commercants:'Commerçants'
 };
 function afficherProduitsFirestore(cat){
   productsGrid.innerHTML = '';
