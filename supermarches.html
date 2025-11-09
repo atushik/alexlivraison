@@ -129,7 +129,7 @@
       let catF=document.getElementById('filter-cat').value;
       let term=document.getElementById('search').value.toLowerCase().trim();
       let res=demoProds.filter(x=>(!catF||x.cat===catF)&&(!term||x.name.toLowerCase().includes(term)||x.desc.toLowerCase().includes(term)));
-      if(res.length<6){while(res.length<6){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Partenaires en cours','cat':'Nouveau','price':'—'})}}
+      if(res.length<6){while(res.length<6){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Partenaires en cours',cat:'Nouveau',price:'—'})}}
       for(let p of res){
         html+=`<div class="product-card">
           <img src="${p.img}" class="product-img" alt="">
