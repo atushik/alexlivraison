@@ -66,6 +66,7 @@
   <form class="search-row" onsubmit="event.preventDefault()">
     <select class="filter-select" id="filter-cat">
       <option value="">Tous</option>
+      <option value="Supermarchés">Supermarchés</option>
       <option value="Alimentation">Alimentation</option>
       <option value="Boissons">Boissons</option>
       <option value="Frais">Produits frais</option>
@@ -87,14 +88,14 @@
         sub:"Trouvez vos produits partenaires et commandez facilement.",
         promo:"🎉 5 premières livraisons gratuites chez chaque nouveau partenaire !",
         searchPH:"Rechercher un produit",
-        cat:["Tous","Alimentation","Boissons","Produits frais","Bio & Healthy","Promotions"]
+        cat:["Tous","Supermarchés","Alimentation","Boissons","Produits frais","Bio & Healthy","Promotions"]
       },
       en:{
         title:"Partner Products",
         sub:"Find partner products and order easily.",
         promo:"🎉 First 5 deliveries free at every new partner!",
         searchPH:"Search for a product",
-        cat:["All","Groceries","Drinks","Fresh products","Organic & Healthy","Promos"]
+        cat:["All","Supermarkets","Groceries","Drinks","Fresh products","Organic & Healthy","Promos"]
       }
     }
     document.getElementById('main-title').onclick=()=>{
@@ -122,7 +123,11 @@
       {img:'https://cdn.pixabay.com/photo/2017/04/23/21/52/salad-2256467_1280.jpg',name:'Salade fraîche',desc:'Mélange maison',cat:'Frais',price:'2.80€'},
       {img:'https://cdn.pixabay.com/photo/2017/01/03/11/50/cake-1955659_1280.jpg',name:'Tarte du jour',desc:'Gâteau pomme',cat:'Promo',price:'2.50€'},
       {img:'https://cdn.pixabay.com/photo/2014/11/15/23/06/bread-532243_1280.jpg',name:'Pain de campagne',desc:'Levain naturel',cat:'Alimentation',price:'2.10€'},
-      {img:'https://cdn.pixabay.com/photo/2017/05/07/07/53/food-2291766_1280.jpg',name:'Burger maison',desc:'100% boeuf, tomate',cat:'Promo',price:'3.00€'}
+      {img:'https://cdn.pixabay.com/photo/2017/05/07/07/53/food-2291766_1280.jpg',name:'Burger maison',desc:'100% boeuf, tomate',cat:'Promo',price:'3.00€'},
+
+      {img:'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80',name:'Riz long grain',desc:'1kg, extra',cat:'Supermarchés',price:'2.30€'},
+      {img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',name:'Huile d’olive',desc:'750ml, vierge',cat:'Supermarchés',price:'5.80€'},
+      {img:'https://images.unsplash.com/photo-1519864601725-fe2960a123b7?auto=format&fit=crop&w=400&q=80',name:'Lait demi-écrémé',desc:'Bio, 1L',cat:'Supermarchés',price:'1.80€'}
     ];
     function renderProducts(){
       let html='';
