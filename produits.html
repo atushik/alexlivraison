@@ -203,12 +203,18 @@ function afficherProduitsFirestore(cat){
 let curCat='all';
 afficherProduitsFirestore(curCat);
 filterBtns.forEach(btn=>{
-btn.addEventListener('click',()=>{
-filterBtns.forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-curCat=btn.dataset.category;
-afficherProduitsFirestore(curCat);
-});
+  btn.addEventListener('click',()=>{
+    filterBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    curCat=btn.dataset.category;
+    if(curCat !== "all") {
+      if(categoryPages[curCat]) {
+        window.location.href = categoryPages[curCat];
+        return;
+      }
+    }
+    afficherProduitsFirestore(curCat);
+  });
 });
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
