@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Produits Partenaires - AlexLivraison</title>
 <style>
-/* Весь твой CSS (оставлять как есть) */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh;overflow-x:hidden}
 .wrap{max-width:1060px;margin:0 auto;padding:20px}
@@ -139,7 +138,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
   authDomain: "alex-livraison.firebaseapp.com",
   projectId: "alex-livraison",
-  storageBucket: "alex-livraison.firebasestorage.app",
+  storageBucket: "alex-livraison.appspot.com",
   messagingSenderId: "937475497279",
   appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
   measurementId: "G-YFQWWTBMKV"
@@ -189,7 +188,7 @@ function afficherProduitsFirestore(cat){
       <button class="btn-order">Commander</button>`;
       productsGrid.appendChild(div);
     });
-    if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Нет данных для этой категории</div>';
+    if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
   });
 }
 let curCat='all';
