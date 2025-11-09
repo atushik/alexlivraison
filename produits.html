@@ -77,6 +77,8 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -121,17 +123,28 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </div>
 <div class="filters" id="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
-<button class="filter-btn" data-category="supermarches" onclick="window.location.href='supermarches.html'"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries" onclick="window.location.href='boulangeries.html'"><span class="emoji">🥖</span><span>Boulangeries</span></button>
-<button class="filter-btn" data-category="boucheries" onclick="window.location.href='boucheries.html'"><span class="emoji">🥩</span><span>Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries" onclick="window.location.href='poissonneries.html'"><span class="emoji">🐟</span><span>Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies" onclick="window.location.href='pharmacies.html'"><span class="emoji">💊</span><span>Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants" onclick="window.location.href='restaurants.html'"><span class="emoji">🍽</span><span>Restaurants</span></button>
+<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
+<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
+<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
+<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
+<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
+<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
 </div>
 <div class="products-grid" id="productsGrid"></div>
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
+  authDomain: "alex-livraison.firebaseapp.com",
+  projectId: "alex-livraison",
+  storageBucket: "alex-livraison.firebasestorage.app",
+  messagingSenderId: "937475497279",
+  appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
+  measurementId: "G-YFQWWTBMKV"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
@@ -157,55 +170,39 @@ const categoryNames={
   pharmacies:'Pharmacies',
   restaurants:'Restaurants'
 };
-let allProducts;
-try{allProducts=JSON.parse(localStorage.getItem('produits'))||[];}catch{allProducts=[];}
-if(!allProducts.length){
-allProducts=[
-{name:'Pain Complet Bio',price:2.50,category:'boulangeries',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400',desc:'Pain frais du jour'},
-{name:'Lait Frais Bio',price:3.20,category:'supermarches',img:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400',desc:'1L, origine locale'},
-{name:'Entrecôte Premium',price:18.50,category:'boucheries',img:'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400',desc:'500g, race Limousine'},
-{name:'Saumon Frais',price:22.00,category:'poissonneries',img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400',desc:'Pêche du jour'},
-{name:'Paracétamol 1g',price:4.20,category:'pharmacies',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400',desc:'Boîte de 20 comprimés'},
-{name:'Pizza Margherita',price:9.90,category:'restaurants',img:'https://images.unsplash.com/photo-1601924928376-3c28a3a9b84b?w=400',desc:'Authentique italienne'}
-];
+function afficherProduitsFirestore(cat){
+  productsGrid.innerHTML = '';
+  let ref = db.collection('products');
+  if(cat!=='all') ref = ref.where('category','==',cat);
+  ref.get().then(snap=>{
+    snap.forEach(doc=>{
+      const p = doc.data();
+      const div=document.createElement('div');
+      div.className='product-card';
+      div.innerHTML=`
+      <img src="${p.imageUrl||p.img||''}" class="product-img" alt="${p.name}">
+      <div class="product-badge">${categoryNames[p.category]||''}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price ? p.price.toFixed(2)+' €' : ''}</div>
+      <div class="product-desc">${p.desc||''}</div>
+      <button class="btn-order">Commander</button>`;
+      productsGrid.appendChild(div);
+    });
+    if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Нет данных для этой категории</div>';
+  });
 }
-function afficherProduits(cat, lang='fr'){
-productsGrid.innerHTML='';
-const produitsAffiches=cat==='all'?allProducts:allProducts.filter(p=>p.category===cat);
-produitsAffiches.forEach(p=>{
-const div=document.createElement('div');
-div.className='product-card';
-div.innerHTML=`
-<img src="${p.img}" class="product-img" alt="${p.name}">
-<div class="product-badge">${categoryNames[p.category]||''}</div>
-<div class="product-name">${p.name}</div>
-<div class="product-price">${p.price.toFixed(2)} €</div>
-<div class="product-desc">${p.desc}</div>
-<button class="btn-order">${lang === 'en' ? 'Order' : 'Commander'}</button>`;
-productsGrid.appendChild(div);
-});
-const filters = document.getElementById('filters');
-if (filters) {
-  const btns = filters.querySelectorAll('.filter-btn');
-  btns[0].querySelector('span:last-child').textContent = lang === 'en' ? 'All products' : 'Tous les produits';
-  btns[1].querySelector('span:last-child').textContent = lang === 'en' ? 'Supermarkets' : 'Supermarchés';
-  btns[2].querySelector('span:last-child').textContent = lang === 'en' ? 'Bakeries' : 'Boulangeries';
-  btns[3].querySelector('span:last-child').textContent = lang === 'en' ? 'Butcheries' : 'Boucheries';
-  btns[4].querySelector('span:last-child').textContent = lang === 'en' ? 'Fish markets' : 'Poissonneries';
-  btns[5].querySelector('span:last-child').textContent = lang === 'en' ? 'Pharmacies' : 'Pharmacies';
-  btns[6].querySelector('span:last-child').textContent = lang === 'en' ? 'Restaurants' : 'Restaurants';
-}
-}
-let currentLang = 'fr';
-afficherProduits('all', currentLang);
+let curCat='all';
+afficherProduitsFirestore(curCat);
 filterBtns.forEach(btn=>{
 btn.addEventListener('click',()=>{
 filterBtns.forEach(b=>b.classList.remove('active'));
 btn.classList.add('active');
-if(btn.hasAttribute('onclick')) return;
-afficherProduits(btn.dataset.category, currentLang);
+curCat=btn.dataset.category;
+afficherProduitsFirestore(curCat);
 });
 });
+const langFr=document.getElementById('langFr');
+const langEn=document.getElementById('langEn');
 const langData = {
   fr: {
     lang: 'fr',
@@ -236,10 +233,7 @@ const langData = {
     ]
   }
 };
-const langFr=document.getElementById('langFr');
-const langEn=document.getElementById('langEn');
 function setLanguage(lang){
-  currentLang = lang;
   let data = langData[lang];
   document.documentElement.lang = data.lang;
   document.title = data.pageTitle;
@@ -262,7 +256,7 @@ function setLanguage(lang){
     navLinks[3].textContent = langData.en.menu[4];
     document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
   }
-  afficherProduits(document.querySelector('.filter-btn.active').dataset.category, lang);
+  afficherProduitsFirestore(curCat);
 }
 langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
