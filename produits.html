@@ -170,9 +170,7 @@ const categoryPages={
 async function afficherProduitsSupabase(cat){
   productsGrid.innerHTML = '';
   let {data, error} = await supabase.from('products').select('*');
-  if(cat !== 'all') {
-     data = data.filter(p => p.category === cat);
-  }
+  if(cat!=='all') data = data.filter(p=>p.category===cat);
   if(error||!data) {
     productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
     return;
