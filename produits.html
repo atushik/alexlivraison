@@ -188,13 +188,13 @@ function afficherProduitsFirestore(cat){
       div.onclick=()=>{
         if(categoryPages[p.category]) window.location.href=categoryPages[p.category];
       };
-      div.innerHTML=
+      div.innerHTML=`
       <img src="${p.imageUrl||p.img||''}" class="product-img" alt="${p.name}">
       <div class="product-badge">${categoryNames[p.category]||''}</div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${p.price ? p.price.toFixed(2)+' €' : ''}</div>
       <div class="product-desc">${p.desc||''}</div>
-      <button class="btn-order">Commander</button>;
+      <button class="btn-order">Commander</button>`;
       productsGrid.appendChild(div);
     });
     if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
@@ -277,4 +277,4 @@ langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
 </script>
 </body>
-</html>
+</html> 
