@@ -12,7 +12,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .logo{font-size:28px;font-weight:bold;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
 .logo .emoji{display:inline-block;animation:bounce 2s infinite}
 .hamburger{width:30px;height:22px;position:relative;cursor:pointer;z-index:1001}
-.hamburger span,.hamburger::before,.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
+.hamburger span,
+.hamburger::before,
+.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
 .hamburger span{top:50%;transform:translateY(-50%)}
 .hamburger::before{top:0}
 .hamburger::after{bottom:0}
@@ -67,7 +69,8 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -125,10 +128,17 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
 <script>
-const supabaseUrl = "https://mfrsdahsnmebubhynlsa.supabase.co";
-const supabaseKey = "sb_publishable_PJmJ9Natsrqs3AFjRLHc6Q_0c6jH3-v";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-// --- отсюда весь остальной код НЕ меняется ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
+  authDomain: "alex-livraison.firebaseapp.com",
+  projectId: "alex-livraison",
+  storageBucket: "alex-livraison.appspot.com",
+  messagingSenderId: "937475497279",
+  appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
+  measurementId: "G-YFQWWTBMKV"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
@@ -166,33 +176,32 @@ const categoryPages={
   epicerie:'epicerie.html',
   commercants:'commercants.html'
 };
-async function afficherProduitsSupabase(cat){
+function afficherProduitsFirestore(cat){
   productsGrid.innerHTML = '';
-  let {data, error} = await supabase.from('products').select('*');
-  if(cat!=='all') data = data.filter(p=>p.category===cat);
-  if(error||!data) {
-    productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
-    return;
-  }
-  data.forEach(p=>{
-    const div=document.createElement('div');
-    div.className='product-card';
-    div.onclick=()=>{
-      if(categoryPages[p.category]) window.location.href=categoryPages[p.category];
-    };
-    div.innerHTML=`
+  let ref = db.collection('products');
+  if(cat!=='all') ref = ref.where('category','==',cat);
+  ref.get().then(snap=>{
+    snap.forEach(doc=>{
+      const p = doc.data();
+      const div=document.createElement('div');
+      div.className='product-card';
+      div.onclick=()=>{
+        if(categoryPages[p.category]) window.location.href=categoryPages[p.category];
+      };
+      div.innerHTML=`
       <img src="${p.imageUrl||p.img||''}" class="product-img" alt="${p.name}">
       <div class="product-badge">${categoryNames[p.category]||''}</div>
       <div class="product-name">${p.name}</div>
-      <div class="product-price">${p.price ? Number(p.price).toFixed(2)+' €' : ''}</div>
+      <div class="product-price">${p.price ? p.price.toFixed(2)+' €' : ''}</div>
       <div class="product-desc">${p.desc||''}</div>
       <button class="btn-order">Commander</button>`;
-    productsGrid.appendChild(div);
+      productsGrid.appendChild(div);
+    });
+    if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
   });
-  if(!data.length) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
 }
 let curCat='all';
-afficherProduitsSupabase(curCat);
+afficherProduitsFirestore(curCat);
 filterBtns.forEach(btn=>{
   btn.addEventListener('click',()=>{
     filterBtns.forEach(b=>b.classList.remove('active'));
@@ -204,7 +213,7 @@ filterBtns.forEach(btn=>{
         return;
       }
     }
-    afficherProduitsSupabase(curCat);
+    afficherProduitsFirestore(curCat);
   });
 });
 const langFr=document.getElementById('langFr');
@@ -262,7 +271,7 @@ function setLanguage(lang){
     navLinks[3].textContent = langData.en.menu[4];
     document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
   }
-  afficherProduitsSupabase(curCat);
+  afficherProduitsFirestore(curCat);
 }
 langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
