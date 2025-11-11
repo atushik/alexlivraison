@@ -67,12 +67,14 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
 <div class="wrap">
-<header><a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a><div class="hamburger" id="hamburger"><span></span></div></header>
+<header>
+<a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
+<div class="hamburger" id="hamburger"><span></span></div>
+</header>
 <div class="menu" id="menu">
 <nav>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
@@ -99,18 +101,15 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 </div>
 </div>
 </div>
-
 <div class="page-header">
 <div class="sticker">🛍</div>
 <h1>Bienvenue dans notre section de produits partenaires !</h1>
 <div class="sticker">✨</div>
 </div>
-
 <div class="promo-banner">
 <h2>🎉 Promotion spéciale!</h2>
 <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
-
 <div class="filters" id="filters">
 <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
 <button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
@@ -122,20 +121,16 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
 <button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
 </div>
-
 <div class="products-grid" id="productsGrid"></div>
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
-
 <script>
 const supabaseUrl = "https://mfrsdahsnmebubhynlsa.supabase.co";
 const supabaseKey = "sb_publishable_PJmJ9Natsrqs3AFjRLHc6Q_0c6jH3-v";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
-
 const openPartnerMenu=document.getElementById('openPartnerMenu');
 const partnerSubmenu=document.getElementById('partnerSubmenu');
 openPartnerMenu.onclick=function(e){
@@ -148,16 +143,14 @@ document.removeEventListener('click',handler);
 }
 });
 };
-
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
 const categoryNames={supermarches:'Supermarchés',boulangeries:'Boulangeries',boucheries:'Boucheries',poissonneries:'Poissonneries',pharmacies:'Pharmacies',restaurants:'Restaurants',epicerie:'Épicerie',commercants:'Commerçants'};
 const categoryPages={supermarches:'supermarches.html',boulangeries:'boulangeries.html',boucheries:'boucheries.html',poissonneries:'poissonneries.html',pharmacies:'pharmacies.html',restaurants:'restaurants.html',epicerie:'epicerie.html',commercants:'commercants.html'};
-
 async function afficherProduitsSupabase(cat){
 productsGrid.innerHTML='';
 let query=supabase.from('products').select('*');
-if(cat!=='all') query=query.eq('category',cat);
+if(cat!=='all'){query=query.eq('category',cat);}
 const {data,error}=await query;
 if(error){productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Erreur de chargement</div>';return;}
 if(!data.length){productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';return;}
@@ -165,13 +158,13 @@ data.forEach(p=>{
 const div=document.createElement('div');
 div.className='product-card';
 div.onclick=()=>{if(categoryPages[p.category])window.location.href=categoryPages[p.category];};
-div.innerHTML=
+div.innerHTML=`
 <img src="${p.imageUrl||p.img||''}" class="product-img" alt="${p.name}">
 <div class="product-badge">${categoryNames[p.category]||''}</div>
 <div class="product-name">${p.name}</div>
 <div class="product-price">${p.price?p.price.toFixed(2)+' €':''}</div>
 <div class="product-desc">${p.desc||''}</div>
-<button class="btn-order">Commander</button>;
+<button class="btn-order">Commander</button>`;
 productsGrid.appendChild(div);
 });
 }
