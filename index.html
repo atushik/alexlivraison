@@ -92,27 +92,15 @@
     .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.16);width:100%;margin-bottom:18px;}
     .form-label-row{display:flex;align-items:center;gap:13px;margin-top:10px;font-weight:700;}
     .form-label-row .label-anim{font-size:1.35em;display:inline-block;animation:animlabel 2s infinite alternate;}
-    @keyframes animlabel{0%{transform:translateY(0);}100%{transform:translateY(-8px);}
-    }
+    @keyframes animlabel{0%{transform:translateY(0);}100%{transform:translateY(-8px);}}
     .form-label-row .sticker{font-size:1.4em;animation:bounce 1.7s infinite alternate;}
     .sticker-anim{animation:sticker-jump 1.17s infinite alternate;}
-    @keyframes sticker-jump{
-      0%{transform:translateY(0) scale(1);}
-      60%{transform:translateY(-7px) scale(1.08);}
-      100%{transform:translateY(0) scale(1);}
-    }
+    @keyframes sticker-jump{0%{transform:translateY(0) scale(1);}60%{transform:translateY(-7px) scale(1.08);}100%{transform:translateY(0) scale(1);}}
     input,select{width:100%;padding:14px;margin-top:6px;border-radius:11px;border:1px solid #cfd0d8;outline:none;font-size:1.1em;}
     input:focus,select:focus{border-color:#9f8bff;box-shadow:0 0 0 3px #9f8bff33}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px;}
     @media(max-width:850px){.h2{font-size:1.4em;}}
-    @media(max-width:650px){
-      .topbar-inner{padding:10px;}
-      .h2{font-size:1.08em;}
-      .wrap{padding:5px;}
-      .partners{gap:13px;}
-      .card{padding:12px;}
-      .grid{grid-template-columns:1fr;gap:5px;}
-    }
+    @media(max-width:650px){.topbar-inner{padding:10px;}.h2{font-size:1.08em;}.wrap{padding:5px;}.partners{gap:13px;}.card{padding:12px;}.grid{grid-template-columns:1fr;gap:5px;}}
     .service{border:1px solid #e5e7ef;border-radius:10px;padding:9px 9px 9px 13px;font-size:1.06em;background:rgba(158,136,255,0.05);transition:.18s;display:flex;align-items:center;gap:8px;}
     .service .sticker{font-size:1.15em;margin-right:6px;}
     .service input{margin-right:7px;}
@@ -283,6 +271,7 @@
         document.getElementById('btn-fr').classList.toggle('active',lang==='fr');
         document.getElementById('btn-en').classList.toggle('active',lang==='en');
         drawer.classList.remove('open');
+        localStorage.setItem('alex_lang', lang);
       }
       const PRICE_PER_KM=0.9;
       const SIZE_FEES={S:0,M:0.5,L:1.0,XL:1.5};
@@ -346,7 +335,7 @@
       const dict={
         fr:{
           heroTitle:"🚲 Livraison locale rapide à Toulon & La Seyne",
-          heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !",
+          heroDesc:"Repas, courses, colis et petits envois — à vélo, scooter, auto. Commande en 30 secondes !",
           navCalc:"Produits D’affiliation",
           navPartners:"À propos",
           navContact:"Chat",
