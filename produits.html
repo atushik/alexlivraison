@@ -155,38 +155,29 @@ const categoryPages={
   epicerie:'epicerie.html',
   commercants:'commercants.html'
 };
-
 async function afficherProduitsAPI(cat){
   productsGrid.innerHTML = '<div style="text-align:center;color:white">Chargement...</div>';
   try {
     const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
     let data = await res.json();
-    
     if(cat === 'all') {
-      // TRI PAR PRIX CROISSANT (les moins chers en premier)
       data.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-      // Limiter aux 9 premiers produits pour ne pas tout montrer
       data = data.slice(0, 9);
     } else {
-      // Filtrer par catégorie
       data = data.filter(p => p.cat && p.cat.toLowerCase() === cat.toLowerCase());
     }
-
     productsGrid.innerHTML = '';
     if(data.length === 0) {
        productsGrid.innerHTML = '<div style="color:#fff;text-align:center;padding:20px;grid-column:1/-1">Aucun produit trouvé dans cette catégorie</div>';
        return;
     }
-
     data.forEach(p => {
       const div=document.createElement('div');
       div.className='product-card';
-      // Redirection vers la page de catégorie si on clique
       div.onclick=()=>{
          let targetPage = categoryPages[p.cat ? p.cat.toLowerCase() : ''] || '#';
          if(targetPage !== '#') window.location.href=targetPage;
       };
-      
       div.innerHTML=`
       <img src="https://alexlivraison-api-v2.onrender.com${p.img || ''}" class="product-img" alt="${p.name}">
       <div class="product-badge">${p.cat||'Produit'}</div>
@@ -201,10 +192,8 @@ async function afficherProduitsAPI(cat){
     productsGrid.innerHTML = '<div style="color:red;text-align:center;grid-column:1/-1">Erreur de chargement des produits.</div>';
   }
 }
-
 let curCat='all';
 afficherProduitsAPI(curCat);
-
 filterBtns.forEach(btn=>{
   btn.addEventListener('click',()=>{
     filterBtns.forEach(b=>b.classList.remove('active'));
@@ -219,7 +208,6 @@ filterBtns.forEach(btn=>{
     afficherProduitsAPI(curCat);
   });
 });
-
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
 const langData = {
