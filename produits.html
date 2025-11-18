@@ -71,8 +71,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 @media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -116,9 +114,9 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
 <div class="filters" id="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Tous les produits</span></button>
+<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Meilleurs Prix</span></button>
+<button class="filter-btn" data-category="boulangerie"><span class="emoji">🥖</span><span>Boulangeries</span></button>
 <button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boulangeries"><span class="emoji">🥖</span><span>Boulangeries</span></button>
 <button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
 <button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
 <button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
@@ -130,17 +128,6 @@ footer p{color:rgba(255,255,255,.7);font-size:14px}
 <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
-  authDomain: "alex-livraison.firebaseapp.com",
-  projectId: "alex-livraison",
-  storageBucket: "alex-livraison.appspot.com",
-  messagingSenderId: "937475497279",
-  appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
-  measurementId: "G-YFQWWTBMKV"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
 hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
@@ -158,19 +145,9 @@ openPartnerMenu.onclick=function(e){
 };
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
-const categoryNames={
-  supermarches:'Supermarchés',
-  boulangeries:'Boulangeries',
-  boucheries:'Boucheries',
-  poissonneries:'Poissonneries',
-  pharmacies:'Pharmacies',
-  restaurants:'Restaurants',
-  epicerie:'Épicerie',
-  commercants:'Commerçants'
-};
 const categoryPages={
   supermarches:'supermarches.html',
-  boulangeries:'boulangeries.html',
+  boulangerie:'boulangeries.html',
   boucheries:'boucheries.html',
   poissonneries:'poissonneries.html',
   pharmacies:'pharmacies.html',
@@ -178,32 +155,56 @@ const categoryPages={
   epicerie:'epicerie.html',
   commercants:'commercants.html'
 };
-function afficherProduitsFirestore(cat){
-  productsGrid.innerHTML = '';
-  let ref = db.collection('products');
-  if(cat!=='all') ref = ref.where('category','==',cat);
-  ref.get().then(snap=>{
-    snap.forEach(doc=>{
-      const p = doc.data();
+
+async function afficherProduitsAPI(cat){
+  productsGrid.innerHTML = '<div style="text-align:center;color:white">Chargement...</div>';
+  try {
+    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+    let data = await res.json();
+    
+    if(cat === 'all') {
+      // TRI PAR PRIX CROISSANT (les moins chers en premier)
+      data.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      // Limiter aux 9 premiers produits pour ne pas tout montrer
+      data = data.slice(0, 9);
+    } else {
+      // Filtrer par catégorie
+      data = data.filter(p => p.cat && p.cat.toLowerCase() === cat.toLowerCase());
+    }
+
+    productsGrid.innerHTML = '';
+    if(data.length === 0) {
+       productsGrid.innerHTML = '<div style="color:#fff;text-align:center;padding:20px;grid-column:1/-1">Aucun produit trouvé dans cette catégorie</div>';
+       return;
+    }
+
+    data.forEach(p => {
       const div=document.createElement('div');
       div.className='product-card';
+      // Redirection vers la page de catégorie si on clique
       div.onclick=()=>{
-        if(categoryPages[p.category]) window.location.href=categoryPages[p.category];
+         let targetPage = categoryPages[p.cat ? p.cat.toLowerCase() : ''] || '#';
+         if(targetPage !== '#') window.location.href=targetPage;
       };
+      
       div.innerHTML=`
-      <img src="${p.imageUrl || ''}" class="product-img" alt="${p.name}">
-      <div class="product-badge">${categoryNames[p.category]||''}</div>
+      <img src="https://alexlivraison-api-v2.onrender.com${p.img || ''}" class="product-img" alt="${p.name}">
+      <div class="product-badge">${p.cat||'Produit'}</div>
       <div class="product-name">${p.name}</div>
-      <div class="product-price">${p.price ? p.price.toFixed(2)+' €' : ''}</div>
+      <div class="product-price">${p.price ? parseFloat(p.price).toFixed(2)+' €' : ''}</div>
       <div class="product-desc">${p.desc||''}</div>
       <button class="btn-order">Commander</button>`;
       productsGrid.appendChild(div);
     });
-    if(!snap.size) productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px">Aucun produit dans cette catégorie</div>';
-  });
+  } catch (error) {
+    console.error(error);
+    productsGrid.innerHTML = '<div style="color:red;text-align:center;grid-column:1/-1">Erreur de chargement des produits.</div>';
+  }
 }
+
 let curCat='all';
-afficherProduitsFirestore(curCat);
+afficherProduitsAPI(curCat);
+
 filterBtns.forEach(btn=>{
   btn.addEventListener('click',()=>{
     filterBtns.forEach(b=>b.classList.remove('active'));
@@ -215,9 +216,10 @@ filterBtns.forEach(btn=>{
         return;
       }
     }
-    afficherProduitsFirestore(curCat);
+    afficherProduitsAPI(curCat);
   });
 });
+
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
 const langData = {
@@ -274,7 +276,7 @@ function setLanguage(lang){
     navLinks[3].textContent = langData.en.menu[4];
     document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
   }
-  afficherProduitsFirestore(curCat);
+  afficherProduitsAPI(curCat);
 }
 langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
