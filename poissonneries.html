@@ -1,165 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Poissonneries Partenaires | AlexLivraison</title>
-  <style>
-    :root{--violet:#6b23ff;}
-    html,body{height:100%;margin:0;padding:0;background:linear-gradient(180deg,#32006b 10%,#7a2cf5 100%);}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#fff;}
-    *{box-sizing:border-box;}
-    .menu-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 11px 10px 10px;}
-    .brand img{height:47px;}
-    .menu-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4.5px;width:40px;height:40px;border-radius:9px;background:#fff2;border:1.7px solid #ececff;cursor:pointer;}
-    .menu-btn span{display:block;width:22px;height:4px;background:#fff;border-radius:4px;transition:.24s;}
-    .menu-list{position:fixed;top:0;left:0;right:0;bottom:0;z-index:11;background:rgba(34,0,54,.97);display:none;flex-direction:column;}
-    .menu-list.visible{display:flex;}
-    .menu-list-inner{margin:auto;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:23px;}
-    .menu-link{padding:18px 54px;background:#fff2;color:#fff;font-weight:800;font-size:1.23em;border-radius:19px;text-decoration:none;transition:.11s;}
-    .menu-link:hover{background:#fff;color:#6b23ff;}
-    .close-btn{position:absolute;top:23px;right:21px;font-size:2.4em;color:#fff;background:none;border:none;cursor:pointer;}
-    .header-row{text-align:center;margin-top:7px;}
-    .title{font-size:2.13em;font-weight:900;margin:8px 0 0 0;letter-spacing:-1px;}
-    .subtitle{font-size:1.10em;color:#f5e4ff;}
-    .search-row{display:flex;gap:0.7em;margin:27px 0;}
-    .search{flex:1;padding:15px;font-size:1em;border-radius:13px;border:1.8px solid #e5dcfa;background:#fbf9ff;color:#3a1e7a;margin-right:10px;}
-    .filter-select{padding:14px 17px;font-size:1em;border-radius:13px;border:1.5px solid #d7d0fc;background:#f7f2ff;font-weight:700;color:#6b23ff;}
-    .products-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px 14px;padding-bottom:28px;}
-    .product-card{background:#fff;border-radius:17px;box-shadow:0 5px 24px #2e065622;padding:0 0 10px 0;display:flex;flex-direction:column;align-items:center;transition:.11s;}
-    .product-card:hover{box-shadow:0 12px 36px #8676d528;}
-    .product-img{width:100%;height:100px;object-fit:cover;border-radius:17px 17px 0 0;background:#ede6fd;}
-    .product-name{font-size:1em;font-weight:900;color:#591be7;text-align:center;margin:7px 6px 2px;}
-    .product-cat{background:#ece4ff;color:#773af2;border-radius:7px;padding:2px 10px;font-size:0.83em;margin:3px 0 7px;}
-    .product-desc{font-size:0.98em;color:#45307c;margin:0 7px;text-align:center;min-height:21px;}
-    .product-price{font-size:1.12em;font-weight:800;color:#23b572;margin-top:5px;}
-    .promo{background:linear-gradient(88deg,#fffbe2 40%,#ffd48c 100%);border-radius:13px;padding:12px 0 8px 0;text-align:center;font-weight:800;color:#ad821c;font-size:1.07em;margin:23px 0 17px 0;}
-    .footer-link{margin:0 auto 24px auto;display:block;text-align:center;font-weight:800;color:#fff;border-radius:12px;background:#fff2;padding:11px 30px 13px 30px;max-width:350px;text-decoration:none;}
-    .footer-link:hover{background:#fff;color:#6b23ff;}
-    @media(max-width:1200px){.products-grid{grid-template-columns:repeat(4,1fr);}}
-    @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}}
-    @media(max-width:700px){.products-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(max-width:520px){.products-grid{grid-template-columns:1fr 1fr;}.title{font-size:1.17em;}}
-  </style>
+<head><meta charset="utf-8"/><title>Poissonneries</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>body{background:#32006b;color:#fff;font-family:sans-serif}.g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.c{border:1px solid #fff;padding:10px}img{width:100%;height:100px}</style>
 </head>
 <body>
-  <div class="menu-bar">
-    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-    <button class="menu-btn" id="btn-menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </div>
-  <div class="menu-list" id="menu">
-    <button class="close-btn" id="close-menu">&times;</button>
-    <div class="menu-list-inner">
-      <a href="index.html" class="menu-link">Accueil</a>
-      <a href="produits.html" class="menu-link">Produits & Partenaires</a>
-      <a href="supermarches.html" class="menu-link">Supermarchés</a>
-      <a href="restaurants.html" class="menu-link">Restaurants</a>
-      <a href="pharmacies.html" class="menu-link">Pharmacies</a>
-      <a href="boulangeries.html" class="menu-link">Boulangeries</a>
-      <a href="about.html" class="menu-link">À propos</a>
-    </div>
-  </div>
-  <div class="header-row">
-    <div class="title" id="main-title">Poissonneries partenaires</div>
-    <div class="subtitle" id="main-sub">Fruits de mer, poissons frais et saveurs de l'océan livrés chaque jour.</div>
-  </div>
-  <form class="search-row" onsubmit="event.preventDefault()">
-    <select class="filter-select" id="filter-cat">
-      <option value="">Tous</option>
-      <option value="Poissons">Poissons</option>
-      <option value="Fruits de mer">Fruits de mer</option>
-      <option value="Plateaux">Plateaux</option>
-      <option value="Promo">Promotions</option>
-    </select>
-    <input type="text" class="search" id="search" placeholder="Rechercher poisson ou fruit de mer">
-  </form>
-  <div class="promo" id="promo-banner">🐟 Produits ultra-frais, pêchés du jour et plateaux gourmands toute l'année !</div>
-  <div class="products-grid" id="products-list"></div>
-  <a href="produits.html" class="footer-link" id="to-main">← Tous les produits partenaires</a>
-  <script>
-    document.getElementById('btn-menu').onclick=()=>{document.getElementById('menu').classList.add('visible')};
-    document.getElementById('close-menu').onclick=()=>{document.getElementById('menu').classList.remove('visible')};
-    let lang='fr';
-    const dict={
-      fr:{
-        title:"Poissonneries partenaires",
-        sub:"Fruits de mer, poissons frais et saveurs de l'océan livrés chaque jour.",
-        promo:"🐟 Produits ultra-frais, pêchés du jour et plateaux gourmands toute l'année !",
-        searchPH:"Rechercher poisson ou fruit de mer",
-        cat:["Tous","Poissons","Fruits de mer","Plateaux","Promotions"]
-      },
-      en:{
-        title:"Fishmongers partners",
-        sub:"Seafood and fresh fish delivered daily.",
-        promo:"🐟 Ultra-fresh seafood & platters all year round!",
-        searchPH:"Search for fish or seafood",
-        cat:["All","Fish","Seafood","Platters","Promos"]
-      }
-    };
-    document.getElementById('main-title').onclick=()=>{
-      lang=lang==='fr'?'en':'fr';setLang();
-    };
-    function setLang(){
-      document.getElementById('main-title').textContent=dict[lang].title;
-      document.getElementById('main-sub').textContent=dict[lang].sub;
-      document.getElementById('promo-banner').textContent=dict[lang].promo;
-      document.getElementById('search').placeholder=dict[lang].searchPH;
-      const catSel=document.getElementById('filter-cat');
-      for(let i=0;i<catSel.options.length;i++){catSel.options[i].text=dict[lang].cat[i];}
-      document.getElementById('to-main').textContent=lang==='fr'?'← Tous les produits partenaires':'← Back to all products';
-    }
-    setLang();
-    let produits=[];
-    try{produits=JSON.parse(localStorage.getItem('produits'))||[];}catch{produits=[];}
-    let poisProds=produits.filter(x=>x.category==='poissonneries');
-    if(!poisProds.length){
-      poisProds=[
-        {img:'https://cdn.pixabay.com/photo/2016/11/21/00/17/fish-1845890_1280.jpg',name:'Saumon frais',desc:'Pêché du jour, portion 180g',cat:'Poissons',price:'11.80€'},
-        {img:'https://cdn.pixabay.com/photo/2019/03/18/16/17/seafood-4066189_1280.jpg',name:'Plateau fruits de mer',desc:'24 huîtres, crevettes, bulots',cat:'Plateaux',price:'32.00€'},
-        {img:'https://cdn.pixabay.com/photo/2017/09/14/05/10/shrimp-2743535_1280.jpg',name:'Crevettes roses',desc:'250g, calibre royal',cat:'Fruits de mer',price:'5.40€'},
-        {img:'https://cdn.pixabay.com/photo/2016/03/09/15/10/fish-1246529_1280.jpg',name:'Filet de cabillaud',desc:'Nature, sans arête',cat:'Poissons',price:'9.60€'},
-        {img:'https://cdn.pixabay.com/photo/2017/07/06/20/47/oysters-2474715_1280.jpg',name:'Huîtres fines de claire',desc:'18 pièces, élevées à Marennes',cat:'Fruits de mer',price:'17.90€'},
-        {img:'https://cdn.pixabay.com/photo/2014/09/05/14/16/crab-437975_1280.jpg',name:'Tourteau entier',desc:'400g, cuit',cat:'Fruits de mer',price:'12.50€'},
-        {img:'https://cdn.pixabay.com/photo/2014/12/21/23/56/fish-579767_1280.jpg',name:'Bar sauvage',desc:'Prix au kilo',cat:'Poissons',price:'19.50€'},
-        {img:'https://cdn.pixabay.com/photo/2017/06/29/21/09/scampi-2454030_1280.jpg',name:'Langoustines fraîches',desc:'300g',cat:'Fruits de mer',price:'14.20€'},
-        {img:'https://cdn.pixabay.com/photo/2017/02/07/20/56/fish-2044306_1280.jpg',name:'Filet de dorade',desc:'Sans arêtes',cat:'Poissons',price:'8.80€'},
-        {img:'https://cdn.pixabay.com/photo/2016/03/05/18/54/fish-1238611_1280.jpg',name:'Colin d\'Alaska',desc:'Surgelé, 400g',cat:'Poissons',price:'7.60€'},
-        {img:'https://cdn.pixabay.com/photo/2016/06/13/12/56/shrimp-1458195_1280.jpg',name:'Gambas géantes',desc:'Paquet 400g',cat:'Fruits de mer',price:'14.60€'},
-        {img:'https://cdn.pixabay.com/photo/2014/09/05/14/16/crab-437975_1280.jpg',name:'Pinces de crabe',desc:'Prêtes à déguster',cat:'Fruits de mer',price:'9.10€'},
-        {img:'https://cdn.pixabay.com/photo/2017/09/14/05/10/shrimp-2743535_1280.jpg',name:'Brochettes crevettes',desc:'Sésame grillé',cat:'Fruits de mer',price:'6.20€'},
-        {img:'https://cdn.pixabay.com/photo/2017/07/06/20/47/oysters-2474715_1280.jpg',name:'Oursins',desc:'Plein iodé',cat:'Fruits de mer',price:'7.80€'},
-        {img:'https://cdn.pixabay.com/photo/2014/12/21/23/56/fish-579767_1280.jpg',name:'Maquereau fumé',desc:'2 filets',cat:'Poissons',price:'4.80€'},
-        {img:'https://cdn.pixabay.com/photo/2016/11/21/00/17/fish-1845890_1280.jpg',name:'Tartare de saumon',desc:'Préparé maison',cat:'Poissons',price:'12.40€'},
-        {img:'https://cdn.pixabay.com/photo/2016/03/09/15/10/fish-1246529_1280.jpg',name:'Sole meunière',desc:'Prête à cuire',cat:'Poissons',price:'15.60€'},
-        {img:'https://cdn.pixabay.com/photo/2017/06/29/21/09/scampi-2454030_1280.jpg',name:'Plateau royal',desc:'Saumon, crevettes, bigorneaux',cat:'Plateaux',price:'43.00€'},
-        {img:'https://cdn.pixabay.com/photo/2019/03/18/16/17/seafood-4066189_1280.jpg',name:'Mix coquillages',desc:'Palourdes, moules, coques',cat:'Plateaux',price:'18.70€'},
-        {img:'https://cdn.pixabay.com/photo/2016/10/14/17/48/mussels-1741785_1280.jpg',name:'Moules de bouchot',desc:'Sacs d\'1kg',cat:'Fruits de mer',price:'5.90€'}
-      ];
-    }
-    function renderProducts(){
-      let html='';
-      let catF=document.getElementById('filter-cat').value;
-      let term=document.getElementById('search').value.toLowerCase().trim();
-      let res=poisProds.filter(x=>(!catF||x.cat===catF)&&(!term||x.name.toLowerCase().includes(term)||x.desc.toLowerCase().includes(term));
-      if(res.length<20){while(res.length<20){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Nouveaux partenaires',cat:'Nouveau',price:'—'})}}
-      for(let p of res){
-        html+=`<div class="product-card">
-          <img src="${p.img}" class="product-img" alt="">
-          <div class="product-name">${p.name}</div>
-          <div class="product-desc">${p.desc||''}</div>
-          <div class="product-cat">${p.cat||''}</div>
-          <div class="product-price">${p.price}</div>
-        </div>`;
-      }
-      document.getElementById('products-list').innerHTML=html;
-    }
-    document.getElementById('search').oninput=renderProducts;
-    document.getElementById('filter-cat').onchange=renderProducts;
-    renderProducts();
-  </script>
+<h1>Poissonneries</h1><div class="g" id="l"></div>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"});
+firebase.firestore().collection('products').where('category','==','poissonneries').get().then(s=>{
+document.getElementById('l').innerHTML=s.docs.map(d=>`<div class="c"><img src="${d.data().imageUrl}"><p>${d.data().name} - ${d.data().price}€</p></div>`).join('');
+});
+</script>
 </body>
 </html>
