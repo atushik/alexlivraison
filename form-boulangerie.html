@@ -4,7 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>Partenaires • Boulangeries | AlexLivraison</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
 html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
@@ -33,9 +36,6 @@ input:focus,select:focus,textarea:focus{border-color:#9f8bff;box-shadow:0 0 0 3p
 .row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .sig-wrap{border:1px dashed #b6b4d6;border-radius:12px;overflow:hidden;background:#fff}
 canvas#signature{width:100%;height:220px;display:block;touch-action:none}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
-.item{background:#fff;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.12);padding:12px}
-.item img{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;background:#f3f3f8}
 .badge{display:inline-block;background:#eae6ff;color:#3a2a88;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
 .notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
 </style>
@@ -50,24 +50,20 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 <main class="wrap">
   <h1 class="h1">Boulangeries • Portail Partenaire</h1>
   <section class="card">
-    <h2 class="h2">Produits des boulangeries</h2>
-    <div id="products" class="list"></div>
-  </section>
-  <section class="card">
     <h2 class="h2">Présentation</h2>
     <div class="muted">
-      Livraison de pains, viennoiseries, pâtisseries et douceurs des boulangeries artisanales rapidement, avec soin et confidentialité.
+      Livraison de pains frais, viennoiseries, pâtisseries et produits de boulangerie artisanale. Rejoignez notre réseau pour distribuer vos créations chaque matin.
     </div>
     <div class="row-actions">
-      <span class="badge">Fiabilité</span>
-      <span class="badge">Confidentialité</span>
-      <span class="badge">Priorité</span>
+      <span class="badge">Fraîcheur</span>
+      <span class="badge">Rapidité</span>
+      <span class="badge">Soin</span>
     </div>
   </section>
   <section id="step1" class="card">
     <h2 class="h2">Formulaire de collaboration</h2>
     <div class="grid2">
-      <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
+      <div><label>Nom de l’enseigne (Boulangerie)</label><input id="f_enseigne"></div>
       <div><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly></div>
     </div>
     <div class="grid3">
@@ -106,137 +102,176 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
     <div class="notice">Après génération, vous pourrez télécharger la convention signée.</div>
   </section>
   <section id="step3" class="card lock">
-    <h2 class="h2">Ajout de produits</h2>
-    <form id="product-form" class="grid3" enctype="multipart/form-data">
-      <div><label>Nom du produit</label><input name="name" required></div>
-      <div><label>Prix (€)</label><input name="price" type="number" step="0.01" required></div>
-      <div><label>Photo</label><input name="photo" type="file" accept="image/*" required></div>
-      <div style="grid-column:1/4"><label>Description</label><textarea name="desc" required></textarea></div>
-      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Boulangerie" readonly required></div>
-      <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
+    <h2 class="h2">Ajout de produits (Base de données Permanente)</h2>
+    <form id="product-form" class="grid3">
+      <div><label>Nom du produit</label><input id="p_name" placeholder="Ex: Croissant au beurre" required></div>
+      <div><label>Prix (€)</label><input id="p_price" type="number" step="0.01" placeholder="1.20" required></div>
+      <div><label>Photo</label><input id="p_photo" type="file" accept="image/*" required></div>
+      <div style="grid-column:1/4"><label>Description</label><textarea id="p_desc" placeholder="Ingrédients, allergènes..." required></textarea></div>
+      <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Enregistrer le produit</button></div>
     </form>
-    <div id="result"></div>
+    <div id="upload-status" style="margin-top:15px;font-weight:bold"></div>
   </section>
 </main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-async function showProducts(){
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-  const arr = await res.json();
-  const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "boulangerie");
-  let html = "";
-  for(const p of my){
-    html += `<div class="item"><img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
-  }
-  document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
-}
-showProducts();
-</script>
-<script>
-const BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-const CHAT_ID="7129872491";
-const step1Btn=document.getElementById('btn_step1');
-const step2=document.getElementById('step2');
-const step3=document.getElementById('step3');
-const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}step2.classList.remove('lock')};
-const signName=document.getElementById('sign_name');
-const signDate=document.getElementById('sign_date');
-signDate.valueAsDate=new Date();
-const canvas=document.getElementById('signature');
-const ctx=canvas.getContext('2d');
-let drawing=false;
-function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
-function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
-function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
-function end(){drawing=false}
-canvas.addEventListener('mousedown',start);
-canvas.addEventListener('mousemove',move);
-canvas.addEventListener('mouseup',end);
-canvas.addEventListener('mouseleave',end);
-canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
-canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
-canvas.addEventListener('touchend',end);
-document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
-const agree=document.getElementById('agree');
-const gen=document.getElementById('gen_pdf');
-const dlPartner=document.getElementById('dl_partner');
-const dlAlex=document.getElementById('dl_alex');
-gen.onclick=async()=>{
-  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
-  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
-  if(!agree.checked){alert('Veuillez accepter la convention.');return}
-  const sigData=canvas.toDataURL('image/png');
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:'pt',format:'a4'});
-  const margin=48;let y=margin;
-  doc.addImage("logo.jpg","JPEG",430,20,100,100);
-  doc.setFont('helvetica','bold');doc.setFontSize(18);
-  doc.text('Convention de Collaboration',margin,y);
-  y+=30;
-  doc.setFont('helvetica','');
-  doc.setFontSize(12);
-  const enseigne=document.getElementById('f_enseigne').value.trim();
-  const cat=document.getElementById('f_cat').value.trim();
-  const resp=document.getElementById('f_resp').value.trim();
-  const siren=document.getElementById('f_siren').value.trim();
-  const siret=document.getElementById('f_siret').value.trim();
-  const addr=document.getElementById('f_addr').value.trim();
-  const tel=document.getElementById('f_tel').value.trim();
-  const mail=document.getElementById('f_mail').value.trim();
-  const lines=[
-    `Entre AlexLivraison (Atabek Zakirov) et ${enseigne} (${cat}).`,
-    `Responsable: ${resp}`,
-    `SIREN: ${siren} — SIRET: ${siret}`,
-    `Adresse: ${addr}`,
-    `Téléphone: ${tel} — E-mail: ${mail}`,
-    'Objet: Livraison de pains, viennoiseries et pâtisseries selon la réglementation.',
-    'Offre spéciale: 5 livraisons gratuites lors de la signature.',
-    'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
-    'Tarifs: barème en vigueur, facturation mensuelle.',
-    'Engagements: ponctualité, qualité et confidentialité.',
-    'Durée: à compter de la signature, préavis 15 jours pour résiliation.',
-    'Signature électronique ci-dessous.'
-  ];
-  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
-  y+=10;
-  doc.text(`Date: ${signDate.value}`,margin,y);y+=8;
-  doc.text(`Signataire: ${signName.value}`,margin,y);y+=12;
-  doc.addImage(sigData,'PNG',margin,y,220,110);
-  y+=130;
-  doc.addImage("sinature-alex.jpg","JPEG",350,y-50,130,70);
-  doc.addImage("stamp-alex.jpg","JPEG",470,y-40,100,100);
-  const pdfBlob=doc.output('blob');
-  const url=URL.createObjectURL(pdfBlob);
-  dlPartner.href=url;dlAlex.href=url;
-  dlPartner.style.display='inline-block';
-  dlAlex.style.display='inline-block';
-  step3.classList.remove('lock');
-  const formData=new FormData();
-  formData.append('chat_id',CHAT_ID);
-  formData.append('document',new File([pdfBlob],'Convention_Boulangerie.pdf',{type:'application/pdf'}));
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
-};
-document.getElementById('product-form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-  const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
-    method: 'POST',
-    body: formData
-  });
-  const data = await res.json();
-  if(data.success){
-    document.getElementById('result').textContent = 'Success';
-    form.reset();
-    showProducts();
-  } else {
-    document.getElementById('result').textContent = 'Error';
-  }
-});
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
+    authDomain: "alex-livraison.firebaseapp.com",
+    projectId: "alex-livraison",
+    storageBucket: "alex-livraison.appspot.com",
+    messagingSenderId: "937475497279",
+    appId: "1:937475497279:web:62dc9eba8e77a5113ec78a"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  const BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+  const CHAT_ID="7129872491";
+
+  const step1Btn=document.getElementById('btn_step1');
+  const step2=document.getElementById('step2');
+  const step3=document.getElementById('step3');
+  const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+  
+  step1Btn.onclick=()=>{
+    for(const el of inputs){if(!el.value.trim()){alert('Veuillez compléter tous les champs obligatoires.');return}}
+    step2.classList.remove('lock')
+  };
+
+  const signName=document.getElementById('sign_name');
+  const signDate=document.getElementById('sign_date');
+  signDate.valueAsDate=new Date();
+  const canvas=document.getElementById('signature');
+  const ctx=canvas.getContext('2d');
+  let drawing=false;
+
+  function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
+  window.addEventListener('resize',resizeCanvas);
+  resizeCanvas();
+
+  function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
+  function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
+  function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
+  function end(){drawing=false}
+
+  canvas.addEventListener('mousedown',start);
+  canvas.addEventListener('mousemove',move);
+  canvas.addEventListener('mouseup',end);
+  canvas.addEventListener('mouseleave',end);
+  canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
+  canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
+  canvas.addEventListener('touchend',end);
+
+  document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
+  const agree=document.getElementById('agree');
+  const gen=document.getElementById('gen_pdf');
+  const dlPartner=document.getElementById('dl_partner');
+  const dlAlex=document.getElementById('dl_alex');
+
+  gen.onclick=async()=>{
+    for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
+    if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
+    if(!agree.checked){alert('Veuillez accepter la convention.');return}
+    
+    const sigData=canvas.toDataURL('image/png');
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({unit:'pt',format:'a4'});
+    const margin=48;let y=margin;
+    doc.setFont('helvetica','bold');doc.setFontSize(18);
+    doc.text('Convention de Collaboration - Boulangerie',margin,y);
+    y+=30;
+    doc.setFont('helvetica','');
+    doc.setFontSize(12);
+    const enseigne=document.getElementById('f_enseigne').value.trim();
+    const cat=document.getElementById('f_cat').value.trim();
+    const resp=document.getElementById('f_resp').value.trim();
+    const siren=document.getElementById('f_siren').value.trim();
+    const siret=document.getElementById('f_siret').value.trim();
+    const addr=document.getElementById('f_addr').value.trim();
+    const tel=document.getElementById('f_tel').value.trim();
+    const mail=document.getElementById('f_mail').value.trim();
+    
+    const lines=[
+      `Entre AlexLivraison (Atabek Zakirov) et ${enseigne} (${cat}).`,
+      `Responsable: ${resp}`,
+      `SIREN: ${siren} — SIRET: ${siret}`,
+      `Adresse: ${addr}`,
+      `Téléphone: ${tel} — E-mail: ${mail}`,
+      'Objet: Livraison de pains, viennoiseries, gâteaux et produits de boulangerie.',
+      'Offre spéciale: 5 livraisons gratuites lors de la signature.',
+      'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
+      'Tarifs: barème en vigueur, facturation mensuelle.',
+      'Engagements: ponctualité, soin des produits fragiles et hygiène.',
+      'Durée: à compter de la signature, préavis 15 jours pour résiliation.',
+      'Signature électronique ci-dessous.'
+    ];
+    
+    lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
+    y+=10;
+    doc.text(`Date: ${signDate.value}`,margin,y);y+=8;
+    doc.text(`Signataire: ${signName.value}`,margin,y);y+=12;
+    doc.addImage(sigData,'PNG',margin,y,220,110);
+    y+=130;
+    
+    const pdfBlob=doc.output('blob');
+    const url=URL.createObjectURL(pdfBlob);
+    dlPartner.href=url;dlAlex.href=url;
+    dlPartner.style.display='inline-block';
+    dlAlex.style.display='inline-block';
+    step3.classList.remove('lock');
+    
+    const formData=new FormData();
+    formData.append('chat_id',CHAT_ID);
+    formData.append('document',new File([pdfBlob],'Convention_Boulangerie.pdf',{type:'application/pdf'}));
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
+  };
+
+  document.getElementById('product-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('upload-status');
+    const btn = e.target.querySelector('button');
+    
+    const name = document.getElementById('p_name').value;
+    const price = parseFloat(document.getElementById('p_price').value);
+    const desc = document.getElementById('p_desc').value;
+    const file = document.getElementById('p_photo').files[0];
+    const category = 'boulangerie'; 
+
+    if(!file) return;
+
+    btn.disabled = true;
+    status.style.color = 'blue';
+    status.textContent = "Téléchargement de l'image en cours...";
+
+    try {
+      const storageRef = storage.ref(`products/${Date.now()}_${file.name}`);
+      const snapshot = await storageRef.put(file);
+      const imageUrl = await snapshot.ref.getDownloadURL();
+
+      status.textContent = "Enregistrement dans la base de données...";
+
+      await db.collection('products').add({
+        name: name,
+        price: price,
+        desc: desc,
+        imageUrl: imageUrl,
+        category: category,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      status.style.color = 'green';
+      status.textContent = "Produit ajouté avec succès ! (Sauvegarde permanente)";
+      e.target.reset();
+
+    } catch (error) {
+      console.error(error);
+      status.style.color = 'red';
+      status.textContent = "Erreur: " + error.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
 </script>
 </body>
 </html>
