@@ -5,32 +5,33 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>body{padding:20px;background:#eee}</style>
+<style>body{padding:20px;background:#eee;font-family:sans-serif}.box{background:#fff;padding:20px;margin-bottom:10px}input{display:block;margin:5px 0}</style>
 </head>
 <body>
-<h3>Commerçants Locaux</h3>
-<input id="n" placeholder="Nom"><br><button onclick="document.getElementById('d').style.display='block'">Suite</button>
-<div id="d" style="display:none">
-<canvas id="c" width="200" height="100" style="background:#fff"></canvas><br><button id="s">Signer</button>
+<h1>Commerçants Locaux</h1>
+<div class="box" id="b1">
+<input id="n" placeholder="Nom du commerce"><button onclick="document.getElementById('b2').style.display='block'">Ok</button>
 </div>
-<div id="u" style="display:none">
+<div class="box" id="b2" style="display:none">
+<canvas id="c" width="300" height="150" style="border:1px solid #000"></canvas><br><button id="s">Signer</button>
+</div>
+<div class="box" id="b3" style="display:none">
 <input id="pn" placeholder="Produit"><input id="pp" placeholder="Prix"><input type="file" id="pf"><button id="add">Ajouter</button>
 </div>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"});
-const db=firebase.firestore(),st=firebase.storage();
-const c=document.getElementById('c'),x=c.getContext('2d');
-c.onclick=e=>x.fillRect(e.offsetX,e.offsetY,3,3);
+const db=firebase.firestore(),st=firebase.storage(),c=document.getElementById('c'),x=c.getContext('2d');
+let p=false;c.onmousedown=()=>p=true;c.onmouseup=()=>p=false;c.onmousemove=e=>{if(p)x.fillRect(e.offsetX,e.offsetY,2,2)};
 document.getElementById('s').onclick=async()=>{
   const f=new FormData();f.append('chat_id','7129872491');f.append('document',new File([new window.jspdf.jsPDF().output('blob')],'C.pdf'));
   await fetch('https://api.telegram.org/bot8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA/sendDocument',{method:'POST',body:f});
-  document.getElementById('u').style.display='block';
+  document.getElementById('b3').style.display='block';
 };
 document.getElementById('add').onclick=async()=>{
   const f=document.getElementById('pf').files[0],r=st.ref('c/'+Date.now());
   await r.put(f);
   await db.collection('products').add({name:document.getElementById('pn').value,price:parseFloat(document.getElementById('pp').value),imageUrl:await r.getDownloadURL(),category:'commercants'});
-  alert('OK');
+  alert('Ajouté');
 };
 </script>
 </body>
