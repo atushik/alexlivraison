@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="utf-8"/><title>Épiceries</title>
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Partenaires • Épiceries</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>body{font-family:sans-serif;padding:20px}input{display:block;margin:5px 0}</style>
+<style>body{font-family:sans-serif;background:#f5f5f5;padding:16px}.card{background:#fff;padding:16px;border-radius:8px;margin-bottom:16px}input,textarea{width:100%;margin:8px 0;padding:8px}.lock{opacity:0.5;pointer-events:none}</style>
 </head>
 <body>
 <h1>Épiceries</h1>
-<input id="n" placeholder="Nom"><button onclick="document.getElementById('z2').hidden=false">Ok</button>
-<div id="z2" hidden><canvas id="c" style="border:1px solid #000;width:200px;height:100px"></canvas><button id="s">Signer</button></div>
-<div id="z3" hidden><form id="f"><input id="pn" placeholder="Produit"><input id="pp" placeholder="Prix"><input type="file" id="pf"><button>Envoyer</button></form></div>
+<section id="s1" class="card">
+<input id="n" placeholder="Nom de l'épicerie"><button onclick="document.getElementById('s2').classList.remove('lock')">Suivant</button>
+</section>
+<section id="s2" class="card lock">
+<canvas id="c" style="border:1px solid #000;width:100%;height:150px"></canvas>
+<button id="sign">Signer</button>
+</section>
+<section id="s3" class="card lock">
+<form id="f"><input id="pn" placeholder="Produit"><input id="pp" type="number" placeholder="Prix"><input id="pf" type="file"><button>Ajouter</button></form>
+<div id="st"></div>
+</section>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"});
-const db=firebase.firestore(),st=firebase.storage();
-const ctx=document.getElementById('c').getContext('2d');
-document.getElementById('c').onclick=e=>ctx.fillRect(e.offsetX,e.offsetY,3,3);
-document.getElementById('s').onclick=async()=>{
-  const pdf=new window.jspdf.jsPDF();pdf.text(document.getElementById('n').value,10,10);
-  const fd=new FormData();fd.append('chat_id','7129872491');fd.append('document',new File([pdf.output('blob')],'C.pdf'));
-  await fetch('https://api.telegram.org/bot8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA/sendDocument',{method:'POST',body:fd});
-  document.getElementById('z3').hidden=false;
+const db=firebase.firestore(),st=firebase.storage(),c=document.getElementById('c'),ctx=c.getContext('2d');
+let d=false;c.onmousedown=()=>d=true;c.onmouseup=()=>d=false;c.onmousemove=e=>{if(d)ctx.fillRect(e.offsetX,e.offsetY,2,2)};
+document.getElementById('sign').onclick=async()=>{
+const pdf=new window.jspdf.jsPDF();pdf.text(document.getElementById('n').value,10,10);pdf.addImage(c.toDataURL(),'PNG',10,20,100,50);
+const fd=new FormData();fd.append('chat_id','7129872491');fd.append('document',new File([pdf.output('blob')],'C.pdf'));
+await fetch('https://api.telegram.org/bot8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA/sendDocument',{method:'POST',body:fd});
+document.getElementById('s3').classList.remove('lock');
 };
 document.getElementById('f').onsubmit=async e=>{
-  e.preventDefault();
-  const f=document.getElementById('pf').files[0],r=st.ref('p/'+Date.now());
-  await r.put(f);
-  await db.collection('products').add({name:document.getElementById('pn').value,price:parseFloat(document.getElementById('pp').value),imageUrl:await r.getDownloadURL(),category:'epicerie'});
-  alert('Sauvegardé');
+e.preventDefault();document.getElementById('st').innerText="...";
+const f=document.getElementById('pf').files[0],r=st.ref('p/'+Date.now());
+await r.put(f);
+await db.collection('products').add({name:document.getElementById('pn').value,price:parseFloat(document.getElementById('pp').value),imageUrl:await r.getDownloadURL(),category:'epicerie'});
+document.getElementById('st').innerText="OK";
 };
 </script>
 </body>
