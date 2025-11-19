@@ -85,15 +85,12 @@
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:10px;}
     .service{border:1px solid #eee;border-radius:12px;padding:12px;font-size:1em;background:#f9f9ff;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.2s}
     .service:hover{background:#fff;border-color:#6b23ff}
-    
-    /* Новая плавная анимация для стикеров калькулятора, чтобы не зависали */
     @keyframes smooth-bounce {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-6px); }
     }
     .sticker-anim{display:inline-block;animation:smooth-bounce 2.5s infinite ease-in-out;}
     .box-anim{display:inline-block;animation:smooth-bounce 3s infinite ease-in-out;}
-
     button{width:100%;padding:16px;border:none;border-radius:14px;font-size:1.15em;margin-top:15px;font-weight:800;cursor:pointer;transition:.2s;display:flex;justify-content:center;align-items:center;gap:10px}
     button:active{transform:scale(0.98)}
     #calc{background:linear-gradient(135deg,#6b23ff,#8968fb);color:#fff;box-shadow:0 8px 20px rgba(107,35,255,0.3)}
@@ -114,10 +111,7 @@
     .faq-answer{padding:0 15px 15px;color:#555;display:none;font-size:0.95em}
     .faq-item.active .faq-answer{display:block}
     .faq-item.active .faq-question{background:#f5f3ff}
-    
-    /* Красивый шрифт для контактов */
     .contact-details { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 1.2em; font-weight: 700; color: #2d147a; line-height: 1.6; }
-
     .footer{color:#e0e0e0;text-align:center;margin:40px 0;font-size:1.1em;font-weight:bold;opacity:0.8}
     .float-wa{position:fixed;bottom:25px;right:25px;background:#25D366;color:white;width:65px;height:65px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 5px 20px rgba(37,211,102,0.5);z-index:99;animation:pulse-green 2s infinite;text-decoration:none;border:2px solid #fff;}
     .rocket-anim{display:inline-block;animation:bounce 1.2s infinite alternate;}
@@ -268,6 +262,14 @@
         <a href="poissonneries.html" target="_blank" class="partner"><span class="stic">🐟</span><span id="p8">Poissonneries</span></a>
         <a href="electromenager.html" target="_blank" class="partner"><span class="stic">📺</span><span id="p9">Électroménager</span></a>
         <a href="occasion.html" target="_blank" class="partner"><span class="stic">♻️</span><span id="p10">Occasion / Brocante</span></a>
+        <a href="fleuristes.html" target="_blank" class="partner"><span class="stic">💐</span><span id="p11">Fleuristes</span></a>
+        <a href="cavistes.html" target="_blank" class="partner"><span class="stic">🍷</span><span id="p12">Cavistes</span></a>
+        <a href="animalerie.html" target="_blank" class="partner"><span class="stic">🐾</span><span id="p13">Animalerie</span></a>
+        <a href="beaute.html" target="_blank" class="partner"><span class="stic">💄</span><span id="p14">Beauté & Soins</span></a>
+        <a href="hightech.html" target="_blank" class="partner"><span class="stic">📱</span><span id="p15">High-Tech</span></a>
+        <a href="chocolatiers.html" target="_blank" class="partner"><span class="stic">🍫</span><span id="p16">Chocolatiers</span></a>
+        <a href="librairie.html" target="_blank" class="partner"><span class="stic">📚</span><span id="p17">Librairie</span></a>
+        <a href="primeur.html" target="_blank" class="partner"><span class="stic">🥦</span><span id="p18">Primeurs</span></a>
       </div>
     </section>
     <section class="section">
@@ -447,6 +449,14 @@
           p8:"🐟 Poissonneries",
           p9:"📺 Électroménager",
           p10:"♻️ Occasion / Brocante",
+          p11:"💐 Fleuristes",
+          p12:"🍷 Cavistes",
+          p13:"🐾 Animalerie",
+          p14:"💄 Beauté & Soins",
+          p15:"📱 High-Tech",
+          p16:"🍫 Chocolatiers",
+          p17:"📚 Librairie",
+          p18:"🥦 Primeurs",
           bn1:"🎉 Nouveautés 2025 :",
           bn2:"5 LIVRAISONS GRATUITES pour chaque nouveau client !",
           bn3:"Offres partenaires, prix réduits et cadeaux chaque semaine !",
@@ -523,6 +533,14 @@
           p8:"🐟 Fishmongers",
           p9:"📺 Appliances",
           p10:"♻️ Second Hand",
+          p11:"💐 Florists",
+          p12:"🍷 Wine / Alcohol",
+          p13:"🐾 Pet Shop",
+          p14:"💄 Beauty & Care",
+          p15:"📱 High-Tech",
+          p16:"🍫 Chocolatiers",
+          p17:"📚 Bookstore",
+          p18:"🥦 Greengrocers",
           bn1:"🎉 New for 2025:",
           bn2:"5 FREE DELIVERIES for every new customer!",
           bn3:"Partner offers, reduced prices & gifts every week!",
@@ -603,6 +621,14 @@
         document.getElementById('p8').textContent=currentText.p8;
         document.getElementById('p9').textContent=currentText.p9;
         document.getElementById('p10').textContent=currentText.p10;
+        document.getElementById('p11').textContent=currentText.p11;
+        document.getElementById('p12').textContent=currentText.p12;
+        document.getElementById('p13').textContent=currentText.p13;
+        document.getElementById('p14').textContent=currentText.p14;
+        document.getElementById('p15').textContent=currentText.p15;
+        document.getElementById('p16').textContent=currentText.p16;
+        document.getElementById('p17').textContent=currentText.p17;
+        document.getElementById('p18').textContent=currentText.p18;
         document.getElementById('contact-title').textContent=currentText.contactTitle;
         document.getElementById('promo-title').innerHTML = `<span class="party-anim">🎉</span> ${currentText.bn1.replace('🎉 ','')}`;
         document.getElementById('promo-subtitle').textContent=currentText.bn2;
