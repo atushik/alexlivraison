@@ -261,11 +261,12 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
       });
 
       status.style.color = 'green';
-      status.textContent = "Produit ajouté avec succès !";
+      status.textContent = "Produit ajouté avec succès ! (Sauvegarde permanente)";
       e.target.reset();
 
     } catch (error) {
       console.error(error);
+      alert("Erreur: " + error.message + "\n\nVERIFIEZ LES REGLES FIREBASE !");
       status.style.color = 'red';
       status.textContent = "Erreur: " + error.message;
     } finally {
