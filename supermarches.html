@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Produits Partenaires | AlexLivraison</title>
+  <title>Supermarchés Partenaires | AlexLivraison</title>
   <style>
     :root{--violet:#6b23ff;}
     html,body{height:100%;margin:0;padding:0;background:linear-gradient(180deg,#32006b 10%,#7a2cf5 100%);}
@@ -11,8 +11,8 @@
     *{box-sizing:border-box;}
     .menu-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 11px 10px 10px;}
     .brand img{height:47px;}
-    .menu-btn{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:#fff2;border:1.7px solid #ececff;cursor:pointer;}
-    .menu-btn span,.menu-btn::before,.menu-btn::after{content:"";display:block;background:#fff;height:4px;width:22px;border-radius:4px;margin:2.4px 0;}
+    .menu-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4.5px;width:40px;height:40px;border-radius:9px;background:#fff2;border:1.7px solid #ececff;cursor:pointer;}
+    .menu-btn span{display:block;width:22px;height:4px;background:#fff;border-radius:4px;transition:.24s;}
     .menu-list{position:fixed;top:0;left:0;right:0;bottom:0;z-index:11;background:rgba(34,0,54,.97);display:none;flex-direction:column;}
     .menu-list.visible{display:flex;}
     .menu-list-inner{margin:auto;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:23px;}
@@ -45,7 +45,11 @@
 <body>
   <div class="menu-bar">
     <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-    <button class="menu-btn" id="btn-menu"><span></span></button>
+    <button class="menu-btn" id="btn-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
   <div class="menu-list" id="menu">
     <button class="close-btn" id="close-menu">&times;</button>
@@ -60,44 +64,42 @@
     </div>
   </div>
   <div class="header-row">
-    <div class="title" id="main-title">Produits Partenaires</div>
-    <div class="subtitle" id="main-sub">Trouvez vos produits partenaires et commandez facilement.</div>
+    <div class="title" id="main-title">Supermarchés partenaires</div>
+    <div class="subtitle" id="main-sub">Vos courses livrées rapidement : produits frais, épicerie et quotidien.</div>
   </div>
   <form class="search-row" onsubmit="event.preventDefault()">
     <select class="filter-select" id="filter-cat">
       <option value="">Tous</option>
-      <option value="Supermarchés">Supermarchés</option>
-      <option value="Alimentation">Alimentation</option>
+      <option value="Frais">Produits Frais</option>
+      <option value="Epicerie">Épicerie</option>
       <option value="Boissons">Boissons</option>
-      <option value="Frais">Produits frais</option>
-      <option value="Bio">Bio & Healthy</option>
-      <option value="Promo">Promotions</option>
+      <option value="Hygiène">Hygiène</option>
     </select>
     <input type="text" class="search" id="search" placeholder="Rechercher un produit">
   </form>
-  <div class="promo" id="promo-banner">🎉 5 premières livraisons gratuites chez chaque nouveau partenaire !</div>
+  <div class="promo" id="promo-banner">🛒 Gros volumes ou petites courses, on vous livre tout !</div>
   <div class="products-grid" id="products-list"></div>
-  <a href="index.html" class="footer-link" id="to-main">Retour à la page principale</a>
+  <a href="produits.html" class="footer-link" id="to-main">← Tous les produits partenaires</a>
   <script>
     document.getElementById('btn-menu').onclick=()=>{document.getElementById('menu').classList.add('visible')};
     document.getElementById('close-menu').onclick=()=>{document.getElementById('menu').classList.remove('visible')};
     let lang='fr';
     const dict={
       fr:{
-        title:"Produits Partenaires",
-        sub:"Trouvez vos produits partenaires et commandez facilement.",
-        promo:"🎉 5 premières livraisons gratuites chez chaque nouveau partenaire !",
+        title:"Supermarchés partenaires",
+        sub:"Vos courses livrées rapidement : produits frais, épicerie et quotidien.",
+        promo:"🛒 Gros volumes ou petites courses, on vous livre tout !",
         searchPH:"Rechercher un produit",
-        cat:["Tous","Supermarchés","Alimentation","Boissons","Produits frais","Bio & Healthy","Promotions"]
+        cat:["Tous","Frais","Épicerie","Boissons","Hygiène"]
       },
       en:{
-        title:"Partner Products",
-        sub:"Find partner products and order easily.",
-        promo:"🎉 First 5 deliveries free at every new partner!",
+        title:"Supermarket Partners",
+        sub:"Your groceries delivered quickly: fresh food, grocery and daily items.",
+        promo:"🛒 Big orders or small needs, we deliver everything!",
         searchPH:"Search for a product",
-        cat:["All","Supermarkets","Groceries","Drinks","Fresh products","Organic & Healthy","Promos"]
+        cat:["All","Fresh","Grocery","Drinks","Hygiene"]
       }
-    }
+    };
     document.getElementById('main-title').onclick=()=>{
       lang=lang==='fr'?'en':'fr';setLang();
     };
@@ -107,48 +109,44 @@
       document.getElementById('promo-banner').textContent=dict[lang].promo;
       document.getElementById('search').placeholder=dict[lang].searchPH;
       const catSel=document.getElementById('filter-cat');
-      for(let i=0;i<catSel.options.length;i++){catSel.options[i].text=dict[lang].cat[i];}
-      document.getElementById('to-main').textContent=lang==='fr'?'Retour à la page principale':'Back to main';
+      for(let i=0;i<catSel.options.length;i++){if(catSel.options[i].text) catSel.options[i].text=dict[lang].cat[i];}
+      document.getElementById('to-main').textContent=lang==='fr'?'← Tous les produits partenaires':'← Back to all products';
     }
     setLang();
-    const demoProds = [
-      {img:'https://cdn.pixabay.com/photo/2017/05/07/08/56/snack-2291862_1280.jpg',name:'Sandwich au saumon',desc:'Bagel frais, fromage à la crème',cat:'Alimentation',price:'4.20€'},
-      {img:'https://cdn.pixabay.com/photo/2017/10/21/19/00/fruit-2871106_1280.jpg',name:'Fruits de saison',desc:'Pomme, banane, poire',cat:'Frais',price:'3.90€'},
-      {img:'https://cdn.pixabay.com/photo/2015/12/07/10/38/vegetables-1085063_1280.jpg',name:'Légumes du marché',desc:'Sélection du jour',cat:'Bio',price:'5.30€'},
-      {img:'https://cdn.pixabay.com/photo/2017/01/03/11/52/tomato-1955660_1280.jpg',name:'Tomates premium',desc:'Tomates rouges extra',cat:'Bio',price:'3.95€'},
-      {img:'https://cdn.pixabay.com/photo/2017/05/07/09/13/cheese-2292015_1280.jpg',name:'Fromage affiné',desc:'Au lait cru, sélectionné',cat:'Frais',price:'4.50€'},
-      {img:'https://cdn.pixabay.com/photo/2017/01/22/19/20/beer-2006644_1280.jpg',name:'Bière artisanale',desc:'Blonde locale',cat:'Boissons',price:'6.60€'},
-      {img:'https://cdn.pixabay.com/photo/2016/10/25/12/28/food-1761031_1280.jpg',name:'Pain complet',desc:'Boulangerie du quartier',cat:'Alimentation',price:'2.40€'},
-      {img:'https://cdn.pixabay.com/photo/2015/09/02/12/35/water-918581_1280.jpg',name:'Eau minérale',desc:'Bouteille 1,5L',cat:'Boissons',price:'1.20€'},
-      {img:'https://cdn.pixabay.com/photo/2017/04/23/21/52/salad-2256467_1280.jpg',name:'Salade fraîche',desc:'Mélange maison',cat:'Frais',price:'2.80€'},
-      {img:'https://cdn.pixabay.com/photo/2017/01/03/11/50/cake-1955659_1280.jpg',name:'Tarte du jour',desc:'Gâteau pomme',cat:'Promo',price:'2.50€'},
-      {img:'https://cdn.pixabay.com/photo/2014/11/15/23/06/bread-532243_1280.jpg',name:'Pain de campagne',desc:'Levain naturel',cat:'Alimentation',price:'2.10€'},
-      {img:'https://cdn.pixabay.com/photo/2017/05/07/07/53/food-2291766_1280.jpg',name:'Burger maison',desc:'100% boeuf, tomate',cat:'Promo',price:'3.00€'},
-
-      {img:'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80',name:'Riz long grain',desc:'1kg, extra',cat:'Supermarchés',price:'2.30€'},
-      {img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',name:'Huile d’olive',desc:'750ml, vierge',cat:'Supermarchés',price:'5.80€'},
-      {img:'https://images.unsplash.com/photo-1519864601725-fe2960a123b7?auto=format&fit=crop&w=400&q=80',name:'Lait demi-écrémé',desc:'Bio, 1L',cat:'Supermarchés',price:'1.80€'}
-    ];
+    let superProds = [];
+    async function fetchSupermarketProducts() {
+      document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center">Chargement des produits...</div>';
+      try {
+        const response = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+        const allProducts = await response.json();
+        superProds = allProducts.filter(p => p.cat && p.cat.toLowerCase() === 'supermarches');
+        renderProducts();
+      } catch (error) {
+        document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ffabab">Erreur de connexion aux supermarchés.</div>';
+      }
+    }
     function renderProducts(){
       let html='';
-      let catF=document.getElementById('filter-cat').value;
       let term=document.getElementById('search').value.toLowerCase().trim();
-      let res=demoProds.filter(x=>(!catF||x.cat===catF)&&(!term||x.name.toLowerCase().includes(term)||x.desc.toLowerCase().includes(term)));
-      if(res.length<6){while(res.length<6){res.push({img:'https://placehold.co/265x100/eee/bbb?text=Bientôt',name:'À venir',desc:'Partenaires en cours',cat:'Nouveau',price:'—'})}}
-      for(let p of res){
-        html+=`<div class="product-card">
-          <img src="${p.img}" class="product-img" alt="">
-          <div class="product-name">${p.name}</div>
-          <div class="product-desc">${p.desc||''}</div>
-          <div class="product-cat">${p.cat||''}</div>
-          <div class="product-price">${p.price}</div>
-        </div>`;
+      let res=superProds.filter(x=>(!term || x.name.toLowerCase().includes(term) || (x.desc && x.desc.toLowerCase().includes(term))));
+      if(res.length === 0) {
+         html = '<div style="grid-column:1/-1;text-align:center;padding:20px">Aucun produit trouvé.</div>';
+      } else {
+        for(let p of res){
+          html+=`<div class="product-card">
+            <img src="https://alexlivraison-api-v2.onrender.com${p.img}" class="product-img" alt="">
+            <div class="product-name">${p.name}</div>
+            <div class="product-desc">${p.desc||''}</div>
+            <div class="product-cat">${p.cat||'Supermarché'}</div>
+            <div class="product-price">${p.price} €</div>
+          </div>`;
+        }
       }
       document.getElementById('products-list').innerHTML=html;
     }
     document.getElementById('search').oninput=renderProducts;
     document.getElementById('filter-cat').onchange=renderProducts;
-    renderProducts();
+    fetchSupermarketProducts();
   </script>
 </body>
 </html>
