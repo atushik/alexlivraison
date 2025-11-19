@@ -4,6 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>Boulangeries Partenaires | AlexLivraison</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
     :root{--violet:#6b23ff;}
     html,body{height:100%;margin:0;padding:0;background:linear-gradient(180deg,#32006b 10%,#7a2cf5 100%);}
@@ -82,8 +84,20 @@
   
   <a href="produits.html" class="footer-link" id="to-main">← Tous les produits partenaires</a>
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
+      authDomain: "alex-livraison.firebaseapp.com",
+      projectId: "alex-livraison",
+      storageBucket: "alex-livraison.appspot.com",
+      messagingSenderId: "937475497279",
+      appId: "1:937475497279:web:62dc9eba8e77a5113ec78a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     document.getElementById('btn-menu').onclick=()=>{document.getElementById('menu').classList.add('visible')};
     document.getElementById('close-menu').onclick=()=>{document.getElementById('menu').classList.remove('visible')};
+    
     let lang='fr';
     const dict={
       fr:{
@@ -117,27 +131,24 @@
 
     let boulProds = [];
 
-    async function fetchBakeryProducts() {
-      document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center">Chargement des produits frais...</div>';
-      try {
-        const response = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-        const allProducts = await response.json();
-        
-        // Filtrer uniquement les produits avec la catégorie Boulangerie (insensible à la casse)
-        boulProds = allProducts.filter(p => p.cat && p.cat.toLowerCase() === 'boulangerie');
-        
+    function fetchBakeryProducts() {
+      document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center">Chargement des produits...</div>';
+      db.collection('products').where('category', '==', 'boulangerie').get().then((querySnapshot) => {
+        boulProds = [];
+        querySnapshot.forEach((doc) => {
+          boulProds.push(doc.data());
+        });
         renderProducts();
-      } catch (error) {
-        console.error('Erreur chargement:', error);
-        document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ffabab">Erreur de connexion aux boulangeries.</div>';
-      }
+      }).catch((error) => {
+        console.log("Error getting documents: ", error);
+        document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ffabab">Erreur de chargement.</div>';
+      });
     }
 
     function renderProducts(){
       let html='';
       let term=document.getElementById('search').value.toLowerCase().trim();
       
-      // Filtrer par recherche textuelle
       let res=boulProds.filter(x=>(!term || x.name.toLowerCase().includes(term) || (x.desc && x.desc.toLowerCase().includes(term))));
       
       if(res.length === 0) {
@@ -145,10 +156,10 @@
       } else {
         for(let p of res){
           html+=`<div class="product-card">
-            <img src="https://alexlivraison-api-v2.onrender.com${p.img}" class="product-img" alt="">
+            <img src="${p.imageUrl}" class="product-img" alt="">
             <div class="product-name">${p.name}</div>
             <div class="product-desc">${p.desc||''}</div>
-            <div class="product-cat">${p.cat||'Boulangerie'}</div>
+            <div class="product-cat">Boulangerie</div>
             <div class="product-price">${p.price} €</div>
           </div>`;
         }
@@ -157,7 +168,7 @@
     }
     
     document.getElementById('search').oninput=renderProducts;
-    document.getElementById('filter-cat').onchange=renderProducts; // Note: L'API actuelle ne renvoie pas de sous-catégorie (pain/viennoiserie), donc le filtre est visuel pour l'instant.
+    document.getElementById('filter-cat').onchange=renderProducts;
     
     fetchBakeryProducts();
   </script>
