@@ -1,293 +1,165 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Produits Partenaires - AlexLivraison</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh;overflow-x:hidden}
-.wrap{max-width:1060px;margin:0 auto;padding:20px}
-header{display:flex;justify-content:space-between;align-items:center;padding:15px 0;position:relative}
-.logo{font-size:28px;font-weight:bold;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
-.logo .emoji{display:inline-block;animation:bounce 2s infinite}
-.hamburger{width:30px;height:22px;position:relative;cursor:pointer;z-index:1001}
-.hamburger span,
-.hamburger::before,
-.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
-.hamburger span{top:50%;transform:translateY(-50%)}
-.hamburger::before{top:0}
-.hamburger::after{bottom:0}
-.hamburger.active span{opacity:0}
-.hamburger.active::before{transform:translateY(10px) rotate(45deg)}
-.hamburger.active::after{transform:translateY(-10px) rotate(-45deg)}
-.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
-.menu.open{right:0}
-.menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
-.menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
-.menu .submenu-trigger{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.09);font-weight:700;cursor:pointer;position:relative;}
-.menu .submenu-trigger::after{content:"▼";font-size:.87em;margin-left:6px;}
-.menu .submenu{display:none;background:rgba(98,57,174,.95);border-radius:11px;padding:7px 0;box-shadow:0 6px 20px #2a146133;margin-bottom:2px;}
-.menu .submenu.visible{display:block;}
-.menu .submenu a{padding:11px 29px;color:#fff;background:none;border-radius:7px;text-decoration:none;font-size:15px;font-weight:700;transition:.21s;text-align:left;display:block;}
-.menu .submenu a:hover{background:#6b23ff;}
-.lang-switch{margin-top:30px;padding-top:20px;border-top:2px solid rgba(255,255,255,.2)}
-.lang-switch p{font-size:14px;margin-bottom:15px;color:#b88aff}
-.lang-btns{display:flex;gap:10px}
-.lang-btns button{flex:1;padding:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:8px;font-size:14px;transition:.3s}
-.lang-btns button:hover{background:rgba(255,255,255,.2)}
-.lang-btns button.active{background:#6b23ff;border-color:#6b23ff}
-.page-header{text-align:center;margin:40px 0;animation:slide-in-top .6s}
-.page-header h1{font-size:34px;margin-bottom:10px;line-height:1.3}
-.page-header .sticker{font-size:50px;display:inline-block;animation:bounce 2s infinite}
-.promo-banner{background:linear-gradient(135deg,#ff6b6b,#ff8e53);padding:20px;border-radius:20px;text-align:center;margin:30px 0;animation:glow 2s infinite;box-shadow:0 5px 25px rgba(255,107,107,.4)}
-.promo-banner h2{font-size:26px;margin-bottom:10px}
-.promo-banner p{font-size:16px;opacity:.9}
-.promo-emoji{display:inline-block;animation:wiggle 1.5s infinite ease-in-out}
-.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin:30px 0;animation:fade-in-card .8s}
-.filter-btn{padding:12px 25px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:25px;font-size:16px;transition:.3s;display:flex;align-items:center;gap:8px}
-.filter-btn .emoji{display:inline-block;animation:bounce 2s infinite}
-.filter-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
-.filter-btn.active{background:#6b23ff;border-color:#6b23ff;box-shadow:0 0 20px rgba(107,35,255,.5)}
-.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:40px 0;animation:fade-in-card 1s}
-.product-card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;border:2px solid rgba(255,255,255,.2);transition:.4s;position:relative;overflow:hidden;cursor:pointer}
-.product-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);opacity:0;transition:.4s}
-.product-card:hover::before{opacity:1}
-.product-card:hover{transform:translateY(-8px);border-color:#b88aff;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:linear-gradient(135deg,#6b23ff,#b88aff)}
-.product-badge{display:inline-block;padding:5px 12px;background:#6b23ff;border-radius:15px;font-size:12px;margin-bottom:10px}
-.product-name{font-size:20px;font-weight:bold;margin-bottom:8px}
-.product-price{font-size:22px;color:#b88aff;margin:10px 0;font-weight:bold}
-.product-desc{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:15px;line-height:1.4}
-.btn-order{width:100%;padding:12px;background:linear-gradient(135deg,#6b23ff,#b88aff);border:none;color:#fff;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
-.btn-order:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(107,35,255,.4)}
-footer{text-align:center;padding:30px 0;border-top:2px solid rgba(255,255,255,.2);margin-top:50px}
-footer p{color:rgba(255,255,255,.7);font-size:14px}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-@keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4);transform:scale(1)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7);transform:scale(1.02)}}
-@keyframes wiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-20deg)}75%{transform:rotate(20deg)}}
-@media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>Boulangeries Partenaires | AlexLivraison</title>
+  <style>
+    :root{--violet:#6b23ff;}
+    html,body{height:100%;margin:0;padding:0;background:linear-gradient(180deg,#32006b 10%,#7a2cf5 100%);}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#fff;}
+    *{box-sizing:border-box;}
+    .menu-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 11px 10px 10px;}
+    .brand img{height:47px;}
+    .menu-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4.5px;width:40px;height:40px;border-radius:9px;background:#fff2;border:1.7px solid #ececff;cursor:pointer;}
+    .menu-btn span{display:block;width:22px;height:4px;background:#fff;border-radius:4px;transition:.24s;}
+    .menu-list{position:fixed;top:0;left:0;right:0;bottom:0;z-index:11;background:rgba(34,0,54,.97);display:none;flex-direction:column;}
+    .menu-list.visible{display:flex;}
+    .menu-list-inner{margin:auto;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:23px;}
+    .menu-link{padding:18px 54px;background:#fff2;color:#fff;font-weight:800;font-size:1.23em;border-radius:19px;text-decoration:none;transition:.11s;}
+    .menu-link:hover{background:#fff;color:#6b23ff;}
+    .close-btn{position:absolute;top:23px;right:21px;font-size:2.4em;color:#fff;background:none;border:none;cursor:pointer;}
+    .header-row{text-align:center;margin-top:7px;}
+    .title{font-size:2.13em;font-weight:900;margin:8px 0 0 0;letter-spacing:-1px;}
+    .subtitle{font-size:1.10em;color:#f5e4ff;}
+    .search-row{display:flex;gap:0.7em;margin:27px 0;}
+    .search{flex:1;padding:15px;font-size:1em;border-radius:13px;border:1.8px solid #e5dcfa;background:#fbf9ff;color:#3a1e7a;margin-right:10px;}
+    .filter-select{padding:14px 17px;font-size:1em;border-radius:13px;border:1.5px solid #d7d0fc;background:#f7f2ff;font-weight:700;color:#6b23ff;}
+    .products-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px 14px;padding-bottom:28px;}
+    .product-card{background:#fff;border-radius:17px;box-shadow:0 5px 24px #2e065622;padding:0 0 10px 0;display:flex;flex-direction:column;align-items:center;transition:.11s;}
+    .product-card:hover{box-shadow:0 12px 36px #8676d528;}
+    .product-img{width:100%;height:100px;object-fit:cover;border-radius:17px 17px 0 0;background:#ede6fd;}
+    .product-name{font-size:1em;font-weight:900;color:#591be7;text-align:center;margin:7px 6px 2px;}
+    .product-cat{background:#ece4ff;color:#773af2;border-radius:7px;padding:2px 10px;font-size:0.83em;margin:3px 0 7px;}
+    .product-desc{font-size:0.98em;color:#45307c;margin:0 7px;text-align:center;min-height:21px;}
+    .product-price{font-size:1.12em;font-weight:800;color:#23b572;margin-top:5px;}
+    .promo{background:linear-gradient(88deg,#fffbe2 40%,#ffd48c 100%);border-radius:13px;padding:12px 0 8px 0;text-align:center;font-weight:800;color:#ad821c;font-size:1.07em;margin:23px 0 17px 0;}
+    .footer-link{margin:0 auto 24px auto;display:block;text-align:center;font-weight:800;color:#fff;border-radius:12px;background:#fff2;padding:11px 30px 13px 30px;max-width:350px;text-decoration:none;}
+    .footer-link:hover{background:#fff;color:#6b23ff;}
+    @media(max-width:1200px){.products-grid{grid-template-columns:repeat(4,1fr);}}
+    @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:700px){.products-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:520px){.products-grid{grid-template-columns:1fr 1fr;}.title{font-size:1.17em;}}
+  </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-<a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
-<div class="hamburger" id="hamburger"><span></span></div>
-</header>
-<div class="menu" id="menu">
-<nav>
-<a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
-<div class="submenu" id="partnerSubmenu">
-<a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
-<a href="form-boulangerie.html" target="_blank">Propriétaire de boulangerie</a>
-<a href="form-pharmacies.html" target="_blank">Propriétaire de pharmacie</a>
-<a href="form-restaurants.html" target="_blank">Propriétaire de restaurant</a>
-<a href="form-epiceries.html" target="_blank">Propriétaire d'épicerie fine</a>
-<a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
-<a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
-<a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
-</div>
-<a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
-<a href="index.html">🏠 Retour à la page d'accueil</a>
-<a href="index.html#contact">📞 Contactez-nous</a>
-<a href="about.html">ℹ️ À propos de nous</a>
-</nav>
-<div class="lang-switch">
-<p>Langue / Language</p>
-<div class="lang-btns">
-<button class="active" id="langFr">FR</button>
-<button id="langEn">EN</button>
-</div>
-</div>
-</div>
-<div class="page-header">
-<div class="sticker">🛍</div>
-<h1>Bienvenue dans notre section de produits partenaires !</h1>
-<div class="sticker">✨</div>
-</div>
-<div class="promo-banner">
-<h2><span class="promo-emoji">🎉</span> Promotion spéciale!</h2>
-<p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
-</div>
-
-<div class="filters" id="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Meilleurs Prix</span></button>
-<button class="filter-btn" data-category="boulangerie"><span class="emoji">🥖</span><span>Boulangeries</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
-<button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
-<button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
-</div>
-
-<div class="products-grid" id="productsGrid"></div>
-<footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
-</div>
-<script>
-const hamburger=document.getElementById('hamburger');
-const menu=document.getElementById('menu');
-hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
-const openPartnerMenu=document.getElementById('openPartnerMenu');
-const partnerSubmenu=document.getElementById('partnerSubmenu');
-openPartnerMenu.onclick=function(e){
-  e.preventDefault();
-  partnerSubmenu.classList.toggle('visible');
-  document.addEventListener('click',function handler(ev){
-    if (!ev.target.closest('#partnerSubmenu') && ev.target!==openPartnerMenu){
-      partnerSubmenu.classList.remove('visible');
-      document.removeEventListener('click',handler);
+  <div class="menu-bar">
+    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
+    <button class="menu-btn" id="btn-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="menu-list" id="menu">
+    <button class="close-btn" id="close-menu">&times;</button>
+    <div class="menu-list-inner">
+      <a href="index.html" class="menu-link">Accueil</a>
+      <a href="produits.html" class="menu-link">Produits & Partenaires</a>
+      <a href="supermarches.html" class="menu-link">Supermarchés</a>
+      <a href="restaurants.html" class="menu-link">Restaurants</a>
+      <a href="pharmacies.html" class="menu-link">Pharmacies</a>
+      <a href="boulangeries.html" class="menu-link">Boulangeries</a>
+      <a href="about.html" class="menu-link">À propos</a>
+    </div>
+  </div>
+  <div class="header-row">
+    <div class="title" id="main-title">Boulangeries partenaires</div>
+    <div class="subtitle" id="main-sub">Découvrez les meilleurs pains, viennoiseries et douceurs des boulangeries locales.</div>
+  </div>
+  <form class="search-row" onsubmit="event.preventDefault()">
+    <select class="filter-select" id="filter-cat">
+      <option value="">Tous</option>
+      <option value="Pains">Pains</option>
+      <option value="Viennoiseries">Viennoiseries</option>
+      <option value="Pâtisseries">Pâtisseries</option>
+    </select>
+    <input type="text" class="search" id="search" placeholder="Rechercher une spécialité">
+  </form>
+  <div class="promo" id="promo-banner">🥖 Livraison du four chaque matin, commandez vos classiques ou nouveautés!</div>
+  
+  <div class="products-grid" id="products-list"></div>
+  
+  <a href="produits.html" class="footer-link" id="to-main">← Tous les produits partenaires</a>
+  <script>
+    document.getElementById('btn-menu').onclick=()=>{document.getElementById('menu').classList.add('visible')};
+    document.getElementById('close-menu').onclick=()=>{document.getElementById('menu').classList.remove('visible')};
+    let lang='fr';
+    const dict={
+      fr:{
+        title:"Boulangeries partenaires",
+        sub:"Découvrez les meilleurs pains, viennoiseries et douceurs des boulangeries locales.",
+        promo:"🥖 Livraison du four chaque matin, commandez vos classiques ou nouveautés!",
+        searchPH:"Rechercher une spécialité",
+        cat:["Tous","Pains","Viennoiseries","Pâtisseries"]
+      },
+      en:{
+        title:"Bakery Partners",
+        sub:"Discover the best breads and pastries from local bakeries.",
+        promo:"🥖 Fresh from the oven every morning, order your favorites!",
+        searchPH:"Search for a bakery item",
+        cat:["All","Breads","Pastries","Cakes"]
+      }
+    };
+    document.getElementById('main-title').onclick=()=>{
+      lang=lang==='fr'?'en':'fr';setLang();
+    };
+    function setLang(){
+      document.getElementById('main-title').textContent=dict[lang].title;
+      document.getElementById('main-sub').textContent=dict[lang].sub;
+      document.getElementById('promo-banner').textContent=dict[lang].promo;
+      document.getElementById('search').placeholder=dict[lang].searchPH;
+      const catSel=document.getElementById('filter-cat');
+      for(let i=0;i<catSel.options.length;i++){if(catSel.options[i].text) catSel.options[i].text=dict[lang].cat[i];}
+      document.getElementById('to-main').textContent=lang==='fr'?'← Tous les produits partenaires':'← Back to all products';
     }
-  });
-};
-const productsGrid=document.getElementById('productsGrid');
-const filterBtns=document.querySelectorAll('.filter-btn');
+    setLang();
 
-// Ссылки для кнопок фильтров (Витрины)
-const categoryPages={
-  supermarches:'supermarches.html',
-  boulangerie:'boulangeries.html',
-  boucheries:'boucheries.html',
-  poissonneries:'poissonneries.html',
-  pharmacies:'pharmacies.html',
-  restaurants:'restaurants.html',
-  epicerie:'epicerie.html',
-  commercants:'commercants.html'
-};
+    let boulProds = [];
 
-async function afficherProduitsAPI(cat){
-  productsGrid.innerHTML = '<div style="text-align:center;color:white">Chargement...</div>';
-  try {
-    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
-    let data = await res.json();
-    
-    if(cat === 'all') {
-      // Сортировка по цене (сначала дешевые) и показ только 9 штук
-      data.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-      data = data.slice(0, 9);
-    } else {
-      data = data.filter(p => p.cat && p.cat.toLowerCase() === cat.toLowerCase());
-    }
-
-    productsGrid.innerHTML = '';
-    if(data.length === 0) {
-       productsGrid.innerHTML = '<div style="color:#fff;text-align:center;padding:20px;grid-column:1/-1">Aucun produit trouvé dans cette catégorie</div>';
-       return;
-    }
-
-    data.forEach(p => {
-      const div=document.createElement('div');
-      div.className='product-card';
-      
-      // Клик по карточке ведет на страницу категории этого товара
-      div.onclick=()=>{
-         let targetPage = categoryPages[p.cat ? p.cat.toLowerCase() : ''] || '#';
-         if(targetPage !== '#') window.location.href=targetPage;
-      };
-      
-      div.innerHTML=`
-      <img src="https://alexlivraison-api-v2.onrender.com${p.img || ''}" class="product-img" alt="${p.name}">
-      <div class="product-badge">${p.cat||'Produit'}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">${p.price ? parseFloat(p.price).toFixed(2)+' €' : ''}</div>
-      <div class="product-desc">${p.desc||''}</div>
-      <button class="btn-order">Commander</button>`;
-      productsGrid.appendChild(div);
-    });
-  } catch (error) {
-    console.error(error);
-    productsGrid.innerHTML = '<div style="color:red;text-align:center;grid-column:1/-1">Erreur de chargement des produits.</div>';
-  }
-}
-
-let curCat='all';
-afficherProduitsAPI(curCat);
-
-filterBtns.forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    // Переключение активного класса
-    filterBtns.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    curCat=btn.dataset.category;
-    
-    // Если нажата кнопка категории (не "Все"), переходим на страницу магазина
-    if(curCat !== "all") {
-      if(categoryPages[curCat]) {
-        window.location.href = categoryPages[curCat];
-        return;
+    async function fetchBakeryProducts() {
+      document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center">Chargement des produits frais...</div>';
+      try {
+        const response = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+        const allProducts = await response.json();
+        
+        // Filtrer uniquement les produits avec la catégorie Boulangerie (insensible à la casse)
+        boulProds = allProducts.filter(p => p.cat && p.cat.toLowerCase() === 'boulangerie');
+        
+        renderProducts();
+      } catch (error) {
+        console.error('Erreur chargement:', error);
+        document.getElementById('products-list').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ffabab">Erreur de connexion aux boulangeries.</div>';
       }
     }
-    // Если "Все", обновляем сетку на этой странице
-    afficherProduitsAPI(curCat);
-  });
-});
 
-const langFr=document.getElementById('langFr');
-const langEn=document.getElementById('langEn');
-const langData = {
-  fr: {
-    lang: 'fr',
-    pageTitle: 'Produits Partenaires - AlexLivraison',
-    pageHeader: 'Bienvenue dans notre section de produits partenaires !',
-    promoH2: '🎉 Promotion spéciale!',
-    promoP: 'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',
-    menu: [
-      "🛒 Devenir partenaire vendeur",
-      "🚴 Devenir partenaire coursier",
-      "🏠 Retour à la page d'accueil",
-      "📞 Contactez-nous",
-      "ℹ️ À propos de nous"
-    ]
-  },
-  en: {
-    lang: 'en',
-    pageTitle: 'Partner Products - AlexLivraison',
-    pageHeader: 'Welcome to our partner products section!',
-    promoH2: '🎉 Special Promotion!',
-    promoP: 'Free delivery on all partner orders this month!',
-    menu: [
-      "🛒 Become a partner seller",
-      "🚴 Become a partner courier",
-      "🏠 Back to homepage",
-      "📞 Contact us",
-      "ℹ️ About us"
-    ]
-  }
-};
-function setLanguage(lang){
-  let data = langData[lang];
-  document.documentElement.lang = data.lang;
-  document.title = data.pageTitle;
-  langFr.classList.toggle('active', lang === 'fr');
-  langEn.classList.toggle('active', lang === 'en');
-  document.querySelector('.page-header h1').textContent = data.pageHeader;
-  const promoH2 = document.querySelector('.promo-banner h2');
-  promoH2.innerHTML = `<span class="promo-emoji">🎉</span> ${data.promoH2.replace('🎉 ', '')}`;
-  document.querySelector('.promo-banner p').textContent = data.promoP;
-  const navLinks = document.querySelectorAll('.menu nav > a:not(.submenu-trigger)');
-  if (lang === "fr") {
-    navLinks[0].textContent = langData.fr.menu[1];
-    navLinks[1].textContent = langData.fr.menu[2];
-    navLinks[2].textContent = langData.fr.menu[3];
-    navLinks[3].textContent = langData.fr.menu[4];
-    document.getElementById('openPartnerMenu').textContent = langData.fr.menu[0];
-  } else {
-    navLinks[0].textContent = langData.en.menu[1];
-    navLinks[1].textContent = langData.en.menu[2];
-    navLinks[2].textContent = langData.en.menu[3];
-    navLinks[3].textContent = langData.en.menu[4];
-    document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
-  }
-  afficherProduitsAPI(curCat);
-}
-langFr.onclick=function(){setLanguage('fr');};
-langEn.onclick=function(){setLanguage('en');};
-</script>
+    function renderProducts(){
+      let html='';
+      let term=document.getElementById('search').value.toLowerCase().trim();
+      
+      // Filtrer par recherche textuelle
+      let res=boulProds.filter(x=>(!term || x.name.toLowerCase().includes(term) || (x.desc && x.desc.toLowerCase().includes(term))));
+      
+      if(res.length === 0) {
+         html = '<div style="grid-column:1/-1;text-align:center;padding:20px">Aucun produit trouvé.</div>';
+      } else {
+        for(let p of res){
+          html+=`<div class="product-card">
+            <img src="https://alexlivraison-api-v2.onrender.com${p.img}" class="product-img" alt="">
+            <div class="product-name">${p.name}</div>
+            <div class="product-desc">${p.desc||''}</div>
+            <div class="product-cat">${p.cat||'Boulangerie'}</div>
+            <div class="product-price">${p.price} €</div>
+          </div>`;
+        }
+      }
+      document.getElementById('products-list').innerHTML=html;
+    }
+    
+    document.getElementById('search').oninput=renderProducts;
+    document.getElementById('filter-cat').onchange=renderProducts; // Note: L'API actuelle ne renvoie pas de sous-catégorie (pain/viennoiserie), donc le filtre est visuel pour l'instant.
+    
+    fetchBakeryProducts();
+  </script>
 </body>
 </html>
