@@ -39,24 +39,6 @@ canvas#signature{width:100%;height:220px;display:block;touch-action:none}
 .badge{display:inline-block;background:#eae6ff;color:#3a2a88;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
 .notice{background:#13002b;color:#fff;border:1px solid #ffffff2e;border-radius:16px;padding:14px;text-align:center;margin-top:12px}
 </style>
-<!-- FIREBASE CDN -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
-  authDomain: "alex-livraison.firebaseapp.com",
-  projectId: "alex-livraison",
-  storageBucket: "alex-livraison.appspot.com",
-  messagingSenderId: "937475497279",
-  appId: "1:937475497279:web:62dc9eba8e77a5113ec78a",
-  measurementId: "G-YFQWWTBMKV"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
-</script>
 </head>
 <body>
 <div class="topbar">
@@ -68,25 +50,25 @@ const storage = firebase.storage();
 <main class="wrap">
   <h1 class="h1">Supermarchés • Portail Partenaire</h1>
   <section class="card">
-    <h2 class="h2">Produits des supermarchés</h2>
+    <h2 class="h2">Produits des supermarchés partenaires</h2>
     <div id="products" class="list"></div>
   </section>
   <section class="card">
     <h2 class="h2">Présentation</h2>
     <div class="muted">
-      Livraison de produits alimentaires, boissons, produits ménagers et plus pour les supermarchés — avec rapidité, soin et confidentialité.
+      Livraison de courses, produits frais, épicerie et produits du quotidien. Rejoignez notre réseau pour livrer vos clients à domicile.
     </div>
     <div class="row-actions">
-      <span class="badge">Fiabilité</span>
-      <span class="badge">Confidentialité</span>
-      <span class="badge">Priorité</span>
+      <span class="badge">Logistique</span>
+      <span class="badge">Volume</span>
+      <span class="badge">Fidélité</span>
     </div>
   </section>
   <section id="step1" class="card">
     <h2 class="h2">Formulaire de collaboration</h2>
     <div class="grid2">
-      <div><label>Nom de l’enseigne</label><input id="f_enseigne"></div>
-      <div><label>Catégorie</label><input id="f_cat" value="Supermarché" readonly></div>
+      <div><label>Nom de l’enseigne (Supermarché)</label><input id="f_enseigne"></div>
+      <div><label>Catégorie</label><input id="f_cat" value="Supermarches" readonly></div>
     </div>
     <div class="grid3">
       <div><label>Nom et prénom du responsable</label><input id="f_resp"></div>
@@ -126,11 +108,11 @@ const storage = firebase.storage();
   <section id="step3" class="card lock">
     <h2 class="h2">Ajout de produits</h2>
     <form id="product-form" class="grid3" enctype="multipart/form-data">
-      <div><label>Nom du produit</label><input name="name" required></div>
-      <div><label>Prix (€)</label><input name="price" type="number" step="0.01" required></div>
+      <div><label>Nom du produit</label><input name="name" placeholder="Ex: Lait 1L, Riz 1kg..." required></div>
+      <div><label>Prix (€)</label><input name="price" type="number" step="0.01" placeholder="1.50" required></div>
       <div><label>Photo</label><input name="photo" type="file" accept="image/*" required></div>
-      <div style="grid-column:1/4"><label>Description</label><textarea name="desc" required></textarea></div>
-      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarché" readonly required></div>
+      <div style="grid-column:1/4"><label>Description</label><textarea name="desc" placeholder="Marque, poids, détails..." required></textarea></div>
+      <div style="grid-column:1/4"><label>Catégorie</label><input name="cat" value="Supermarches" readonly required></div>
       <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Ajouter le produit</button></div>
     </form>
     <div id="result"></div>
@@ -139,13 +121,23 @@ const storage = firebase.storage();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 async function showProducts(){
-  const snap = await firebase.firestore().collection('products').where('category','==','supermarches').get();
-  let html = "";
-  snap.forEach(doc=>{
-    const p = doc.data();
-    html += `<div class="item"><img src="${p.img||""}" alt=""><div><b>${p.name||""}</b></div><div>${p.price||""} €</div><div>${p.desc||""}</div></div>`;
-  });
-  document.getElementById('products').innerHTML = html||'<div>Aucun produit</div>';
+  try {
+    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products');
+    const arr = await res.json();
+    const my = arr.filter(p => p.cat && p.cat.toLowerCase() === "supermarches");
+    let html = "";
+    for(const p of my){
+      html += `<div class="item">
+        <img src="https://alexlivraison-api-v2.onrender.com${p.img||""}" alt="">
+        <div><b>${p.name||""}</b></div>
+        <div>${p.price||""} €</div>
+        <div>${p.desc||""}</div>
+      </div>`;
+    }
+    document.getElementById('products').innerHTML = html || '<div>Aucun produit de supermarché pour le moment.</div>';
+  } catch (e) {
+    document.getElementById('products').innerHTML = '<div>Erreur de chargement des produits.</div>';
+  }
 }
 showProducts();
 </script>
@@ -183,88 +175,83 @@ const gen=document.getElementById('gen_pdf');
 const dlPartner=document.getElementById('dl_partner');
 const dlAlex=document.getElementById('dl_alex');
 gen.onclick=async()=>{
-  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
-  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
-  if(!agree.checked){alert('Veuillez accepter la convention.');return}
-  const sigData=canvas.toDataURL('image/png');
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:'pt',format:'a4'});
-  const margin=48;let y=margin;
-  doc.addImage("logo.jpg","JPEG",430,20,100,100);
-  doc.setFont('helvetica','bold');doc.setFontSize(18);
-  doc.text('Convention de Collaboration',margin,y);
-  y+=30;
-  doc.setFont('helvetica','');
-  doc.setFontSize(12);
-  const enseigne=document.getElementById('f_enseigne').value.trim();
-  const cat=document.getElementById('f_cat').value.trim();
-  const resp=document.getElementById('f_resp').value.trim();
-  const siren=document.getElementById('f_siren').value.trim();
-  const siret=document.getElementById('f_siret').value.trim();
-  const addr=document.getElementById('f_addr').value.trim();
-  const tel=document.getElementById('f_tel').value.trim();
-  const mail=document.getElementById('f_mail').value.trim();
-  const lines=[
-    `Entre AlexLivraison (Atabek Zakirov) et ${enseigne} (${cat}).`,
-    `Responsable: ${resp}`,
-    `SIREN: ${siren} — SIRET: ${siret}`,
-    `Adresse: ${addr}`,
-    `Téléphone: ${tel} — E-mail: ${mail}`,
-    'Objet: Livraison de courses, produits alimentaires et essentiels selon la réglementation.',
-    'Offre spéciale: 5 livraisons gratuites lors de la signature.',
-    'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
-    'Tarifs: barème en vigueur, facturation mensuelle.',
-    'Engagements: ponctualité, qualité et confidentialité.',
-    'Durée: à compter de la signature, préavis 15 jours pour résiliation.',
-    'Signature électronique ci-dessous.'
-  ];
-  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
-  y+=10;
-  doc.text(`Date: ${signDate.value}`,margin,y);y+=8;
-  doc.text(`Signataire: ${signName.value}`,margin,y);y+=12;
-  doc.addImage(sigData,'PNG',margin,y,220,110);
-  y+=130;
-  doc.addImage("sinature-alex.jpg","JPEG",350,y-50,130,70);
-  doc.addImage("stamp-alex.jpg","JPEG",470,y-40,100,100);
-  const pdfBlob=doc.output('blob');
-  const url=URL.createObjectURL(pdfBlob);
-  dlPartner.href=url;dlAlex.href=url;
-  dlPartner.style.display='inline-block';
-  dlAlex.style.display='inline-block';
-  step3.classList.remove('lock');
-  const formData=new FormData();
-  formData.append('chat_id',CHAT_ID);
-  formData.append('document',new File([pdfBlob],'Convention_Supermarché.pdf',{type:'application/pdf'}));
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
+  for(const el of inputs){if(!el.value.trim()){alert('Remplissez d’abord le formulaire.');return}}
+  if(!signName.value.trim()){alert('Renseignez le nom du signataire.');return}
+  if(!agree.checked){alert('Veuillez accepter la convention.');return}
+  const sigData=canvas.toDataURL('image/png');
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const margin=48;let y=margin;
+  doc.setFont('helvetica','bold');doc.setFontSize(18);
+  doc.text('Convention de Collaboration - Supermarché',margin,y);
+  y+=30;
+  doc.setFont('helvetica','');
+  doc.setFontSize(12);
+  const enseigne=document.getElementById('f_enseigne').value.trim();
+  const cat=document.getElementById('f_cat').value.trim();
+  const resp=document.getElementById('f_resp').value.trim();
+  const siren=document.getElementById('f_siren').value.trim();
+  const siret=document.getElementById('f_siret').value.trim();
+  const addr=document.getElementById('f_addr').value.trim();
+  const tel=document.getElementById('f_tel').value.trim();
+  const mail=document.getElementById('f_mail').value.trim();
+  const lines=[
+    `Entre AlexLivraison (Atabek Zakirov) et ${enseigne} (${cat}).`,
+    `Responsable: ${resp}`,
+    `SIREN: ${siren} — SIRET: ${siret}`,
+    `Adresse: ${addr}`,
+    `Téléphone: ${tel} — E-mail: ${mail}`,
+    'Objet: Livraison de courses, produits d\'épicerie et produits frais.',
+    'Offre spéciale: 5 livraisons gratuites lors de la signature.',
+    'Engagement: partenariat d’une durée d’un an avec période d’essai de 2 semaines.',
+    'Tarifs: barème en vigueur, facturation mensuelle.',
+    'Engagements: ponctualité, soin des produits fragiles et respect de la chaîne du froid.',
+    'Durée: à compter de la signature, préavis 15 jours pour résiliation.',
+    'Signature électronique ci-dessous.'
+  ];
+  lines.forEach(t=>{const split=doc.splitTextToSize(t,520);doc.text(split,margin,y);y+=split.length*16});
+  y+=10;
+  doc.text(`Date: ${signDate.value}`,margin,y);y+=8;
+  doc.text(`Signataire: ${signName.value}`,margin,y);y+=12;
+  doc.addImage(sigData,'PNG',margin,y,220,110);
+  y+=130;
+  const pdfBlob=doc.output('blob');
+  const url=URL.createObjectURL(pdfBlob);
+  dlPartner.href=url;dlAlex.href=url;
+  dlPartner.style.display='inline-block';
+  dlAlex.style.display='inline-block';
+  step3.classList.remove('lock');
+  const formData=new FormData();
+  formData.append('chat_id',CHAT_ID);
+  formData.append('document',new File([pdfBlob],'Convention_Supermarche.pdf',{type:'application/pdf'}));
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
 };
-// FIREBASE автоматизация загрузки товара
 document.getElementById('product-form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const form = e.target;
-  const name = form.elements['name'].value;
-  const price = parseFloat(form.elements['price'].value);
-  const desc = form.elements['desc'].value;
-  const cat = form.elements['cat'].value || "supermarches";
-  const file = form.elements['photo'].files[0];
-  const resultDiv = document.getElementById('result');
-  if(!file){resultDiv.textContent="Выберите фото товара!";return;}
-  try {
-    const storageRef = firebase.storage().ref('products/' + Date.now() + '_' + file.name);
-    await storageRef.put(file);
-    const imgUrl = await storageRef.getDownloadURL();
-    await firebase.firestore().collection('products').add({
-      name: name,
-      price: price,
-      desc: desc,
-      category: cat.toLowerCase() || "supermarches",
-      img: imgUrl
-    });
-    resultDiv.textContent = "Produit ajouté!";
-    form.reset();
-    showProducts();
-  } catch(e){
-    resultDiv.textContent = "Erreur ajout produit";
-  }
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = "Envoi en cours...";
+  try {
+    const res = await fetch('https://alexlivraison-api-v2.onrender.com/api/products',{
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if(data.success){
+      document.getElementById('result').innerHTML = '<span style="color:green">Produit ajouté avec succès !</span>';
+      form.reset();
+      showProducts();
+    } else {
+      document.getElementById('result').innerHTML = '<span style="color:red">Erreur lors de l\'ajout.</span>';
+    }
+  } catch(err) {
+    document.getElementById('result').innerHTML = '<span style="color:red">Erreur réseau.</span>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Ajouter le produit";
+  }
 });
 </script>
 </body>
