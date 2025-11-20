@@ -42,7 +42,7 @@
   .btn-success{width:100%;display:block;text-align:center;text-decoration:none;padding:15px;background:linear-gradient(90deg,#4caf50,#66bb6a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:15px;box-shadow:0 5px 15px rgba(76,175,80,0.3)}
   .btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(76,175,80,0.4)}
   .hidden{display:none}
-  canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair}
+  canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair;touch-action: none;}
   .prod-list{margin-top:20px}
   .prod-item{display:flex;align-items:center;gap:15px;background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:.3s;border:1px solid #eee}
   .prod-item:hover{transform:translateY(-2px);box-shadow:0 8px 15px rgba(0,0,0,0.1)}
@@ -105,8 +105,8 @@
 
     <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
-      <div class="input-group"><label>SIREN</label><input id="f_siren"></div>
-      <div class="input-group"><label>SIRET</label><input id="f_siret"></div>
+      <div class="input-group"><label>SIREN (9 chiffres)</label><input id="f_siren" type="tel" maxlength="9" placeholder="123456789" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <div class="input-group"><label>SIRET (14 chiffres)</label><input id="f_siret" type="tel" maxlength="14" placeholder="12345678900011" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
     </div>
     <div class="input-group"><label>Adresse complète</label><input id="f_addr"></div>
     <div class="grid2">
@@ -199,6 +199,13 @@ const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 
 
 document.getElementById('btn_step1').onclick=()=>{
     for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
+    
+    const siren = document.getElementById('f_siren').value;
+    if(siren.length !== 9) { alert("Le SIREN doit comporter exactement 9 chiffres."); return; }
+    
+    const siret = document.getElementById('f_siret').value;
+    if(siret.length !== 14) { alert("Le SIRET doit comporter exactement 14 chiffres."); return; }
+
     SESSION_PIN = document.getElementById('f_master_pin').value;
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
@@ -207,15 +214,35 @@ const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=180;ctx.fillStyle='#fff';ctx.fillRect(0,0,cvs.width,cvs.height)}
 window.onresize=rs;rs();
-function gP(e){const r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
+
+function gP(e){
+    const r=cvs.getBoundingClientRect();
+    let x,y;
+    if(e.touches && e.touches.length>0){
+        x = e.touches[0].clientX - r.left;
+        y = e.touches[0].clientY - r.top;
+    } else {
+        x = e.clientX - r.left;
+        y = e.clientY - r.top;
+    }
+    return {x,y};
+}
+
 cvs.onmousedown=e=>{dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.onmousemove=e=>{if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
 cvs.onmouseup=()=>dr=false;
+cvs.onmouseout=()=>dr=false;
+
 cvs.ontouchstart=e=>{e.preventDefault();dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
 cvs.ontouchend=()=>dr=false;
+
 window.clearSig=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.beginPath()};
-document.getElementById('sign_date').valueAsDate=new Date();
+
+const dateInput = document.getElementById('sign_date');
+const today = new Date().toISOString().split('T')[0];
+dateInput.min = today;
+dateInput.value = today;
 
 function makeCircle(imgId){
     const img=document.getElementById(imgId);const c=document.createElement('canvas');
