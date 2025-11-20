@@ -8,13 +8,14 @@
     :root {
       --violet: #6b23ff;
       --violet-dark: #32006b;
-      --ring: #ffffff35;
+      --glass: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.2);
     }
-
+    * { box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
       color: #fff;
-      background: linear-gradient(180deg, #32006b, #7a2cf5);
+      background: linear-gradient(135deg, #32006b 0%, #7a2cf5 100%);
       background-attachment: fixed;
       margin: 0;
       padding: 0;
@@ -22,152 +23,196 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      overflow-x: hidden;
     }
-
-    .wrap {
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
       width: 100%;
-      backdrop-filter: saturate(160%) blur(10px);
-      background: linear-gradient(180deg, rgba(20,0,45,.9), rgba(20,0,45,.6));
-      border-bottom: 1px solid var(--ring);
-      padding: 14px 20px;
+      backdrop-filter: blur(15px);
+      background: rgba(20, 0, 45, 0.85);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 15px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
-    .brand img {
-      height: 48px;
-    }
-
-    h1 {
-      text-align: center;
+    .brand img { height: 45px; }
+    .btn-back {
+      background: rgba(255, 255, 255, 0.2);
       color: #fff;
-      font-size: 26px;
-      margin-top: 30px;
-      margin-bottom: 20px;
-      font-weight: 900;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.3s;
     }
-
-    .card {
-      background: #fff;
-      color: #333;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      line-height: 1.6;
+    .btn-back:hover { background: rgba(255, 255, 255, 0.4); }
+    .wrap {
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      animation: fadeIn 0.8s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .profile-header {
+      text-align: center;
       margin-bottom: 30px;
     }
-
-    .highlight-text {
-      margin-bottom: 16px;
-      font-size: 16px;
-    }
-
-    .contact {
-      background: #ffffff12;
-      border: 1px solid #ffffff33;
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    .contact h2 {
-      margin-top: 0;
-      font-size: 22px;
-      color: #fff;
-    }
-
-    .contact a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .contact a:hover {
-      text-decoration: underline;
-    }
-
-    .return-btn {
-      display: inline-block;
-      margin-top: 30px;
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
       background: #fff;
-      color: var(--violet-dark);
-      padding: 12px 24px;
+      padding: 5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      margin-bottom: 15px;
+      object-fit: cover;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 900;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+      color: #e0d4ff;
+      font-weight: 500;
+    }
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    .card p {
+      line-height: 1.6;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .feature-item {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
       border-radius: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: 0.3s;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-    }
-
-    .return-btn:hover {
-      background: var(--violet);
-      color: #fff;
-      transform: translateY(-2px);
-    }
-
-    .footer {
-      color: #cfc5ff;
       text-align: center;
-      margin: 30px 0 20px 0;
-      font-size: 14px;
     }
-
+    .feature-icon { font-size: 24px; display: block; margin-bottom: 5px; }
+    .feature-title { font-weight: bold; color: #43dfb8; display: block; margin-bottom: 5px; }
+    .feature-desc { font-size: 13px; opacity: 0.8; }
+    .contact-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      color: #fff;
+      font-size: 18px;
+      transition: transform 0.2s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .contact-btn:active { transform: scale(0.98); }
+    .btn-wa { background: #25D366; }
+    .btn-tel { background: #6b23ff; }
+    .btn-mail { background: #32006b; border: 1px solid rgba(255,255,255,0.2); }
+    .footer {
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin: 40px 0 20px 0;
+      font-size: 13px;
+    }
     @media (max-width: 600px) {
-      .card {
-        padding: 18px;
-      }
-      .highlight-text {
-        font-size: 15px;
-      }
+      .features-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 12px 15px; }
+      h1 { font-size: 24px; }
     }
   </style>
 </head>
 <body>
-
   <div class="topbar">
-    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
+    <div class="brand"><img src="logo.jpg" alt="Logo"></div>
+    <a href="index.html" class="btn-back">✕ Fermer</a>
   </div>
-
   <main class="wrap">
-    <h1>À propos d’AlexLivraison</h1>
-
-    <div class="card">
-      <p class="highlight-text">AlexLivraison est une micro-entreprise fondée par <b>Atabek Zakirov</b>, spécialisée dans la livraison locale de repas, courses, colis et petits envois à Toulon et La Seyne-sur-Mer.</p>
-      <p class="highlight-text">Notre mission est d’offrir un service de livraison rapide, fiable et humain, accessible aux particuliers comme aux commerces locaux. Grâce à une approche flexible — en vélo, scooter ou véhicule léger — nous assurons des livraisons écologiques et économiques.</p>
-      <p class="highlight-text">Créé en 2025, AlexLivraison collabore avec des restaurants, pharmacies, boulangeries, supermarchés et artisans locaux, pour dynamiser l’économie de proximité tout en respectant l’environnement.</p>
-      <p class="highlight-text">Nous croyons en la confiance, la ponctualité et la transparence. Chaque commande est traitée avec soin, comme si c’était la nôtre.</p>
+    <div class="profile-header">
+      <img src="logo.jpg" class="profile-img" alt="Atabek">
+      <h1>AlexLivraison</h1>
+      <div class="subtitle">Votre partenaire de confiance à Toulon</div>
     </div>
-
-    <div class="contact">
-      <h2>Contact</h2>
-      <p class="highlight-text">📍 La Seyne-sur-Mer / Toulon</p>
-      <p>
-        📞 <a href="tel:+33677171188">+33 6 77 17 11 88</a><br>
-        ✉️ <a href="mailto:atushbek020185@gmail.com">atushbek020185@gmail.com</a><br>
-        💬 <a href="https://wa.me/33677171188" target="_blank">WhatsApp</a> |
-        <a href="https://t.me/AlexLivraisonBot" target="_blank">Telegram</a>
+    <div class="card">
+      <p>👋 Bonjour ! Je suis <b>Atabek Zakirov</b>, le fondateur d'AlexLivraison.</p>
+      <p>AlexLivraison est une micro-entreprise locale née en 2025 avec une mission simple : <b>rendre la livraison accessible, rapide et humaine</b> pour tous les habitants et commerçants de Toulon et La Seyne-sur-Mer.</p>
+      <p>Que ce soit pour vos repas, vos courses, un colis urgent ou des produits de pharmacie, je m'engage personnellement à ce que chaque livraison soit traitée avec le plus grand soin.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0; text-align:center; margin-bottom:20px;">Pourquoi nous choisir ?</h3>
+      <div class="features-grid">
+        <div class="feature-item">
+          <span class="feature-icon">🚀</span>
+          <span class="feature-title">Rapidité</span>
+          <span class="feature-desc">Livraison express en moins de 45 min.</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🌱</span>
+          <span class="feature-title">Écologique</span>
+          <span class="feature-desc">Priorité aux vélos et véhicules légers.</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🤝</span>
+          <span class="feature-title">Confiance</span>
+          <span class="feature-desc">Service client direct, pas de robot.</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📍</span>
+          <span class="feature-title">Local</span>
+          <span class="feature-desc">Expert de la zone Toulon / La Seyne.</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0; text-align:center; margin-bottom:20px;">Contactez-moi</h3>
+      <div class="contact-grid">
+        <a href="https://wa.me/33677171188" target="_blank" class="contact-btn btn-wa">
+          💬 WhatsApp
+        </a>
+        <a href="tel:+33677171188" class="contact-btn btn-tel">
+          📞 Appeler
+        </a>
+        <a href="mailto:atushbek020185@gmail.com" class="contact-btn btn-mail">
+          ✉️ E-mail
+        </a>
+      </div>
+      <p style="text-align:center; margin-top:15px; font-size:14px; opacity:0.8;">
+        📍 La Seyne-sur-Mer / Toulon et environs
       </p>
     </div>
-
-    <div style="text-align:center;">
-      <a href="index.html" class="return-btn">⬅️ Retour au site</a>
+    <div class="footer">
+      © 2025 AlexLivraison — Micro-entrepreneur<br>
+      SIRET : 992 320 952 000 11
     </div>
-
-    <div class="footer">© 2025 AlexLivraison — Micro-entrepreneur à La Seyne-sur-Mer</div>
   </main>
-
 </body>
 </html>
