@@ -337,13 +337,14 @@ function loadMyProducts(){
         
         docs.forEach(p=>{
             window.productsMap[p.id] = p;
+            const safePin = p.pin || 'undefined';
             div.innerHTML+=`
             <div class="prod-item">
                 <img src="${p.imageUrl}" class="prod-img">
                 <div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div>
                 <div class="prod-actions">
                     <button class="btn-action btn-edit" type="button" onclick="editProd('${p.id}')">✏️ Éditer</button>
-                    <button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${p.pin}')">🗑️ Supprimer</button>
+                    <button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${safePin}')">🗑️ Supprimer</button>
                 </div>
             </div>`;
         });
@@ -353,8 +354,10 @@ function loadMyProducts(){
 window.editProd=async(id)=>{
     const p = window.productsMap[id];
     if(!p) return;
-    if(p.pin !== window.SESSION_PIN) return alert("Accès refusé. Ce produit ne semble pas vous appartenir (PIN incorrect).");
-    if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée et les données remises dans le formulaire.")) return;
+    const currentPin = p.pin || window.SESSION_PIN;
+    
+    if(currentPin !== window.SESSION_PIN) return alert("Ce produit appartient à une autre session.");
+    if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée.")) return;
     
     try{
         await db.collection('products').doc(id).delete();
@@ -366,10 +369,16 @@ window.editProd=async(id)=>{
     } catch(e){ alert("Erreur: " + e.message); }
 }
 
-window.del=async(id,correctPin)=>{
+window.del=async(id,prodPin)=>{
     const userPin=prompt(langData[curLang].pinPrompt);if(!userPin)return;
-    if(userPin===correctPin){try{await db.collection('products').doc(id).delete();alert("Produit supprimé !")}catch(e){alert("Erreur : "+e.message)}}else{alert("❌ Code PIN incorrect ! Vérifiez votre contrat PDF.")}
+    const validPin = (prodPin === 'undefined') ? window.SESSION_PIN : prodPin;
+    
+    if(userPin.toString() === validPin.toString()){
+        try{await db.collection('products').doc(id).delete();alert("Produit supprimé ! Pensez à actualiser la boutique.");}catch(e){alert("Erreur : "+e.message)}
+    }else{
+        alert("❌ Code PIN incorrect !");
+    }
 }
 </script>
 </body>
-</html>
+</html> 
