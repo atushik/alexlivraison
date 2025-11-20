@@ -51,11 +51,11 @@
   .prod-info h4{margin:0 0 5px 0;color:#32006b;font-size:1.1em}
   .prod-info p{margin:0;color:#666;font-size:0.9em}
   .prod-price{color:#6b23ff;font-weight:bold;font-size:1.1em}
-  .btn-delete{background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;gap:5px}
+  .prod-actions{display:flex;flex-direction:column;gap:5px;min-width:120px}
+  .btn-delete{width:100%;background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
   .btn-delete:hover{background:#ff4d4d;color:#fff}
-  .btn-edit{background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;gap:5px}
+  .btn-edit{width:100%;background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
   .btn-edit:hover{background:#ffeeba}
-  .prod-actions{display:flex;flex-direction:column;gap:5px}
   .info-box {background: #eef2ff;border-left: 5px solid #6b23ff;padding: 15px;border-radius: 8px;margin-bottom: 25px;font-size: 0.95em;line-height: 1.5;color: #333;}
   .info-box strong { color: #6b23ff; }
   @media(max-width:600px){.grid2{grid-template-columns:1fr}}
@@ -179,6 +179,7 @@ document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
 let SESSION_PIN = "";
+let productsMap = {};
 
 const langData={
   fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",edit:"Éditer",pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :"},
@@ -262,7 +263,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     if(!SESSION_PIN) SESSION_PIN = document.getElementById('f_master_pin').value;
 
     const {jsPDF}=window.jspdf,doc=new jsPDF();
-    try{doc.addImage(makeCircle('img-logo'),'JPEG',20,10,20,20)}catch(e){}
+    try{doc.addImage(makeCircle('img-logo'),'JPEG',15,10,20,20)}catch(e){}
     doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,40);
     doc.setLineWidth(0.5);doc.line(20,50,190,50);
     doc.setFontSize(11);doc.setFont("helvetica","normal");
@@ -331,22 +332,30 @@ document.getElementById('product-form').onsubmit=async(e)=>{
 function loadMyProducts(){
     db.collection('products').where('category','==',CURRENT_CATEGORY).orderBy('createdAt','desc').onSnapshot(snap=>{
     const div=document.getElementById('my-products-list');div.innerHTML='';
+    productsMap = {};
     if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">Aucun produit en ligne.</p>';return}
-    snap.forEach(doc=>{const p=doc.data();div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-edit" onclick="edit('${doc.id}','${p.pin}','${p.name}','${p.price}','${p.desc}')">✏️ ${langData[curLang].edit}</button><button class="btn-delete" onclick="del('${doc.id}','${p.pin}')">🗑️ ${langData[curLang].del}</button></div></div>`})
+    snap.forEach(doc=>{
+        const p=doc.data();
+        productsMap[doc.id] = p;
+        div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-edit" type="button" onclick="edit('${doc.id}')">✏️ Éditer</button><button class="btn-delete" type="button" onclick="del('${doc.id}','${p.pin}')">🗑️ Supprimer</button></div></div>`;
+    })
     })
 }
 
-window.edit=async(id,pin,n,p,d)=>{
-    if(pin!==SESSION_PIN)return alert("Accès refusé. PIN incorrect.");
-    if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée et les données replacées dans le formulaire."))return;
+window.edit=async(id)=>{
+    const p = productsMap[id];
+    if(!p) return;
+    if(p.pin !== SESSION_PIN) return alert("Accès refusé. Ce produit ne semble pas vous appartenir (PIN incorrect).");
+    if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée et les données remises dans le formulaire.")) return;
+    
     try{
         await db.collection('products').doc(id).delete();
-        document.getElementById('p_name').value=n;
-        document.getElementById('p_price').value=p;
-        document.getElementById('p_desc').value=d;
+        document.getElementById('p_name').value = p.name;
+        document.getElementById('p_price').value = p.price;
+        document.getElementById('p_desc').value = p.desc;
         document.querySelector('#step3').scrollIntoView({behavior:'smooth'});
-        alert("Données prêtes à être modifiées. Cliquez sur 'Mettre en ligne' après correction.");
-    }catch(e){alert("Erreur: "+e.message)}
+        alert("Données récupérées. Modifiez-les puis cliquez sur 'Mettre en ligne'.");
+    } catch(e){ alert("Erreur: " + e.message); }
 }
 
 window.del=async(id,correctPin)=>{
