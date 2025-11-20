@@ -44,14 +44,14 @@
   .hidden{display:none}
   canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair;touch-action: none;}
   .prod-list{margin-top:20px}
-  .prod-item{display:flex;align-items:center;gap:15px;background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:.3s;border:1px solid #eee}
+  .prod-item{display:flex;align-items:center;gap:15px;background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:.3s;border:1px solid #eee;overflow:hidden}
   .prod-item:hover{transform:translateY(-2px);box-shadow:0 8px 15px rgba(0,0,0,0.1)}
-  .prod-img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#eee}
-  .prod-info{flex:1}
-  .prod-info h4{margin:0 0 5px 0;color:#32006b;font-size:1.1em}
+  .prod-img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#eee;flex-shrink:0}
+  .prod-info{flex:1;min-width:0}
+  .prod-info h4{margin:0 0 5px 0;color:#32006b;font-size:1.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .prod-info p{margin:0;color:#666;font-size:0.9em}
   .prod-price{color:#6b23ff;font-weight:bold;font-size:1.1em}
-  .prod-actions{display:flex;flex-direction:column;gap:5px;min-width:120px}
+  .prod-actions{display:flex;flex-direction:column;gap:5px;min-width:120px;flex-shrink:0}
   .btn-delete{width:100%;background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
   .btn-delete:hover{background:#ff4d4d;color:#fff}
   .btn-edit{width:100%;background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
@@ -178,8 +178,8 @@ const menu=document.getElementById('sideMenu');
 document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
-let SESSION_PIN = "";
-let productsMap = {};
+window.SESSION_PIN = "";
+window.productsMap = {};
 
 const langData={
   fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",edit:"Éditer",pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :"},
@@ -210,7 +210,7 @@ document.getElementById('btn_step1').onclick=()=>{
     const siret = document.getElementById('f_siret').value;
     if(siret.length !== 14) { alert("Le SIRET doit comporter exactement 14 chiffres."); return; }
 
-    SESSION_PIN = document.getElementById('f_master_pin').value;
+    window.SESSION_PIN = document.getElementById('f_master_pin').value;
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 
@@ -260,7 +260,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
     if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
     
-    if(!SESSION_PIN) SESSION_PIN = document.getElementById('f_master_pin').value;
+    if(!window.SESSION_PIN) window.SESSION_PIN = document.getElementById('f_master_pin').value;
 
     const {jsPDF}=window.jspdf,doc=new jsPDF();
     try{doc.addImage(makeCircle('img-logo'),'JPEG',15,10,20,20)}catch(e){}
@@ -278,7 +278,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     y+=5;
     
     doc.setDrawColor(255, 0, 0); doc.setLineWidth(0.5); doc.rect(18, y-5, 100, 10);
-    addL("CODE PIN DE SÉCURITÉ (Sauvegardé) : " + SESSION_PIN, true, "red");
+    addL("CODE PIN DE SÉCURITÉ (Sauvegardé) : " + window.SESSION_PIN, true, "red");
     
     doc.setTextColor(0,0,0);y+=10;
     addL("Objet: Livraison de produits via la plateforme AlexLivraison.");
@@ -295,7 +295,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     const blob=doc.output('blob');
     doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
     const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
-    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${SESSION_PIN}`);
+    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${window.SESSION_PIN}`);
     fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
     s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
     loadMyProducts();
@@ -305,7 +305,7 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     e.preventDefault();
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
     
-    if(!SESSION_PIN || SESSION_PIN === ""){
+    if(!window.SESSION_PIN || window.SESSION_PIN === ""){
         alert("Session expirée. Veuillez recharger la page et recommencer l'inscription pour définir le PIN.");
         return;
     }
@@ -319,9 +319,9 @@ document.getElementById('product-form').onsubmit=async(e)=>{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
         
-        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
         
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${SESSION_PIN}`;
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${window.SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
         st.innerText="✅ Produit chargé avec succès !";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
@@ -332,20 +332,20 @@ document.getElementById('product-form').onsubmit=async(e)=>{
 function loadMyProducts(){
     db.collection('products').where('category','==',CURRENT_CATEGORY).orderBy('createdAt','desc').onSnapshot(snap=>{
     const div=document.getElementById('my-products-list');div.innerHTML='';
-    productsMap = {};
+    window.productsMap = {};
     if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">Aucun produit en ligne.</p>';return}
     snap.forEach(doc=>{
         const p=doc.data();
-        productsMap[doc.id] = p;
-        div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-edit" type="button" onclick="edit('${doc.id}')">✏️ Éditer</button><button class="btn-delete" type="button" onclick="del('${doc.id}','${p.pin}')">🗑️ Supprimer</button></div></div>`;
+        window.productsMap[doc.id] = p;
+        div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-edit" type="button" onclick="editProd('${doc.id}')">✏️ Éditer</button><button class="btn-delete" type="button" onclick="del('${doc.id}','${p.pin}')">🗑️ Supprimer</button></div></div>`;
     })
     })
 }
 
-window.edit=async(id)=>{
-    const p = productsMap[id];
+window.editProd=async(id)=>{
+    const p = window.productsMap[id];
     if(!p) return;
-    if(p.pin !== SESSION_PIN) return alert("Accès refusé. Ce produit ne semble pas vous appartenir (PIN incorrect).");
+    if(p.pin !== window.SESSION_PIN) return alert("Accès refusé. Ce produit ne semble pas vous appartenir (PIN incorrect).");
     if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée et les données remises dans le formulaire.")) return;
     
     try{
