@@ -355,6 +355,26 @@ function makeCircle(imgId){
 document.getElementById('gen_pdf').onclick=async()=>{
     if(!document.getElementById('sign_name').value || !document.getElementById('agree').checked)return alert("Signature & Checkbox required");
     if(!window.SESSION_PIN) window.SESSION_PIN = document.getElementById('f_master_pin').value;
+    
+    const shopName = document.getElementById('f_enseigne').value;
+    const cleanName = shopName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); 
+    const newShopId = cleanName + "_" + Date.now();
+    localStorage.setItem('alex_shop_id', newShopId);
+
+    try {
+        await db.collection('shops').doc(newShopId).set({
+            shopId: newShopId,
+            name: shopName,
+            owner: document.getElementById('f_resp').value,
+            siren: document.getElementById('f_siren').value,
+            phone: document.getElementById('f_tel').value,
+            address: document.getElementById('f_addr').value,
+            category: CURRENT_CATEGORY,
+            pin: window.SESSION_PIN,
+            joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch (e) { alert("Error saving shop: "+e.message); return; }
+
     const {jsPDF}=window.jspdf,doc=new jsPDF();
     try{doc.addImage(makeCircle('img-logo'),'JPEG',15,10,20,20)}catch(e){}
     doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,40);
@@ -362,8 +382,10 @@ document.getElementById('gen_pdf').onclick=async()=>{
     doc.setFontSize(11);doc.setFont("helvetica","normal");
     let y=60;
     const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color)doc.setTextColor(color);else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=6;};
-    addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
+    
+    addL("Entre AlexLivraison (Atabek Zakirov) et "+shopName+" ("+CURRENT_CATEGORY+").",true);
     y+=5;
+    addL("ID BOUTIQUE: "+newShopId);
     addL("Responsable: "+document.getElementById('f_resp').value);
     addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
     addL("Adresse: "+document.getElementById('f_addr').value);
@@ -391,9 +413,9 @@ document.getElementById('gen_pdf').onclick=async()=>{
     try{doc.addImage(document.getElementById('img-alex-sig'),'JPEG',100,y-5,50,30)}catch(e){}
     try{doc.addImage(makeCircle('img-stamp'),'JPEG',150,y-5,40,40)}catch(e){}
     const blob=doc.output('blob');
-    doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
+    doc.save("Contrat_"+newShopId+".pdf");
     const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
-    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${window.SESSION_PIN}`);
+    fd.append('caption', `✅ NEW SHOP: ${shopName} (ID: ${newShopId}). PIN: ${window.SESSION_PIN}`);
     fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
     s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
     loadMyProducts();
@@ -404,6 +426,9 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     const d=langData[curLang];
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
     if(!window.SESSION_PIN){alert(d.alertSess);return;}
+    const myShopId = localStorage.getItem('alex_shop_id');
+    if(!myShopId){alert("Erreur ID Shop. Re-signez le contrat.");return;}
+
     const f=document.getElementById('p_photo').files[0];
     if(f&&f.size>5*1024*1024){alert("Fichier trop lourd (Max 5Mo)");return;}
     if(f&&!f.type.startsWith('image/')){alert("Image uniquement");return;}
@@ -417,9 +442,9 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     try{
         const ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
-        await db.collection('products').add({name:name,price:parseFloat(finalPrice),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        await db.collection('products').add({name:name,price:parseFloat(finalPrice),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,shopId:myShopId,shopName:shop,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
         const promoText=isPromo?"🔥 OUI (Vitrine Générale) - 3%":"Non - 5%";
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 Base: ${rawPrice}€ + ${isPromo?'3%':'5%'} -> ${finalPrice}€\n✨ Promo: ${promoText}\n🔑 PIN: ${window.SESSION_PIN}`;
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${finalPrice}€\n🔑 PIN: ${window.SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
         st.innerHTML=d.success+finalPrice+"€";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
@@ -429,7 +454,10 @@ document.getElementById('product-form').onsubmit=async(e)=>{
 };
 
 function loadMyProducts(){
-    db.collection('products').where('category','==',CURRENT_CATEGORY).onSnapshot(snap=>{
+    const myShopId = localStorage.getItem('alex_shop_id');
+    if(!myShopId) return; 
+    
+    db.collection('products').where('shopId','==',myShopId).onSnapshot(snap=>{
         const div=document.getElementById('my-products-list');div.innerHTML='';
         window.productsMap={};
         if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">'+(curLang==='fr'?'Aucun produit.':'No products.')+'</p>';return}
@@ -472,6 +500,10 @@ window.del=async(id,prodPin)=>{
     if(userPin.toString()===validPin.toString()){
         try{await db.collection('products').doc(id).delete();alert(d.alertDel);}catch(e){alert("Error: "+e.message)}
     }else{alert(d.alertPinFail)}
+}
+
+if(localStorage.getItem('alex_shop_id')){
+   loadMyProducts();
 }
 </script>
 </body>
