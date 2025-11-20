@@ -83,14 +83,12 @@
 
   <div class="card">
       <div class="info-box">
-          <h3>📢 Instructions Importantes</h3>
-          <p>Pour activer votre compte partenaire :</p>
+          <h3>📢 Instructions</h3>
           <ol style="margin-left:15px;padding-left:0">
-              <li>Remplissez le formulaire et <strong>créez votre Code PIN Secret</strong>.</li>
-              <li>Signez le contrat numérique.</li>
-              <li>Chargez vos produits. Le PIN sera demandé pour valider chaque envoi.</li>
+              <li>Remplissez le formulaire d'inscription.</li>
+              <li>Signez le contrat de partenariat.</li>
+              <li>Mettez vos produits en ligne. <strong>Vous créerez votre Code PIN lors de l'ajout du produit.</strong></li>
           </ol>
-          <p style="color:#d32f2f;font-weight:bold;">⚠️ IMPORTANT : Retenez votre Code PIN pour gérer vos produits !</p>
       </div>
   </div>
 
@@ -100,12 +98,6 @@
       <div class="input-group"><label>Nom de l'enseigne</label><input id="f_enseigne" placeholder="Ex: Boulangerie Délices"></div>
       <div class="input-group"><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee;color:#666"></div>
     </div>
-    
-    <div class="input-group" style="background:#fff0f0; padding:10px; border-radius:10px; border:1px solid #ffcccc;">
-        <label style="color:#d32f2f;">🔐 CRÉEZ VOTRE CODE PIN SECRET (Obligatoire)</label>
-        <input id="f_master_pin" type="text" placeholder="Ex: 1234" maxlength="8" style="font-weight:bold; letter-spacing:1px;">
-    </div>
-
     <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
       <div class="input-group"><label>SIREN</label><input id="f_siren"></div>
@@ -144,6 +136,13 @@
       <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
       <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
       <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
+      
+      <div class="input-group" style="background:#fff0f0; padding:15px; border-radius:10px; border:1px solid #ffcccc; margin-top:20px;">
+        <label style="color:#d32f2f;">🔐 Créez un CODE PIN pour ce produit</label>
+        <input id="p_pin" type="text" required placeholder="Ex: 1234 (Pour suppression future)" maxlength="8" style="font-weight:bold;">
+        <small style="display:block; margin-top:5px; color:#666;">Ce code vous sera demandé si vous souhaitez supprimer ce produit.</small>
+      </div>
+
       <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
     </form>
 
@@ -175,8 +174,8 @@ document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
 const langData={
-  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Entrez le CODE SECRET pour supprimer ce produit :"},
-  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"Enter SECRET PIN to delete this product :"}
+  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Entrez le CODE PIN de ce produit pour le supprimer :"},
+  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"Enter this product's PIN to delete it :"}
 };
 let curLang='fr';
 document.getElementById('langFr').onclick=()=>{curLang='fr';updateLang()};
@@ -192,10 +191,10 @@ function updateLang(){
 }
 
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
-const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 'f_master_pin'].map(id=>document.getElementById(id));
+const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
 
 document.getElementById('btn_step1').onclick=()=>{
-    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
+    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs.");i.focus();return;}}
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 
@@ -225,23 +224,19 @@ document.getElementById('gen_pdf').onclick=async()=>{
     if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
     if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
     const {jsPDF}=window.jspdf,doc=new jsPDF();
-    const masterPin = document.getElementById('f_master_pin').value;
     try{doc.addImage(makeCircle('img-logo'),'JPEG',160,15,30,30)}catch(e){}
     doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
     doc.setLineWidth(0.5);doc.line(20,45,190,45);
     doc.setFontSize(11);doc.setFont("helvetica","normal");
     let y=60;
-    const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color) doc.setTextColor(color); else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=7;};
+    const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7;};
     addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
     y+=5;
     addL("Responsable: "+document.getElementById('f_resp').value);
     addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
     addL("Adresse: "+document.getElementById('f_addr').value);
     addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
-    y+=5;
-    doc.setDrawColor(255, 0, 0); doc.setLineWidth(0.5); doc.rect(18, y-5, 100, 10);
-    addL("CODE SECRET (PIN) DÉFINI PAR LE PARTENAIRE : " + masterPin, true, "red");
-    doc.setTextColor(0,0,0);y+=10;
+    y+=10;
     addL("Objet: Livraison de produits via la plateforme AlexLivraison.");
     addL("Offre spéciale: 5 livraisons gratuites à la signature.");
     addL("Engagement: Partenariat d'un an renouvelable.");
@@ -256,7 +251,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     const blob=doc.output('blob');
     doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
     const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
-    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${masterPin}`);
+    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}`);
     fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
     s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
     loadMyProducts();
@@ -265,10 +260,8 @@ document.getElementById('gen_pdf').onclick=async()=>{
 document.getElementById('product-form').onsubmit=async(e)=>{
     e.preventDefault();
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
-    const masterPin = document.getElementById('f_master_pin').value;
-    
-    const userPin = prompt("🔒 SÉCURITÉ : Veuillez entrer votre CODE PIN pour confirmer le chargement :");
-    if(userPin !== masterPin){alert("❌ Code PIN incorrect ! Opération annulée.");return;}
+    const prodPin = document.getElementById('p_pin').value;
+    if(!prodPin || prodPin.length<4){alert("Veuillez définir un code PIN d'au moins 4 caractères.");return;}
 
     bn.disabled=true;st.innerText="Chargement en cours...";st.style.color="blue";
     const name=document.getElementById('p_name').value;
@@ -278,8 +271,8 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     try{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
-        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:masterPin,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${masterPin}`;
+        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:prodPin,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN Défini: ${prodPin}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
         st.innerText="✅ Produit chargé avec succès !";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
