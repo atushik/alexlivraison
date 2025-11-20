@@ -99,10 +99,12 @@ const db=firebase.firestore();const storage=firebase.storage();
 const BOT="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA",CHAT="7129872491";
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
 const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+
 document.getElementById('btn_step1').onclick=()=>{
-for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
-s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
+  for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
+  s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
+
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200}
@@ -116,58 +118,86 @@ cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.st
 cvs.ontouchend=()=>dr=false;
 window.clearSig=()=>ctx.clearRect(0,0,cvs.width,cvs.height);
 document.getElementById('sign_date').valueAsDate=new Date();
+
+function makeCircle(imgId) {
+    const img = document.getElementById(imgId);
+    const c = document.createElement('canvas');
+    const s = Math.min(img.width, img.height);
+    c.width = s; c.height = s;
+    const x = c.getContext('2d');
+    x.beginPath();
+    x.arc(s/2, s/2, s/2, 0, Math.PI*2);
+    x.closePath();
+    x.clip();
+    x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, s, s);
+    return c.toDataURL('image/png');
+}
+
 document.getElementById('gen_pdf').onclick=async()=>{
-if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
-if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
-const {jsPDF}=window.jspdf,doc=new jsPDF();
-const logo=document.getElementById('img-logo'),stamp=document.getElementById('img-stamp');
-try{doc.addImage(logo,'JPEG',160,10,30,30)}catch(e){}
-doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
-doc.setLineWidth(0.5);doc.line(20,35,190,35);
-doc.setFontSize(11);doc.setFont("helvetica","normal");
-let y=50;
-const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
-addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" (Boulangerie).",true);
-y+=5;
-addL("Responsable: "+document.getElementById('f_resp').value);
-addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
-addL("Adresse: "+document.getElementById('f_addr').value);
-addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
-y+=10;
-addL("Objet: Livraison de produits de boulangerie (pains, viennoiseries).");
-addL("Offre spéciale: 5 livraisons gratuites à la signature.");
-addL("Engagement: Partenariat d'un an avec période d'essai de 2 semaines.");
-addL("Tarifs: Selon barème en vigueur, facturation mensuelle.");
-addL("Engagements: Respect des délais et de la qualité des produits.");
-addL("Résiliation: Préavis de 15 jours par écrit.");
-y+=20;
-doc.text("Fait à La Seyne-sur-Mer, le "+document.getElementById('sign_date').value,20,y);
-y+=15;
-doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);
-y+=10;
-doc.addImage(cvs.toDataURL(),'PNG',20,y,50,30);
-doc.text(document.getElementById('sign_name').value,20,y+35);
-try{doc.addImage(stamp,'JPEG',120,y,40,40)}catch(e){}
-doc.text("Validé",130,y+45);
-const blob=doc.output('blob');
-const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat_Boulangerie.pdf',{type:'application/pdf'}));
-await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
-s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
+  if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
+  if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
+  const {jsPDF}=window.jspdf,doc=new jsPDF();
+  
+  try {
+    const logoData = makeCircle('img-logo');
+    doc.addImage(logoData,'PNG',160,10,30,30);
+  } catch(e){}
+
+  doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
+  doc.setLineWidth(0.5);doc.line(20,35,190,35);
+  doc.setFontSize(11);doc.setFont("helvetica","normal");
+  let y=50;
+  const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
+  
+  addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" (Boulangerie).",true);
+  y+=5;
+  addL("Responsable: "+document.getElementById('f_resp').value);
+  addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
+  addL("Adresse: "+document.getElementById('f_addr').value);
+  addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
+  y+=10;
+  addL("Objet: Livraison de produits de boulangerie (pains, viennoiseries).");
+  addL("Offre spéciale: 5 livraisons gratuites à la signature.");
+  addL("Engagement: Partenariat d'un an avec période d'essai de 2 semaines.");
+  addL("Tarifs: Selon barème en vigueur, facturation mensuelle.");
+  addL("Engagements: Respect des délais et de la qualité des produits.");
+  addL("Résiliation: Préavis de 15 jours par écrit.");
+  y+=20;
+  
+  doc.text("Fait à La Seyne-sur-Mer, le "+document.getElementById('sign_date').value,20,y);
+  y+=15;
+  doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);
+  y+=10;
+  doc.addImage(cvs.toDataURL(),'PNG',20,y,50,30);
+  doc.text(document.getElementById('sign_name').value,20,y+35);
+  
+  try {
+    const stampData = makeCircle('img-stamp');
+    doc.addImage(stampData,'PNG',120,y,40,40);
+  } catch(e){}
+  
+  doc.text("Validé",130,y+45);
+  
+  const blob=doc.output('blob');
+  const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat_Boulangerie.pdf',{type:'application/pdf'}));
+  await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
+  s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
 };
+
 document.getElementById('product-form').onsubmit=async(e)=>{
-e.preventDefault();const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
-bn.disabled=true;st.innerText="Envoi en cours...";
-try{
-const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
-await ref.put(f);const u=await ref.getDownloadURL();
-await db.collection('products').add({
-name:document.getElementById('p_name').value,price:parseFloat(document.getElementById('p_price').value),
-desc:document.getElementById('p_desc').value,imageUrl:u,category:'boulangerie',
-createdAt:firebase.firestore.FieldValue.serverTimestamp()
-});
-st.innerText="✅ Produit ajouté avec succès !";st.style.color="green";e.target.reset();
-}catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";}
-bn.disabled=false;
+  e.preventDefault();const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
+  bn.disabled=true;st.innerText="Envoi en cours...";
+  try{
+    const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
+    await ref.put(f);const u=await ref.getDownloadURL();
+    await db.collection('products').add({
+      name:document.getElementById('p_name').value,price:parseFloat(document.getElementById('p_price').value),
+      desc:document.getElementById('p_desc').value,imageUrl:u,category:'boulangerie',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    st.innerText="✅ Produit ajouté avec succès !";st.style.color="green";e.target.reset();
+  }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";}
+  bn.disabled=false;
 };
 </script>
 </body>
