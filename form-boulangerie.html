@@ -90,7 +90,7 @@ canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10
 </main>
 
 <img src="logo.jpg" id="img-logo" style="display:none">
-<img src="alex444.jpg" id="img-stamp" style="display:none"> 
+<img src="alex444.jpg" id="img-stamp" style="display:none">
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
@@ -99,12 +99,10 @@ const db=firebase.firestore();const storage=firebase.storage();
 const BOT="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA",CHAT="7129872491";
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
 const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-
 document.getElementById('btn_step1').onclick=()=>{
-  for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
-  s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
+for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
+s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
-
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200}
@@ -125,12 +123,16 @@ function makeCircle(imgId) {
     const s = Math.min(img.width, img.height);
     c.width = s; c.height = s;
     const x = c.getContext('2d');
+    x.fillStyle = '#ffffff';
+    x.fillRect(0, 0, s, s);
     x.beginPath();
     x.arc(s/2, s/2, s/2, 0, Math.PI*2);
     x.closePath();
+    x.save();
     x.clip();
     x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, s, s);
-    return c.toDataURL('image/png');
+    x.restore();
+    return c.toDataURL('image/jpeg', 0.9);
 }
 
 document.getElementById('gen_pdf').onclick=async()=>{
@@ -140,7 +142,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
   
   try {
     const logoData = makeCircle('img-logo');
-    doc.addImage(logoData,'PNG',160,10,30,30);
+    doc.addImage(logoData,'JPEG',160,10,30,30);
   } catch(e){}
 
   doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
@@ -168,12 +170,12 @@ document.getElementById('gen_pdf').onclick=async()=>{
   y+=15;
   doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);
   y+=10;
-  doc.addImage(cvs.toDataURL(),'PNG',20,y,50,30);
+  doc.addImage(cvs.toDataURL('image/jpeg'),'JPEG',20,y,50,30);
   doc.text(document.getElementById('sign_name').value,20,y+35);
   
   try {
     const stampData = makeCircle('img-stamp');
-    doc.addImage(stampData,'PNG',120,y,40,40);
+    doc.addImage(stampData,'JPEG',120,y,40,40);
   } catch(e){}
   
   doc.text("Validé",130,y+45);
