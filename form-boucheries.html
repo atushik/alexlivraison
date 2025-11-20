@@ -113,12 +113,11 @@ document.getElementById('btn_step1').onclick=()=>{
 for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
 s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
-
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){
   const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200;
-  ctx.clearRect(0,0,cvs.width,cvs.height);
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cvs.width,cvs.height);
 }
 window.onresize=rs;rs();
 function gP(e){const r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
@@ -128,7 +127,7 @@ cvs.onmouseup=()=>dr=false;
 cvs.ontouchstart=e=>{e.preventDefault();dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
 cvs.ontouchend=()=>dr=false;
-window.clearSig=()=>ctx.clearRect(0,0,cvs.width,cvs.height);
+window.clearSig=()=>{ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.beginPath()};
 document.getElementById('sign_date').valueAsDate=new Date();
 
 function makeCircle(imgId) {
@@ -137,12 +136,16 @@ function makeCircle(imgId) {
     const s = Math.min(img.width, img.height);
     c.width = s; c.height = s;
     const x = c.getContext('2d');
+    x.fillStyle = '#ffffff';
+    x.fillRect(0, 0, s, s);
     x.beginPath();
     x.arc(s/2, s/2, s/2, 0, Math.PI*2);
     x.closePath();
+    x.save();
     x.clip();
     x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, s, s);
-    return c.toDataURL('image/png');
+    x.restore();
+    return c.toDataURL('image/jpeg', 0.95);
 }
 
 document.getElementById('gen_pdf').onclick=async()=>{
@@ -152,13 +155,13 @@ document.getElementById('gen_pdf').onclick=async()=>{
   
   try {
     const logoData = makeCircle('img-logo');
-    doc.addImage(logoData,'PNG',160,15,30,30);
+    doc.addImage(logoData,'JPEG',160,10,35,35);
   } catch(e){}
 
   doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
-  doc.setLineWidth(0.5);doc.line(20,45,190,45);
+  doc.setLineWidth(0.5);doc.line(20,40,190,40);
   doc.setFontSize(11);doc.setFont("helvetica","normal");
-  let y=60;
+  let y=55;
   const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
   
   addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" (Boucherie).",true);
@@ -180,20 +183,20 @@ document.getElementById('gen_pdf').onclick=async()=>{
   y+=15;
   doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);
   y+=10;
-  doc.addImage(cvs.toDataURL('image/png'),'PNG',20,y,50,30);
+  doc.addImage(cvs.toDataURL('image/jpeg'),'JPEG',20,y,50,30);
   doc.text(document.getElementById('sign_name').value,20,y+35);
   
   try {
     const sigAlex = document.getElementById('img-alex-sig');
-    doc.addImage(sigAlex,'JPEG',120,y,50,30);
+    doc.addImage(sigAlex,'JPEG',100,y-5,50,30); 
   } catch(e){}
   
   try {
     const stampData = makeCircle('img-stamp');
-    doc.addImage(stampData,'PNG',140,y-10,45,45);
+    doc.addImage(stampData,'JPEG',150,y-5,40,40); 
   } catch(e){}
   
-  doc.text("Validé",135,y+45);
+  doc.text("Validé",130,y+50);
   
   const blob=doc.output('blob');
   doc.save("Contrat_AlexLivraison_Boucherie.pdf");
