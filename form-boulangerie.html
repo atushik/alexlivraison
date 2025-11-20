@@ -190,7 +190,7 @@ const menu=document.getElementById('sideMenu');
 document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
-window.SESSION_PIN = "";
+window.SESSION_PIN = localStorage.getItem('alex_shop_pin') || ""; 
 window.productsMap = {};
 
 const langData={
@@ -324,6 +324,7 @@ document.getElementById('btn_step1').onclick=()=>{
     const siret = document.getElementById('f_siret').value;
     if(siren.length!==9 || siret.length!==14){alert("SIREN (9) / SIRET (14)");return;}
     window.SESSION_PIN = document.getElementById('f_master_pin').value;
+    localStorage.setItem('alex_shop_pin', window.SESSION_PIN);
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 
@@ -360,6 +361,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     const cleanName = shopName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); 
     const newShopId = cleanName + "_" + Date.now();
     localStorage.setItem('alex_shop_id', newShopId);
+    localStorage.setItem('alex_shop_pin', window.SESSION_PIN);
 
     try {
         await db.collection('shops').doc(newShopId).set({
@@ -425,32 +427,71 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     e.preventDefault();
     const d=langData[curLang];
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
+    
+    if(!window.SESSION_PIN && localStorage.getItem('alex_shop_pin')) {
+        window.SESSION_PIN = localStorage.getItem('alex_shop_pin');
+    }
     if(!window.SESSION_PIN){alert(d.alertSess);return;}
+
     const myShopId = localStorage.getItem('alex_shop_id');
     if(!myShopId){alert("Erreur ID Shop. Re-signez le contrat.");return;}
 
     const f=document.getElementById('p_photo').files[0];
     if(f&&f.size>5*1024*1024){alert("Fichier trop lourd (Max 5Mo)");return;}
     if(f&&!f.type.startsWith('image/')){alert("Image uniquement");return;}
-    bn.disabled=true;st.innerText=d.uploading;st.style.color="blue";
+    
+    bn.disabled=true;
+    st.style.color="blue";
+    
     const name=document.getElementById('p_name').value;
     const rawPrice=parseFloat(document.getElementById('p_price').value);
-    const shop=document.getElementById('f_enseigne').value;
+    const shop=document.getElementById('f_enseigne').value || "ShopPartner";
     const isPromo=document.getElementById('p_promo').checked;
     const multiplier=isPromo?1.03:1.05;
     const finalPrice=(rawPrice*multiplier).toFixed(2);
+
     try{
+        st.innerText = "1/3 Chargement de l'image...";
         const ref=storage.ref(`products/${Date.now()}_${f.name}`);
-        await ref.put(f);const u=await ref.getDownloadURL();
-        await db.collection('products').add({name:name,price:parseFloat(finalPrice),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,shopId:myShopId,shopName:shop,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        await ref.put(f);
+        const u=await ref.getDownloadURL();
+        
+        st.innerText = "2/3 Sauvegarde du produit...";
+        await db.collection('products').add({
+            name:name,
+            price:parseFloat(finalPrice),
+            desc:document.getElementById('p_desc').value,
+            pin:window.SESSION_PIN,
+            imageUrl:u,
+            category:CURRENT_CATEGORY,
+            isPromo:isPromo,
+            shopId:myShopId,
+            shopName:shop,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        st.innerText = "3/3 Notification Telegram...";
         const promoText=isPromo?"🔥 OUI (Vitrine Générale) - 3%":"Non - 5%";
         const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${finalPrice}€\n🔑 PIN: ${window.SESSION_PIN}`;
-        await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
-        st.innerHTML=d.success+finalPrice+"€";st.style.color="green";
+        
+        fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})
+        }).catch(err => console.log("Telegram Error (Ignored):", err));
+
+        st.innerHTML=d.success+finalPrice+"€";
+        st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
         document.getElementById('product-form').reset();
         document.getElementById('p_promo').checked=false;
-    }catch(err){st.innerHTML="<span class='emoji-anim'>❌</span> Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
+        bn.disabled=false;
+    }catch(err){
+        console.error(err);
+        st.innerHTML="<span class='emoji-anim'>❌</span> Erreur: "+err.message;
+        st.style.color="red";
+        bn.disabled=false;
+    }
 };
 
 function loadMyProducts(){
@@ -503,7 +544,11 @@ window.del=async(id,prodPin)=>{
 }
 
 if(localStorage.getItem('alex_shop_id')){
-   loadMyProducts();
+    if(document.getElementById('step1')){
+         document.getElementById('step1').classList.add('hidden');
+         document.getElementById('step3').classList.remove('hidden');
+         loadMyProducts();
+    }
 }
 </script>
 </body>
