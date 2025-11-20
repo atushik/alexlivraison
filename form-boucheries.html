@@ -30,6 +30,10 @@ input:focus,textarea:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35
 .hidden{display:none}
 canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair}
 .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px}
+.prod-item{display:flex;align-items:center;gap:10px;background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;border:1px solid #eee}
+.prod-img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+.prod-info{flex:1}
+.btn-del{background:#ff4d4d;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -86,25 +90,28 @@ canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10
       <button type="submit" class="btn-primary">Mettre en ligne le produit</button>
     </form>
     <div id="upload-status" class="status-msg"></div>
+    
+    <h3 style="margin-top:40px;color:#32006b;border-bottom:1px solid #ccc;padding-bottom:10px">Vos produits en ligne :</h3>
+    <div id="my-products-list" style="margin-top:20px">Chargement...</div>
   </section>
 </main>
 
 <img src="logo.jpg" id="img-logo" style="display:none">
-<img src="alex444.jpg" id="img-stamp" style="display:none"> 
+<img src="alex444.jpg" id="img-stamp" style="display:none">
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();const storage=firebase.storage();
 const BOT="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA",CHAT="7129872491";
+const CURRENT_CATEGORY='boucheries';
+
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
 const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-
 document.getElementById('btn_step1').onclick=()=>{
-  for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
-  s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
+for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
+s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
-
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200}
@@ -183,9 +190,13 @@ document.getElementById('gen_pdf').onclick=async()=>{
   doc.text("Validé",130,y+45);
   
   const blob=doc.output('blob');
+  doc.save("Contrat_AlexLivraison_Boucherie.pdf");
+
   const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat_Boucherie.pdf',{type:'application/pdf'}));
   await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
+  
   s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
+  loadMyProducts();
 };
 
 document.getElementById('product-form').onsubmit=async(e)=>{
@@ -196,13 +207,35 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     await ref.put(f);const u=await ref.getDownloadURL();
     await db.collection('products').add({
       name:document.getElementById('p_name').value,price:parseFloat(document.getElementById('p_price').value),
-      desc:document.getElementById('p_desc').value,imageUrl:u,category:'boucheries',
+      desc:document.getElementById('p_desc').value,imageUrl:u,category:CURRENT_CATEGORY,
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     });
     st.innerText="✅ Produit ajouté avec succès !";st.style.color="green";e.target.reset();
   }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";}
   bn.disabled=false;
 };
+
+function loadMyProducts(){
+  db.collection('products').where('category','==',CURRENT_CATEGORY).orderBy('createdAt','desc').onSnapshot(snap=>{
+    const div=document.getElementById('my-products-list');
+    div.innerHTML='';
+    snap.forEach(doc=>{
+      const p=doc.data();
+      div.innerHTML+=`<div class="prod-item">
+        <img src="${p.imageUrl}" class="prod-img">
+        <div class="prod-info"><b>${p.name}</b><br>${p.price} €</div>
+        <button class="btn-del" onclick="del('${doc.id}')">Supprimer</button>
+      </div>`;
+    });
+    if(snap.empty) div.innerHTML='<p style="text-align:center">Aucun produit.</p>';
+  });
+}
+
+window.del=async(id)=>{
+  if(confirm("Voulez-vous vraiment supprimer ce produit ?")){
+    await db.collection('products').doc(id).delete();
+  }
+}
 </script>
 </body>
 </html>
