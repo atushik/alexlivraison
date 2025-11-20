@@ -9,170 +9,164 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35}
+:root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95)}
 html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#222;background:linear-gradient(180deg,#32006b,#7a2cf5);background-attachment:fixed}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#32006b 0%,#7a2cf5 100%);color:#222;min-height:100vh}
 *{box-sizing:border-box}
-.wrap{width:100%;max-width:1060px;margin:0 auto;padding:16px}
-.topbar{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:saturate(160%) blur(12px);background:linear-gradient(180deg,rgba(20,0,45,.86),rgba(20,0,45,.52));border-bottom:1px solid var(--ring)}
-.topbar-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px 16px;color:#fff}
-.brand img{width:120px;height:auto}
-.btn{display:inline-block;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
-.btn-primary{background:#6b23ff;color:#fff}
-.btn-ghost{background:#ffffff14;color:#fff;border:1px solid #ffffff33}
-.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);margin:14px 0}
-.h1{color:#fff;margin:18px 0 8px 0;font-weight:900}
-.h2{margin:0 0 12px 0;font-weight:900}
-label{display:block;margin-top:10px;font-weight:700}
-input,select,textarea{width:100%;padding:12px;margin-top:6px;border-radius:10px;border:1px solid #cfd0d8;outline:none}
-textarea{min-height:110px;resize:vertical}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.lock{opacity:.5;pointer-events:none;filter:grayscale(20%)}
-.row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.sig-wrap{border:1px dashed #b6b4d6;border-radius:12px;overflow:hidden;background:#fff}
-canvas#signature{width:100%;height:220px;display:block;touch-action:none}
+.wrap{max-width:800px;margin:0 auto;padding:20px}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(20,0,45,0.85);backdrop-filter:blur(15px);border-bottom:1px solid rgba(255,255,255,0.1);padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo-img{width:50px;height:50px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,255,255,0.8);box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+.btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px}
+.card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px)}
+h1{color:#fff;text-align:center;margin-bottom:30px;font-size:2em;text-shadow:0 2px 10px rgba(0,0,0,0.2)}
+h2{color:#32006b;margin-top:0;font-size:1.5em;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px}
+.input-group{margin-bottom:15px}
+label{display:block;margin-bottom:8px;font-weight:600;color:#555}
+input,textarea,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;transition:0.3s;background:#f9f9f9}
+input:focus,textarea:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;transition:0.3s;margin-top:20px;box-shadow:0 5px 15px rgba(107,35,255,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(107,35,255,0.4)}
+.hidden{display:none}
+canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair}
+.status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div class="topbar-inner wrap">
-    <div class="brand"><img src="logo.jpg" alt="AlexLivraison"></div>
-    <div><a class="btn btn-ghost" href="index.html" target="_blank">Site</a></div>
-  </div>
+  <img src="logo.jpg" class="logo-img" alt="Logo">
+  <a href="index.html" class="btn-back">Retour au site</a>
 </div>
 <main class="wrap">
-  <h1 class="h1">Boulangeries • Portail Partenaire</h1>
+  <h1>Partenariat Boulangerie</h1>
   <section id="step1" class="card">
-    <h2 class="h2">Inscription</h2>
+    <h2>1. Informations de l'établissement</h2>
     <div class="grid2">
-      <div><label>Enseigne</label><input id="f_enseigne"></div>
-      <div><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly></div>
+      <div class="input-group"><label>Enseigne</label><input id="f_enseigne" placeholder="Nom de la boulangerie"></div>
+      <div class="input-group"><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee"></div>
     </div>
-    <div class="grid3">
-      <div><label>Responsable</label><input id="f_resp"></div>
-      <div><label>SIREN</label><input id="f_siren"></div>
-      <div><label>SIRET</label><input id="f_siret"></div>
-    </div>
+    <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
-      <div><label>Adresse</label><input id="f_addr"></div>
-      <div><label>Téléphone</label><input id="f_tel"></div>
+      <div class="input-group"><label>SIREN</label><input id="f_siren"></div>
+      <div class="input-group"><label>SIRET</label><input id="f_siret"></div>
     </div>
+    <div class="input-group"><label>Adresse complète</label><input id="f_addr"></div>
     <div class="grid2">
-      <div><label>E-mail</label><input id="f_mail"></div>
-      <div><label>Message</label><input id="f_msg"></div>
+      <div class="input-group"><label>Téléphone</label><input id="f_tel" type="tel"></div>
+      <div class="input-group"><label>E-mail</label><input id="f_mail" type="email"></div>
     </div>
-    <div class="row-actions">
-      <button id="btn_step1" class="btn btn-primary">Suivant</button>
-    </div>
+    <button id="btn_step1" class="btn-primary">Suivant →</button>
   </section>
-  <section id="step2" class="card lock">
-    <h2 class="h2">Contrat</h2>
+  <section id="step2" class="card hidden">
+    <h2>2. Convention de Partenariat</h2>
+    <p style="font-size:14px;color:#666;margin-bottom:20px">En signant, vous acceptez les conditions générales de partenariat avec AlexLivraison.</p>
     <div class="grid2">
-      <div><label>Signataire</label><input id="sign_name"></div>
-      <div><label>Date</label><input id="sign_date" type="date"></div>
+      <div class="input-group"><label>Nom du signataire</label><input id="sign_name"></div>
+      <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
     </div>
-    <div class="sig-wrap" style="margin-top:10px"><canvas id="signature"></canvas></div>
-    <div class="row-actions">
-      <button id="sig_clear" class="btn">Effacer</button>
-      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="agree"> J’accepte</label>
+    <label>Votre signature :</label>
+    <canvas id="signature"></canvas>
+    <button onclick="clearSig()" style="margin-top:10px;padding:8px;background:#eee;border:none;border-radius:5px;cursor:pointer">Effacer</button>
+    <div style="margin-top:20px;display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="agree" style="width:auto">
+      <label for="agree" style="margin:0">Je certifie l'exactitude des informations.</label>
     </div>
-    <div class="row-actions">
-      <button id="gen_pdf" class="btn btn-primary">Signer & PDF</button>
-    </div>
+    <button id="gen_pdf" class="btn-primary">Signer et Générer le Contrat</button>
   </section>
-  <section id="step3" class="card lock">
-    <h2 class="h2">Ajouter un produit</h2>
-    <form id="product-form" class="grid3">
-      <div><label>Nom</label><input id="p_name" required></div>
-      <div><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required></div>
-      <div><label>Photo</label><input id="p_photo" type="file" accept="image/*" required></div>
-      <div style="grid-column:1/4"><label>Description</label><textarea id="p_desc" required></textarea></div>
-      <div style="grid-column:1/4"><button type="submit" class="btn btn-primary">Enregistrer</button></div>
+  <section id="step3" class="card hidden">
+    <h2>3. Ajouter vos produits</h2>
+    <form id="product-form">
+      <div class="input-group"><label>Nom du produit</label><input id="p_name" required placeholder="Ex: Croissant au beurre"></div>
+      <div class="grid2">
+        <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
+        <div class="input-group"><label>Photo</label><input id="p_photo" type="file" accept="image/*" required></div>
+      </div>
+      <div class="input-group"><label>Description</label><textarea id="p_desc" rows="3" required placeholder="Ingrédients, allergènes..."></textarea></div>
+      <button type="submit" class="btn-primary">Mettre en ligne le produit</button>
     </form>
-    <div id="upload-status" style="margin-top:15px;font-weight:bold"></div>
+    <div id="upload-status" class="status-msg"></div>
   </section>
 </main>
+<img src="logo.jpg" id="img-logo" style="display:none">
+<img src="alex44.jpg" id="img-stamp" style="display:none">
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
-    authDomain: "alex-livraison.firebaseapp.com",
-    projectId: "alex-livraison",
-    storageBucket: "alex-livraison.firebasestorage.app",
-    messagingSenderId: "937475497279",
-    appId: "1:937475497279:web:62dc9eba8e77a5113ec78a"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const storage = firebase.storage();
-  const BOT_TOKEN="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-  const CHAT_ID="7129872491";
-  const step1Btn=document.getElementById('btn_step1');
-  const step2=document.getElementById('step2');
-  const step3=document.getElementById('step3');
-  const inputs=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
-  step1Btn.onclick=()=>{for(const el of inputs){if(!el.value.trim()){alert('Remplissez tout.');return}}step2.classList.remove('lock')};
-  const signName=document.getElementById('sign_name');
-  const signDate=document.getElementById('sign_date');
-  signDate.valueAsDate=new Date();
-  const canvas=document.getElementById('signature');
-  const ctx=canvas.getContext('2d');
-  let drawing=false;
-  function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=220}
-  window.addEventListener('resize',resizeCanvas);resizeCanvas();
-  function pos(e){const rect=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-rect.left),y:(t.clientY-rect.top)}}
-  function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)}
-  function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111';ctx.stroke()}
-  function end(){drawing=false}
-  canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);
-  canvas.addEventListener('touchstart',e=>{start(e);e.preventDefault()},{passive:false});
-  canvas.addEventListener('touchmove',e=>{move(e);e.preventDefault()},{passive:false});
-  canvas.addEventListener('touchend',end);
-  document.getElementById('sig_clear').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height)};
-  const agree=document.getElementById('agree');
-  const gen=document.getElementById('gen_pdf');
-  gen.onclick=async()=>{
-    if(!agree.checked){alert('Acceptez la convention.');return}
-    const sigData=canvas.toDataURL('image/png');
-    const {jsPDF}=window.jspdf;
-    const doc=new jsPDF({unit:'pt',format:'a4'});
-    doc.text('Convention Boulangerie',40,40);
-    doc.text(`Enseigne: ${document.getElementById('f_enseigne').value}`,40,70);
-    doc.addImage(sigData,'PNG',40,100,200,100);
-    const pdfBlob=doc.output('blob');
-    step3.classList.remove('lock');
-    const formData=new FormData();
-    formData.append('chat_id',CHAT_ID);
-    formData.append('document',new File([pdfBlob],'Convention.pdf',{type:'application/pdf'}));
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`,{method:'POST',body:formData});
-  };
-  document.getElementById('product-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const status = document.getElementById('upload-status');
-    const btn = e.target.querySelector('button');
-    const name = document.getElementById('p_name').value;
-    const price = parseFloat(document.getElementById('p_price').value);
-    const desc = document.getElementById('p_desc').value;
-    const file = document.getElementById('p_photo').files[0];
-    const category = 'boulangerie'; 
-    if(!file) return;
-    btn.disabled = true;
-    status.textContent = "Chargement...";
-    try {
-      const storageRef = storage.ref(`products/${Date.now()}_${file.name}`);
-      const snapshot = await storageRef.put(file);
-      const imageUrl = await snapshot.ref.getDownloadURL();
-      await db.collection('products').add({name, price, desc, imageUrl, category, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-      status.style.color = 'green';
-      status.textContent = "Succès !";
-      e.target.reset();
-    } catch (error) {
-      status.style.color = 'red';
-      status.textContent = "Erreur: " + error.message;
-    } finally {
-      btn.disabled = false;
-    }
-  });
+const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();const storage=firebase.storage();
+const BOT="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA",CHAT="7129872491";
+const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
+const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+document.getElementById('btn_step1').onclick=()=>{
+for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs.");
+s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
+};
+const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
+let dr=false;
+function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200}
+window.onresize=rs;rs();
+function gP(e){const r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
+cvs.onmousedown=e=>{dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
+cvs.onmousemove=e=>{if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
+cvs.onmouseup=()=>dr=false;
+cvs.ontouchstart=e=>{e.preventDefault();dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
+cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
+cvs.ontouchend=()=>dr=false;
+window.clearSig=()=>ctx.clearRect(0,0,cvs.width,cvs.height);
+document.getElementById('sign_date').valueAsDate=new Date();
+document.getElementById('gen_pdf').onclick=async()=>{
+if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
+if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
+const {jsPDF}=window.jspdf,doc=new jsPDF();
+const logo=document.getElementById('img-logo'),stamp=document.getElementById('img-stamp');
+try{doc.addImage(logo,'JPEG',160,10,30,30)}catch(e){}
+doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
+doc.setLineWidth(0.5);doc.line(20,35,190,35);
+doc.setFontSize(11);doc.setFont("helvetica","normal");
+let y=50;
+const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
+addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" (Boulangerie).",true);
+y+=5;
+addL("Responsable: "+document.getElementById('f_resp').value);
+addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
+addL("Adresse: "+document.getElementById('f_addr').value);
+addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
+y+=10;
+addL("Objet: Livraison de produits de boulangerie (pains, viennoiseries).");
+addL("Offre spéciale: 5 livraisons gratuites à la signature.");
+addL("Engagement: Partenariat d'un an avec période d'essai de 2 semaines.");
+addL("Tarifs: Selon barème en vigueur, facturation mensuelle.");
+addL("Engagements: Respect des délais et de la qualité des produits.");
+addL("Résiliation: Préavis de 15 jours par écrit.");
+y+=20;
+doc.text("Fait à La Seyne-sur-Mer, le "+document.getElementById('sign_date').value,20,y);
+y+=15;
+doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);
+y+=10;
+doc.addImage(cvs.toDataURL(),'PNG',20,y,50,30);
+doc.text(document.getElementById('sign_name').value,20,y+35);
+try{doc.addImage(stamp,'JPEG',120,y,40,40)}catch(e){}
+doc.text("Validé",130,y+45);
+const blob=doc.output('blob');
+const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat_Boulangerie.pdf',{type:'application/pdf'}));
+await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
+s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
+};
+document.getElementById('product-form').onsubmit=async(e)=>{
+e.preventDefault();const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
+bn.disabled=true;st.innerText="Envoi en cours...";
+try{
+const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
+await ref.put(f);const u=await ref.getDownloadURL();
+await db.collection('products').add({
+name:document.getElementById('p_name').value,price:parseFloat(document.getElementById('p_price').value),
+desc:document.getElementById('p_desc').value,imageUrl:u,category:'boulangerie',
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+});
+st.innerText="✅ Produit ajouté avec succès !";st.style.color="green";e.target.reset();
+}catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";}
+bn.disabled=false;
+};
 </script>
 </body>
 </html>
