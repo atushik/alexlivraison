@@ -404,6 +404,9 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     const d=langData[curLang];
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
     if(!window.SESSION_PIN){alert(d.alertSess);return;}
+    const f=document.getElementById('p_photo').files[0];
+    if(f&&f.size>5*1024*1024){alert("Fichier trop lourd (Max 5Mo)");return;}
+    if(f&&!f.type.startsWith('image/')){alert("Image uniquement");return;}
     bn.disabled=true;st.innerText=d.uploading;st.style.color="blue";
     const name=document.getElementById('p_name').value;
     const rawPrice=parseFloat(document.getElementById('p_price').value);
@@ -412,7 +415,7 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     const multiplier=isPromo?1.03:1.05;
     const finalPrice=(rawPrice*multiplier).toFixed(2);
     try{
-        const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
+        const ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
         await db.collection('products').add({name:name,price:parseFloat(finalPrice),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
         const promoText=isPromo?"🔥 OUI (Vitrine Générale) - 3%":"Non - 5%";
