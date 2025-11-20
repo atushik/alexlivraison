@@ -155,7 +155,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
   
   try {
     const logoData = makeCircle('img-logo');
-    doc.addImage(logoData,'JPEG',160,10,35,35);
+    doc.addImage(logoData,'JPEG',160,5,25,25); 
   } catch(e){}
 
   doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
@@ -247,4 +247,4 @@ window.del=async(id)=>{
 }
 </script>
 </body>
-</html>
+</html> 
