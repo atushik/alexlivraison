@@ -83,21 +83,28 @@
 
   <div class="card">
       <div class="info-box">
-          <h3>📢 Instructions</h3>
+          <h3>📢 Procédure Partenaire</h3>
           <ol style="margin-left:15px;padding-left:0">
-              <li>Remplissez le formulaire d'inscription.</li>
-              <li>Signez le contrat de partenariat.</li>
-              <li>Mettez vos produits en ligne. <strong>Vous créerez votre Code PIN lors de l'ajout du produit.</strong></li>
+              <li><strong>Créez votre Code PIN Secret</strong> dans le formulaire ci-dessous.</li>
+              <li>Signez le contrat (Votre PIN y sera inscrit pour mémoire).</li>
+              <li>Chargez vos produits. Le système <strong>utilisera automatiquement</strong> ce PIN pour sécuriser vos ajouts.</li>
           </ol>
       </div>
   </div>
 
   <section id="step1" class="card">
-    <h2 id="t-step1">1. Inscription Partenaire</h2>
+    <h2 id="t-step1">1. Inscription & Sécurité</h2>
     <div class="grid2">
       <div class="input-group"><label>Nom de l'enseigne</label><input id="f_enseigne" placeholder="Ex: Boulangerie Délices"></div>
       <div class="input-group"><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee;color:#666"></div>
     </div>
+    
+    <div class="input-group" style="background:#fff0f0; padding:15px; border-radius:10px; border:1px solid #ffcccc;">
+        <label style="color:#d32f2f;">🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)</label>
+        <input id="f_master_pin" type="text" placeholder="Ex: 1234" maxlength="8" style="font-weight:bold; letter-spacing:1px;">
+        <small style="color:#555;display:block;margin-top:5px">Ce code sera sauvegardé dans votre contrat PDF. Il servira à supprimer vos produits plus tard.</small>
+    </div>
+
     <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
       <div class="input-group"><label>SIREN</label><input id="f_siren"></div>
@@ -113,7 +120,7 @@
 
   <section id="step2" class="card hidden">
     <h2 id="t-step2">2. Contrat de Collaboration</h2>
-    <p style="font-size:14px;color:#666;margin-bottom:15px">Veuillez signer pour valider votre partenariat.</p>
+    <p style="font-size:14px;color:#666;margin-bottom:15px">Le Code PIN que vous avez défini sera inscrit dans ce document.</p>
     <div class="grid2">
       <div class="input-group"><label>Signataire</label><input id="sign_name"></div>
       <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
@@ -131,18 +138,16 @@
   <section id="step3" class="card hidden">
     <h2 id="t-step3">3. Gestion de vos produits</h2>
     
+    <div class="info-box" style="background:#f0fff4; border-color:#4caf50;">
+        <p>✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé pour cette session. Vous n'avez pas besoin de le resaisir pour ajouter des produits.</p>
+    </div>
+
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
       <div class="input-group"><label>Nom du produit</label><input id="p_name" required placeholder="Ex: Baguette Tradition"></div>
       <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
       <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
       <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
       
-      <div class="input-group" style="background:#fff0f0; padding:15px; border-radius:10px; border:1px solid #ffcccc; margin-top:20px;">
-        <label style="color:#d32f2f;">🔐 Créez un CODE PIN pour ce produit</label>
-        <input id="p_pin" type="text" required placeholder="Ex: 1234 (Pour suppression future)" maxlength="8" style="font-weight:bold;">
-        <small style="display:block; margin-top:5px; color:#666;">Ce code vous sera demandé si vous souhaitez supprimer ce produit.</small>
-      </div>
-
       <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
     </form>
 
@@ -173,9 +178,11 @@ const menu=document.getElementById('sideMenu');
 document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
+let SESSION_PIN = "";
+
 const langData={
-  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Entrez le CODE PIN de ce produit pour le supprimer :"},
-  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"Enter this product's PIN to delete it :"}
+  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :"},
+  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"To DELETE, enter the PIN from your contract :"}
 };
 let curLang='fr';
 document.getElementById('langFr').onclick=()=>{curLang='fr';updateLang()};
@@ -191,10 +198,12 @@ function updateLang(){
 }
 
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
-const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail'].map(id=>document.getElementById(id));
+const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 'f_master_pin'].map(id=>document.getElementById(id));
 
 document.getElementById('btn_step1').onclick=()=>{
-    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs.");i.focus();return;}}
+    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
+  
+    SESSION_PIN = document.getElementById('f_master_pin').value;
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 
@@ -223,20 +232,29 @@ function makeCircle(imgId){
 document.getElementById('gen_pdf').onclick=async()=>{
     if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
     if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
+    
+  
+    if(!SESSION_PIN) SESSION_PIN = document.getElementById('f_master_pin').value;
+
     const {jsPDF}=window.jspdf,doc=new jsPDF();
     try{doc.addImage(makeCircle('img-logo'),'JPEG',160,15,30,30)}catch(e){}
     doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
     doc.setLineWidth(0.5);doc.line(20,45,190,45);
     doc.setFontSize(11);doc.setFont("helvetica","normal");
     let y=60;
-    const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7;};
+    const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color) doc.setTextColor(color); else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=7;};
     addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
     y+=5;
     addL("Responsable: "+document.getElementById('f_resp').value);
     addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
     addL("Adresse: "+document.getElementById('f_addr').value);
     addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
-    y+=10;
+    y+=5;
+    
+    doc.setDrawColor(255, 0, 0); doc.setLineWidth(0.5); doc.rect(18, y-5, 100, 10);
+    addL("CODE PIN DE SÉCURITÉ (Sauvegardé) : " + SESSION_PIN, true, "red");
+    
+    doc.setTextColor(0,0,0);y+=10;
     addL("Objet: Livraison de produits via la plateforme AlexLivraison.");
     addL("Offre spéciale: 5 livraisons gratuites à la signature.");
     addL("Engagement: Partenariat d'un an renouvelable.");
@@ -251,7 +269,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
     const blob=doc.output('blob');
     doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
     const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
-    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}`);
+    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${SESSION_PIN}`);
     fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
     s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
     loadMyProducts();
@@ -260,8 +278,11 @@ document.getElementById('gen_pdf').onclick=async()=>{
 document.getElementById('product-form').onsubmit=async(e)=>{
     e.preventDefault();
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
-    const prodPin = document.getElementById('p_pin').value;
-    if(!prodPin || prodPin.length<4){alert("Veuillez définir un code PIN d'au moins 4 caractères.");return;}
+    
+    if(!SESSION_PIN || SESSION_PIN === ""){
+        alert("Session expirée. Veuillez recharger la page et recommencer l'inscription pour définir le PIN.");
+        return;
+    }
 
     bn.disabled=true;st.innerText="Chargement en cours...";st.style.color="blue";
     const name=document.getElementById('p_name').value;
@@ -271,8 +292,10 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     try{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
-        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:prodPin,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN Défini: ${prodPin}`;
+      
+        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
         st.innerText="✅ Produit chargé avec succès !";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
@@ -290,7 +313,7 @@ function loadMyProducts(){
 
 window.del=async(id,correctPin)=>{
     const userPin=prompt(langData[curLang].pinPrompt);if(!userPin)return;
-    if(userPin===correctPin){try{await db.collection('products').doc(id).delete();alert("Produit supprimé !")}catch(e){alert("Erreur : "+e.message)}}else{alert("❌ Code PIN incorrect !")}
+    if(userPin===correctPin){try{await db.collection('products').doc(id).delete();alert("Produit supprimé !")}catch(e){alert("Erreur : "+e.message)}}else{alert("❌ Code PIN incorrect ! Vérifiez votre contrat PDF.")}
 }
 </script>
 </body>
