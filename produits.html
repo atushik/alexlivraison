@@ -7,154 +7,199 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#32006b,#7a2cf5);color:#fff;min-height:100vh;overflow-x:hidden}
-.wrap{max-width:1060px;margin:0 auto;padding:20px}
-header{display:flex;justify-content:space-between;align-items:center;padding:15px 0;position:relative}
-.logo{font-size:28px;font-weight:bold;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
-.logo .emoji{display:inline-block;animation:bounce 2s infinite}
-.hamburger{width:30px;height:22px;position:relative;cursor:pointer;z-index:1001}
-.hamburger span,
-.hamburger::before,
-.hamburger::after{content:'';display:block;width:100%;height:3px;background:#fff;position:absolute;transition:.3s}
-.hamburger span{top:50%;transform:translateY(-50%)}
-.hamburger::before{top:0}
-.hamburger::after{bottom:0}
-.hamburger.active span{opacity:0}
-.hamburger.active::before{transform:translateY(10px) rotate(45deg)}
-.hamburger.active::after{transform:translateY(-10px) rotate(-45deg)}
-.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(50,0,107,.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
-.menu.open{right:0}
-.menu nav a{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.05)}
-.menu nav a:hover{background:rgba(255,255,255,.15);padding-left:30px;color:#b88aff}
-.menu .submenu-trigger{display:block;color:#fff;text-decoration:none;padding:15px 20px;font-size:16px;border-radius:10px;margin-bottom:8px;transition:.3s;background:rgba(255,255,255,.09);font-weight:700;cursor:pointer;position:relative;}
-.menu .submenu-trigger::after{content:"▼";font-size:.87em;margin-left:6px;}
-.menu .submenu{display:none;background:rgba(98,57,174,.95);border-radius:11px;padding:7px 0;box-shadow:0 6px 20px #2a146133;margin-bottom:2px;}
-.menu .submenu.visible{display:block;}
-.menu .submenu a{padding:11px 29px;color:#fff;background:none;border-radius:7px;text-decoration:none;font-size:15px;font-weight:700;transition:.21s;text-align:left;display:block;}
-.menu .submenu a:hover{background:#6b23ff;}
-.lang-switch{margin-top:30px;padding-top:20px;border-top:2px solid rgba(255,255,255,.2)}
-.lang-switch p{font-size:14px;margin-bottom:15px;color:#b88aff}
-.lang-btns{display:flex;gap:10px}
-.lang-btns button{flex:1;padding:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:8px;font-size:14px;transition:.3s}
-.lang-btns button:hover{background:rgba(255,255,255,.2)}
-.lang-btns button.active{background:#6b23ff;border-color:#6b23ff}
-.page-header{text-align:center;margin:40px 0;animation:slide-in-top .6s}
-.page-header h1{font-size:34px;margin-bottom:10px;line-height:1.3}
-.page-header .sticker{font-size:50px;display:inline-block;animation:bounce 2s infinite}
-.promo-banner{background:linear-gradient(135deg,#ff6b6b,#ff8e53);padding:20px;border-radius:20px;text-align:center;margin:30px 0;animation:glow 2s infinite;box-shadow:0 5px 25px rgba(255,107,107,.4)}
-.promo-banner h2{font-size:26px;margin-bottom:10px}
-.promo-banner p{font-size:16px;opacity:.9}
-.promo-emoji{display:inline-block;animation:wiggle 1.5s infinite ease-in-out}
-.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin:30px 0;animation:fade-in-card .8s}
-.filter-btn{padding:12px 25px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;border-radius:25px;font-size:16px;transition:.3s;display:flex;align-items:center;gap:8px}
-.filter-btn .emoji{display:inline-block;animation:bounce 2s infinite}
-.filter-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
-.filter-btn.active{background:#6b23ff;border-color:#6b23ff;box-shadow:0 0 20px rgba(107,35,255,.5)}
-.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:40px 0;animation:fade-in-card 1s}
-.product-card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;border:2px solid rgba(255,255,255,.2);transition:.4s;position:relative;overflow:hidden;cursor:pointer}
-.product-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);opacity:0;transition:.4s}
-.product-card:hover::before{opacity:1}
-.product-card:hover{transform:translateY(-8px);border-color:#b88aff;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.product-img{width:100%;height:200px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:linear-gradient(135deg,#6b23ff,#b88aff)}
-.product-badge{display:inline-block;padding:5px 12px;background:#6b23ff;border-radius:15px;font-size:12px;margin-bottom:10px}
-.product-name{font-size:20px;font-weight:bold;margin-bottom:8px}
-.product-price{font-size:22px;color:#b88aff;margin:10px 0;font-weight:bold}
-.product-desc{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:15px;line-height:1.4}
-.btn-order{width:100%;padding:12px;background:linear-gradient(135deg,#6b23ff,#b88aff);border:none;color:#fff;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold}
-.btn-order:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(107,35,255,.4)}
-footer{text-align:center;padding:30px 0;border-top:2px solid rgba(255,255,255,.2);margin-top:50px}
-footer p{color:rgba(255,255,255,.7);font-size:14px}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes slide-in-top{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fade-in-card{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-@keyframes glow{0%,100%{box-shadow:0 5px 25px rgba(255,107,107,.4);transform:scale(1)}50%{box-shadow:0 5px 40px rgba(255,107,107,.7);transform:scale(1.02)}}
-@keyframes wiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-20deg)}75%{transform:rotate(20deg)}}
-@media(max-width:968px){.products-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.wrap{padding:15px}.page-header h1{font-size:26px}.filters{gap:10px}.filter-btn{padding:10px 18px;font-size:14px}.products-grid{grid-template-columns:1fr;gap:20px}.menu{width:260px}}
+  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);
+    background-size:200% 200%;
+    animation:anim-bg 15s ease-in-out infinite;
+    color:#222;
+    min-height:100vh;
+    overflow-x:hidden;
+    background-attachment:fixed;
+  }
+  @keyframes anim-bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  
+  /* Topbar */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;padding:15px 20px;
+    background:rgba(20,0,45,0.85);backdrop-filter:blur(15px);
+    position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .logo-img{
+    width:50px;height:50px;object-fit:cover;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.8);box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  }
+  
+  /* Hamburger */
+  .hamburger{width:45px;height:45px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border-radius:10px;cursor:pointer;transition:.3s}
+  .hamburger:hover{background:rgba(255,255,255,0.25)}
+  .hamburger span{width:24px;height:3px;background:#fff;border-radius:3px}
+
+  /* Menu */
+  .menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(20,0,45,0.98);padding:80px 30px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px)}
+  .menu.open{right:0}
+  .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px;font-size:16px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,0.05);transition:.3s}
+  .menu nav a:hover{background:rgba(255,255,255,0.15);color:#b88aff}
+  .menu .submenu-trigger{cursor:pointer;font-weight:700}
+  .menu .submenu{display:none;background:rgba(107,35,255,0.2);border-radius:10px;margin-bottom:10px;padding:5px 0}
+  .menu .submenu.visible{display:block}
+  .menu .submenu a{padding-left:25px;font-size:15px;background:none}
+  
+  /* Lang switch */
+  .lang-switch{margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.2);color:#fff}
+  .lang-btns{display:flex;gap:10px;margin-top:10px}
+  .lang-btns button{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:8px;cursor:pointer}
+  .lang-btns button.active{background:#6b23ff;border-color:#6b23ff}
+
+  /* Header Title */
+  .page-header{text-align:center;margin:40px 0 30px;}
+  .main-title{font-size:2.5em;font-weight:900;color:#fff;text-shadow:0 4px 15px rgba(0,0,0,0.2);display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap}
+  #emoji-car{display:inline-block;animation:carMove 2s infinite ease-in-out alternate}
+  #emoji-biker{display:inline-block;animation:bounce 2s infinite ease-in-out alternate}
+  @keyframes carMove{0%{transform:translateX(0)}100%{transform:translateX(15px)}}
+  @keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-10px)}}
+
+  /* Promo */
+  .promo-banner{background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);padding:20px;border-radius:16px;text-align:center;margin-bottom:30px;animation:pulse 2.5s infinite ease-in-out;box-shadow:0 10px 30px rgba(255,100,50,0.3);border:2px solid rgba(255,255,255,0.5)}
+  .promo-banner h2{font-size:22px;margin-bottom:5px;color:#d35400}
+  .promo-banner p{font-size:16px;color:#d35400;font-weight:600}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+
+  /* Filters */
+  .filters-container{overflow-x:auto;padding-bottom:10px;margin-bottom:30px;text-align:center}
+  .filters{display:inline-flex;gap:10px;padding:0 10px}
+  .filter-btn{
+    padding:12px 24px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);
+    color:#fff;cursor:pointer;border-radius:50px;font-size:16px;transition:.3s;display:flex;align-items:center;gap:8px;white-space:nowrap;backdrop-filter:blur(5px);
+  }
+  .filter-btn:hover{background:rgba(255,255,255,0.3);transform:translateY(-2px)}
+  .filter-btn.active{background:#fff;color:#6b23ff;border-color:#fff;font-weight:800;box-shadow:0 5px 15px rgba(0,0,0,0.2)}
+
+  /* Grid */
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;margin-bottom:50px}
+  .product-card{
+    background:#fff;border-radius:20px;padding:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);transition:.3s;
+    display:flex;flex-direction:column;position:relative;overflow:hidden;
+  }
+  .product-card:hover{transform:translateY(-8px);box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+  .product-img{width:100%;height:180px;object-fit:cover;border-radius:15px;margin-bottom:15px;background:#f0f0f0}
+  .product-badge{
+    position:absolute;top:25px;right:25px;background:rgba(255,255,255,0.9);
+    padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold;color:#6b23ff;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  }
+  .product-name{font-size:18px;font-weight:800;margin-bottom:8px;color:#333}
+  .product-price{font-size:20px;color:#6b23ff;margin-bottom:10px;font-weight:900}
+  .product-desc{font-size:14px;color:#666;margin-bottom:15px;line-height:1.5;flex-grow:1}
+  .btn-order{
+    width:100%;padding:14px;background:linear-gradient(90deg,#6b23ff,#8e5aff);
+    border:none;color:#fff;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;font-weight:bold;
+  }
+  .btn-order:hover{background:linear-gradient(90deg,#5a2ecc,#7b40f2);transform:scale(1.02)}
+
+  footer{text-align:center;padding:30px 0;border-top:1px solid rgba(255,255,255,0.2);margin-top:auto;color:rgba(255,255,255,0.7);font-size:14px}
+
+  @media(max-width:768px){.main-title{font-size:1.8em}.filters-container{justify-content:flex-start}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-<a href="index.html" class="logo">AlexLivraison <span class="emoji">🚚</span></a>
-<div class="hamburger" id="hamburger"><span></span></div>
-</header>
+
+<div class="topbar">
+  <img src="logo.jpg" class="logo-img" alt="Logo">
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
 <div class="menu" id="menu">
-<nav>
-<a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
-<div class="submenu" id="partnerSubmenu">
-<a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
-<a href="form-boulangerie.html" target="_blank">Propriétaire de boulangerie</a>
-<a href="form-pharmacies.html" target="_blank">Propriétaire de pharmacie</a>
-<a href="form-restaurants.html" target="_blank">Propriétaire de restaurant</a>
-<a href="form-epiceries.html" target="_blank">Propriétaire d'épicerie fine</a>
-<a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
-<a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
-<a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
+  <nav>
+    <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
+    <div class="submenu" id="partnerSubmenu">
+      <a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
+      <a href="form-boulangerie.html" target="_blank">Propriétaire de boulangerie</a>
+      <a href="form-pharmacies.html" target="_blank">Propriétaire de pharmacie</a>
+      <a href="form-restaurants.html" target="_blank">Propriétaire de restaurant</a>
+      <a href="form-epiceries.html" target="_blank">Propriétaire d'épicerie fine</a>
+      <a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
+      <a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
+      <a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
+      <a href="form-fleuristes.html" target="_blank">Fleuriste</a>
+      <a href="form-primeur.html" target="_blank">Primeur</a>
+    </div>
+    <a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
+    <a href="index.html">🏠 Retour à la page d'accueil</a>
+    <a href="index.html#contact">📞 Contactez-nous</a>
+    <a href="about.html">ℹ️ À propos de nous</a>
+  </nav>
+  <div class="lang-switch">
+    <p>Langue / Language</p>
+    <div class="lang-btns">
+      <button class="active" id="langFr">FR</button>
+      <button id="langEn">EN</button>
+    </div>
+  </div>
 </div>
-<a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
-<a href="index.html">🏠 Retour à la page d'accueil</a>
-<a href="index.html#contact">📞 Contactez-nous</a>
-<a href="about.html">ℹ️ À propos de nous</a>
-</nav>
-<div class="lang-switch">
-<p>Langue / Language</p>
-<div class="lang-btns">
-<button class="active" id="langFr">FR</button>
-<button id="langEn">EN</button>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="main-title">
+      <span id="emoji-biker">🚴🏻‍♂️</span> AlexLivraison <span id="emoji-car">🚗</span>
+    </div>
+  </div>
+
+  <div class="promo-banner">
+    <h2>🎉 Promotion spéciale!</h2>
+    <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
+  </div>
+
+  <div class="filters-container">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Meilleurs Prix</span></button>
+      <button class="filter-btn" data-category="boulangerie"><span class="emoji">🥖</span><span>Boulangeries</span></button>
+      <button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
+      <button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
+      <button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
+      <button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
+      <button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
+      <button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
+      <button class="filter-btn" data-category="primeur"><span class="emoji">🥦</span><span>Primeurs</span></button>
+      <button class="filter-btn" data-category="fleuristes"><span class="emoji">💐</span><span>Fleuristes</span></button>
+      <button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid"></div>
+
+  <footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
 </div>
-</div>
-</div>
-<div class="page-header">
-<div class="sticker">🛍</div>
-<h1>Bienvenue dans notre section de produits partenaires !</h1>
-<div class="sticker">✨</div>
-</div>
-<div class="promo-banner">
-<h2><span class="promo-emoji">🎉</span> Promotion spéciale!</h2>
-<p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
-</div>
-<div class="filters" id="filters">
-<button class="filter-btn active" data-category="all"><span class="emoji">🌟</span><span>Meilleurs Prix</span></button>
-<button class="filter-btn" data-category="boulangerie"><span class="emoji">🥖</span><span>Boulangeries</span></button>
-<button class="filter-btn" data-category="supermarches"><span class="emoji">🛒</span><span>Supermarchés</span></button>
-<button class="filter-btn" data-category="boucheries"><span class="emoji">🥩</span><span>Boucheries</span></button>
-<button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
-<button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
-<button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
-<button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
-<button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
-</div>
-<div class="products-grid" id="productsGrid"></div>
-<footer><p>© 2025 AlexLivraison - Tous droits réservés</p></footer>
-</div>
+
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",
   authDomain: "alex-livraison.firebaseapp.com",
   projectId: "alex-livraison",
-  storageBucket: "alex-livraison.appspot.com",
+  storageBucket: "alex-livraison.firebasestorage.app",
   messagingSenderId: "937475497279",
   appId: "1:937475497279:web:62dc9eba8e77a5113ec78a"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
 const hamburger=document.getElementById('hamburger');
 const menu=document.getElementById('menu');
-hamburger.addEventListener('click',()=>{menu.classList.toggle('open');hamburger.classList.toggle('active');});
+hamburger.addEventListener('click',()=>{menu.classList.toggle('open');});
+
 const openPartnerMenu=document.getElementById('openPartnerMenu');
 const partnerSubmenu=document.getElementById('partnerSubmenu');
 openPartnerMenu.onclick=function(e){
   e.preventDefault();
   partnerSubmenu.classList.toggle('visible');
-  document.addEventListener('click',function handler(ev){
-    if (!ev.target.closest('#partnerSubmenu') && ev.target!==openPartnerMenu){
-      partnerSubmenu.classList.remove('visible');
-      document.removeEventListener('click',handler);
-    }
-  });
 };
+
 const productsGrid=document.getElementById('productsGrid');
 const filterBtns=document.querySelectorAll('.filter-btn');
 const categoryPages={
@@ -165,14 +210,17 @@ const categoryPages={
   pharmacies:'pharmacies.html',
   restaurants:'restaurants.html',
   epicerie:'epicerie.html',
-  commercants:'commercants.html'
+  commercants:'commercants.html',
+  fleuristes:'fleuristes.html',
+  primeur:'primeur.html'
 };
 
 function afficherProduitsFirestore(cat){
-  productsGrid.innerHTML = '<div style="text-align:center;color:white">Chargement...</div>';
+  productsGrid.innerHTML = '<div style="color:white;text-align:center;grid-column:1/-1">Chargement...</div>';
   let ref = db.collection('products');
+  
   if(cat === 'all') {
-    ref.orderBy('price').limit(9).get().then(snap => renderSnap(snap)).catch(e => console.error(e));
+    ref.orderBy('price').limit(12).get().then(snap => renderSnap(snap)).catch(e => console.error(e));
   } else {
     ref.where('category', '==', cat.toLowerCase()).get().then(snap => renderSnap(snap)).catch(e => console.error(e));
   }
@@ -181,7 +229,7 @@ function afficherProduitsFirestore(cat){
 function renderSnap(snap) {
   productsGrid.innerHTML = '';
   if(snap.empty) {
-    productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px;grid-column:1/-1">Aucun produit dans cette catégorie</div>';
+    productsGrid.innerHTML='<div style="color:#fff;text-align:center;padding:20px;grid-column:1/-1;background:rgba(255,255,255,0.1);border-radius:10px;">Aucun produit dans cette catégorie pour le moment.</div>';
     return;
   }
   snap.forEach(doc=>{
@@ -205,6 +253,7 @@ function renderSnap(snap) {
 
 let curCat='all';
 afficherProduitsFirestore(curCat);
+
 filterBtns.forEach(btn=>{
   btn.addEventListener('click',()=>{
     filterBtns.forEach(b=>b.classList.remove('active'));
@@ -219,64 +268,41 @@ filterBtns.forEach(btn=>{
     afficherProduitsFirestore(curCat);
   });
 });
+
 const langFr=document.getElementById('langFr');
 const langEn=document.getElementById('langEn');
 const langData = {
   fr: {
-    lang: 'fr',
     pageTitle: 'Produits Partenaires - AlexLivraison',
-    pageHeader: 'Bienvenue dans notre section de produits partenaires !',
     promoH2: '🎉 Promotion spéciale!',
     promoP: 'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',
-    menu: [
-      "🛒 Devenir partenaire vendeur",
-      "🚴 Devenir partenaire coursier",
-      "🏠 Retour à la page d'accueil",
-      "📞 Contactez-nous",
-      "ℹ️ À propos de nous"
-    ]
+    menu: ["🛒 Devenir partenaire vendeur", "🚴 Devenir partenaire coursier", "🏠 Retour à la page d'accueil", "📞 Contactez-nous", "ℹ️ À propos de nous"]
   },
   en: {
-    lang: 'en',
     pageTitle: 'Partner Products - AlexLivraison',
-    pageHeader: 'Welcome to our partner products section!',
     promoH2: '🎉 Special Promotion!',
     promoP: 'Free delivery on all partner orders this month!',
-    menu: [
-      "🛒 Become a partner seller",
-      "🚴 Become a partner courier",
-      "🏠 Back to homepage",
-      "📞 Contact us",
-      "ℹ️ About us"
-    ]
+    menu: ["🛒 Become a partner seller", "🚴 Become a partner courier", "🏠 Back to homepage", "📞 Contact us", "ℹ️ About us"]
   }
 };
+
 function setLanguage(lang){
   let data = langData[lang];
-  document.documentElement.lang = data.lang;
   document.title = data.pageTitle;
   langFr.classList.toggle('active', lang === 'fr');
   langEn.classList.toggle('active', lang === 'en');
-  document.querySelector('.page-header h1').textContent = data.pageHeader;
-  const promoH2 = document.querySelector('.promo-banner h2');
-  promoH2.innerHTML = `<span class="promo-emoji">🎉</span> ${data.promoH2.replace('🎉 ', '')}`;
+  document.querySelector('.promo-banner h2').textContent = data.promoH2;
   document.querySelector('.promo-banner p').textContent = data.promoP;
   const navLinks = document.querySelectorAll('.menu nav > a:not(.submenu-trigger)');
-  if (lang === "fr") {
-    navLinks[0].textContent = langData.fr.menu[1];
-    navLinks[1].textContent = langData.fr.menu[2];
-    navLinks[2].textContent = langData.fr.menu[3];
-    navLinks[3].textContent = langData.fr.menu[4];
-    document.getElementById('openPartnerMenu').textContent = langData.fr.menu[0];
-  } else {
-    navLinks[0].textContent = langData.en.menu[1];
-    navLinks[1].textContent = langData.en.menu[2];
-    navLinks[2].textContent = langData.en.menu[3];
-    navLinks[3].textContent = langData.en.menu[4];
-    document.getElementById('openPartnerMenu').textContent = langData.en.menu[0];
-  }
+  const menuData = langData[lang].menu;
+  document.getElementById('openPartnerMenu').textContent = menuData[0];
+  navLinks[0].textContent = menuData[1];
+  navLinks[1].textContent = menuData[2];
+  navLinks[2].textContent = menuData[3];
+  navLinks[3].textContent = menuData[4];
   afficherProduitsFirestore(curCat);
 }
+
 langFr.onclick=function(){setLanguage('fr');};
 langEn.onclick=function(){setLanguage('en');};
 </script>
