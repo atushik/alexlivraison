@@ -227,7 +227,7 @@ const langData={
     pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :",
     alertPinFail:"❌ Code PIN incorrect !", alertSess:"Session expirée.", alertDeny:"Accès refusé.", alertConfirm:"Modifier ce produit ?",
     alertDone:"Données récupérées.", alertDel:"Produit supprimé !",
-    uploading:"Calcul et chargement...", success:"✅ Produit chargé ! Prix affiché : "
+    uploading:"Calcul et chargement...", success:"<span class='emoji-anim'>✅</span> Produit chargé ! Prix affiché : "
   },
   en:{
     t1:"Bakery Partner Area",
@@ -262,7 +262,7 @@ const langData={
     pinPrompt:"To DELETE, enter the PIN from your contract :",
     alertPinFail:"❌ Incorrect PIN!", alertSess:"Session expired.", alertDeny:"Access denied.", alertConfirm:"Edit this product?",
     alertDone:"Data retrieved.", alertDel:"Product deleted!",
-    uploading:"Calculating and uploading...", success:"✅ Product uploaded! Display price: "
+    uploading:"Calculating and uploading...", success:"<span class='emoji-anim'>✅</span> Product uploaded! Display price: "
   }
 };
 
@@ -421,11 +421,11 @@ document.getElementById('product-form').onsubmit=async(e)=>{
         const promoText=isPromo?"🔥 OUI (Vitrine Générale) - 3%":"Non - 5%";
         const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 Base: ${rawPrice}€ + ${isPromo?'3%':'5%'} -> ${finalPrice}€\n✨ Promo: ${promoText}\n🔑 PIN: ${window.SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
-        st.innerText=d.success+finalPrice+"€";st.style.color="green";
+        st.innerHTML=d.success+finalPrice+"€";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
         document.getElementById('product-form').reset();
         document.getElementById('p_promo').checked=false;
-    }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
+    }catch(err){st.innerHTML="<span class='emoji-anim'>❌</span> Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
 };
 
 function loadMyProducts(){
@@ -439,7 +439,7 @@ function loadMyProducts(){
         docs.forEach(p=>{
             window.productsMap[p.id]=p;
             const safePin=p.pin||'undefined';
-            const promoLabel=p.isPromo?'<span class="promo-badge">🔥 Promo</span>':'';
+            const promoLabel=p.isPromo?'<span class="promo-badge"><span class="emoji-anim">🔥</span> Promo</span>':'';
             div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name} ${promoLabel}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-action btn-edit" type="button" onclick="editProd('${p.id}')">${d.btnEdit}</button><button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${safePin}')">${d.btnDel}</button></div></div>`;
         });
     })
