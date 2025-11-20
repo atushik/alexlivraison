@@ -39,10 +39,8 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
   .btn-primary{width:100%;padding:15px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:10px;box-shadow:0 5px 15px rgba(107,35,255,0.3)}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(107,35,255,0.4)}
-  
   .btn-success{width:100%;display:block;text-align:center;text-decoration:none;padding:15px;background:linear-gradient(90deg,#4caf50,#66bb6a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:15px;box-shadow:0 5px 15px rgba(76,175,80,0.3)}
   .btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(76,175,80,0.4)}
-
   .hidden{display:none}
   canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair}
   .prod-list{margin-top:20px}
@@ -147,7 +145,6 @@
       <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
       <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
       <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
-      
       <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
     </form>
 
@@ -202,7 +199,6 @@ const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 
 
 document.getElementById('btn_step1').onclick=()=>{
     for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
-  
     SESSION_PIN = document.getElementById('f_master_pin').value;
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
@@ -233,7 +229,6 @@ document.getElementById('gen_pdf').onclick=async()=>{
     if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
     if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
     
-  
     if(!SESSION_PIN) SESSION_PIN = document.getElementById('f_master_pin').value;
 
     const {jsPDF}=window.jspdf,doc=new jsPDF();
@@ -292,7 +287,7 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     try{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
-      
+        
         await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
         
         const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${SESSION_PIN}`;
