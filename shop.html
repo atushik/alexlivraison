@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Boutique Partenaire</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);--shadow:0 10px 30px rgba(0,0,0,0.15)}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);color:#222;min-height:100vh;margin:0;padding:0}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(20,0,45,0.95);backdrop-filter:blur(12px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);border-bottom:1px solid rgba(255,255,255,0.1)}
+  .logo-img{width:45px;height:45px;border-radius:50%;border:2px solid #fff}
+  .hamburger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer}
+  .hamburger span{width:20px;height:2px;background:#fff}
+  .menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:#1a0033;padding:20px;transition:0.3s;z-index:200;display:flex;flex-direction:column}
+  .menu.open{right:0}
+  .close-btn{color:#fff;font-size:24px;background:none;border:none;cursor:pointer;align-self:flex-end;margin-bottom:20px}
+  .menu a{display:block;color:#fff;text-decoration:none;padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);font-weight:500}
+  .wrap{max-width:800px;margin:0 auto;padding:20px}
+  
+  .shop-header-card{background:var(--glass);border-radius:20px;padding:20px;margin:20px 0;text-align:center;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.5)}
+  h1{margin:10px 0;color:#32006b;font-size:1.8em}
+  .back-link{display:inline-block;margin-bottom:10px;color:#6b23ff;text-decoration:none;font-weight:bold;font-size:0.9em}
+  
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:15px}
+  .product-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.05);transition:transform 0.3s;display:flex;flex-direction:column}
+  .product-card:hover{transform:translateY(-5px)}
+  .p-img{width:100%;height:140px;object-fit:cover;background:#eee}
+  .p-info{padding:12px;flex:1;display:flex;flex-direction:column}
+  .p-name{font-weight:bold;color:#333;margin-bottom:5px;font-size:1em}
+  .p-desc{font-size:0.8em;color:#666;margin-bottom:10px;flex:1}
+  .p-price{font-size:1.2em;color:#32006b;font-weight:bold;margin-bottom:10px}
+  .btn-order{background:var(--green);color:#fff;border:none;padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;font-size:0.9em}
+  
+  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
+  .loading{text-align:center;color:#fff;font-size:1.2em;margin-top:50px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img src="logo.jpg" class="logo-img" alt="Logo">
+  <div class="hamburger" id="menuBtn"><span></span><span></span><span></span></div>
+</div>
+<div class="menu" id="sideMenu">
+  <button class="close-btn" id="closeMenu">✕</button>
+  <nav>
+    <a href="index.html"><span class="emoji-anim">🏠</span> Accueil</a>
+    <a href="produits.html"><span class="emoji-anim">🛍️</span> Vitrine Générale</a>
+    <a href="boulangeries.html"><span class="emoji-anim">🥖</span> Retour Boulangeries</a>
+  </nav>
+</div>
+
+<main class="wrap">
+  <div class="shop-header-card">
+    <a href="boulangeries.html" class="back-link">← Retour à la liste</a>
+    <h1 id="shop-title"><span class="emoji-anim">🏪</span> Chargement...</h1>
+    <p style="color:#666">Bienvenue dans notre boutique !</p>
+  </div>
+  
+  <div id="products-container" class="products-grid">
+    <div class="loading"><span class="emoji-anim">⌛</span> Chargement des produits...</div>
+  </div>
+</main>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+const menu=document.getElementById('sideMenu');
+document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
+document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
+
+const params = new URLSearchParams(window.location.search);
+const shopId = params.get('id');
+const shopName = params.get('name');
+
+if(shopName) document.getElementById('shop-title').innerText = shopName;
+
+if(!shopId){
+    document.getElementById('products-container').innerHTML = '<p style="color:#fff;text-align:center">Boutique introuvable.</p>';
+} else {
+    db.collection('products').where('shopId','==',shopId).get().then(snap=>{
+        const cont=document.getElementById('products-container');
+        cont.innerHTML='';
+        
+        if(snap.empty){
+            cont.innerHTML='<p style="color:#fff;text-align:center;width:100%">Cette boutique n\'a pas encore de produits.</p>';
+            return;
+        }
+        
+        snap.forEach(doc=>{
+            const p=doc.data();
+            const html=`
+            <div class="product-card">
+                <img src="${p.imageUrl}" class="p-img">
+                <div class="p-info">
+                    <div class="p-name">${p.name}</div>
+                    <div class="p-desc">${p.desc}</div>
+                    <div class="p-price">${p.price} €</div>
+                    <a href="https://wa.me/?text=Bonjour ${encodeURIComponent(shopName)}, je voudrais commander: ${encodeURIComponent(p.name)}" target="_blank" class="btn-order">
+                       <span class="emoji-anim">🛒</span> Commander
+                    </a>
+                </div>
+            </div>
+            `;
+            cont.innerHTML += html;
+        });
+    }).catch(err=>{
+        console.error(err);
+        document.getElementById('products-container').innerHTML='<p style="color:#fff;text-align:center">Erreur chargement produits.</p>';
+    });
+}
+</script>
+</body>
+</html>
