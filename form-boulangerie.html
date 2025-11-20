@@ -23,6 +23,7 @@
   .close-btn{color:#fff;font-size:24px;background:none;border:none;cursor:pointer}
   .menu a{display:block;color:#fff;text-decoration:none;padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);font-weight:500;transition:.2s}
   .menu a:hover{background:rgba(255,255,255,0.1);padding-left:20px;color:#b88aff}
+  .menu .highlight{color:#43dfb8;font-weight:700}
   .lang-switch{margin-top:auto;display:flex;gap:10px;padding-top:20px}
   .lang-btn{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;cursor:pointer}
   .lang-btn.active{background:#6b23ff;border-color:#6b23ff}
@@ -38,6 +39,10 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
   .btn-primary{width:100%;padding:15px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:10px;box-shadow:0 5px 15px rgba(107,35,255,0.3)}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(107,35,255,0.4)}
+  
+  .btn-success{width:100%;display:block;text-align:center;text-decoration:none;padding:15px;background:linear-gradient(90deg,#4caf50,#66bb6a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:15px;box-shadow:0 5px 15px rgba(76,175,80,0.3)}
+  .btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(76,175,80,0.4)}
+
   .hidden{display:none}
   canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair}
   .prod-list{margin-top:20px}
@@ -50,18 +55,16 @@
   .prod-price{color:#6b23ff;font-weight:bold;font-size:1.1em}
   .btn-delete{background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85em;transition:.2s;display:flex;align-items:center;gap:5px}
   .btn-delete:hover{background:#ff4d4d;color:#fff}
-  .instruction-box{background:#e3f2fd;border-left:5px solid #2196f3;padding:15px;border-radius:8px;margin-bottom:20px;color:#0d47a1;font-size:0.95em;line-height:1.5}
-  .instruction-box strong{color:#000}
+  .info-box {background: #eef2ff;border-left: 5px solid #6b23ff;padding: 15px;border-radius: 8px;margin-bottom: 25px;font-size: 0.95em;line-height: 1.5;color: #333;}
+  .info-box strong { color: #6b23ff; }
   @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <img src="logo.jpg" class="logo-img" alt="Logo">
   <div class="hamburger" id="menuBtn"><span></span><span></span><span></span></div>
 </div>
-
 <div class="menu" id="sideMenu">
   <div class="menu-header"><button class="close-btn" id="closeMenu">✕</button></div>
   <nav>
@@ -75,15 +78,20 @@
     <button class="lang-btn" id="langEn">EN</button>
   </div>
 </div>
-
 <main class="wrap">
   <h1 id="page-title">Espace Boulangerie</h1>
-  
-  <div class="instruction-box">
-    <strong>⚠️ INSTRUCTION IMPORTANTE :</strong><br>
-    1. Veuillez créer un <strong>CODE SECRET (PIN)</strong> à l'étape 1.<br>
-    2. Ce code sera inscrit sur votre contrat PDF.<br>
-    3. <strong>Conservez-le précieusement !</strong> Vous devrez l'utiliser pour supprimer ou modifier vos produits à l'avenir.
+
+  <div class="card">
+      <div class="info-box">
+          <h3>📢 Instructions Importantes</h3>
+          <p>Pour activer votre compte partenaire :</p>
+          <ol style="margin-left:15px;padding-left:0">
+              <li>Remplissez le formulaire et <strong>créez votre Code PIN Secret</strong>.</li>
+              <li>Signez le contrat numérique.</li>
+              <li>Chargez vos produits. Le PIN sera demandé pour valider chaque envoi.</li>
+          </ol>
+          <p style="color:#d32f2f;font-weight:bold;">⚠️ IMPORTANT : Retenez votre Code PIN pour gérer vos produits !</p>
+      </div>
   </div>
 
   <section id="step1" class="card">
@@ -92,10 +100,13 @@
       <div class="input-group"><label>Nom de l'enseigne</label><input id="f_enseigne" placeholder="Ex: Boulangerie Délices"></div>
       <div class="input-group"><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee;color:#666"></div>
     </div>
-    <div class="grid2">
-        <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
-        <div class="input-group"><label style="color:#d32f2f">CODE SECRET (PIN)</label><input id="f_pin" type="text" placeholder="Ex: 1234 (Memorisez-le!)" style="border:2px solid #d32f2f"></div>
+    
+    <div class="input-group" style="background:#fff0f0; padding:10px; border-radius:10px; border:1px solid #ffcccc;">
+        <label style="color:#d32f2f;">🔐 CRÉEZ VOTRE CODE PIN SECRET (Obligatoire)</label>
+        <input id="f_master_pin" type="text" placeholder="Ex: 1234" maxlength="8" style="font-weight:bold; letter-spacing:1px;">
     </div>
+
+    <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
       <div class="input-group"><label>SIREN</label><input id="f_siren"></div>
       <div class="input-group"><label>SIRET</label><input id="f_siret"></div>
@@ -127,25 +138,28 @@
 
   <section id="step3" class="card hidden">
     <h2 id="t-step3">3. Gestion de vos produits</h2>
+    
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
       <div class="input-group"><label>Nom du produit</label><input id="p_name" required placeholder="Ex: Baguette Tradition"></div>
-      <div class="grid2">
-        <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
-        <div class="input-group"><label>Confirmer PIN</label><input id="p_pin_confirm" type="text" required placeholder="Votre Code Secret"></div>
-      </div>
+      <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
       <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
       <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
-      <button type="submit" class="btn-primary">✨ Mettre en ligne</button>
+      <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
     </form>
-    
-    <h3 style="color:#32006b;margin-bottom:15px;">Vos produits en ligne :</h3>
-    <div id="upload-status" style="text-align:center;margin-bottom:10px;font-weight:bold"></div>
+
+    <div id="upload-status" style="text-align:center;margin-bottom:20px;font-weight:bold"></div>
+
+    <div id="success-actions" class="hidden">
+        <a href="boulangeries.html" class="btn-success">👁️ Voir le produit chargé (Aller à la boutique)</a>
+        <br>
+    </div>
+
+    <h3 style="color:#32006b;margin-bottom:15px;">Vos produits récents :</h3>
     <div id="my-products-list" class="prod-list">
       <div style="text-align:center;color:#666">Chargement...</div>
     </div>
   </section>
 </main>
-
 <img src="logo.jpg" id="img-logo" style="display:none">
 <img src="alex444.jpg" id="img-stamp" style="display:none">
 <img src="sinature-alex.jpg" id="img-alex-sig" style="display:none">
@@ -156,22 +170,33 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();const storage=firebase.storage();
 const BOT="8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA",CHAT="7129872491";
 const CURRENT_CATEGORY='boulangerie';
-
 const menu=document.getElementById('sideMenu');
 document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
 document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
-const langData={fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Entrez le CODE SECRET pour supprimer ce produit :"},en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"Enter SECRET PIN to delete this product :"}};
+const langData={
+  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",pinPrompt:"Entrez le CODE SECRET pour supprimer ce produit :"},
+  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",pinPrompt:"Enter SECRET PIN to delete this product :"}
+};
 let curLang='fr';
 document.getElementById('langFr').onclick=()=>{curLang='fr';updateLang()};
 document.getElementById('langEn').onclick=()=>{curLang='en';updateLang()};
-function updateLang(){const d=langData[curLang];document.getElementById('page-title').innerText=d.t1;document.getElementById('btn_step1').innerText=d.btn1;document.getElementById('gen_pdf').innerText=d.btn2;document.getElementById('langFr').classList.toggle('active',curLang==='fr');document.getElementById('langEn').classList.toggle('active',curLang==='en')}
+function updateLang(){
+  const d=langData[curLang];
+  document.getElementById('page-title').innerText=d.t1;
+  document.getElementById('btn_step1').innerText=d.btn1;
+  document.getElementById('gen_pdf').innerText=d.btn2;
+  document.querySelector('#step3 button[type="submit"]').innerText=d.btn3;
+  document.getElementById('langFr').classList.toggle('active',curLang==='fr');
+  document.getElementById('langEn').classList.toggle('active',curLang==='en');
+}
 
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
-const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail','f_pin'].map(id=>document.getElementById(id));
+const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 'f_master_pin'].map(id=>document.getElementById(id));
+
 document.getElementById('btn_step1').onclick=()=>{
-for(let i of inp)if(!i.value.trim())return alert("Veuillez remplir tous les champs, y compris le Code Secret !");
-s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
+    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
+    s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
@@ -188,80 +213,91 @@ cvs.ontouchend=()=>dr=false;
 window.clearSig=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.beginPath()};
 document.getElementById('sign_date').valueAsDate=new Date();
 
-function makeCircle(imgId){const img=document.getElementById(imgId);const c=document.createElement('canvas');const s=Math.min(img.width,img.height);c.width=s;c.height=s;const x=c.getContext('2d');x.fillStyle='#ffffff';x.fillRect(0,0,s,s);x.beginPath();x.arc(s/2,s/2,s/2,0,Math.PI*2);x.closePath();x.save();x.clip();x.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,s,s);x.restore();return c.toDataURL('image/jpeg',0.95)}
+function makeCircle(imgId){
+    const img=document.getElementById(imgId);const c=document.createElement('canvas');
+    const s=Math.min(img.width,img.height);c.width=s;c.height=s;const x=c.getContext('2d');
+    x.fillStyle='#ffffff';x.fillRect(0,0,s,s);x.beginPath();x.arc(s/2,s/2,s/2,0,Math.PI*2);
+    x.closePath();x.save();x.clip();x.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,s,s);x.restore();
+    return c.toDataURL('image/jpeg',0.95);
+}
 
 document.getElementById('gen_pdf').onclick=async()=>{
-if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
-if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
-const {jsPDF}=window.jspdf,doc=new jsPDF();
-const masterPin = document.getElementById('f_pin').value;
-
-try{doc.addImage(makeCircle('img-logo'),'JPEG',160,15,30,30)}catch(e){}
-doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
-doc.setLineWidth(0.5);doc.line(20,45,190,45);
-doc.setFontSize(11);doc.setFont("helvetica","normal");
-let y=60;
-const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
-addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
-y+=5;
-addL("Responsable: "+document.getElementById('f_resp').value);
-addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
-addL("Adresse: "+document.getElementById('f_addr').value);
-addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
-addL("CODE SECRET PARTENAIRE: "+masterPin, true); 
-y+=10;
-addL("Objet: Livraison de produits via la plateforme AlexLivraison.");
-addL("Offre spéciale: 5 livraisons gratuites à la signature.");
-addL("Engagement: Partenariat d'un an renouvelable.");
-addL("Tarifs: Selon barème en vigueur, facturation mensuelle.");
-y+=20;
-doc.text("Fait le "+document.getElementById('sign_date').value,20,y);y+=15;
-doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);y+=10;
-doc.addImage(cvs.toDataURL('image/jpeg'),'JPEG',20,y,50,30);
-doc.text(document.getElementById('sign_name').value,20,y+35);
-try{doc.addImage(document.getElementById('img-alex-sig'),'JPEG',100,y-5,50,30)}catch(e){}
-try{doc.addImage(makeCircle('img-stamp'),'JPEG',150,y-5,40,40)}catch(e){}
-const blob=doc.output('blob');
-doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
-const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
-fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
-s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
-loadMyProducts();
+    if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
+    if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
+    const {jsPDF}=window.jspdf,doc=new jsPDF();
+    const masterPin = document.getElementById('f_master_pin').value;
+    try{doc.addImage(makeCircle('img-logo'),'JPEG',160,15,30,30)}catch(e){}
+    doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
+    doc.setLineWidth(0.5);doc.line(20,45,190,45);
+    doc.setFontSize(11);doc.setFont("helvetica","normal");
+    let y=60;
+    const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color) doc.setTextColor(color); else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=7;};
+    addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
+    y+=5;
+    addL("Responsable: "+document.getElementById('f_resp').value);
+    addL("SIREN: "+document.getElementById('f_siren').value+" — SIRET: "+document.getElementById('f_siret').value);
+    addL("Adresse: "+document.getElementById('f_addr').value);
+    addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
+    y+=5;
+    doc.setDrawColor(255, 0, 0); doc.setLineWidth(0.5); doc.rect(18, y-5, 100, 10);
+    addL("CODE SECRET (PIN) DÉFINI PAR LE PARTENAIRE : " + masterPin, true, "red");
+    doc.setTextColor(0,0,0);y+=10;
+    addL("Objet: Livraison de produits via la plateforme AlexLivraison.");
+    addL("Offre spéciale: 5 livraisons gratuites à la signature.");
+    addL("Engagement: Partenariat d'un an renouvelable.");
+    addL("Tarifs: Selon barème en vigueur, facturation mensuelle.");
+    y+=20;
+    doc.text("Fait le "+document.getElementById('sign_date').value,20,y);y+=15;
+    doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);y+=10;
+    doc.addImage(cvs.toDataURL('image/jpeg'),'JPEG',20,y,50,30);
+    doc.text(document.getElementById('sign_name').value,20,y+35);
+    try{doc.addImage(document.getElementById('img-alex-sig'),'JPEG',100,y-5,50,30)}catch(e){}
+    try{doc.addImage(makeCircle('img-stamp'),'JPEG',150,y-5,40,40)}catch(e){}
+    const blob=doc.output('blob');
+    doc.save("Contrat_AlexLivraison_"+CURRENT_CATEGORY+".pdf");
+    const fd=new FormData();fd.append('chat_id',CHAT);fd.append('document',new File([blob],'Contrat.pdf',{type:'application/pdf'}));
+    fd.append('caption', `Contrat signé: ${document.getElementById('f_enseigne').value}. PIN: ${masterPin}`);
+    fetch(`https://api.telegram.org/bot${BOT}/sendDocument`,{method:'POST',body:fd});
+    s2.classList.add('hidden');s3.classList.remove('hidden');window.scrollTo(0,0);
+    loadMyProducts();
 };
 
 document.getElementById('product-form').onsubmit=async(e)=>{
-e.preventDefault();const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
-const masterPin = document.getElementById('f_pin').value;
-const confirmPin = document.getElementById('p_pin_confirm').value;
-if(masterPin !== confirmPin) { alert("Le code PIN ne correspond pas à celui de l'inscription !"); return; }
+    e.preventDefault();
+    const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
+    const masterPin = document.getElementById('f_master_pin').value;
+    
+    const userPin = prompt("🔒 SÉCURITÉ : Veuillez entrer votre CODE PIN pour confirmer le chargement :");
+    if(userPin !== masterPin){alert("❌ Code PIN incorrect ! Opération annulée.");return;}
 
-bn.disabled=true;st.innerText="Envoi en cours...";st.style.color="blue";
-const name=document.getElementById('p_name').value;
-const price=document.getElementById('p_price').value;
-const shop=document.getElementById('f_enseigne').value;
-const mail=document.getElementById('f_mail').value;
-
-try{
-const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
-await ref.put(f);const u=await ref.getDownloadURL();
-await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:masterPin,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n📧 ${mail}\n🍔 ${name} (${price}€)\n🔑 <b>PIN:</b> ${masterPin}`;
-await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
-st.innerText="✅ Produit ajouté !";st.style.color="green";e.target.reset();
-}catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";}
-bn.disabled=false;
+    bn.disabled=true;st.innerText="Chargement en cours...";st.style.color="blue";
+    const name=document.getElementById('p_name').value;
+    const price=document.getElementById('p_price').value;
+    const shop=document.getElementById('f_enseigne').value;
+    
+    try{
+        const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
+        await ref.put(f);const u=await ref.getDownloadURL();
+        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:masterPin,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${masterPin}`;
+        await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
+        st.innerText="✅ Produit chargé avec succès !";st.style.color="green";
+        document.getElementById('success-actions').classList.remove('hidden');
+        document.getElementById('product-form').reset();
+    }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
 };
 
 function loadMyProducts(){
-db.collection('products').where('category','==',CURRENT_CATEGORY).orderBy('createdAt','desc').onSnapshot(snap=>{
-const div=document.getElementById('my-products-list');div.innerHTML='';
-if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">Aucun produit en ligne.</p>';return}
-snap.forEach(doc=>{const p=doc.data();div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><button class="btn-delete" onclick="del('${doc.id}','${p.pin}')">🗑️ Supprimer</button></div>`})
-})
+    db.collection('products').where('category','==',CURRENT_CATEGORY).orderBy('createdAt','desc').onSnapshot(snap=>{
+    const div=document.getElementById('my-products-list');div.innerHTML='';
+    if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">Aucun produit en ligne.</p>';return}
+    snap.forEach(doc=>{const p=doc.data();div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div><button class="btn-delete" onclick="del('${doc.id}','${p.pin}')">🗑️ Supprimer</button></div>`})
+    })
 }
+
 window.del=async(id,correctPin)=>{
-const userPin=prompt(langData[curLang].pinPrompt);if(!userPin)return;
-if(userPin===correctPin){try{await db.collection('products').doc(id).delete();alert("Produit supprimé !")}catch(e){alert("Erreur : "+e.message)}}else{alert("❌ Code PIN incorrect !")}
+    const userPin=prompt(langData[curLang].pinPrompt);if(!userPin)return;
+    if(userPin===correctPin){try{await db.collection('products').doc(id).delete();alert("Produit supprimé !")}catch(e){alert("Erreur : "+e.message)}}else{alert("❌ Code PIN incorrect !")}
 }
 </script>
 </body>
