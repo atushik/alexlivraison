@@ -98,6 +98,7 @@ canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10
 
 <img src="logo.jpg" id="img-logo" style="display:none">
 <img src="alex444.jpg" id="img-stamp" style="display:none">
+<img src="sinature-alex.jpg" id="img-alex-sig" style="display:none">
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
@@ -114,7 +115,10 @@ s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
 const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
-function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200}
+function rs(){
+  const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=200;
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cvs.width,cvs.height);
+}
 window.onresize=rs;rs();
 function gP(e){const r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
 cvs.onmousedown=e=>{dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
@@ -123,7 +127,7 @@ cvs.onmouseup=()=>dr=false;
 cvs.ontouchstart=e=>{e.preventDefault();dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
 cvs.ontouchend=()=>dr=false;
-window.clearSig=()=>ctx.clearRect(0,0,cvs.width,cvs.height);
+window.clearSig=()=>{ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.beginPath()};
 document.getElementById('sign_date').valueAsDate=new Date();
 
 function makeCircle(imgId) {
@@ -141,7 +145,7 @@ function makeCircle(imgId) {
     x.clip();
     x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, s, s);
     x.restore();
-    return c.toDataURL('image/jpeg', 0.9);
+    return c.toDataURL('image/jpeg', 0.95);
 }
 
 document.getElementById('gen_pdf').onclick=async()=>{
@@ -151,13 +155,13 @@ document.getElementById('gen_pdf').onclick=async()=>{
   
   try {
     const logoData = makeCircle('img-logo');
-    doc.addImage(logoData,'JPEG',160,10,30,30);
+    doc.addImage(logoData,'JPEG',160,10,35,35);
   } catch(e){}
 
   doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,30);
-  doc.setLineWidth(0.5);doc.line(20,35,190,35);
+  doc.setLineWidth(0.5);doc.line(20,40,190,40);
   doc.setFontSize(11);doc.setFont("helvetica","normal");
-  let y=50;
+  let y=55;
   const addL=(l,b=false)=>{doc.setFont("helvetica",b?"bold":"normal");doc.text(l,20,y);y+=7};
   
   addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" (Boucherie).",true);
@@ -183,11 +187,16 @@ document.getElementById('gen_pdf').onclick=async()=>{
   doc.text(document.getElementById('sign_name').value,20,y+35);
   
   try {
-    const stampData = makeCircle('img-stamp');
-    doc.addImage(stampData,'JPEG',120,y,40,40);
+    const sigAlex = document.getElementById('img-alex-sig');
+    doc.addImage(sigAlex,'JPEG',120,y-10,50,30);
   } catch(e){}
   
-  doc.text("Validé",130,y+45);
+  try {
+    const stampData = makeCircle('img-stamp');
+    doc.addImage(stampData,'JPEG',120,y,45,45);
+  } catch(e){}
+  
+  doc.text("Validé",130,y+50);
   
   const blob=doc.output('blob');
   doc.save("Contrat_AlexLivraison_Boucherie.pdf");
