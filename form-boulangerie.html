@@ -88,7 +88,7 @@
 <main class="wrap">
   <h1 id="page-title">Espace Boulangerie</h1>
 
-  <div class="card" style="animation-delay:0.1s">
+  <div class="card" id="intro-card" style="animation-delay:0.1s">
       <div class="info-box">
           <h3 id="info-title"><span class="emoji-anim">📢</span> Procédure Partenaire</h3>
           <ol style="margin-left:15px;padding-left:0;margin-bottom:0" id="info-list">
@@ -147,6 +147,7 @@
     
     <div class="info-box" style="background:#f0fff4; border-color:#4caf50;">
         <p id="p-connected"><span class="emoji-anim">✅</span> <strong>Mode Connecté :</strong> PIN mémorisé.<br><span class="emoji-anim">ℹ️</span> <strong>Commission :</strong> 3% (Promo), 5% (Standard).</p>
+        <button onclick="logout()" style="margin-top:10px;background:#ff4d4d;color:#fff;border:none;padding:8px 15px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:0.9em"><span class="emoji-anim">🔓</span> Changer de boutique / Déconnexion</button>
     </div>
 
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
@@ -543,9 +544,18 @@ window.del=async(id,prodPin)=>{
     }else{alert(d.alertPinFail)}
 }
 
+window.logout = () => {
+    if(confirm("Voulez-vous vous déconnecter et enregistrer une nouvelle boutique ?")) {
+        localStorage.removeItem('alex_shop_id');
+        localStorage.removeItem('alex_shop_pin');
+        window.location.reload();
+    }
+}
+
 if(localStorage.getItem('alex_shop_id')){
     if(document.getElementById('step1')){
          document.getElementById('step1').classList.add('hidden');
+         document.getElementById('intro-card').classList.add('hidden');
          document.getElementById('step3').classList.remove('hidden');
          loadMyProducts();
     }
