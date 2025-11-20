@@ -62,6 +62,8 @@
   .promo-badge{display:inline-block;background:linear-gradient(45deg,#ff4d4d,#ff8a80);color:#fff;font-size:10px;padding:4px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;box-shadow:0 2px 5px rgba(255,77,77,0.3)}
   @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
   @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
   @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -73,10 +75,10 @@
 <div class="menu" id="sideMenu">
   <div class="menu-header"><button class="close-btn" id="closeMenu">✕</button></div>
   <nav>
-    <a href="index.html" id="link-home">🏠 Retour Accueil</a>
-    <a href="produits.html" id="link-shop">🛍️ Vitrine Générale</a>
-    <a href="boulangeries.html" class="highlight" id="link-cat">🥖 Vitrine Boulangerie</a>
-    <a href="index.html#contact">📞 Contact Support</a>
+    <a href="index.html" id="link-home"><span class="emoji-anim">🏠</span> Retour Accueil</a>
+    <a href="produits.html" id="link-shop"><span class="emoji-anim">🛍️</span> Vitrine Générale</a>
+    <a href="boulangeries.html" class="highlight" id="link-cat"><span class="emoji-anim">🥖</span> Vitrine Boulangerie</a>
+    <a href="index.html#contact"><span class="emoji-anim">📞</span> Contact Support</a>
   </nav>
   <div class="lang-switch">
     <button class="lang-btn active" id="langFr">FR</button>
@@ -88,7 +90,7 @@
 
   <div class="card" style="animation-delay:0.1s">
       <div class="info-box">
-          <h3 id="info-title">📢 Procédure Partenaire</h3>
+          <h3 id="info-title"><span class="emoji-anim">📢</span> Procédure Partenaire</h3>
           <ol style="margin-left:15px;padding-left:0;margin-bottom:0" id="info-list">
               <li>Créez votre Code PIN Secret ci-dessous.</li>
               <li>Signez le contrat (PIN inscrit pour mémoire).</li>
@@ -105,7 +107,7 @@
     </div>
     
     <div class="input-group" style="background:#fff5f5; padding:15px; border-radius:14px; border:1px solid #ffcdd2; box-shadow:inset 0 0 10px rgba(255,0,0,0.05)">
-        <label style="color:#d32f2f;" id="l-pin">🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)</label>
+        <label style="color:#d32f2f;" id="l-pin"><span class="emoji-anim">🔐</span> CRÉEZ VOTRE CODE PIN (Obligatoire)</label>
         <input id="f_master_pin" type="text" placeholder="Ex: 1234" maxlength="8" style="font-weight:bold; letter-spacing:1px;">
         <small style="color:#666;display:block;margin-top:5px" id="s-pin-help">Ce code sera sauvegardé dans votre contrat PDF.</small>
     </div>
@@ -144,7 +146,7 @@
     <h2 id="t-step3">3. Gestion de vos produits</h2>
     
     <div class="info-box" style="background:#f0fff4; border-color:#4caf50;">
-        <p id="p-connected">✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé.<br>ℹ️ <strong>Commission :</strong> 3% pour les Promos, 5% pour le Standard.</p>
+        <p id="p-connected"><span class="emoji-anim">✅</span> <strong>Mode Connecté :</strong> PIN mémorisé.<br><span class="emoji-anim">ℹ️</span> <strong>Commission :</strong> 3% (Promo), 5% (Standard).</p>
     </div>
 
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
@@ -155,16 +157,16 @@
       
       <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#fff; padding:15px; border-radius:14px; border:2px solid #ffebee; transition:0.3s">
         <input type="checkbox" id="p_promo" style="width:22px; height:22px; accent-color:#ff4d4d;">
-        <label for="p_promo" id="l-promo-check" style="margin:0; color:#ff4d4d; font-weight:bold;">🔥 Produit en Promotion (Pour la Vitrine Générale)</label>
+        <label for="p_promo" id="l-promo-check" style="margin:0; color:#ff4d4d; font-weight:bold;"><span class="emoji-anim">🔥</span> Produit en Promotion (Pour la Vitrine Générale)</label>
       </div>
       
-      <button type="submit" id="btn-upload" class="btn-primary">📤 Mettre en ligne</button>
+      <button type="submit" id="btn-upload" class="btn-primary"><span class="emoji-anim">📤</span> Mettre en ligne</button>
     </form>
 
     <div id="upload-status" style="text-align:center;margin-bottom:20px;font-weight:bold"></div>
 
     <div id="success-actions" class="hidden">
-        <a href="boulangeries.html" id="btn-see-shop" class="btn-success">👁️ Voir le produit chargé (Aller à la boutique)</a>
+        <a href="boulangeries.html" id="btn-see-shop" class="btn-success"><span class="emoji-anim">👁️</span> Voir le produit chargé (Aller à la boutique)</a>
         <br>
     </div>
 
@@ -194,13 +196,13 @@ window.productsMap = {};
 const langData={
   fr:{
     t1:"Espace Boulangerie",
-    menuHome:"🏠 Retour Accueil", menuShop:"🛍️ Vitrine Générale", menuCat:"🥖 Vitrine Boulangerie", menuContact:"📞 Contact Support",
-    infoTitle:"📢 Procédure Partenaire",
+    menuHome:"<span class='emoji-anim'>🏠</span> Retour Accueil", menuShop:"<span class='emoji-anim'>🛍️</span> Vitrine Générale", menuCat:"<span class='emoji-anim'>🥖</span> Vitrine Boulangerie", menuContact:"<span class='emoji-anim'>📞</span> Contact Support",
+    infoTitle:"<span class='emoji-anim'>📢</span> Procédure Partenaire",
     infoList:"<li>Créez votre Code PIN Secret ci-dessous.</li><li>Signez le contrat (PIN inscrit pour mémoire).</li><li>Chargez vos produits. Le système utilisera ce PIN.</li>",
     step1:"1. Inscription & Sécurité",
     lShop:"Nom de l'enseigne", plShop:"Ex: Boulangerie Délices",
     lCat:"Catégorie",
-    lPin:"🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)", plPin:"Ex: 1234", sPin:"Ce code sera sauvegardé dans votre contrat PDF.",
+    lPin:"<span class='emoji-anim'>🔐</span> CRÉEZ VOTRE CODE PIN (Obligatoire)", plPin:"Ex: 1234", sPin:"Ce code sera sauvegardé dans votre contrat PDF.",
     lResp:"Nom du Responsable",
     lDigits:"chiffres",
     lAddr:"Adresse complète",
@@ -211,17 +213,17 @@ const langData={
     lSignName:"Signataire", lSignDate:"Date", lDraw:"Votre signature :", btnClear:"Effacer", lAgree:"J'accepte les conditions",
     btnSign:"Signer & Valider",
     step3:"3. Gestion de vos produits",
-    pConnected:"✅ <strong>Mode Connecté :</strong> PIN mémorisé.<br>ℹ️ <strong>Commission :</strong> 3% (Promo), 5% (Standard).",
+    pConnected:"<span class='emoji-anim'>✅</span> <strong>Mode Connecté :</strong> PIN mémorisé.<br><span class='emoji-anim'>ℹ️</span> <strong>Commission :</strong> 3% (Promo), 5% (Standard).",
     lPName:"Nom du produit", plPName:"Ex: Baguette Tradition",
     lPPrice:"Prix de base Partenaire (€)",
     lPPhoto:"Photo du produit",
     lPDesc:"Description", plPDesc:"Ingrédients, détails...",
-    lPromo:"🔥 Produit en Promotion (Pour la Vitrine Générale)",
-    btnUpload:"📤 Mettre en ligne",
-    btnSee:"👁️ Voir le produit chargé (Aller à la boutique)",
+    lPromo:"<span class='emoji-anim'>🔥</span> Produit en Promotion (Pour la Vitrine Générale)",
+    btnUpload:"<span class='emoji-anim'>📤</span> Mettre en ligne",
+    btnSee:"<span class='emoji-anim'>👁️</span> Voir le produit chargé (Aller à la boutique)",
     hRecent:"Vos produits récents :",
     tLoad:"Chargement...",
-    btnEdit:"✏️ Éditer", btnDel:"🗑️ Supprimer",
+    btnEdit:"<span class='emoji-anim'>✏️</span> Éditer", btnDel:"<span class='emoji-anim'>🗑️</span> Supprimer",
     pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :",
     alertPinFail:"❌ Code PIN incorrect !", alertSess:"Session expirée.", alertDeny:"Accès refusé.", alertConfirm:"Modifier ce produit ?",
     alertDone:"Données récupérées.", alertDel:"Produit supprimé !",
@@ -229,13 +231,13 @@ const langData={
   },
   en:{
     t1:"Bakery Partner Area",
-    menuHome:"🏠 Back Home", menuShop:"🛍️ General Showcase", menuCat:"🥖 Bakery Showcase", menuContact:"📞 Contact Support",
-    infoTitle:"📢 Partner Procedure",
+    menuHome:"<span class='emoji-anim'>🏠</span> Back Home", menuShop:"<span class='emoji-anim'>🛍️</span> General Showcase", menuCat:"<span class='emoji-anim'>🥖</span> Bakery Showcase", menuContact:"<span class='emoji-anim'>📞</span> Contact Support",
+    infoTitle:"<span class='emoji-anim'>📢</span> Partner Procedure",
     infoList:"<li>Create your Secret PIN below.</li><li>Sign the contract (PIN saved for memory).</li><li>Upload products. System uses this PIN.</li>",
     step1:"1. Registration & Security",
     lShop:"Shop Name", plShop:"Ex: Delicious Bakery",
     lCat:"Category",
-    lPin:"🔐 CREATE YOUR PIN CODE (Required)", plPin:"Ex: 1234", sPin:"This code will be saved in your PDF contract.",
+    lPin:"<span class='emoji-anim'>🔐</span> CREATE YOUR PIN CODE (Required)", plPin:"Ex: 1234", sPin:"This code will be saved in your PDF contract.",
     lResp:"Manager Name",
     lDigits:"digits",
     lAddr:"Full Address",
@@ -246,17 +248,17 @@ const langData={
     lSignName:"Signatory", lSignDate:"Date", lDraw:"Your Signature:", btnClear:"Clear", lAgree:"I accept terms",
     btnSign:"Sign & Validate",
     step3:"3. Product Management",
-    pConnected:"✅ <strong>Connected Mode:</strong> PIN memorized.<br>ℹ️ <strong>Commission:</strong> 3% (Promo), 5% (Standard).",
+    pConnected:"<span class='emoji-anim'>✅</span> <strong>Connected Mode:</strong> PIN memorized.<br><span class='emoji-anim'>ℹ️</span> <strong>Commission:</strong> 3% (Promo), 5% (Standard).",
     lPName:"Product Name", plPName:"Ex: Traditional Baguette",
     lPPrice:"Partner Base Price (€)",
     lPPhoto:"Product Photo",
     lPDesc:"Description", plPDesc:"Ingredients, details...",
-    lPromo:"🔥 Promotional Product (For General Showcase)",
-    btnUpload:"📤 Upload Product",
-    btnSee:"👁️ See Uploaded Product (Go to Shop)",
+    lPromo:"<span class='emoji-anim'>🔥</span> Promotional Product (For General Showcase)",
+    btnUpload:"<span class='emoji-anim'>📤</span> Upload Product",
+    btnSee:"<span class='emoji-anim'>👁️</span> See Uploaded Product (Go to Shop)",
     hRecent:"Your Recent Products:",
     tLoad:"Loading...",
-    btnEdit:"✏️ Edit", btnDel:"🗑️ Delete",
+    btnEdit:"<span class='emoji-anim'>✏️</span> Edit", btnDel:"<span class='emoji-anim'>🗑️</span> Delete",
     pinPrompt:"To DELETE, enter the PIN from your contract :",
     alertPinFail:"❌ Incorrect PIN!", alertSess:"Session expired.", alertDeny:"Access denied.", alertConfirm:"Edit this product?",
     alertDone:"Data retrieved.", alertDel:"Product deleted!",
@@ -271,18 +273,18 @@ document.getElementById('langEn').onclick=()=>{curLang='en';updateLang()};
 function updateLang(){
   const d=langData[curLang];
   document.getElementById('page-title').innerText=d.t1;
-  document.getElementById('link-home').innerText=d.menuHome;
-  document.getElementById('link-shop').innerText=d.menuShop;
-  document.getElementById('link-cat').innerText=d.menuCat;
-  document.querySelector('a[href="index.html#contact"]').innerText=d.menuContact;
+  document.getElementById('link-home').innerHTML=d.menuHome;
+  document.getElementById('link-shop').innerHTML=d.menuShop;
+  document.getElementById('link-cat').innerHTML=d.menuCat;
+  document.querySelector('a[href="index.html#contact"]').innerHTML=d.menuContact;
   
-  document.getElementById('info-title').innerText=d.infoTitle;
+  document.getElementById('info-title').innerHTML=d.infoTitle;
   document.getElementById('info-list').innerHTML=d.infoList;
   
   document.getElementById('t-step1').innerText=d.step1;
   document.getElementById('l-shop').innerText=d.lShop; document.getElementById('f_enseigne').placeholder=d.plShop;
   document.getElementById('l-cat').innerText=d.lCat;
-  document.getElementById('l-pin').innerText=d.lPin; document.getElementById('f_master_pin').placeholder=d.plPin; document.getElementById('s-pin-help').innerText=d.sPin;
+  document.getElementById('l-pin').innerHTML=d.lPin; document.getElementById('f_master_pin').placeholder=d.plPin; document.getElementById('s-pin-help').innerText=d.sPin;
   document.getElementById('l-resp').innerText=d.lResp;
   document.getElementById('l-digits1').innerText=d.lDigits; document.getElementById('l-digits2').innerText=d.lDigits;
   document.getElementById('l-addr').innerText=d.lAddr;
@@ -302,9 +304,9 @@ function updateLang(){
   document.getElementById('l-pprice').innerText=d.lPPrice;
   document.getElementById('l-pphoto').innerText=d.lPPhoto;
   document.getElementById('l-pdesc').innerText=d.lPDesc; document.getElementById('p_desc').placeholder=d.plPDesc;
-  document.getElementById('l-promo-check').innerText=d.lPromo;
-  document.getElementById('btn-upload').innerText=d.btnUpload;
-  document.getElementById('btn-see-shop').innerText=d.btnSee;
+  document.getElementById('l-promo-check').innerHTML=d.lPromo;
+  document.getElementById('btn-upload').innerHTML=d.btnUpload;
+  document.getElementById('btn-see-shop').innerHTML=d.btnSee;
   document.getElementById('h-recent').innerText=d.hRecent;
   if(document.getElementById('my-products-list').innerHTML.includes('...')) document.getElementById('my-products-list').innerText=d.tLoad;
   
