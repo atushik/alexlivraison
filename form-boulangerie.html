@@ -9,12 +9,13 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--red:#ff4d4d;--glass:rgba(255,255,255,0.95)}
+  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--red:#ff4d4d;--glass:rgba(255,255,255,0.95);--shadow:0 10px 30px rgba(0,0,0,0.15)}
   html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
   body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);color:#222;min-height:100vh}
   *{box-sizing:border-box}
-  .topbar{position:sticky;top:0;z-index:100;background:rgba(20,0,45,0.9);backdrop-filter:blur(10px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 15px rgba(0,0,0,0.3)}
-  .logo-img{width:45px;height:45px;object-fit:cover;border-radius:50%;border:2px solid #fff}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(20,0,45,0.95);backdrop-filter:blur(12px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);border-bottom:1px solid rgba(255,255,255,0.1)}
+  .logo-img{width:45px;height:45px;object-fit:cover;border-radius:50%;border:2px solid #fff;transition:transform 0.3s}
+  .logo-img:hover{transform:rotate(10deg) scale(1.05)}
   .hamburger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.2)}
   .hamburger span{width:20px;height:2px;background:#fff;border-radius:2px}
   .menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:#1a0033;padding:20px;transition:0.3s;z-index:200;display:flex;flex-direction:column;box-shadow:-5px 0 20px rgba(0,0,0,0.5)}
@@ -25,38 +26,42 @@
   .menu a:hover{background:rgba(255,255,255,0.1);padding-left:20px;color:#b88aff}
   .menu .highlight{color:#43dfb8;font-weight:700}
   .lang-switch{margin-top:auto;display:flex;gap:10px;padding-top:20px}
-  .lang-btn{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;cursor:pointer}
-  .lang-btn.active{background:#6b23ff;border-color:#6b23ff}
+  .lang-btn{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;cursor:pointer;font-weight:bold;transition:0.3s}
+  .lang-btn.active{background:#6b23ff;border-color:#6b23ff;box-shadow:0 0 10px rgba(107,35,255,0.5)}
   .wrap{max-width:800px;margin:0 auto;padding:20px}
-  h1{color:#fff;text-align:center;margin:30px 0;font-size:2em;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
-  .card{background:var(--glass);border-radius:20px;padding:25px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.2);animation:fadeIn 0.5s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  h2{color:#32006b;margin-top:0;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;font-size:1.4em}
-  .input-group{margin-bottom:15px}
-  label{display:block;margin-bottom:5px;font-weight:700;color:#444;font-size:0.9em}
-  input,textarea,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f8f9fa;transition:.3s}
-  input:focus,textarea:focus{border-color:#6b23ff;background:#fff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);outline:none}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-  .btn-primary{width:100%;padding:15px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:10px;box-shadow:0 5px 15px rgba(107,35,255,0.3)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(107,35,255,0.4)}
-  .btn-success{width:100%;display:block;text-align:center;text-decoration:none;padding:15px;background:linear-gradient(90deg,#4caf50,#66bb6a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;margin-top:15px;box-shadow:0 5px 15px rgba(76,175,80,0.3)}
-  .btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(76,175,80,0.4)}
+  h1{color:#fff;text-align:center;margin:30px 0;font-size:2.2em;text-shadow:0 4px 15px rgba(0,0,0,0.4);animation:fadeInDown 0.8s ease}
+  .card{background:var(--glass);border-radius:24px;padding:30px;margin-bottom:25px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.5);animation:fadeInUp 0.6s ease-out backwards}
+  h2{color:#32006b;margin-top:0;border-bottom:2px solid #f0f0f0;padding-bottom:15px;margin-bottom:25px;font-size:1.5em}
+  .input-group{margin-bottom:20px}
+  label{display:block;margin-bottom:8px;font-weight:700;color:#333;font-size:0.95em}
+  input,textarea,select{width:100%;padding:14px;border:2px solid #eee;border-radius:12px;font-size:16px;background:#f8f9fa;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1)}
+  input:focus,textarea:focus{border-color:#6b23ff;background:#fff;box-shadow:0 5px 15px rgba(107,35,255,0.15);outline:none;transform:translateY(-2px)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:bold;cursor:pointer;transition:all 0.3s;margin-top:10px;box-shadow:0 8px 20px rgba(107,35,255,0.3);position:relative;overflow:hidden}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(107,35,255,0.4)}
+  .btn-primary:active{transform:scale(0.98)}
+  .btn-success{width:100%;display:block;text-align:center;text-decoration:none;padding:16px;background:linear-gradient(135deg,#4caf50,#66bb6a);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:bold;cursor:pointer;transition:all 0.3s;margin-top:20px;box-shadow:0 8px 20px rgba(76,175,80,0.3)}
+  .btn-success:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(76,175,80,0.4)}
   .hidden{display:none}
-  canvas#signature{width:100%;height:180px;border:2px dashed #ccc;border-radius:10px;background:#fff;cursor:crosshair;touch-action: none;}
-  .prod-list{margin-top:20px}
-  .prod-item{display:flex;flex-wrap:wrap;align-items:center;gap:15px;background:#fff;padding:15px;border-radius:15px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:.3s;border:1px solid #eee}
-  .prod-item:hover{transform:translateY(-2px);box-shadow:0 8px 15px rgba(0,0,0,0.1)}
-  .prod-img{width:60px;height:60px;object-fit:cover;border-radius:10px;background:#eee;flex-shrink:0}
+  canvas#signature{width:100%;height:180px;border:2px dashed #bbb;border-radius:12px;background:#fff;cursor:crosshair;touch-action:none;transition:border-color 0.3s}
+  canvas#signature:hover{border-color:#6b23ff}
+  .prod-list{margin-top:25px}
+  .prod-item{display:flex;flex-wrap:wrap;align-items:center;gap:15px;background:#fff;padding:15px;border-radius:16px;margin-bottom:15px;box-shadow:0 5px 15px rgba(0,0,0,0.05);transition:all 0.3s;border:1px solid #f0f0f0}
+  .prod-item:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+  .prod-img{width:65px;height:65px;object-fit:cover;border-radius:12px;background:#eee;flex-shrink:0}
   .prod-info{flex:1;min-width:150px}
-  .prod-info h4{margin:0 0 5px 0;color:#32006b;font-size:1.1em}
-  .prod-info p{margin:0;color:#666;font-size:0.9em}
-  .prod-actions{display:flex;gap:10px;width:100%;margin-top:5px}
-  .btn-action{flex:1;padding:10px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9em;display:flex;align-items:center;justify-content:center;gap:5px;border:none;transition:.2s}
-  .btn-edit{background:#fff3cd;color:#856404;border:1px solid #ffeeba}
-  .btn-delete{background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc}
-  .info-box {background: #eef2ff;border-left: 5px solid #6b23ff;padding: 15px;border-radius: 8px;margin-bottom: 25px;font-size: 0.95em;line-height: 1.5;color: #333;}
-  .info-box strong { color: #6b23ff; }
-  .promo-badge{display:inline-block;background:#ff4d4d;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;margin-left:5px;vertical-align:middle}
+  .prod-info h4{margin:0 0 5px 0;color:#32006b;font-size:1.15em}
+  .prod-info p{margin:0;color:#666;font-size:0.95em}
+  .prod-actions{display:flex;gap:10px;width:100%;margin-top:10px}
+  .btn-action{flex:1;padding:10px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:0.9em;display:flex;align-items:center;justify-content:center;gap:6px;border:none;transition:0.2s}
+  .btn-edit{background:#fff8e1;color:#f57c00;border:1px solid #ffe0b2}
+  .btn-edit:hover{background:#ffe0b2}
+  .btn-delete{background:#ffebee;color:#d32f2f;border:1px solid #ffcdd2}
+  .btn-delete:hover{background:#ffcdd2}
+  .info-box{background:#eef2ff;border-left:5px solid #6b23ff;padding:18px;border-radius:12px;margin-bottom:25px;font-size:0.95em;line-height:1.6;color:#444;box-shadow:0 4px 10px rgba(107,35,255,0.05)}
+  .promo-badge{display:inline-block;background:linear-gradient(45deg,#ff4d4d,#ff8a80);color:#fff;font-size:10px;padding:4px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;box-shadow:0 2px 5px rgba(255,77,77,0.3)}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
   @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -81,38 +86,38 @@
 <main class="wrap">
   <h1 id="page-title">Espace Boulangerie</h1>
 
-  <div class="card">
+  <div class="card" style="animation-delay:0.1s">
       <div class="info-box">
-          <h3>📢 Procédure Partenaire</h3>
-          <ol style="margin-left:15px;padding-left:0">
-              <li><strong>Créez votre Code PIN Secret</strong> dans le formulaire ci-dessous.</li>
-              <li>Signez le contrat (Votre PIN y sera inscrit pour mémoire).</li>
-              <li>Chargez vos produits. Le système <strong>utilisera automatiquement</strong> ce PIN pour sécuriser vos ajouts.</li>
+          <h3 id="info-title">📢 Procédure Partenaire</h3>
+          <ol style="margin-left:15px;padding-left:0;margin-bottom:0" id="info-list">
+              <li>Créez votre Code PIN Secret ci-dessous.</li>
+              <li>Signez le contrat (PIN inscrit pour mémoire).</li>
+              <li>Chargez vos produits. Le système utilisera ce PIN.</li>
           </ol>
       </div>
   </div>
 
-  <section id="step1" class="card">
+  <section id="step1" class="card" style="animation-delay:0.2s">
     <h2 id="t-step1">1. Inscription & Sécurité</h2>
     <div class="grid2">
-      <div class="input-group"><label>Nom de l'enseigne</label><input id="f_enseigne" placeholder="Ex: Boulangerie Délices"></div>
-      <div class="input-group"><label>Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee;color:#666"></div>
+      <div class="input-group"><label id="l-shop">Nom de l'enseigne</label><input id="f_enseigne" placeholder="Ex: Boulangerie Délices"></div>
+      <div class="input-group"><label id="l-cat">Catégorie</label><input id="f_cat" value="Boulangerie" readonly style="background:#eee;color:#666"></div>
     </div>
     
-    <div class="input-group" style="background:#fff0f0; padding:15px; border-radius:10px; border:1px solid #ffcccc;">
-        <label style="color:#d32f2f;">🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)</label>
+    <div class="input-group" style="background:#fff5f5; padding:15px; border-radius:14px; border:1px solid #ffcdd2; box-shadow:inset 0 0 10px rgba(255,0,0,0.05)">
+        <label style="color:#d32f2f;" id="l-pin">🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)</label>
         <input id="f_master_pin" type="text" placeholder="Ex: 1234" maxlength="8" style="font-weight:bold; letter-spacing:1px;">
-        <small style="color:#555;display:block;margin-top:5px">Ce code sera sauvegardé dans votre contrat PDF. Il servira à supprimer vos produits plus tard.</small>
+        <small style="color:#666;display:block;margin-top:5px" id="s-pin-help">Ce code sera sauvegardé dans votre contrat PDF.</small>
     </div>
 
-    <div class="input-group"><label>Nom du Responsable</label><input id="f_resp"></div>
+    <div class="input-group"><label id="l-resp">Nom du Responsable</label><input id="f_resp"></div>
     <div class="grid2">
-      <div class="input-group"><label>SIREN (9 chiffres)</label><input id="f_siren" type="tel" maxlength="9" placeholder="123456789" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
-      <div class="input-group"><label>SIRET (14 chiffres)</label><input id="f_siret" type="tel" maxlength="14" placeholder="12345678900011" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <div class="input-group"><label>SIREN (9 <span id="l-digits1">chiffres</span>)</label><input id="f_siren" type="tel" maxlength="9" placeholder="123456789" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <div class="input-group"><label>SIRET (14 <span id="l-digits2">chiffres</span>)</label><input id="f_siret" type="tel" maxlength="14" placeholder="12345678900011" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
     </div>
-    <div class="input-group"><label>Adresse complète</label><input id="f_addr"></div>
+    <div class="input-group"><label id="l-addr">Adresse complète</label><input id="f_addr"></div>
     <div class="grid2">
-      <div class="input-group"><label>Téléphone</label><input id="f_tel" type="tel"></div>
+      <div class="input-group"><label id="l-tel">Téléphone</label><input id="f_tel" type="tel"></div>
       <div class="input-group"><label>E-mail</label><input id="f_mail" type="email"></div>
     </div>
     <button id="btn_step1" class="btn-primary">Suivant</button>
@@ -120,17 +125,17 @@
 
   <section id="step2" class="card hidden">
     <h2 id="t-step2">2. Contrat de Collaboration</h2>
-    <p style="font-size:14px;color:#666;margin-bottom:15px">Le Code PIN que vous avez défini sera inscrit dans ce document.</p>
+    <p style="font-size:14px;color:#666;margin-bottom:15px" id="p-contract-desc">Le Code PIN que vous avez défini sera inscrit dans ce document.</p>
     <div class="grid2">
-      <div class="input-group"><label>Signataire</label><input id="sign_name"></div>
-      <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
+      <div class="input-group"><label id="l-sign-name">Signataire</label><input id="sign_name"></div>
+      <div class="input-group"><label id="l-sign-date">Date</label><input id="sign_date" type="date"></div>
     </div>
-    <label>Votre signature :</label>
+    <label id="l-draw">Votre signature :</label>
     <canvas id="signature"></canvas>
-    <button onclick="clearSig()" style="margin-top:5px;padding:5px 10px;background:#eee;border:none;border-radius:4px;cursor:pointer;font-size:12px">Effacer</button>
+    <button onclick="clearSig()" id="btn-clear" style="margin-top:8px;padding:6px 12px;background:#eee;border:none;border-radius:6px;cursor:pointer;font-size:13px;transition:0.2s">Effacer</button>
     <div style="margin-top:20px;display:flex;align-items:center;gap:10px">
       <input type="checkbox" id="agree" style="width:auto">
-      <label for="agree" style="margin:0">J'accepte les conditions</label>
+      <label for="agree" style="margin:0" id="l-agree">J'accepte les conditions</label>
     </div>
     <button id="gen_pdf" class="btn-primary">Signer & Valider</button>
   </section>
@@ -139,33 +144,33 @@
     <h2 id="t-step3">3. Gestion de vos produits</h2>
     
     <div class="info-box" style="background:#f0fff4; border-color:#4caf50;">
-        <p>✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé. <br>ℹ️ <strong>Commission :</strong> 3% pour les Promos, 5% pour le Standard.</p>
+        <p id="p-connected">✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé.<br>ℹ️ <strong>Commission :</strong> 3% pour les Promos, 5% pour le Standard.</p>
     </div>
 
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
-      <div class="input-group"><label>Nom du produit</label><input id="p_name" required placeholder="Ex: Baguette Tradition"></div>
-      <div class="input-group"><label>Prix de base Partenaire (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.00"></div>
-      <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
-      <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
+      <div class="input-group"><label id="l-pname">Nom du produit</label><input id="p_name" required placeholder="Ex: Baguette Tradition"></div>
+      <div class="input-group"><label id="l-pprice">Prix de base Partenaire (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.00"></div>
+      <div class="input-group"><label id="l-pphoto">Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
+      <div class="input-group"><label id="l-pdesc">Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
       
-      <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#fff; padding:15px; border-radius:10px; border:1px solid #ffcccc;">
-        <input type="checkbox" id="p_promo" style="width:20px; height:20px; accent-color:#ff4d4d;">
-        <label for="p_promo" style="margin:0; color:#ff4d4d; font-weight:bold;">🔥 Produit en Promotion (Pour la Vitrine Générale)</label>
+      <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#fff; padding:15px; border-radius:14px; border:2px solid #ffebee; transition:0.3s">
+        <input type="checkbox" id="p_promo" style="width:22px; height:22px; accent-color:#ff4d4d;">
+        <label for="p_promo" id="l-promo-check" style="margin:0; color:#ff4d4d; font-weight:bold;">🔥 Produit en Promotion (Pour la Vitrine Générale)</label>
       </div>
       
-      <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
+      <button type="submit" id="btn-upload" class="btn-primary">📤 Mettre en ligne</button>
     </form>
 
     <div id="upload-status" style="text-align:center;margin-bottom:20px;font-weight:bold"></div>
 
     <div id="success-actions" class="hidden">
-        <a href="boulangeries.html" class="btn-success">👁️ Voir le produit chargé (Aller à la boutique)</a>
+        <a href="boulangeries.html" id="btn-see-shop" class="btn-success">👁️ Voir le produit chargé (Aller à la boutique)</a>
         <br>
     </div>
 
-    <h3 style="color:#32006b;margin-bottom:15px;">Vos produits récents :</h3>
+    <h3 style="color:#32006b;margin-bottom:15px;" id="h-recent">Vos produits récents :</h3>
     <div id="my-products-list" class="prod-list">
-      <div style="text-align:center;color:#666">Chargement...</div>
+      <div style="text-align:center;color:#666" id="t-loading">Chargement...</div>
     </div>
   </section>
 </main>
@@ -187,34 +192,135 @@ window.SESSION_PIN = "";
 window.productsMap = {};
 
 const langData={
-  fr:{t1:"Espace Boulangerie",btn1:"Suivant",btn2:"Signer & Valider",btn3:"Mettre en ligne",del:"Supprimer",edit:"Éditer",pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :"},
-  en:{t1:"Bakery Area",btn1:"Next",btn2:"Sign & Validate",btn3:"Upload Product",del:"Delete",edit:"Edit",pinPrompt:"To DELETE, enter the PIN from your contract :"}
+  fr:{
+    t1:"Espace Boulangerie",
+    menuHome:"🏠 Retour Accueil", menuShop:"🛍️ Vitrine Générale", menuCat:"🥖 Vitrine Boulangerie", menuContact:"📞 Contact Support",
+    infoTitle:"📢 Procédure Partenaire",
+    infoList:"<li>Créez votre Code PIN Secret ci-dessous.</li><li>Signez le contrat (PIN inscrit pour mémoire).</li><li>Chargez vos produits. Le système utilisera ce PIN.</li>",
+    step1:"1. Inscription & Sécurité",
+    lShop:"Nom de l'enseigne", plShop:"Ex: Boulangerie Délices",
+    lCat:"Catégorie",
+    lPin:"🔐 CRÉEZ VOTRE CODE PIN (Obligatoire)", plPin:"Ex: 1234", sPin:"Ce code sera sauvegardé dans votre contrat PDF.",
+    lResp:"Nom du Responsable",
+    lDigits:"chiffres",
+    lAddr:"Adresse complète",
+    lTel:"Téléphone",
+    btnNext:"Suivant",
+    step2:"2. Contrat de Collaboration",
+    pContract:"Le Code PIN que vous avez défini sera inscrit dans ce document.",
+    lSignName:"Signataire", lSignDate:"Date", lDraw:"Votre signature :", btnClear:"Effacer", lAgree:"J'accepte les conditions",
+    btnSign:"Signer & Valider",
+    step3:"3. Gestion de vos produits",
+    pConnected:"✅ <strong>Mode Connecté :</strong> PIN mémorisé.<br>ℹ️ <strong>Commission :</strong> 3% (Promo), 5% (Standard).",
+    lPName:"Nom du produit", plPName:"Ex: Baguette Tradition",
+    lPPrice:"Prix de base Partenaire (€)",
+    lPPhoto:"Photo du produit",
+    lPDesc:"Description", plPDesc:"Ingrédients, détails...",
+    lPromo:"🔥 Produit en Promotion (Pour la Vitrine Générale)",
+    btnUpload:"📤 Mettre en ligne",
+    btnSee:"👁️ Voir le produit chargé (Aller à la boutique)",
+    hRecent:"Vos produits récents :",
+    tLoad:"Chargement...",
+    btnEdit:"✏️ Éditer", btnDel:"🗑️ Supprimer",
+    pinPrompt:"Pour SUPPRIMER, entrez le PIN de votre contrat :",
+    alertPinFail:"❌ Code PIN incorrect !", alertSess:"Session expirée.", alertDeny:"Accès refusé.", alertConfirm:"Modifier ce produit ?",
+    alertDone:"Données récupérées.", alertDel:"Produit supprimé !",
+    uploading:"Calcul et chargement...", success:"✅ Produit chargé ! Prix affiché : "
+  },
+  en:{
+    t1:"Bakery Partner Area",
+    menuHome:"🏠 Back Home", menuShop:"🛍️ General Showcase", menuCat:"🥖 Bakery Showcase", menuContact:"📞 Contact Support",
+    infoTitle:"📢 Partner Procedure",
+    infoList:"<li>Create your Secret PIN below.</li><li>Sign the contract (PIN saved for memory).</li><li>Upload products. System uses this PIN.</li>",
+    step1:"1. Registration & Security",
+    lShop:"Shop Name", plShop:"Ex: Delicious Bakery",
+    lCat:"Category",
+    lPin:"🔐 CREATE YOUR PIN CODE (Required)", plPin:"Ex: 1234", sPin:"This code will be saved in your PDF contract.",
+    lResp:"Manager Name",
+    lDigits:"digits",
+    lAddr:"Full Address",
+    lTel:"Phone",
+    btnNext:"Next",
+    step2:"2. Collaboration Contract",
+    pContract:"The PIN Code you defined will be written in this document.",
+    lSignName:"Signatory", lSignDate:"Date", lDraw:"Your Signature:", btnClear:"Clear", lAgree:"I accept terms",
+    btnSign:"Sign & Validate",
+    step3:"3. Product Management",
+    pConnected:"✅ <strong>Connected Mode:</strong> PIN memorized.<br>ℹ️ <strong>Commission:</strong> 3% (Promo), 5% (Standard).",
+    lPName:"Product Name", plPName:"Ex: Traditional Baguette",
+    lPPrice:"Partner Base Price (€)",
+    lPPhoto:"Product Photo",
+    lPDesc:"Description", plPDesc:"Ingredients, details...",
+    lPromo:"🔥 Promotional Product (For General Showcase)",
+    btnUpload:"📤 Upload Product",
+    btnSee:"👁️ See Uploaded Product (Go to Shop)",
+    hRecent:"Your Recent Products:",
+    tLoad:"Loading...",
+    btnEdit:"✏️ Edit", btnDel:"🗑️ Delete",
+    pinPrompt:"To DELETE, enter the PIN from your contract :",
+    alertPinFail:"❌ Incorrect PIN!", alertSess:"Session expired.", alertDeny:"Access denied.", alertConfirm:"Edit this product?",
+    alertDone:"Data retrieved.", alertDel:"Product deleted!",
+    uploading:"Calculating and uploading...", success:"✅ Product uploaded! Display price: "
+  }
 };
+
 let curLang='fr';
 document.getElementById('langFr').onclick=()=>{curLang='fr';updateLang()};
 document.getElementById('langEn').onclick=()=>{curLang='en';updateLang()};
+
 function updateLang(){
   const d=langData[curLang];
   document.getElementById('page-title').innerText=d.t1;
-  document.getElementById('btn_step1').innerText=d.btn1;
-  document.getElementById('gen_pdf').innerText=d.btn2;
-  document.querySelector('#step3 button[type="submit"]').innerText=d.btn3;
+  document.getElementById('link-home').innerText=d.menuHome;
+  document.getElementById('link-shop').innerText=d.menuShop;
+  document.getElementById('link-cat').innerText=d.menuCat;
+  document.querySelector('a[href="index.html#contact"]').innerText=d.menuContact;
+  
+  document.getElementById('info-title').innerText=d.infoTitle;
+  document.getElementById('info-list').innerHTML=d.infoList;
+  
+  document.getElementById('t-step1').innerText=d.step1;
+  document.getElementById('l-shop').innerText=d.lShop; document.getElementById('f_enseigne').placeholder=d.plShop;
+  document.getElementById('l-cat').innerText=d.lCat;
+  document.getElementById('l-pin').innerText=d.lPin; document.getElementById('f_master_pin').placeholder=d.plPin; document.getElementById('s-pin-help').innerText=d.sPin;
+  document.getElementById('l-resp').innerText=d.lResp;
+  document.getElementById('l-digits1').innerText=d.lDigits; document.getElementById('l-digits2').innerText=d.lDigits;
+  document.getElementById('l-addr').innerText=d.lAddr;
+  document.getElementById('l-tel').innerText=d.lTel;
+  document.getElementById('btn_step1').innerText=d.btnNext;
+  
+  document.getElementById('t-step2').innerText=d.step2;
+  document.getElementById('p-contract-desc').innerText=d.pContract;
+  document.getElementById('l-sign-name').innerText=d.lSignName; document.getElementById('l-sign-date').innerText=d.lSignDate;
+  document.getElementById('l-draw').innerText=d.lDraw; document.getElementById('btn-clear').innerText=d.btnClear;
+  document.getElementById('l-agree').innerText=d.lAgree;
+  document.getElementById('gen_pdf').innerText=d.btnSign;
+  
+  document.getElementById('t-step3').innerText=d.step3;
+  document.getElementById('p-connected').innerHTML=d.pConnected;
+  document.getElementById('l-pname').innerText=d.lPName; document.getElementById('p_name').placeholder=d.plPName;
+  document.getElementById('l-pprice').innerText=d.lPPrice;
+  document.getElementById('l-pphoto').innerText=d.lPPhoto;
+  document.getElementById('l-pdesc').innerText=d.lPDesc; document.getElementById('p_desc').placeholder=d.plPDesc;
+  document.getElementById('l-promo-check').innerText=d.lPromo;
+  document.getElementById('btn-upload').innerText=d.btnUpload;
+  document.getElementById('btn-see-shop').innerText=d.btnSee;
+  document.getElementById('h-recent').innerText=d.hRecent;
+  if(document.getElementById('my-products-list').innerHTML.includes('...')) document.getElementById('my-products-list').innerText=d.tLoad;
+  
   document.getElementById('langFr').classList.toggle('active',curLang==='fr');
   document.getElementById('langEn').classList.toggle('active',curLang==='en');
+  loadMyProducts(); 
 }
 
 const s1=document.getElementById('step1'),s2=document.getElementById('step2'),s3=document.getElementById('step3');
 const inp=['f_enseigne','f_resp','f_siren','f_siret','f_addr','f_tel','f_mail', 'f_master_pin'].map(id=>document.getElementById(id));
 
 document.getElementById('btn_step1').onclick=()=>{
-    for(let i of inp){if(!i.value.trim()){alert("Veuillez remplir tous les champs et créer le Code PIN.");i.focus();return;}}
-    
+    for(let i of inp){if(!i.value.trim()){alert(curLang==='fr'?"Remplissez tout":"Fill all fields");i.focus();return;}}
     const siren = document.getElementById('f_siren').value;
-    if(siren.length !== 9) { alert("Le SIREN doit comporter exactement 9 chiffres."); return; }
-    
     const siret = document.getElementById('f_siret').value;
-    if(siret.length !== 14) { alert("Le SIRET doit comporter exactement 14 chiffres."); return; }
-
+    if(siren.length!==9 || siret.length!==14){alert("SIREN (9) / SIRET (14)");return;}
     window.SESSION_PIN = document.getElementById('f_master_pin').value;
     s1.classList.add('hidden');s2.classList.remove('hidden');window.scrollTo(0,0);
 };
@@ -223,35 +329,18 @@ const cvs=document.getElementById('signature'),ctx=cvs.getContext('2d');
 let dr=false;
 function rs(){const r=cvs.getBoundingClientRect();cvs.width=r.width;cvs.height=180;ctx.fillStyle='#fff';ctx.fillRect(0,0,cvs.width,cvs.height)}
 window.onresize=rs;rs();
-
-function gP(e){
-    const r=cvs.getBoundingClientRect();
-    let x,y;
-    if(e.touches && e.touches.length>0){
-        x = e.touches[0].clientX - r.left;
-        y = e.touches[0].clientY - r.top;
-    } else {
-        x = e.clientX - r.left;
-        y = e.clientY - r.top;
-    }
-    return {x,y};
-}
-
+function gP(e){const r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
 cvs.onmousedown=e=>{dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.onmousemove=e=>{if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
-cvs.onmouseup=()=>dr=false;
-cvs.onmouseout=()=>dr=false;
-
+cvs.onmouseup=()=>dr=false;cvs.onmouseout=()=>dr=false;
 cvs.ontouchstart=e=>{e.preventDefault();dr=true;ctx.beginPath();ctx.moveTo(gP(e).x,gP(e).y)};
 cvs.ontouchmove=e=>{e.preventDefault();if(dr){ctx.lineTo(gP(e).x,gP(e).y);ctx.stroke()}};
 cvs.ontouchend=()=>dr=false;
-
 window.clearSig=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.beginPath()};
 
 const dateInput = document.getElementById('sign_date');
 const today = new Date().toISOString().split('T')[0];
-dateInput.min = today;
-dateInput.value = today;
+dateInput.min = today; dateInput.value = today;
 
 function makeCircle(imgId){
     const img=document.getElementById(imgId);const c=document.createElement('canvas');
@@ -262,18 +351,15 @@ function makeCircle(imgId){
 }
 
 document.getElementById('gen_pdf').onclick=async()=>{
-    if(!document.getElementById('sign_name').value)return alert("Nom du signataire requis");
-    if(!document.getElementById('agree').checked)return alert("Veuillez accepter les conditions");
-    
+    if(!document.getElementById('sign_name').value || !document.getElementById('agree').checked)return alert("Signature & Checkbox required");
     if(!window.SESSION_PIN) window.SESSION_PIN = document.getElementById('f_master_pin').value;
-
     const {jsPDF}=window.jspdf,doc=new jsPDF();
     try{doc.addImage(makeCircle('img-logo'),'JPEG',15,10,20,20)}catch(e){}
     doc.setFontSize(18);doc.setFont("helvetica","bold");doc.text("Convention de Collaboration",20,40);
     doc.setLineWidth(0.5);doc.line(20,50,190,50);
     doc.setFontSize(11);doc.setFont("helvetica","normal");
     let y=60;
-    const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color) doc.setTextColor(color); else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=6;};
+    const addL=(l,b=false,color=null)=>{doc.setFont("helvetica",b?"bold":"normal");if(color)doc.setTextColor(color);else doc.setTextColor(0,0,0);doc.text(l,20,y);y+=6;};
     addL("Entre AlexLivraison (Atabek Zakirov) et "+document.getElementById('f_enseigne').value+" ("+CURRENT_CATEGORY+").",true);
     y+=5;
     addL("Responsable: "+document.getElementById('f_resp').value);
@@ -281,16 +367,13 @@ document.getElementById('gen_pdf').onclick=async()=>{
     addL("Adresse: "+document.getElementById('f_addr').value);
     addL("Contact: "+document.getElementById('f_tel').value+" / "+document.getElementById('f_mail').value);
     y+=5;
-    
-    doc.setDrawColor(255, 0, 0); doc.setLineWidth(0.5); doc.rect(18, y-5, 100, 10);
-    addL("CODE PIN DE SÉCURITÉ (Sauvegardé) : " + window.SESSION_PIN, true, "red");
-    
-    doc.setTextColor(0,0,0);y+=8;
-    doc.setFontSize(10);
+    doc.setDrawColor(255,0,0); doc.setLineWidth(0.5); doc.rect(18,y-5,100,10);
+    addL("CODE PIN DE SÉCURITÉ (Sauvegardé) : "+window.SESSION_PIN,true,"red");
+    doc.setTextColor(0,0,0);y+=8;doc.setFontSize(10);
     const legalText = [
         "CONDITIONS DE PARTENARIAT & TARIFICATION :",
-        "1. Transparence : Une commission de 3% (Promo) à 5% (Standard) est ajoutée",
-        "   automatiquement au prix fixé par le Partenaire.",
+        "1. Transparence : Une commission de 3% à 5% est ajoutée automatiquement au prix",
+        "   fixé par le Partenaire (ex: Prix Partenaire + 5% = Prix Client).",
         "2. Offre de Bienvenue : Les 5 premières livraisons sont GRATUITES.",
         "3. Responsabilité : Le Partenaire est seul responsable de l'exactitude des informations",
         "   produits. AlexLivraison décline toute responsabilité en cas d'erreur.",
@@ -298,9 +381,7 @@ document.getElementById('gen_pdf').onclick=async()=>{
         "   expose le Partenaire à des poursuites pénales selon la législation française."
     ];
     legalText.forEach(line => addL(line));
-
-    y+=10;
-    doc.setFontSize(11);
+    y+=10;doc.setFontSize(11);
     doc.text("Fait le "+document.getElementById('sign_date').value,20,y);y+=15;
     doc.text("Le Partenaire:",20,y);doc.text("AlexLivraison:",120,y);y+=10;
     doc.addImage(cvs.toDataURL('image/jpeg'),'JPEG',20,y,50,30);
@@ -318,95 +399,74 @@ document.getElementById('gen_pdf').onclick=async()=>{
 
 document.getElementById('product-form').onsubmit=async(e)=>{
     e.preventDefault();
+    const d=langData[curLang];
     const st=document.getElementById('upload-status'),bn=e.target.querySelector('button');
-    
-    if(!window.SESSION_PIN || window.SESSION_PIN === ""){
-        alert("Session expirée. Veuillez recharger la page et recommencer l'inscription pour définir le PIN.");
-        return;
-    }
-
-    bn.disabled=true;st.innerText="Calcul et chargement en cours...";st.style.color="blue";
+    if(!window.SESSION_PIN){alert(d.alertSess);return;}
+    bn.disabled=true;st.innerText=d.uploading;st.style.color="blue";
     const name=document.getElementById('p_name').value;
     const rawPrice=parseFloat(document.getElementById('p_price').value);
     const shop=document.getElementById('f_enseigne').value;
-    const isPromo = document.getElementById('p_promo').checked;
-    
-    const multiplier = isPromo ? 1.03 : 1.05;
-    const finalPrice = (rawPrice * multiplier).toFixed(2);
-
+    const isPromo=document.getElementById('p_promo').checked;
+    const multiplier=isPromo?1.03:1.05;
+    const finalPrice=(rawPrice*multiplier).toFixed(2);
     try{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
-        
         await db.collection('products').add({name:name,price:parseFloat(finalPrice),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-        
-        const percent = isPromo ? "3%" : "5%";
-        const promoText = isPromo ? "🔥 OUI (Vitrine Générale)" : "Non";
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 Base: ${rawPrice}€ + ${percent} -> ${finalPrice}€\n✨ Promo: ${promoText}\n🔑 PIN: ${window.SESSION_PIN}`;
+        const promoText=isPromo?"🔥 OUI (Vitrine Générale) - 3%":"Non - 5%";
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 Base: ${rawPrice}€ + ${isPromo?'3%':'5%'} -> ${finalPrice}€\n✨ Promo: ${promoText}\n🔑 PIN: ${window.SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
-        st.innerText=`✅ Produit chargé ! Prix affiché : ${finalPrice}€`;st.style.color="green";
+        st.innerText=d.success+finalPrice+"€";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
         document.getElementById('product-form').reset();
-        document.getElementById('p_promo').checked = false;
+        document.getElementById('p_promo').checked=false;
     }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
 };
 
 function loadMyProducts(){
     db.collection('products').where('category','==',CURRENT_CATEGORY).onSnapshot(snap=>{
         const div=document.getElementById('my-products-list');div.innerHTML='';
-        window.productsMap = {};
-        if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">Aucun produit en ligne.</p>';return}
-        
-        let docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
-        docs.sort((a,b) => (b.createdAt && a.createdAt) ? b.createdAt.seconds - a.createdAt.seconds : 0);
-        
+        window.productsMap={};
+        if(snap.empty){div.innerHTML='<p style="text-align:center;opacity:0.6">'+(curLang==='fr'?'Aucun produit.':'No products.')+'</p>';return}
+        let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+        docs.sort((a,b)=>(b.createdAt&&a.createdAt)?b.createdAt.seconds-a.createdAt.seconds:0);
+        const d=langData[curLang];
         docs.forEach(p=>{
-            window.productsMap[p.id] = p;
-            const safePin = p.pin || 'undefined';
-            const promoLabel = p.isPromo ? '<span class="promo-badge">🔥 Promo</span>' : '';
-            div.innerHTML+=`
-            <div class="prod-item">
-                <img src="${p.imageUrl}" class="prod-img">
-                <div class="prod-info"><h4>${p.name} ${promoLabel}</h4><p>${p.price} €</p></div>
-                <div class="prod-actions">
-                    <button class="btn-action btn-edit" type="button" onclick="editProd('${p.id}')">✏️ Éditer</button>
-                    <button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${safePin}')">🗑️ Supprimer</button>
-                </div>
-            </div>`;
+            window.productsMap[p.id]=p;
+            const safePin=p.pin||'undefined';
+            const promoLabel=p.isPromo?'<span class="promo-badge">🔥 Promo</span>':'';
+            div.innerHTML+=`<div class="prod-item"><img src="${p.imageUrl}" class="prod-img"><div class="prod-info"><h4>${p.name} ${promoLabel}</h4><p>${p.price} €</p></div><div class="prod-actions"><button class="btn-action btn-edit" type="button" onclick="editProd('${p.id}')">${d.btnEdit}</button><button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${safePin}')">${d.btnDel}</button></div></div>`;
         });
     })
 }
 
 window.editProd=async(id)=>{
-    const p = window.productsMap[id];
-    if(!p) return;
-    const currentPin = p.pin || window.SESSION_PIN;
-    
-    if(currentPin !== window.SESSION_PIN) return alert("Ce produit appartient à une autre session.");
-    if(!confirm("Modifier ce produit ? L'ancienne version sera supprimée.")) return;
-    
+    const d=langData[curLang];
+    const p=window.productsMap[id];
+    if(!p)return;
+    const currentPin=p.pin||window.SESSION_PIN;
+    if(currentPin!==window.SESSION_PIN)return alert(d.alertDeny);
+    if(!confirm(d.alertConfirm))return;
     try{
         await db.collection('products').doc(id).delete();
-        const multiplier = p.isPromo ? 1.03 : 1.05;
-        const basePrice = (p.price / multiplier).toFixed(2);
-        document.getElementById('p_name').value = p.name;
-        document.getElementById('p_price').value = basePrice;
-        document.getElementById('p_desc').value = p.desc;
-        document.getElementById('p_promo').checked = p.isPromo || false;
+        const multiplier=p.isPromo?1.03:1.05;
+        const basePrice=(p.price/multiplier).toFixed(2);
+        document.getElementById('p_name').value=p.name;
+        document.getElementById('p_price').value=basePrice;
+        document.getElementById('p_desc').value=p.desc;
+        document.getElementById('p_promo').checked=p.isPromo||false;
         document.querySelector('#step3').scrollIntoView({behavior:'smooth'});
-        alert(`Données récupérées. Prix de base remis à ${basePrice}€.`);
-    } catch(e){ alert("Erreur: " + e.message); }
+        alert(d.alertDone);
+    }catch(e){alert("Error: "+e.message)}
 }
 
 window.del=async(id,prodPin)=>{
-    const userPin=prompt(langData[curLang].pinPrompt);if(!userPin)return;
-    const validPin = (prodPin === 'undefined') ? window.SESSION_PIN : prodPin;
-    
-    if(userPin.toString() === validPin.toString()){
-        try{await db.collection('products').doc(id).delete();alert("Produit supprimé ! Pensez à actualiser la boutique.");}catch(e){alert("Erreur : "+e.message)}
-    }else{
-        alert("❌ Code PIN incorrect !");
-    }
+    const d=langData[curLang];
+    const userPin=prompt(d.pinPrompt);if(!userPin)return;
+    const validPin=(prodPin==='undefined')?window.SESSION_PIN:prodPin;
+    if(userPin.toString()===validPin.toString()){
+        try{await db.collection('products').doc(id).delete();alert(d.alertDel);}catch(e){alert("Error: "+e.message)}
+    }else{alert(d.alertPinFail)}
 }
 </script>
 </body>
