@@ -55,6 +55,7 @@
   .btn-delete{background:#ffebeb;color:#ff4d4d;border:1px solid #ffcccc}
   .info-box {background: #eef2ff;border-left: 5px solid #6b23ff;padding: 15px;border-radius: 8px;margin-bottom: 25px;font-size: 0.95em;line-height: 1.5;color: #333;}
   .info-box strong { color: #6b23ff; }
+  .promo-badge{display:inline-block;background:#ff4d4d;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;margin-left:5px;vertical-align:middle}
   @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -85,7 +86,7 @@
           <ol style="margin-left:15px;padding-left:0">
               <li><strong>Créez votre Code PIN Secret</strong> dans le formulaire ci-dessous.</li>
               <li>Signez le contrat (Votre PIN y sera inscrit pour mémoire).</li>
-              <li>Chargez vos produits. Le système <strong>utilisera automatiquement</strong> ce PIN pour sécuriser vos ajouts.</li>
+              <li>Chargez vos produits. Le système <strong>utilisera automatiquement</strong> ce PIN для защиты.</li>
           </ol>
       </div>
   </div>
@@ -137,7 +138,7 @@
     <h2 id="t-step3">3. Gestion de vos produits</h2>
     
     <div class="info-box" style="background:#f0fff4; border-color:#4caf50;">
-        <p>✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé pour cette session. Vous n'avez pas besoin de le resaisir pour ajouter des produits.</p>
+        <p>✅ <strong>Mode Connecté :</strong> Votre Code PIN est mémorisé pour cette session.</p>
     </div>
 
     <form id="product-form" style="margin-bottom:30px;padding-bottom:20px;border-bottom:1px dashed #ccc;">
@@ -145,6 +146,12 @@
       <div class="input-group"><label>Prix (€)</label><input id="p_price" type="number" step="0.01" required placeholder="1.20"></div>
       <div class="input-group"><label>Photo du produit</label><input id="p_photo" type="file" accept="image/*" required></div>
       <div class="input-group"><label>Description</label><textarea id="p_desc" rows="2" required placeholder="Ingrédients, détails..."></textarea></div>
+      
+      <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#fff; padding:15px; border-radius:10px; border:1px solid #ffcccc;">
+        <input type="checkbox" id="p_promo" style="width:20px; height:20px; accent-color:#ff4d4d;">
+        <label for="p_promo" style="margin:0; color:#ff4d4d; font-weight:bold;">🔥 Товар по акции (Для общей витрины)</label>
+      </div>
+      
       <button type="submit" class="btn-primary">📤 Mettre en ligne</button>
     </form>
 
@@ -311,18 +318,21 @@ document.getElementById('product-form').onsubmit=async(e)=>{
     const name=document.getElementById('p_name').value;
     const price=document.getElementById('p_price').value;
     const shop=document.getElementById('f_enseigne').value;
+    const isPromo = document.getElementById('p_promo').checked;
     
     try{
         const f=document.getElementById('p_photo').files[0],ref=storage.ref(`products/${Date.now()}_${f.name}`);
         await ref.put(f);const u=await ref.getDownloadURL();
         
-        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        await db.collection('products').add({name:name,price:parseFloat(price),desc:document.getElementById('p_desc').value,pin:window.SESSION_PIN,imageUrl:u,category:CURRENT_CATEGORY,isPromo:isPromo,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
         
-        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n🔑 PIN: ${window.SESSION_PIN}`;
+        const promoText = isPromo ? "🔥 OUI (Vitrine Générale)" : "Non";
+        const msg=`📦 <b>Nouveau Produit!</b>\n🏬 ${shop}\n🍔 ${name}\n💰 ${price}€\n✨ Promo: ${promoText}\n🔑 PIN: ${window.SESSION_PIN}`;
         await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'HTML'})});
         st.innerText="✅ Produit chargé avec succès !";st.style.color="green";
         document.getElementById('success-actions').classList.remove('hidden');
         document.getElementById('product-form').reset();
+        document.getElementById('p_promo').checked = false;
     }catch(err){st.innerText="❌ Erreur: "+err.message;st.style.color="red";bn.disabled=false;}
 };
 
@@ -338,10 +348,11 @@ function loadMyProducts(){
         docs.forEach(p=>{
             window.productsMap[p.id] = p;
             const safePin = p.pin || 'undefined';
+            const promoLabel = p.isPromo ? '<span class="promo-badge">🔥 Promo</span>' : '';
             div.innerHTML+=`
             <div class="prod-item">
                 <img src="${p.imageUrl}" class="prod-img">
-                <div class="prod-info"><h4>${p.name}</h4><p>${p.price} €</p></div>
+                <div class="prod-info"><h4>${p.name} ${promoLabel}</h4><p>${p.price} €</p></div>
                 <div class="prod-actions">
                     <button class="btn-action btn-edit" type="button" onclick="editProd('${p.id}')">✏️ Éditer</button>
                     <button class="btn-action btn-delete" type="button" onclick="del('${p.id}','${safePin}')">🗑️ Supprimer</button>
@@ -364,6 +375,7 @@ window.editProd=async(id)=>{
         document.getElementById('p_name').value = p.name;
         document.getElementById('p_price').value = p.price;
         document.getElementById('p_desc').value = p.desc;
+        document.getElementById('p_promo').checked = p.isPromo || false;
         document.querySelector('#step3').scrollIntoView({behavior:'smooth'});
         alert("Données récupérées. Modifiez-les puis cliquez sur 'Mettre en ligne'.");
     } catch(e){ alert("Erreur: " + e.message); }
