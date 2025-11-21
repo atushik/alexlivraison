@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Nos Instituts de Beauté - AlexLivraison</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  :root{--purple:#9c27b0;--purple-dark:#4a148c;--glass:rgba(255,255,255,0.95);--shadow:0 10px 30px rgba(0,0,0,0.15)}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#4a148c 0%,#7b1fa2 50%,#ce93d8 100%);color:#222;min-height:100vh;margin:0;padding:0}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(40,10,60,0.95);backdrop-filter:blur(12px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);border-bottom:1px solid rgba(255,255,255,0.1)}
+  .logo-img{width:45px;height:45px;border-radius:50%;border:2px solid #fff}
+  .hamburger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer}
+  .hamburger span{width:20px;height:2px;background:#fff}
+  .menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:#2a0033;padding:20px;transition:0.3s;z-index:200;display:flex;flex-direction:column}
+  .menu.open{right:0}
+  .close-btn{color:#fff;font-size:24px;background:none;border:none;cursor:pointer;align-self:flex-end;margin-bottom:20px}
+  .menu a{display:block;color:#fff;text-decoration:none;padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);font-weight:500}
+  .wrap{max-width:800px;margin:0 auto;padding:20px}
+  h1{color:#fff;text-align:center;margin:30px 0;font-size:2.2em;text-shadow:0 4px 15px rgba(0,0,0,0.4)}
+  
+  .shop-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px}
+  .shop-card{background:var(--glass);border-radius:20px;padding:25px;box-shadow:var(--shadow);transition:transform 0.3s;border:1px solid rgba(255,255,255,0.5);position:relative;overflow:hidden}
+  .shop-card:hover{transform:translateY(-5px)}
+  .shop-header{display:flex;align-items:center;gap:15px;margin-bottom:15px;border-bottom:1px solid #eee;padding-bottom:15px}
+  .shop-icon{font-size:40px;background:#f3e5f5;width:70px;height:70px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+  .shop-info h3{margin:0;color:#4a148c;font-size:1.3em}
+  .shop-info p{margin:5px 0 0;color:#666;font-size:0.9em}
+  .shop-details{color:#555;font-size:0.95em;margin-bottom:20px;line-height:1.5}
+  .btn-visit{display:block;width:100%;padding:12px;background:linear-gradient(135deg,#9c27b0,#ba68c8);color:#fff;text-align:center;text-decoration:none;border-radius:12px;font-weight:bold;box-shadow:0 5px 15px rgba(156,39,176,0.3);transition:0.2s}
+  .btn-visit:hover{transform:scale(0.98);box-shadow:0 8px 20px rgba(156,39,176,0.4)}
+  
+  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
+  .loading{text-align:center;color:#fff;font-size:1.2em;margin-top:50px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img src="logo.jpg" class="logo-img" alt="Logo">
+  <div class="hamburger" id="menuBtn"><span></span><span></span><span></span></div>
+</div>
+<div class="menu" id="sideMenu">
+  <button class="close-btn" id="closeMenu">✕</button>
+  <nav>
+    <a href="index.html"><span class="emoji-anim">🏠</span> Accueil</a>
+    <a href="produits.html"><span class="emoji-anim">🛍️</span> Vitrine Générale</a>
+    <a href="beautes.html" style="color:#ce93d8"><span class="emoji-anim">💄</span> Beauté & Bien-être</a>
+    <a href="form-beautes.html"><span class="emoji-anim">🔐</span> Espace Partenaire</a>
+  </nav>
+</div>
+
+<main class="wrap">
+  <h1><span class="emoji-anim">💄</span> Instituts de Beauté</h1>
+  <p style="text-align:center;color:#fff;margin-bottom:30px;opacity:0.9">Soins, coiffure et bien-être :</p>
+  
+  <div id="shops-container" class="shop-list">
+    <div class="loading"><span class="emoji-anim">⌛</span> Chargement des instituts...</div>
+  </div>
+</main>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+const menu=document.getElementById('sideMenu');
+document.getElementById('menuBtn').onclick=()=>menu.classList.add('open');
+document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
+
+db.collection('shops').where('category','==','beaute').get().then(snap=>{
+    const cont=document.getElementById('shops-container');
+    cont.innerHTML='';
+    
+    if(snap.empty){
+        cont.innerHTML='<p style="color:#fff;text-align:center;width:100%">Aucun institut partenaire pour le moment.</p>';
+        return;
+    }
+
+    snap.forEach(doc=>{
+        const s=doc.data();
+        const shopId = doc.id;
+        
+        const html = `
+        <div class="shop-card">
+            <div class="shop-header">
+                <div class="shop-icon"><span class="emoji-anim">💄</span></div>
+                <div class="shop-info">
+                    <h3>${s.name}</h3>
+                    <p><span class="emoji-anim">📍</span> ${s.address}</p>
+                </div>
+            </div>
+            <div class="shop-details">
+                <span class="emoji-anim">📞</span> ${s.phone}<br>
+                <span class="emoji-anim">💆‍♀️</span> Gérant: ${s.owner}
+            </div>
+            <a href="shop.html?id=${shopId}&name=${encodeURIComponent(s.name)}" class="btn-visit">
+                <span class="emoji-anim">🚪</span> Entrer dans l'institut
+            </a>
+        </div>
+        `;
+        cont.innerHTML += html;
+    });
+}).catch(err=>{
+    console.error(err);
+    document.getElementById('shops-container').innerHTML='<p style="color:#fff;text-align:center">Erreur de chargement.</p>';
+});
+</script>
+</body>
+</html>
