@@ -48,9 +48,12 @@
   .step-progress::before{content:'';position:absolute;top:15px;left:0;right:0;height:3px;background:#ddd;z-index:-1;}
   .step-node{width:35px;height:35px;background:#fff;border:3px solid #ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#aaa;}
   .step-node.active{border-color:var(--primary);background:var(--primary);color:#fff;box-shadow:0 0 10px rgba(107,35,255,0.5);}
-  .timer-big{text-align:center;font-size:3em;font-weight:900;color:#333;margin:10px 0;font-variant-numeric:tabular-nums;}
+  .timer-container{text-align:center;margin:15px 0;}
+  .timer-label{font-size:0.9em;color:#666;text-transform:uppercase;letter-spacing:1px;}
+  .timer-big{font-size:3.5em;font-weight:900;color:#333;margin:5px 0;font-variant-numeric:tabular-nums;line-height:1;}
+  .timer-total{font-size:0.9em;color:#888;font-weight:bold;}
   .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
-  .act-btn{padding:20px;border-radius:15px;border:none;color:#fff;font-weight:bold;font-size:1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .act-btn{padding:20px;border-radius:15px;border:none;color:#fff;font-weight:bold;font-size:1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;}
   .wallet-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;margin:20px;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
   .balance-title{opacity:0.7;font-size:0.9em;}
   .balance-amount{font-size:2.5em;font-weight:bold;margin:10px 0;}
@@ -63,6 +66,8 @@
   .nav-label{font-size:0.7em;font-weight:bold;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;z-index:3000;display:none;}
+  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+  .emoji-anim{display:inline-block;animation:stickerFloat 2s ease-in-out infinite;transform-origin:center bottom;}
 </style>
 </head>
 <body>
@@ -71,7 +76,7 @@
   <div class="app-header">
     <div class="header-top">
       <div class="courier-info">
-        <div class="avatar">🚴</div>
+        <div class="avatar"><span class="emoji-anim">🚴</span></div>
         <div>
           <div style="font-weight:bold;font-size:1.1em" id="courierName">Coursier</div>
           <div class="status-switch" onclick="toggleStatus()">
@@ -98,7 +103,7 @@
 <div id="view-mission" class="view">
   <div class="app-header" style="border-radius:0;padding-bottom:10px">
     <div class="header-top">
-      <h2>Commande en cours</h2>
+      <h2>Commande en cours <span class="emoji-anim">⚡</span></h2>
       <div class="price-tag" style="background:#fff;color:var(--primary)">#<span id="mission-id">--</span></div>
     </div>
   </div>
@@ -109,17 +114,21 @@
     <div class="step-node">3</div>
   </div>
 
-  <div class="timer-big" id="mission-timer">00:00</div>
+  <div class="timer-container">
+    <div class="timer-label" id="timer-label">VERS RESTAURANT</div>
+    <div class="timer-big" id="mission-timer">15:00</div>
+    <div class="timer-total">Total estimé: ~<span id="total-time">25</span> min</div>
+  </div>
 
   <div class="order-card" style="margin-top:0">
-    <h3 id="mission-shop">Restaurant/Boutique</h3>
-    <p id="mission-address" style="color:#666;margin-bottom:15px">Adresse de récupération...</p>
+    <h3 id="mission-shop">Restaurant</h3>
+    <p id="mission-address" style="color:#666;margin-bottom:15px">Adresse...</p>
     
     <div class="req-tags" id="mission-tags"></div>
 
     <div class="action-grid">
-      <button class="act-btn" style="background:#039be5" onclick="openGPS()">🗺️<br>GPS</button>
-      <button class="act-btn" style="background:#00c853" onclick="callClient()">📞<br>Appeler</button>
+      <a id="btn-gps" href="#" target="_blank" class="act-btn" style="background:#039be5"><span class="emoji-anim">🗺️</span><br>GPS</a>
+      <button class="act-btn" style="background:#00c853" onclick="callClient()"><span class="emoji-anim">📞</span><br>Appeler</button>
     </div>
 
     <button id="btn-action-main" class="btn-accept" style="margin-top:20px" onclick="advanceStep()">J'arrive au restaurant</button>
@@ -127,7 +136,7 @@
 </div>
 
 <div id="view-wallet" class="view">
-  <div class="app-header"><h2>Mon Portefeuille</h2></div>
+  <div class="app-header"><h2>Mon Portefeuille <span class="emoji-anim">💰</span></h2></div>
   <div class="wallet-card">
     <div class="balance-title">Solde disponible</div>
     <div class="balance-amount" id="totalBalance">0.00 €</div>
@@ -139,7 +148,7 @@
 </div>
 
 <div id="view-profile" class="view">
-  <div class="app-header"><h2>Mon Profil</h2></div>
+  <div class="app-header"><h2>Mon Profil <span class="emoji-anim">👤</span></h2></div>
   
   <div class="stats-bar" style="margin:20px;background:#fff;color:#333">
     <div class="stat"><span class="stat-val">4.9</span><span class="stat-lbl">Note</span></div>
@@ -165,13 +174,13 @@
 </div>
 
 <div class="nav-bar">
-  <button class="nav-btn active" onclick="nav('home')"><span class="nav-icon">⚡</span><span class="nav-label">Courses</span></button>
-  <button class="nav-btn" onclick="nav('mission')"><span class="nav-icon">🎒</span><span class="nav-label">En cours</span></button>
-  <button class="nav-btn" onclick="nav('wallet')"><span class="nav-icon">💰</span><span class="nav-label">Gains</span></button>
-  <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></button>
+  <button class="nav-btn active" onclick="nav('home')"><span class="nav-icon emoji-anim">⚡</span><span class="nav-label">Courses</span></button>
+  <button class="nav-btn" onclick="nav('mission')"><span class="nav-icon emoji-anim">🎒</span><span class="nav-label">En cours</span></button>
+  <button class="nav-btn" onclick="nav('wallet')"><span class="nav-icon emoji-anim">💰</span><span class="nav-label">Gains</span></button>
+  <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon emoji-anim">👤</span><span class="nav-label">Profil</span></button>
 </div>
 
-<div class="notification" id="notif">Nouvelle commande disponible !</div>
+<div class="notification" id="notif"><span class="emoji-anim">🔔</span> Nouvelle commande disponible !</div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
@@ -230,31 +239,37 @@ db.collection('orders').where('status','==','pending').onSnapshot(snap => {
                 <div class="point dest"><b>Livraison:</b> <span>${o.to || 'Adresse client'}</span></div>
             </div>
             <div class="req-tags">
-                <span class="dist-tag">🛵 ${dist} km</span>
-                ${o.tags ? o.tags.map(t=>`<span class="req">${t}</span>`).join('') : ''}
+                <span class="dist-tag"><span class="emoji-anim">🛵</span> ${dist} km</span>
             </div>
-            <button class="btn-accept" onclick="acceptOrder('${doc.id}', ${o.price}, '${o.shopName}', '${o.from}')">ACCEPTER LA COURSE</button>
+            <button class="btn-accept" onclick="acceptOrder('${doc.id}', ${o.price}, '${o.shopName}', '${o.from}', '${o.to}')">ACCEPTER LA COURSE</button>
         </div>`;
         list.innerHTML += card;
     });
 });
 
-window.acceptOrder = function(id, price, shop, addr){
+window.acceptOrder = function(id, price, shop, fromAddr, toAddr){
     if(!isOnline) return alert("Passez en ligne pour accepter !");
     
-    currentMission = {id, price, shop, addr, step: 1};
+    currentMission = {id, price, shop, from: fromAddr, to: toAddr, step: 1};
     db.collection('orders').doc(id).update({status: 'accepted', courier: localStorage.getItem('alex_courier_name')});
     
     setupMissionUI();
     nav('mission');
-    startTimer(30);
+    startTimer(15); 
+    updateGPSLink(fromAddr); 
+    document.getElementById('timer-label').innerText = "VERS RESTAURANT";
 }
 
 function setupMissionUI(){
     document.getElementById('mission-id').innerText = currentMission.id.substr(0,4);
     document.getElementById('mission-shop').innerText = currentMission.shop || "Magasin";
-    document.getElementById('mission-address').innerText = currentMission.addr || "Adresse masquée";
+    document.getElementById('mission-address').innerText = currentMission.from || "Adresse masquée";
     updateStepUI(1);
+}
+
+function updateGPSLink(destination){
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`;
+    document.getElementById('btn-gps').href = url;
 }
 
 window.advanceStep = function(){
@@ -262,13 +277,20 @@ window.advanceStep = function(){
     updateStepUI(missionStep);
     
     const btn = document.getElementById('btn-action-main');
+    const lbl = document.getElementById('timer-label');
+    const addr = document.getElementById('mission-address');
     
     if(missionStep === 2){
-        btn.innerText = "Confirmer le retrait (Code: 1234)";
+        btn.innerText = "Commande récupérée - Aller chez le client";
         btn.style.background = "#ff9800";
+        lbl.innerText = "VERS CLIENT";
+        addr.innerText = currentMission.to;
+        startTimer(25); 
+        updateGPSLink(currentMission.to); 
     } else if(missionStep === 3){
         btn.innerText = "Confirmer la livraison";
         btn.style.background = "#00c853";
+        lbl.innerText = "ARRIVÉE";
     } else if(missionStep === 4){
         finishMission();
     }
@@ -310,16 +332,16 @@ function updateEarningsUI(){
 
 let timerInterval;
 function startTimer(minutes){
-    let seconds = minutes * 60;
-    const el = document.getElementById('mission-timer');
     clearInterval(timerInterval);
+    let time = minutes * 60;
+    const el = document.getElementById('mission-timer');
     timerInterval = setInterval(()=>{
-        const m = Math.floor(seconds/60);
-        const s = seconds % 60;
-        el.innerText = `${m}:${s < 10 ? '0'+s : s}`;
-        if(seconds > 0) seconds--;
-        else { clearInterval(timerInterval); el.style.color = "red"; }
-    }, 1000);
+        const m = Math.floor(time/60);
+        let s = time%60;
+        s = s<10?'0'+s:s;
+        el.innerText = `${m}:${s}`;
+        if(time>0) time--;
+    },1000);
 }
 
 window.toggleStatus = function(){
@@ -346,7 +368,7 @@ function showNotif(){
 window.logout = function(){
     if(confirm("Se déconnecter ?")){
         localStorage.removeItem('alex_courier_logged');
-        window.location.href = 'index.html';
+        window.location.href = 'login-coursier.html';
     }
 }
 
