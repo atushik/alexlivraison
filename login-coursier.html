@@ -4,6 +4,8 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>Connexion Coursier - AlexLivraison</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
   :root{--violet:#6b23ff;--violet-dark:#32006b;--glass:rgba(255,255,255,0.95);}
   body{
@@ -33,13 +35,15 @@
   button{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;transition:0.3s}
   button:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(107,35,255,0.3)}
   .back-link{display:block;margin-top:20px;text-decoration:none;color:#666;font-size:0.9em}
+  .error-msg{color:red;margin-bottom:15px;font-weight:bold;display:none}
 </style>
 </head>
 <body>
 <div class="card">
   <img src="logo.jpg" class="logo">
   <h1>Espace Riders</h1>
-  <p>Entrez vos identifiants pour accéder aux courses</p>
+  <p>Connectez-vous pour commencer</p>
+  <div id="error" class="error-msg"></div>
   <form id="loginForm">
     <input type="email" id="email" placeholder="E-mail" required>
     <input type="password" id="password" placeholder="Mot de passe" required>
@@ -48,13 +52,47 @@
   <a href="devenir-coursier.html" class="back-link">Pas encore inscrit ? Créer un compte</a>
 </div>
 <script>
-  document.getElementById('loginForm').onsubmit=(e)=>{
+  const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
-    const btn=e.target.querySelector('button');
-    btn.innerText="Connexion...";
-    setTimeout(()=>{
-        window.location.href='dashboard-coursier.html';
-    },1000);
+    const email = document.getElementById('email').value.toLowerCase();
+    const password = document.getElementById('password').value;
+    const btn = e.target.querySelector('button');
+    const errDiv = document.getElementById('error');
+    
+    btn.innerText = "Vérification...";
+    btn.disabled = true;
+    errDiv.style.display = "none";
+
+    try {
+        const snapshot = await db.collection('couriers')
+            .where('email', '==', email)
+            .where('password', '==', password)
+            .get();
+
+        if (snapshot.empty) {
+            throw new Error("E-mail ou mot de passe incorrect.");
+        }
+
+        const user = snapshot.docs[0].data();
+
+        if (user.status === 'pending') {
+            throw new Error("Votre compte est en attente de validation par l'administrateur.");
+        }
+
+        localStorage.setItem('alex_courier_logged', 'true');
+        localStorage.setItem('alex_courier_name', user.fullName);
+        window.location.href = 'dashboard-coursier.html';
+
+    } catch (error) {
+        errDiv.innerText = error.message;
+        errDiv.style.display = "block";
+        btn.innerText = "Se connecter 🚀";
+        btn.disabled = false;
+    }
   };
 </script>
 </body>
