@@ -37,28 +37,15 @@
   .topbar-title {
       text-align: center; color: #fff; font-weight: bold; font-size: 1.3em;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  
-  .anim-bike { display: inline-block; animation: bikeRide 2s infinite linear; font-size: 1.2em; }
-  .anim-car { display: inline-block; animation: carDrive 2s infinite ease-in-out; font-size: 1.2em; }
-  
-  @keyframes bikeRide {
-      0% { transform: translateX(-5px) rotate(0deg); }
-      25% { transform: translateX(0px) rotate(-5deg); }
-      50% { transform: translateX(5px) rotate(0deg); }
-      75% { transform: translateX(0px) rotate(5deg); }
-      100% { transform: translateX(-5px) rotate(0deg); }
-  }
-  @keyframes carDrive {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-  }
+  .anim-bike { display: inline-block; animation: ride 2s infinite ease-in-out; }
+  .anim-car { display: inline-block; animation: drive 2s infinite ease-in-out; }
+  @keyframes ride { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(5px) rotate(5deg); } 100% { transform: translateX(0) rotate(0deg); } }
+  @keyframes drive { 0% { transform: translateX(0); } 50% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
   .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
-  .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.3);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
+  .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
   h1{color:#fff;text-align:center;margin-bottom:30px;text-shadow:0 2px 10px rgba(0,0,0,0.3);font-size:2.2em}
   h2{color:#32006b;margin-top:0;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;}
   
@@ -67,11 +54,10 @@
   input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f9f9f9;}
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
   
-  .file-section {
-      background: #f0f4f8; border: 2px dashed #6b23ff; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; transition: 0.3s;
+  .file-upload-box {
+      border: 2px dashed #bbb; padding: 15px; border-radius: 10px; background: #f8f9fa; text-align: center; margin-bottom: 10px; cursor:pointer;
   }
-  .file-section:hover { background: #fff; }
-  .file-label { display: block; font-weight: bold; color: #32006b; margin-bottom: 10px; cursor: pointer; }
+  .file-upload-box:hover { border-color: var(--violet); background: #fff; }
   
   .capacity-msg {
       margin-top: 10px; padding: 12px; background: rgba(107, 35, 255, 0.1);
@@ -82,12 +68,16 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
   .btn-primary{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 5px 15px rgba(107,35,255,0.3);transition:0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
   .btn-primary:hover{transform:translateY(-2px);}
+  .btn-continue{width:100%;padding:16px;background:#4caf50;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:15px;display:none;}
   
   canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair;}
   .hidden{display:none;}
-  .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:15px;border-radius:12px;background:#fff;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-  .success {background: #dcfce7; color: #166534; border: 1px solid #86efac;}
-  .error {background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;}
+  .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px;background:#fff;}
+  .success {background: #dcfce7; color: #166534;}
+  .error {background: #fee2e2; color: #991b1b;}
+
+  .emoji-anim{display:inline-block;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
   
   @media(max-width:600px){.grid2{grid-template-columns:1fr;}}
   @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -97,26 +87,22 @@
 
 <div class="topbar">
   <img src="logo.jpg" alt="Logo" class="topbar-logo">
-  <div class="topbar-title">
-      <span class="anim-bike">🚴🏻‍♂️</span> 
-      AlexLivraison 
-      <span class="anim-car">🚗</span>
-  </div>
-  <a href="index.html" class="btn-back">🏠 Retour</a>
+  <div class="topbar-title"><span class="anim-bike">🚴🏻‍♂️</span> Alexlivraison<span class="anim-car">🚗</span></div>
+  <a href="index.html" class="btn-back"><span class="emoji-anim">🏠</span> Retour</a>
 </div>
 
 <main class="wrap">
-  <h1>Devenir Coursier Indépendant</h1>
+  <h1>Devenir Coursier Indépendant <span class="emoji-anim">🚀</span></h1>
 
   <section id="step1" class="card">
     <h2>1. Informations Personnelles</h2>
     <div class="grid2">
-      <div class="input-group"><label>Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
-      <div class="input-group"><label>Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
+      <div class="input-group"><label><span class="emoji-anim">👤</span> Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
+      <div class="input-group"><label><span class="emoji-anim">👤</span> Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
     </div>
 
     <div class="input-group">
-        <label>Civilité (Genre)</label>
+        <label><span class="emoji-anim">⚧</span> Civilité (Genre)</label>
         <select id="c_gender">
             <option value="M.">Monsieur (M.)</option>
             <option value="Mme">Madame (Mme)</option>
@@ -124,25 +110,25 @@
     </div>
     
     <div class="grid2">
-      <div class="input-group"><label>Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
-      <div class="input-group"><label>E-mail (Pour la connexion)</label><input id="c_email" type="email"></div>
+      <div class="input-group"><label><span class="emoji-anim">📱</span> Téléphone</label><input id="c_phone" type="tel"></div>
+      <div class="input-group"><label><span class="emoji-anim">📧</span> E-mail</label><input id="c_email" type="email"></div>
     </div>
 
     <div class="input-group" style="border: 2px solid #6b23ff; padding: 15px; border-radius: 10px; background: #f3e5f5;">
-      <label style="color:#6b23ff">🔐 Créez votre Mot de Passe</label>
+      <label style="color:#6b23ff"><span class="emoji-anim">🔐</span> Créez votre Mot de Passe</label>
       <input id="c_password" type="password" placeholder="Minimum 6 caractères" style="font-weight:bold;">
     </div>
 
-    <div class="input-group"><label>Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
+    <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
 
     <h2>Informations Pro & Véhicule</h2>
     <div class="grid2">
-      <div class="input-group"><label>Numéro SIREN (9 chiffres)</label><input id="c_siren" maxlength="9"></div>
-      <div class="input-group"><label>Numéro SIRET (14 chiffres)</label><input id="c_siret" maxlength="14"></div>
+      <div class="input-group"><label><span class="emoji-anim">🏢</span> Numéro SIREN</label><input id="c_siren" maxlength="9"></div>
+      <div class="input-group"><label><span class="emoji-anim">🔢</span> Numéro SIRET</label><input id="c_siret" maxlength="14"></div>
     </div>
       
     <div class="input-group">
-      <label>Véhicule</label>
+      <label><span class="emoji-anim">🛵</span> Véhicule</label>
       <select id="c_vehicle">
         <option value="Velo">Vélo 🚲</option>
         <option value="Scooter">Scooter 🛵</option>
@@ -154,7 +140,7 @@
 
     <h2>Documents d'Identité</h2>
     <div class="input-group">
-      <label>Type de document</label>
+      <label><span class="emoji-anim">🆔</span> Type de document</label>
       <select id="c_doc_type">
         <option value="CNI">Carte Nationale d'Identité</option>
         <option value="Passeport">Passeport</option>
@@ -164,17 +150,19 @@
     </div>
 
     <div class="grid2">
-        <div class="file-section">
-            <label for="c_doc_front" class="file-label">📸 RECTO (Face avant)</label>
-            <input type="file" id="c_doc_front" accept="image/*" required>
+        <div class="file-upload-box" onclick="document.getElementById('c_doc_front').click()">
+            <span class="emoji-anim" style="font-size:2em">📷</span><br>
+            <label style="cursor:pointer">RECTO (Face avant)</label>
+            <input type="file" id="c_doc_front" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText='✅ Fichier sélectionné'">
         </div>
-        <div class="file-section">
-            <label for="c_doc_back" class="file-label">📸 VERSO (Face arrière)</label>
-            <input type="file" id="c_doc_back" accept="image/*" required>
+        <div class="file-upload-box" onclick="document.getElementById('c_doc_back').click()">
+            <span class="emoji-anim" style="font-size:2em">📷</span><br>
+            <label style="cursor:pointer">VERSO (Face arrière)</label>
+            <input type="file" id="c_doc_back" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText='✅ Fichier sélectionné'">
         </div>
     </div>
 
-    <button id="btn_step1" class="btn-primary">Suivant ➡️</button>
+    <button id="btn_step1" class="btn-primary">Suivant <span class="emoji-anim">➡️</span></button>
   </section>
 
   <section id="step2" class="card hidden">
@@ -184,11 +172,11 @@
     </p>
     
     <div class="grid2">
-      <div class="input-group"><label>Lieu de signature</label><input id="sign_place" value="Toulon"></div>
-      <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
+      <div class="input-group"><label><span class="emoji-anim">🏙️</span> Lieu de signature</label><input id="sign_place" value="Toulon"></div>
+      <div class="input-group"><label><span class="emoji-anim">📅</span> Date</label><input id="sign_date" type="date" readonly style="background:#eee; cursor:not-allowed"></div>
     </div>
 
-    <label>Votre signature :</label>
+    <label><span class="emoji-anim">✍️</span> Votre signature :</label>
     <canvas id="signature"></canvas>
     <button onclick="clearSig()" style="margin-top:10px;padding:8px;background:#eee;border:none;border-radius:5px;cursor:pointer">Effacer</button>
 
@@ -197,8 +185,9 @@
       <label for="agree" style="margin:0">Je certifie l'exactitude des informations.</label>
     </div>
 
-    <button id="gen_pdf" class="btn-primary">✍️ Signer et Envoyer</button>
+    <button id="gen_pdf" class="btn-primary"><span class="emoji-anim">📨</span> Signer et Envoyer</button>
     <div id="final-status" class="status-msg hidden"></div>
+    <button id="btn_continue" class="btn-continue" onclick="window.location.href='login-coursier.html'">Continuer <span class="emoji-anim">🚀</span></button>
   </section>
 </main>
 
@@ -286,7 +275,10 @@ window.clearSig = () => {
   ctx.beginPath();
 };
 
-document.getElementById('sign_date').valueAsDate = new Date();
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('sign_date').value = today;
+document.getElementById('sign_date').min = today;
+document.getElementById('sign_date').max = today;
 
 function makeCircle(imgId) {
     const img = document.getElementById(imgId);
@@ -310,7 +302,9 @@ document.getElementById('gen_pdf').onclick = async () => {
   if(!document.getElementById('agree').checked) return alert("Veuillez accepter les conditions.");
   
   const btn = document.getElementById('gen_pdf');
+  const btnCont = document.getElementById('btn_continue');
   const status = document.getElementById('final-status');
+  
   btn.disabled = true;
   btn.innerText = "Envoi en cours...";
   status.classList.remove('hidden');
@@ -459,12 +453,13 @@ document.getElementById('gen_pdf').onclick = async () => {
     
     doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    status.innerText = "✅ Inscription réussie ! Redirection vers la connexion...";
+    status.innerText = "✅ Inscription réussie ! En attente de validation.";
     status.className = "status-msg success";
-    btn.innerText = "Terminé";
+    btn.style.display = "none";
+    btnCont.style.display = "block";
     
-    alert("Votre compte a été créé ! Il est actuellement en attente de validation par l'administrateur. Vous serez redirigé vers la page de connexion.");
-    setTimeout(() => window.location.href = 'login-coursier.html', 3000);
+    alert("Votre compte a été créé ! Il est actuellement en attente de validation par l'administrateur.");
+    
   } catch(e) {
     console.error(e);
     status.innerText = "❌ Erreur réseau. Vérifiez votre connexion.";
