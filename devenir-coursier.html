@@ -55,7 +55,7 @@
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
   
   .file-upload-box {
-      border: 2px dashed #bbb; padding: 15px; border-radius: 10px; background: #f8f9fa; text-align: center; margin-bottom: 10px; cursor:pointer;
+      border: 2px dashed #bbb; padding: 15px; border-radius: 10px; background: #f8f9fa; text-align: center; margin-bottom: 10px;
   }
   .file-upload-box:hover { border-color: var(--violet); background: #fff; }
   
@@ -68,16 +68,13 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
   .btn-primary{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 5px 15px rgba(107,35,255,0.3);transition:0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
   .btn-primary:hover{transform:translateY(-2px);}
-  .btn-continue{width:100%;padding:16px;background:#4caf50;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:15px;display:none;}
+  .btn-continue{width:100%;padding:16px;background:#4caf50;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:15px;display:none;box-shadow:0 5px 15px rgba(76,175,80,0.3)}
   
   canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair;}
   .hidden{display:none;}
   .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px;background:#fff;}
   .success {background: #dcfce7; color: #166534;}
   .error {background: #fee2e2; color: #991b1b;}
-
-  .emoji-anim{display:inline-block;animation:float 3s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
   
   @media(max-width:600px){.grid2{grid-template-columns:1fr;}}
   @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -88,7 +85,7 @@
 <div class="topbar">
   <img src="logo.jpg" alt="Logo" class="topbar-logo">
   <div class="topbar-title"><span class="anim-bike">🚴🏻‍♂️</span> Alexlivraison<span class="anim-car">🚗</span></div>
-  <a href="index.html" class="btn-back"><span class="emoji-anim">🏠</span> Retour</a>
+  <a href="index.html" class="btn-back">🏠 Retour</a>
 </div>
 
 <main class="wrap">
@@ -97,12 +94,12 @@
   <section id="step1" class="card">
     <h2>1. Informations Personnelles</h2>
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">👤</span> Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
-      <div class="input-group"><label><span class="emoji-anim">👤</span> Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
+      <div class="input-group"><label>Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
+      <div class="input-group"><label>Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
     </div>
 
     <div class="input-group">
-        <label><span class="emoji-anim">⚧</span> Civilité (Genre)</label>
+        <label>Civilité (Genre)</label>
         <select id="c_gender">
             <option value="M.">Monsieur (M.)</option>
             <option value="Mme">Madame (Mme)</option>
@@ -110,25 +107,25 @@
     </div>
     
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">📱</span> Téléphone</label><input id="c_phone" type="tel"></div>
-      <div class="input-group"><label><span class="emoji-anim">📧</span> E-mail</label><input id="c_email" type="email"></div>
+      <div class="input-group"><label>Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
+      <div class="input-group"><label>E-mail (Pour la connexion)</label><input id="c_email" type="email"></div>
     </div>
 
     <div class="input-group" style="border: 2px solid #6b23ff; padding: 15px; border-radius: 10px; background: #f3e5f5;">
-      <label style="color:#6b23ff"><span class="emoji-anim">🔐</span> Créez votre Mot de Passe</label>
-      <input id="c_password" type="password" placeholder="Minimum 6 caractères" style="font-weight:bold;">
+      <label style="color:#6b23ff">🔐 Créez votre Mot de Passe</label>
+      <input id="c_password" type="text" placeholder="Minimum 6 caractères" style="font-weight:bold;">
     </div>
 
-    <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
+    <div class="input-group"><label>Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
 
     <h2>Informations Pro & Véhicule</h2>
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">🏢</span> Numéro SIREN</label><input id="c_siren" maxlength="9"></div>
-      <div class="input-group"><label><span class="emoji-anim">🔢</span> Numéro SIRET</label><input id="c_siret" maxlength="14"></div>
+      <div class="input-group"><label>Numéro SIREN</label><input id="c_siren" maxlength="9"></div>
+      <div class="input-group"><label>Numéro SIRET</label><input id="c_siret" maxlength="14"></div>
     </div>
       
     <div class="input-group">
-      <label><span class="emoji-anim">🛵</span> Véhicule</label>
+      <label>Véhicule</label>
       <select id="c_vehicle">
         <option value="Velo">Vélo 🚲</option>
         <option value="Scooter">Scooter 🛵</option>
@@ -140,7 +137,7 @@
 
     <h2>Documents d'Identité</h2>
     <div class="input-group">
-      <label><span class="emoji-anim">🆔</span> Type de document</label>
+      <label>Type de document</label>
       <select id="c_doc_type">
         <option value="CNI">Carte Nationale d'Identité</option>
         <option value="Passeport">Passeport</option>
@@ -150,19 +147,17 @@
     </div>
 
     <div class="grid2">
-        <div class="file-upload-box" onclick="document.getElementById('c_doc_front').click()">
-            <span class="emoji-anim" style="font-size:2em">📷</span><br>
-            <label style="cursor:pointer">RECTO (Face avant)</label>
-            <input type="file" id="c_doc_front" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText='✅ Fichier sélectionné'">
+        <div class="file-upload-box">
+            <label style="cursor:pointer">📸 RECTO (Face avant)</label>
+            <input type="file" id="c_doc_front" accept="image/*" required>
         </div>
-        <div class="file-upload-box" onclick="document.getElementById('c_doc_back').click()">
-            <span class="emoji-anim" style="font-size:2em">📷</span><br>
-            <label style="cursor:pointer">VERSO (Face arrière)</label>
-            <input type="file" id="c_doc_back" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText='✅ Fichier sélectionné'">
+        <div class="file-upload-box">
+            <label style="cursor:pointer">📸 VERSO (Face arrière)</label>
+            <input type="file" id="c_doc_back" accept="image/*" required>
         </div>
     </div>
 
-    <button id="btn_step1" class="btn-primary">Suivant <span class="emoji-anim">➡️</span></button>
+    <button id="btn_step1" class="btn-primary">Suivant ➡️</button>
   </section>
 
   <section id="step2" class="card hidden">
@@ -172,11 +167,11 @@
     </p>
     
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">🏙️</span> Lieu de signature</label><input id="sign_place" value="Toulon"></div>
-      <div class="input-group"><label><span class="emoji-anim">📅</span> Date</label><input id="sign_date" type="date" readonly style="background:#eee; cursor:not-allowed"></div>
+      <div class="input-group"><label>Lieu de signature</label><input id="sign_place" value="Toulon"></div>
+      <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
     </div>
 
-    <label><span class="emoji-anim">✍️</span> Votre signature :</label>
+    <label>Votre signature :</label>
     <canvas id="signature"></canvas>
     <button onclick="clearSig()" style="margin-top:10px;padding:8px;background:#eee;border:none;border-radius:5px;cursor:pointer">Effacer</button>
 
@@ -185,9 +180,9 @@
       <label for="agree" style="margin:0">Je certifie l'exactitude des informations.</label>
     </div>
 
-    <button id="gen_pdf" class="btn-primary"><span class="emoji-anim">📨</span> Signer et Envoyer</button>
+    <button id="gen_pdf" class="btn-primary">✍️ Signer et Envoyer</button>
     <div id="final-status" class="status-msg hidden"></div>
-    <button id="btn_continue" class="btn-continue" onclick="window.location.href='login-coursier.html'">Continuer <span class="emoji-anim">🚀</span></button>
+    <button id="btn_continue" class="btn-continue" onclick="window.location.href='login-coursier.html'">Continuer vers les Règles 🚀</button>
   </section>
 </main>
 
@@ -276,9 +271,11 @@ window.clearSig = () => {
 };
 
 const today = new Date().toISOString().split('T')[0];
-document.getElementById('sign_date').value = today;
-document.getElementById('sign_date').min = today;
-document.getElementById('sign_date').max = today;
+const dInput = document.getElementById('sign_date');
+dInput.value = today;
+dInput.min = today;
+dInput.max = today;
+dInput.addEventListener('keydown', e => e.preventDefault());
 
 function makeCircle(imgId) {
     const img = document.getElementById(imgId);
@@ -453,12 +450,12 @@ document.getElementById('gen_pdf').onclick = async () => {
     
     doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    status.innerText = "✅ Inscription réussie ! En attente de validation.";
+    status.innerText = "✅ Inscription réussie !";
     status.className = "status-msg success";
     btn.style.display = "none";
     btnCont.style.display = "block";
     
-    alert("Votre compte a été créé ! Il est actuellement en attente de validation par l'administrateur.");
+    alert("Votre compte a été créé ! Appuyez sur 'Continuer' pour lire les règles.");
     
   } catch(e) {
     console.error(e);
