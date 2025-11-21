@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Offre de Bienvenue - AlexLivraison</title>
+<style>
+  :root{--violet:#6b23ff;--pink:#e91e63;--orange:#ff9800;--glass:rgba(255,255,255,0.95);--shadow:0 10px 30px rgba(0,0,0,0.2);}
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:linear-gradient(135deg,#ff512f 0%,#dd2476 100%);
+    color:#222;
+    min-height:100vh;
+    margin:0;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .wrap{width:90%;max-width:600px;padding:20px;}
+  .promo-card{
+    background:var(--glass);
+    border-radius:24px;
+    padding:40px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    border:2px solid rgba(255,255,255,0.5);
+    animation:popIn 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);
+    position:relative;
+    overflow:hidden;
+  }
+  @keyframes popIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  
+  .badge{background:#ffeb3b;color:#333;padding:5px 15px;border-radius:20px;font-weight:bold;font-size:0.9em;text-transform:uppercase;display:inline-block;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+  
+  h1{color:#d81b60;margin:0 0 15px 0;font-size:2.5em;text-shadow:0 2px 5px rgba(0,0,0,0.1)}
+  p{font-size:1.1em;color:#555;line-height:1.6;margin-bottom:25px}
+  
+  .offer-box{background:#fff0f6;border:2px dashed #d81b60;border-radius:15px;padding:20px;margin-bottom:30px}
+  .offer-big{font-size:1.8em;font-weight:900;color:#d81b60;display:block;margin-bottom:5px}
+  
+  .steps{text-align:left;margin-bottom:30px}
+  .step-item{display:flex;align-items:center;gap:15px;margin-bottom:15px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.05)}
+  .step-num{background:#d81b60;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
+  
+  .btn-back{display:block;width:100%;padding:15px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:1.1em;transition:0.3s;box-shadow:0 5px 15px rgba(107,35,255,0.3)}
+  .btn-back:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(107,35,255,0.4)}
+  
+  .confetti{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+  .emoji-float{font-size:4em;position:absolute;opacity:0.2;animation:float 4s infinite ease-in-out}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="promo-card">
+    <div class="emoji-float" style="top:10px;left:10px">🎁</div>
+    <div class="emoji-float" style="bottom:10px;right:10px;animation-delay:1s">🎉</div>
+    
+    <div class="badge">Offre Spéciale 2025</div>
+    <h1>Bienvenue !</h1>
+    <p>Pour fêter votre arrivée sur <b>AlexLivraison</b>, nous vous offrons un cadeau exceptionnel pour tester notre service.</p>
+    
+    <div class="offer-box">
+      <span class="offer-big">5 LIVRAISONS GRATUITES</span>
+      <span>valables sur vos 5 premières commandes !</span>
+    </div>
+    
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Commandez dans n'importe quelle boutique.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Le coût de livraison sera automatiquement <b>offert</b>.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>Profitez de la rapidité AlexLivraison !</div>
+      </div>
+    </div>
+    
+    <a href="index.html" class="btn-back">J'en profite maintenant 🚀</a>
+  </div>
+</div>
+</body>
+</html> 
