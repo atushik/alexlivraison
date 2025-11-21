@@ -3,39 +3,76 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Boutique Partenaire</title>
+<title>Boutique Partenaire | AlexLivraison</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);--shadow:0 10px 30px rgba(0,0,0,0.15)}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);color:#222;min-height:100vh;margin:0;padding:0}
-  .topbar{position:sticky;top:0;z-index:100;background:rgba(20,0,45,0.95);backdrop-filter:blur(12px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);border-bottom:1px solid rgba(255,255,255,0.1)}
-  .logo-img{width:45px;height:45px;border-radius:50%;border:2px solid #fff}
-  .hamburger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer}
+  :root{
+    --glass:rgba(255,255,255,0.95);
+    --shadow:0 10px 30px rgba(0,0,0,0.15);
+    --theme-color: #6b23ff; 
+    --bg-gradient: linear-gradient(135deg,#32006b 0%,#7a2cf5 100%);
+  }
+  html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-gradient);color:#222;min-height:100vh;transition:background 0.5s}
+  *{box-sizing:border-box}
+  
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);border-bottom:1px solid rgba(255,255,255,0.1)}
+  .logo-img{width:45px;height:45px;object-fit:cover;border-radius:50%;border:2px solid #fff;transition:transform 0.3s}
+  .logo-img:hover{transform:rotate(10deg) scale(1.05)}
+  .hamburger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.2)}
   .hamburger span{width:20px;height:2px;background:#fff}
-  .menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:#1a0033;padding:20px;transition:0.3s;z-index:200;display:flex;flex-direction:column}
+  
+  .menu{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:#1a1a1a;padding:20px;transition:0.3s;z-index:200;display:flex;flex-direction:column;box-shadow:-5px 0 20px rgba(0,0,0,0.5)}
   .menu.open{right:0}
   .close-btn{color:#fff;font-size:24px;background:none;border:none;cursor:pointer;align-self:flex-end;margin-bottom:20px}
-  .menu a{display:block;color:#fff;text-decoration:none;padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);font-weight:500}
-  .wrap{max-width:800px;margin:0 auto;padding:20px}
+  .menu a{display:block;color:#fff;text-decoration:none;padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);font-weight:500;transition:0.2s}
+  .menu a:hover{background:rgba(255,255,255,0.1);padding-left:20px;color:var(--theme-color)}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:20px;padding-bottom:80px}
+
+  .shop-header-card{background:var(--glass);border-radius:24px;padding:30px;margin-bottom:30px;text-align:center;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.6);position:relative;overflow:hidden;animation:fadeInDown 0.8s ease}
+  .back-btn{position:absolute;top:20px;left:20px;text-decoration:none;color:#333;font-weight:bold;background:rgba(255,255,255,0.5);padding:8px 15px;border-radius:20px;transition:0.3s}
+  .back-btn:hover{background:#fff;transform:translateX(-3px)}
   
-  .shop-header-card{background:var(--glass);border-radius:20px;padding:20px;margin:20px 0;text-align:center;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.5)}
-  h1{margin:10px 0;color:#32006b;font-size:1.8em}
-  .back-link{display:inline-block;margin-bottom:10px;color:#6b23ff;text-decoration:none;font-weight:bold;font-size:0.9em}
+  .shop-emoji{font-size:3em;display:inline-block;background:#fff;width:80px;height:80px;line-height:80px;border-radius:50%;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:10px;animation:stickerFloat 3s ease-in-out infinite}
+  h1{margin:10px 0;color:#333;font-size:2em;text-shadow:0 2px 10px rgba(0,0,0,0.1)}
+  .shop-meta{color:#666;font-size:0.95em;margin-top:5px}
+  .shop-badge{display:inline-block;background:var(--theme-color);color:#fff;padding:4px 10px;border-radius:6px;font-size:0.8em;margin-top:5px;font-weight:bold}
+
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px}
+  .product-card{background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);border-radius:18px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.08);transition:all 0.3s;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.5);animation:fadeInUp 0.6s ease-out backwards}
+  .product-card:hover{transform:translateY(-8px);box-shadow:0 12px 25px rgba(0,0,0,0.15)}
   
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:15px}
-  .product-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.05);transition:transform 0.3s;display:flex;flex-direction:column}
-  .product-card:hover{transform:translateY(-5px)}
-  .p-img{width:100%;height:140px;object-fit:cover;background:#eee}
-  .p-info{padding:12px;flex:1;display:flex;flex-direction:column}
-  .p-name{font-weight:bold;color:#333;margin-bottom:5px;font-size:1em}
-  .p-desc{font-size:0.8em;color:#666;margin-bottom:10px;flex:1}
-  .p-price{font-size:1.2em;color:#32006b;font-weight:bold;margin-bottom:10px}
-  .btn-order{background:var(--green);color:#fff;border:none;padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;font-size:0.9em}
+  .p-img-box{width:100%;height:160px;position:relative;overflow:hidden;background:#f0f0f0}
+  .p-img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+  .product-card:hover .p-img{transform:scale(1.1)}
   
+  .promo-tag{position:absolute;top:10px;right:10px;background:#ff4d4d;color:#fff;font-size:10px;font-weight:bold;padding:4px 8px;border-radius:4px;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:pulse 2s infinite}
+
+  .p-info{padding:15px;flex:1;display:flex;flex-direction:column}
+  .p-name{font-weight:700;color:#222;margin-bottom:5px;font-size:1.05em;line-height:1.3}
+  .p-desc{font-size:0.85em;color:#666;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .p-price-row{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+  .p-price{font-size:1.3em;color:var(--theme-color);font-weight:800}
+  
+  .btn-order{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;padding:10px 15px;border-radius:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:0.95em;transition:0.3s;box-shadow:0 4px 10px rgba(37,211,102,0.3)}
+  .btn-order:hover{transform:scale(0.98);box-shadow:0 6px 15px rgba(37,211,102,0.4)}
+
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
   @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
-  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
-  .loading{text-align:center;color:#fff;font-size:1.2em;margin-top:50px}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+  
+  .emoji-anim{display:inline-block}
+  .loading{text-align:center;color:#fff;font-size:1.3em;margin-top:50px;font-weight:bold;text-shadow:0 2px 5px rgba(0,0,0,0.2)}
+  
+  @media(max-width:480px){
+    .products-grid{grid-template-columns:1fr 1fr}
+    .p-img-box{height:120px}
+    .p-info{padding:10px}
+    .btn-order{font-size:0.85em;padding:8px}
+  }
 </style>
 </head>
 <body>
@@ -48,19 +85,23 @@
   <nav>
     <a href="index.html"><span class="emoji-anim">🏠</span> Accueil</a>
     <a href="produits.html"><span class="emoji-anim">🛍️</span> Vitrine Générale</a>
-    <a href="boulangeries.html"><span class="emoji-anim">🥖</span> Retour Boulangeries</a>
+    <a href="#" onclick="history.back()"><span class="emoji-anim">↩️</span> Retour Catégorie</a>
   </nav>
 </div>
 
 <main class="wrap">
   <div class="shop-header-card">
-    <a href="boulangeries.html" class="back-link">← Retour à la liste</a>
-    <h1 id="shop-title"><span class="emoji-anim">🏪</span> Chargement...</h1>
-    <p style="color:#666">Bienvenue dans notre boutique !</p>
+    <a href="#" onclick="history.back()" class="back-btn">← Retour</a>
+    <div class="shop-emoji" id="shop-icon">🏪</div>
+    <h1 id="shop-title">Chargement...</h1>
+    <div class="shop-meta">
+        <span id="shop-addr">...</span><br>
+        <span class="shop-badge" id="shop-cat">Boutique</span>
+    </div>
   </div>
   
   <div id="products-container" class="products-grid">
-    <div class="loading"><span class="emoji-anim">⌛</span> Chargement des produits...</div>
+    <div class="loading"><span class="emoji-anim">⌛</span> Récupération des produits...</div>
   </div>
 </main>
 
@@ -75,32 +116,76 @@ document.getElementById('closeMenu').onclick=()=>menu.classList.remove('open');
 
 const params = new URLSearchParams(window.location.search);
 const shopId = params.get('id');
-const shopName = params.get('name');
 
-if(shopName) document.getElementById('shop-title').innerText = shopName;
+const themes = {
+    'boulangerie': {color:'#6b23ff', grad:'linear-gradient(135deg,#32006b 0%,#7a2cf5 100%)', icon:'🥖'},
+    'boucherie': {color:'#d32f2f', grad:'linear-gradient(135deg,#8b0000 0%,#ff5252 100%)', icon:'🥩'},
+    'primeur': {color:'#2e7d32', grad:'linear-gradient(135deg,#1b5e20 0%,#4caf50 100%)', icon:'🥦'},
+    'poissonnerie': {color:'#00bcd4', grad:'linear-gradient(135deg,#006064 0%,#4dd0e1 100%)', icon:'🐟'},
+    'epicerie': {color:'#ef6c00', grad:'linear-gradient(135deg,#e65100 0%,#ffb74d 100%)', icon:'🍎'},
+    'caviste': {color:'#722f37', grad:'linear-gradient(135deg,#2b0a10 0%,#9e3b46 100%)', icon:'🍷'},
+    'fleuriste': {color:'#e91e63', grad:'linear-gradient(135deg,#880e4f 0%,#f48fb1 100%)', icon:'💐'},
+    'animalerie': {color:'#795548', grad:'linear-gradient(135deg,#3e2723 0%,#ffcc80 100%)', icon:'🐾'},
+    'hightech': {color:'#2962ff', grad:'linear-gradient(135deg,#001064 0%,#448aff 100%)', icon:'📱'},
+    'commercants': {color:'#0052cc', grad:'linear-gradient(135deg,#002a66 0%,#00c6ff 100%)', icon:'🏪'},
+    'restaurant': {color:'#b71c1c', grad:'linear-gradient(135deg,#4a0000 0%,#ff5252 100%)', icon:'🍽️'},
+    'electromenager': {color:'#455a64', grad:'linear-gradient(135deg,#263238 0%,#78909c 100%)', icon:'🔌'},
+    'beaute': {color:'#9c27b0', grad:'linear-gradient(135deg,#4a148c 0%,#ce93d8 100%)', icon:'💄'},
+    'occasions': {color:'#5d4037', grad:'linear-gradient(135deg,#3e2723 0%,#8d6e63 100%)', icon:'🏷️'},
+    'librairie': {color:'#5d4037', grad:'linear-gradient(135deg,#3e2723 0%,#8d6e63 100%)', icon:'📚'},
+    'chocolatier': {color:'#5d4037', grad:'linear-gradient(135deg,#3e2723 0%,#8d6e63 100%)', icon:'🍫'}
+};
 
-if(!shopId){
-    document.getElementById('products-container').innerHTML = '<p style="color:#fff;text-align:center">Boutique introuvable.</p>';
-} else {
-    db.collection('products').where('shopId','==',shopId).get().then(snap=>{
-        const cont=document.getElementById('products-container');
-        cont.innerHTML='';
-        
-        if(snap.empty){
-            cont.innerHTML='<p style="color:#fff;text-align:center;width:100%">Cette boutique n\'a pas encore de produits.</p>';
-            return;
+async function loadShop() {
+    if(!shopId){
+        document.getElementById('products-container').innerHTML = '<p style="color:#fff;text-align:center">Boutique introuvable.</p>';
+        return;
+    }
+
+    try {
+        const shopDoc = await db.collection('shops').doc(shopId).get();
+        if(!shopDoc.exists){
+             document.getElementById('products-container').innerHTML = '<p style="color:#fff;text-align:center">Boutique fermée ou inexistante.</p>';
+             return;
         }
         
-        snap.forEach(doc=>{
-            const p=doc.data();
-            const html=`
-            <div class="product-card">
-                <img src="${p.imageUrl}" class="p-img">
+        const s = shopDoc.data();
+        const theme = themes[s.category] || themes['commercants'];
+        
+        document.documentElement.style.setProperty('--theme-color', theme.color);
+        document.documentElement.style.setProperty('--bg-gradient', theme.grad);
+        document.getElementById('shop-title').innerText = s.name;
+        document.getElementById('shop-addr').innerText = `📍 ${s.address}`;
+        document.getElementById('shop-cat').innerText = s.category.charAt(0).toUpperCase() + s.category.slice(1);
+        document.getElementById('shop-icon').innerText = theme.icon;
+        
+        const snap = await db.collection('products').where('shopId','==',shopId).get();
+        const cont = document.getElementById('products-container');
+        cont.innerHTML = '';
+
+        if(snap.empty){
+            cont.innerHTML = '<p style="color:#fff;text-align:center;width:100%;font-size:1.2em">Cette boutique n\'a pas encore ajouté de produits.</p>';
+            return;
+        }
+
+        snap.forEach(doc => {
+            const p = doc.data();
+            const promoTag = p.isPromo ? `<div class="promo-tag">PROMO</div>` : '';
+            const msg = `Bonjour ${s.name}, je souhaite commander : ${p.name} à ${p.price}€`;
+            
+            const html = `
+            <div class="product-card" style="animation-delay: ${Math.random() * 0.5}s">
+                <div class="p-img-box">
+                    ${promoTag}
+                    <img src="${p.imageUrl}" class="p-img" alt="${p.name}">
+                </div>
                 <div class="p-info">
                     <div class="p-name">${p.name}</div>
                     <div class="p-desc">${p.desc}</div>
-                    <div class="p-price">${p.price} €</div>
-                    <a href="https://wa.me/?text=Bonjour ${encodeURIComponent(shopName)}, je voudrais commander: ${encodeURIComponent(p.name)}" target="_blank" class="btn-order">
+                    <div class="p-price-row">
+                        <div class="p-price">${p.price} €</div>
+                    </div>
+                    <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="btn-order">
                        <span class="emoji-anim">🛒</span> Commander
                     </a>
                 </div>
@@ -108,11 +193,14 @@ if(!shopId){
             `;
             cont.innerHTML += html;
         });
-    }).catch(err=>{
-        console.error(err);
-        document.getElementById('products-container').innerHTML='<p style="color:#fff;text-align:center">Erreur chargement produits.</p>';
-    });
+
+    } catch(e) {
+        console.error(e);
+        document.getElementById('products-container').innerHTML = '<p style="color:#fff;text-align:center">Erreur de chargement.</p>';
+    }
 }
+
+loadShop();
 </script>
 </body>
-</html>
+</html> 
