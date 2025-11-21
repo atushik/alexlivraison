@@ -258,6 +258,7 @@ window.acceptOrder = function(id, price, shop, fromAddr, toAddr){
     startTimer(15); 
     updateGPSLink(fromAddr); 
     document.getElementById('timer-label').innerText = "VERS RESTAURANT";
+    document.getElementById('btn-action-main').innerText = "J'arrive au restaurant";
 }
 
 function setupMissionUI(){
@@ -332,16 +333,16 @@ function updateEarningsUI(){
 
 let timerInterval;
 function startTimer(minutes){
-    let seconds = minutes * 60;
-    const el = document.getElementById('mission-timer');
     clearInterval(timerInterval);
+    let time = minutes * 60;
+    const el = document.getElementById('mission-timer');
     timerInterval = setInterval(()=>{
-        const m = Math.floor(seconds/60);
-        let s = seconds % 60;
-        el.innerText = `${m}:${s < 10 ? '0'+s : s}`;
-        if(seconds > 0) seconds--;
-        else { clearInterval(timerInterval); el.style.color = "red"; }
-    }, 1000);
+        const m = Math.floor(time/60);
+        let s = time%60;
+        s = s<10?'0'+s:s;
+        el.innerText = `${m}:${s}`;
+        if(time>0) time--;
+    },1000);
 }
 
 window.toggleStatus = function(){
