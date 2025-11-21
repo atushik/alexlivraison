@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Connexion Coursier - AlexLivraison</title>
+<title>Charte & Règles - AlexLivraison</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
@@ -11,89 +11,107 @@
   body{
     font-family:'Segoe UI',sans-serif;
     background:linear-gradient(135deg,#32006b 0%,#7a2cf5 100%);
-    height:100vh;
+    color:#222;
+    min-height:100vh;
+    padding:20px;
     margin:0;
     display:flex;
     align-items:center;
     justify-content:center;
   }
+  .wrap{max-width:600px;width:100%;}
+  
   .card{
     background:var(--glass);
-    padding:40px 30px;
     border-radius:24px;
-    width:90%;
-    max-width:400px;
-    text-align:center;
+    padding:30px;
     box-shadow:0 20px 50px rgba(0,0,0,0.3);
     backdrop-filter:blur(10px);
+    max-height:90vh;
+    overflow-y:auto;
   }
-  .logo{width:80px;height:80px;border-radius:50%;border:3px solid #fff;margin-bottom:20px;object-fit:cover}
-  h1{color:#32006b;margin:0 0 10px 0}
-  p{color:#666;margin-bottom:30px}
-  input{width:100%;padding:16px;margin-bottom:15px;border:1px solid #ddd;border-radius:12px;font-size:16px;outline:none}
-  input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(107,35,255,0.1)}
-  button{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;transition:0.3s}
-  button:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(107,35,255,0.3)}
-  .back-link{display:block;margin-top:20px;text-decoration:none;color:#666;font-size:0.9em}
-  .error-msg{background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;margin-bottom:15px;font-weight:bold;display:none;border:1px solid #fca5a5}
+  h1{color:#32006b;text-align:center;margin-bottom:10px;}
+  .subtitle{text-align:center;color:#666;margin-bottom:25px;font-weight:bold;}
+  
+  .rule-box{
+      background:#fff;
+      border-left:5px solid var(--violet);
+      padding:15px;
+      margin-bottom:15px;
+      border-radius:8px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  }
+  .rule-title{font-weight:bold;font-size:1.1em;color:#32006b;display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+  .rule-text{color:#555;font-size:0.95em;line-height:1.5;}
+
+  .btn-agree{
+      width:100%;
+      padding:18px;
+      background:linear-gradient(90deg,#00c853,#00e676);
+      color:#fff;
+      border:none;
+      border-radius:12px;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:20px;
+      box-shadow:0 5px 15px rgba(0,200,83,0.3);
+      transition:0.3s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+  }
+  .btn-agree:hover{transform:scale(1.02);box-shadow:0 8px 25px rgba(0,200,83,0.4);}
+  
+  .anim-icon{animation:bounce 2s infinite;}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 </style>
 </head>
 <body>
-<div class="card">
-  <img src="logo.jpg" class="logo">
-  <h1>Espace Riders</h1>
-  <p>Connectez-vous pour commencer</p>
-  <div id="error" class="error-msg"></div>
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="E-mail" required>
-    <input type="password" id="password" placeholder="Mot de passe" required>
-    <button type="submit">Se connecter 🚀</button>
-  </form>
-  <a href="devenir-coursier.html" class="back-link">Pas encore inscrit ? Créer un compte</a>
+
+<div class="wrap">
+  <div class="card">
+    <h1>Règlement Intérieur</h1>
+    <p class="subtitle">Veuillez lire attentivement avant de commencer</p>
+
+    <div class="rule-box">
+        <div class="rule-title"><span class="anim-icon">🤝</span> Politesse & Respect</div>
+        <div class="rule-text">Soyez toujours courtois avec les clients et les partenaires (restaurants/boutiques). Un sourire est indispensable !</div>
+    </div>
+
+    <div class="rule-box">
+        <div class="rule-title"><span class="anim-icon">🎒</span> Hygiène & Matériel</div>
+        <div class="rule-text">Utilisez impérativement un sac isotherme propre pour les commandes alimentaires. Prenez soin des colis fragiles.</div>
+    </div>
+
+    <div class="rule-box">
+        <div class="rule-title"><span class="anim-icon">🚦</span> Code de la Route</div>
+        <div class="rule-text">Respectez scrupuleusement la signalisation et les limitations de vitesse. Votre sécurité est la priorité.</div>
+    </div>
+
+    <div class="rule-box">
+        <div class="rule-title"><span class="anim-icon">📸</span> Preuve de Livraison</div>
+        <div class="rule-text">Pour chaque livraison "sans contact", prenez obligatoirement une photo du colis devant la porte du client.</div>
+    </div>
+
+    <div class="rule-box">
+        <div class="rule-title"><span class="anim-icon">❌</span> Annulation</div>
+        <div class="rule-text">N'acceptez une course que si vous êtes sûr de pouvoir la livrer. Toute annulation abusive peut entraîner une suspension.</div>
+    </div>
+
+    <button class="btn-agree" onclick="acceptRules()">
+        J'ai lu et j'accepte / Continuer 🚀
+    </button>
+  </div>
 </div>
+
 <script>
-  const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  document.getElementById('loginForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value.toLowerCase().trim();
-    const password = document.getElementById('password').value.trim();
-    const btn = e.target.querySelector('button');
-    const errDiv = document.getElementById('error');
-    
-    btn.innerText = "Vérification...";
-    btn.disabled = true;
-    errDiv.style.display = "none";
-
-    try {
-        const snapshot = await db.collection('couriers')
-            .where('email', '==', email)
-            .where('password', '==', password)
-            .get();
-
-        if (snapshot.empty) {
-            throw new Error("E-mail ou mot de passe incorrect.");
-        }
-
-        const user = snapshot.docs[0].data();
-
-        if (user.status === 'pending') {
-            throw new Error("Votre compte est en attente de validation par l'administrateur.");
-        }
-
-        localStorage.setItem('alex_courier_logged', 'true');
-        localStorage.setItem('alex_courier_name', user.fullName);
-        window.location.href = 'dashboard-coursier.html';
-
-    } catch (error) {
-        errDiv.innerText = error.message;
-        errDiv.style.display = "block";
-        btn.innerText = "Se connecter 🚀";
-        btn.disabled = false;
-    }
-  };
+function acceptRules(){
+    localStorage.setItem('alex_courier_logged', 'true');
+    window.location.href = 'dashboard-coursier.html';
+}
 </script>
+
 </body>
 </html> 
