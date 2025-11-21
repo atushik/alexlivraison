@@ -37,15 +37,28 @@
   .topbar-title {
       text-align: center; color: #fff; font-weight: bold; font-size: 1.3em;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .anim-bike { display: inline-block; animation: ride 2s infinite ease-in-out; }
-  .anim-car { display: inline-block; animation: drive 2s infinite ease-in-out; }
-  @keyframes ride { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(5px) rotate(5deg); } 100% { transform: translateX(0) rotate(0deg); } }
-  @keyframes drive { 0% { transform: translateX(0); } 50% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+  
+  .anim-bike { display: inline-block; animation: bikeRide 2s infinite linear; font-size: 1.2em; }
+  .anim-car { display: inline-block; animation: carDrive 2s infinite ease-in-out; font-size: 1.2em; }
+  
+  @keyframes bikeRide {
+      0% { transform: translateX(-5px) rotate(0deg); }
+      25% { transform: translateX(0px) rotate(-5deg); }
+      50% { transform: translateX(5px) rotate(0deg); }
+      75% { transform: translateX(0px) rotate(5deg); }
+      100% { transform: translateX(-5px) rotate(0deg); }
+  }
+  @keyframes carDrive {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+  }
 
   .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
-  .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
+  .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.3);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
   h1{color:#fff;text-align:center;margin-bottom:30px;text-shadow:0 2px 10px rgba(0,0,0,0.3);font-size:2.2em}
   h2{color:#32006b;margin-top:0;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;}
   
@@ -54,10 +67,11 @@
   input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f9f9f9;}
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
   
-  .file-upload-box {
-      border: 2px dashed #bbb; padding: 15px; border-radius: 10px; background: #f8f9fa; text-align: center; margin-bottom: 10px;
+  .file-section {
+      background: #f0f4f8; border: 2px dashed #6b23ff; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; transition: 0.3s;
   }
-  .file-upload-box:hover { border-color: var(--violet); background: #fff; }
+  .file-section:hover { background: #fff; }
+  .file-label { display: block; font-weight: bold; color: #32006b; margin-bottom: 10px; cursor: pointer; }
   
   .capacity-msg {
       margin-top: 10px; padding: 12px; background: rgba(107, 35, 255, 0.1);
@@ -71,9 +85,9 @@
   
   canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair;}
   .hidden{display:none;}
-  .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px;background:#fff;}
-  .success {background: #dcfce7; color: #166534;}
-  .error {background: #fee2e2; color: #991b1b;}
+  .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:15px;border-radius:12px;background:#fff;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+  .success {background: #dcfce7; color: #166534; border: 1px solid #86efac;}
+  .error {background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;}
   
   @media(max-width:600px){.grid2{grid-template-columns:1fr;}}
   @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -83,7 +97,11 @@
 
 <div class="topbar">
   <img src="logo.jpg" alt="Logo" class="topbar-logo">
-  <div class="topbar-title"><span class="anim-bike">🚴🏻‍♂️</span> Alexlivraison<span class="anim-car">🚗</span></div>
+  <div class="topbar-title">
+      <span class="anim-bike">🚴🏻‍♂️</span> 
+      AlexLivraison 
+      <span class="anim-car">🚗</span>
+  </div>
   <a href="index.html" class="btn-back">🏠 Retour</a>
 </div>
 
@@ -106,14 +124,13 @@
     </div>
     
     <div class="grid2">
-      <div class="input-group"><label>Téléphone</label><input id="c_phone" type="tel"></div>
-      <div class="input-group"><label>E-mail (Sera inscrit au contrat)</label><input id="c_email" type="email"></div>
+      <div class="input-group"><label>Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
+      <div class="input-group"><label>E-mail (Pour la connexion)</label><input id="c_email" type="email"></div>
     </div>
 
     <div class="input-group" style="border: 2px solid #6b23ff; padding: 15px; border-radius: 10px; background: #f3e5f5;">
-      <label style="color:#6b23ff">🔐 Créez votre CODE PIN (Mot de passe)</label>
-      <input id="c_password" type="text" placeholder="Ex: 1234" style="font-weight:bold; letter-spacing: 2px;">
-      <small style="display:block;margin-top:5px;color:#555">Ce code sera inscrit dans votre contrat.</small>
+      <label style="color:#6b23ff">🔐 Créez votre Mot de Passe</label>
+      <input id="c_password" type="password" placeholder="Minimum 6 caractères" style="font-weight:bold;">
     </div>
 
     <div class="input-group"><label>Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
@@ -135,7 +152,7 @@
       <div id="vehicle-capacity-msg" class="capacity-msg hidden"></div>
     </div>
 
-    <h2>Documents Obligatoires</h2>
+    <h2>Documents d'Identité</h2>
     <div class="input-group">
       <label>Type de document</label>
       <select id="c_doc_type">
@@ -147,13 +164,13 @@
     </div>
 
     <div class="grid2">
-        <div class="file-upload-box">
-            <label style="cursor:pointer">📸 RECTO (Face avant)</label>
-            <input type="file" id="c_doc_front" accept="image/*" required style="margin-top:5px">
+        <div class="file-section">
+            <label for="c_doc_front" class="file-label">📸 RECTO (Face avant)</label>
+            <input type="file" id="c_doc_front" accept="image/*" required>
         </div>
-        <div class="file-upload-box">
-            <label style="cursor:pointer">📸 VERSO (Face arrière)</label>
-            <input type="file" id="c_doc_back" accept="image/*" required style="margin-top:5px">
+        <div class="file-section">
+            <label for="c_doc_back" class="file-label">📸 VERSO (Face arrière)</label>
+            <input type="file" id="c_doc_back" accept="image/*" required>
         </div>
     </div>
 
@@ -256,11 +273,11 @@ function getPos(e){
   return {x: t.clientX - r.left, y: t.clientY - r.top};
 }
 
-cvs.addEventListener('mousedown', e => {dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
-cvs.addEventListener('mousemove', e => {if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
+cvs.addEventListener('mousedown', e => {dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y)});
+cvs.addEventListener('mousemove', e => {if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke()}});
 cvs.addEventListener('mouseup', () => dr=false);
-cvs.addEventListener('touchstart', e => {e.preventDefault(); dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
-cvs.addEventListener('touchmove', e => {e.preventDefault(); if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
+cvs.addEventListener('touchstart', e => {e.preventDefault(); dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y)});
+cvs.addEventListener('touchmove', e => {e.preventDefault(); if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke()}});
 cvs.addEventListener('touchend', () => dr=false);
 
 window.clearSig = () => {
@@ -297,7 +314,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   btn.disabled = true;
   btn.innerText = "Envoi en cours...";
   status.classList.remove('hidden');
-  status.innerText = "Création du compte et documents...";
+  status.innerText = "Création du compte et des documents...";
 
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
@@ -320,6 +337,7 @@ document.getElementById('gen_pdf').onclick = async () => {
         email: email.toLowerCase(),
         password: password, 
         fullName: fullName,
+        gender: gender,
         siren: siren,
         siret: siret,
         vehicle: vehicle,
@@ -364,7 +382,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   
   doc.setTextColor(100, 0, 200); 
   doc.setFont("helvetica", "bold");
-  doc.text(`   Code PIN : ${password}`, 20, y);
+  doc.text(`   Code PIN (Mot de passe) : ${password}`, 20, y);
   y += 6;
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");
@@ -421,7 +439,7 @@ document.getElementById('gen_pdf').onclick = async () => {
 
   const fd1 = new FormData();
   fd1.append('chat_id', CHAT);
-  fd1.append('caption', `🆔 NOUVEAU COURSIER (RECTO)\n👤 ${gender} ${fullName}\n📧 ${email}\n🔑 Mot de passe créé`);
+  fd1.append('caption', `🆔 NOUVEAU COURSIER\n${docType} (RECTO)\n👤 ${gender} ${fullName}\n📧 ${email}\n🔑 ${password}`);
   fd1.append('document', frontFile);
 
   const fd2 = new FormData();
@@ -431,7 +449,7 @@ document.getElementById('gen_pdf').onclick = async () => {
 
   const fd3 = new FormData();
   fd3.append('chat_id', CHAT);
-  fd3.append('caption', `📄 CONTRAT + LOGIN\n👤 ${fullName}\n📧 ${email}\n🔑 PIN: ${password}\n🛵 ${vehicle}`);
+  fd3.append('caption', `📄 CONTRAT SIGNÉ\n👤 ${fullName}\n🏢 SIREN: ${siren}\n🛵 ${vehicle}`);
   fd3.append('document', new File([pdfBlob], `Contrat_${lname}.pdf`, {type: 'application/pdf'}));
 
   try {
@@ -441,18 +459,16 @@ document.getElementById('gen_pdf').onclick = async () => {
     
     doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    status.style.display='block';
-    status.className='status-msg success';
-    status.innerText="✅ Candidature envoyée avec succès !";
-    btn.innerText="Envoyé !";
+    status.innerText = "✅ Inscription réussie ! Redirection vers la connexion...";
+    status.className = "status-msg success";
+    btn.innerText = "Terminé";
     
-    alert("Votre compte a été créé avec le statut 'En attente'. Vous recevrez une notification une fois validé.");
-    setTimeout(() => window.location.href = 'login-coursier.html', 2000);
+    alert("Votre compte a été créé ! Il est actuellement en attente de validation par l'administrateur. Vous serez redirigé vers la page de connexion.");
+    setTimeout(() => window.location.href = 'login-coursier.html', 3000);
   } catch(e) {
     console.error(e);
-    status.style.display='block';
-    status.className='status-msg error';
-    status.innerText="Erreur d'envoi. Vérifiez la connexion.";
+    status.innerText = "❌ Erreur réseau. Vérifiez votre connexion.";
+    status.className = "status-msg error";
     btn.disabled = false;
     btn.innerText = "Réessayer";
   }
