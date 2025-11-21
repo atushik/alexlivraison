@@ -17,15 +17,35 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 .hamburger{width:45px;height:45px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border-radius:10px;cursor:pointer;transition:.3s;border:1px solid rgba(255,255,255,0.2)}
 .hamburger:hover{background:rgba(255,255,255,0.25)}
 .hamburger span{width:24px;height:3px;background:#fff;border-radius:3px}
-.menu{position:fixed;top:0;right:-100%;width:300px;height:100vh;background:rgba(20,0,45,0.98);padding:20px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px);display:flex;flex-direction:column}
+.menu{position:fixed;top:0;right:-100%;width:100%;max-width:350px;height:100vh;background:rgba(20,0,45,0.98);padding:20px 30px;transition:right .4s;z-index:1000;overflow-y:auto;backdrop-filter:blur(10px);display:flex;flex-direction:column}
 .menu.open{right:0}
 .close-menu{align-self:flex-end;font-size:30px;color:#fff;background:none;border:none;cursor:pointer;margin-bottom:20px;padding:10px}
 .menu nav a{display:block;color:#fff;text-decoration:none;padding:15px;font-size:16px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,0.05);transition:.3s}
 .menu nav a:hover{background:rgba(255,255,255,0.15);color:#b88aff}
 .menu .submenu-trigger{cursor:pointer;font-weight:700}
-.menu .submenu{display:none;background:rgba(107,35,255,0.2);border-radius:10px;margin-bottom:10px;padding:5px 0}
-.menu .submenu.visible{display:block}
-.menu .submenu a{padding-left:25px;font-size:15px;background:none}
+.menu .submenu{
+    display:none;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 8px;
+    background: rgba(107,35,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.menu .submenu.visible{display:grid}
+.menu .submenu a{
+    padding: 10px 5px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.05);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    line-height: 1.2;
+}
+.menu .submenu a:hover{background:rgba(255,255,255,0.2)}
+
 .lang-switch{margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,0.2);color:#fff}
 .lang-btns{display:flex;gap:10px;margin-top:10px}
 .lang-btns button{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:8px;cursor:pointer}
@@ -36,7 +56,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 #emoji-biker{display:inline-block;animation:bounce 2s infinite ease-in-out alternate}
 @keyframes carMove{0%{transform:translateX(0)}100%{transform:translateX(15px)}}
 @keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-10px)}}
-.promo-banner{background:linear-gradient(135deg,#d9381e 0%,#f5af19 100%);padding:25px;border-radius:20px;text-align:center;margin-bottom:30px;animation:pulse 3s infinite ease-in-out;box-shadow:0 10px 30px rgba(217,56,30,0.4);border:2px solid rgba(255,255,255,0.4);position:relative;overflow:hidden}
+.promo-banner{background:linear-gradient(135deg,#d9381e 0%,#f5af19 100%);padding:25px;border-radius:20px;text-align:center;margin-bottom:30px;animation:pulse 3s infinite ease-in-out;box-shadow:0 10px 30px rgba(217,56,30,0.4);border:2px solid rgba(255,255,255,0.4);position:relative;overflow:hidden;cursor:pointer}
 .promo-banner h2{font-size:24px;margin-bottom:10px;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;gap:10px}
 .promo-banner p{font-size:17px;color:#fff;font-weight:600}
 .party-anim{display:inline-block;font-size:1.2em;animation:wiggle 2s infinite ease-in-out}
@@ -76,24 +96,24 @@ footer{text-align:center;padding:30px 0;border-top:1px solid rgba(255,255,255,0.
 <nav>
 <a href="#" class="submenu-trigger" id="openPartnerMenu">🛒 Devenir partenaire vendeur</a>
 <div class="submenu" id="partnerSubmenu">
-<a href="form-supermarches.html" target="_blank">Propriétaire de supermarché</a>
-<a href="form-boulangerie.html" target="_blank">Propriétaire de boulangerie</a>
-<a href="form-pharmacies.html" target="_blank">Propriétaire de pharmacie</a>
-<a href="form-restaurants.html" target="_blank">Propriétaire de restaurant</a>
-<a href="form-epiceries.html" target="_blank">Propriétaire d'épicerie fine</a>
-<a href="form-commercants.html" target="_blank">Propriétaire de commerce local</a>
-<a href="form-boucheries.html" target="_blank">Propriétaire de boucherie</a>
-<a href="form-poissonneries.html" target="_blank">Propriétaire de poissonnerie</a>
-<a href="form-fleuristes.html" target="_blank">Fleuriste</a>
-<a href="form-primeur.html" target="_blank">Primeur</a>
-<a href="form-cavistes.html" target="_blank">Caviste</a>
-<a href="form-animalerie.html" target="_blank">Animalerie</a>
+<a href="form-supermarches.html" target="_blank">Supermarchés</a>
+<a href="form-boulangeries.html" target="_blank">Boulangeries</a>
+<a href="form-pharmacies.html" target="_blank">Pharmacies</a>
+<a href="form-restaurants.html" target="_blank">Restaurants</a>
+<a href="form-epiceries.html" target="_blank">Épiceries</a>
+<a href="form-commercants.html" target="_blank">Commerces</a>
+<a href="form-boucheries.html" target="_blank">Boucheries</a>
+<a href="form-poissonneries.html" target="_blank">Poissonneries</a>
+<a href="form-fleuristes.html" target="_blank">Fleuristes</a>
+<a href="form-primeur.html" target="_blank">Primeurs</a>
+<a href="form-cavistes.html" target="_blank">Cavistes</a>
+<a href="form-animalerie.html" target="_blank">Animaleries</a>
 <a href="form-beaute.html" target="_blank">Beauté</a>
 <a href="form-hightech.html" target="_blank">High-Tech</a>
-<a href="form-chocolatiers.html" target="_blank">Chocolatier</a>
-<a href="form-librairie.html" target="_blank">Libraire</a>
+<a href="form-chocolatiers.html" target="_blank">Chocolatiers</a>
+<a href="form-librairie.html" target="_blank">Librairies</a>
 <a href="form-electromenager.html" target="_blank">Électroménager</a>
-<a href="form-occasion.html" target="_blank">Occasion</a>
+<a href="form-occasion.html" target="_blank">Occasions</a>
 </div>
 <a href="devenir-coursier.html">🚴 Devenir partenaire coursier</a>
 <a href="index.html">🏠 Retour à la page d'accueil</a>
@@ -109,7 +129,7 @@ footer{text-align:center;padding:30px 0;border-top:1px solid rgba(255,255,255,0.
 <div class="page-header">
 <div class="main-title"><span id="emoji-biker">🚴🏻‍♂️</span> AlexLivraison <span id="emoji-car">🚗</span></div>
 </div>
-<div class="promo-banner">
+<div class="promo-banner" onclick="window.location.href='promotions.html'">
 <h2><span class="party-anim">🎉</span> Promotion spéciale!</h2>
 <p>Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!</p>
 </div>
@@ -122,18 +142,18 @@ footer{text-align:center;padding:30px 0;border-top:1px solid rgba(255,255,255,0.
 <button class="filter-btn" data-category="poissonneries"><span class="emoji">🐟</span><span>Poissonneries</span></button>
 <button class="filter-btn" data-category="pharmacies"><span class="emoji">💊</span><span>Pharmacies</span></button>
 <button class="filter-btn" data-category="restaurants"><span class="emoji">🍽</span><span>Restaurants</span></button>
-<button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épicerie</span></button>
+<button class="filter-btn" data-category="epicerie"><span class="emoji">🧀</span><span>Épiceries</span></button>
 <button class="filter-btn" data-category="primeur"><span class="emoji">🥦</span><span>Primeurs</span></button>
 <button class="filter-btn" data-category="commercants"><span class="emoji">🏪</span><span>Commerçants</span></button>
 <button class="filter-btn" data-category="fleuristes"><span class="emoji">💐</span><span>Fleuristes</span></button>
 <button class="filter-btn" data-category="cavistes"><span class="emoji">🍷</span><span>Cavistes</span></button>
-<button class="filter-btn" data-category="animalerie"><span class="emoji">🐾</span><span>Animalerie</span></button>
+<button class="filter-btn" data-category="animalerie"><span class="emoji">🐾</span><span>Animaleries</span></button>
 <button class="filter-btn" data-category="beaute"><span class="emoji">💄</span><span>Beauté</span></button>
 <button class="filter-btn" data-category="hightech"><span class="emoji">📱</span><span>High-Tech</span></button>
-<button class="filter-btn" data-category="chocolatiers"><span class="emoji">🍫</span><span>Chocolats</span></button>
-<button class="filter-btn" data-category="librairie"><span class="emoji">📚</span><span>Livres</span></button>
-<button class="filter-btn" data-category="electromenager"><span class="emoji">📺</span><span>Électro</span></button>
-<button class="filter-btn" data-category="occasion"><span class="emoji">♻️</span><span>Occasion</span></button>
+<button class="filter-btn" data-category="chocolatiers"><span class="emoji">🍫</span><span>Chocolatiers</span></button>
+<button class="filter-btn" data-category="librairie"><span class="emoji">📚</span><span>Librairies</span></button>
+<button class="filter-btn" data-category="electromenager"><span class="emoji">📺</span><span>Électroménagers</span></button>
+<button class="filter-btn" data-category="occasion"><span class="emoji">♻️</span><span>Occasions</span></button>
 </div>
 </div>
 <div class="products-grid" id="productsGrid"></div>
@@ -149,7 +169,7 @@ openPartnerMenu.onclick=(e)=>{e.preventDefault();partnerSubmenu.classList.toggle
 const productsGrid=document.getElementById('productsGrid');const filterBtns=document.querySelectorAll('.filter-btn');
 const filterContainer=document.getElementById('filters');
 filterContainer.addEventListener('wheel',(evt)=>{evt.preventDefault();filterContainer.scrollLeft+=evt.deltaY});
-const categoryPages={supermarches:'supermarches.html',boulangerie:'boulangeries.html',boucheries:'boucheries.html',poissonneries:'poissonneries.html',pharmacies:'pharmacies.html',restaurants:'restaurants.html',epicerie:'epicerie.html',commercants:'commercants.html',fleuristes:'fleuristes.html',primeur:'primeur.html',cavistes:'cavistes.html',animalerie:'animalerie.html',beaute:'beaute.html',hightech:'hightech.html',chocolatiers:'chocolatiers.html',librairie:'librairie.html',electromenager:'electromenager.html',occasion:'occasion.html'};
+const categoryPages={supermarches:'supermarches.html',boulangerie:'boulangeries.html',boucheries:'boucheries.html',poissonneries:'poissonneries.html',pharmacies:'pharmacies.html',restaurants:'restaurants.html',epicerie:'epiceries.html',commercants:'commercants.html',fleuristes:'fleuristes.html',primeur:'primeurs.html',cavistes:'cavistes.html',animalerie:'animaleries.html',beaute:'beautes.html',hightech:'hightech.html',chocolatiers:'chocolatiers.html',librairie:'librairies.html',electromenager:'electromenagers.html',occasion:'occasions.html'};
 function afficherProduitsFirestore(cat){
 productsGrid.innerHTML='<div style="text-align:center;color:white;grid-column:1/-1">Chargement...</div>';let ref=db.collection('products');
 if(cat==='all'){ref.orderBy('price').limit(12).get().then(snap=>renderSnap(snap)).catch(e=>console.error(e))}else{ref.where('category','==',cat.toLowerCase()).get().then(snap=>renderSnap(snap)).catch(e=>console.error(e))}
@@ -166,10 +186,10 @@ const langFr=document.getElementById('langFr');const langEn=document.getElementB
 const langData={fr:{pt:'Produits Partenaires - AlexLivraison',ph:'🎉 Promotion spéciale!',pp:'Livraison gratuite sur toutes les commandes de nos partenaires ce mois-ci!',m:["🛒 Devenir partenaire vendeur","🚴 Devenir partenaire coursier","🏠 Retour à la page d'accueil","📞 Contactez-nous","ℹ️ À propos de nous"]},en:{pt:'Partner Products - AlexLivraison',ph:'🎉 Special Promotion!',pp:'Free delivery on all partner orders this month!',m:["🛒 Become a partner seller","🚴 Become a partner courier","🏠 Back to homepage","📞 Contact us","ℹ️ About us"]}};
 const filtersData={
 all:{fr:"Meilleurs Prix",en:"Best Prices"},boulangerie:{fr:"Boulangeries",en:"Bakeries"},supermarches:{fr:"Supermarchés",en:"Supermarkets"},boucheries:{fr:"Boucheries",en:"Butchers"},
-poissonneries:{fr:"Poissonneries",en:"Fishmongers"},pharmacies:{fr:"Pharmacies",en:"Pharmacies"},restaurants:{fr:"Restaurants",en:"Restaurants"},epicerie:{fr:"Épicerie",en:"Grocery"},
+poissonneries:{fr:"Poissonneries",en:"Fishmongers"},pharmacies:{fr:"Pharmacies",en:"Pharmacies"},restaurants:{fr:"Restaurants",en:"Restaurants"},epicerie:{fr:"Épiceries",en:"Groceries"},
 primeur:{fr:"Primeurs",en:"Greengrocers"},commercants:{fr:"Commerçants",en:"Merchants"},fleuristes:{fr:"Fleuristes",en:"Florists"},cavistes:{fr:"Cavistes",en:"Wine shops"},
-animalerie:{fr:"Animalerie",en:"Pet shop"},beaute:{fr:"Beauté",en:"Beauty"},hightech:{fr:"High-Tech",en:"High-Tech"},chocolatiers:{fr:"Chocolats",en:"Chocolates"},
-librairie:{fr:"Livres",en:"Books"},electromenager:{fr:"Électro",en:"Appliances"},occasion:{fr:"Occasion",en:"Second hand"}};
+animalerie:{fr:"Animaleries",en:"Pet shops"},beaute:{fr:"Beauté",en:"Beauty"},hightech:{fr:"High-Tech",en:"High-Tech"},chocolatiers:{fr:"Chocolatiers",en:"Chocolatiers"},
+librairie:{fr:"Librairies",en:"Bookstores"},electromenager:{fr:"Électroménagers",en:"Appliances"},occasion:{fr:"Occasions",en:"Second hand"}};
 function setLanguage(lang){let d=langData[lang];document.title=d.pt;langFr.classList.toggle('active',lang==='fr');langEn.classList.toggle('active',lang==='en');
 document.querySelector('.promo-banner h2').innerHTML=`<span class="party-anim">🎉</span> ${d.ph.replace('🎉 ','')}`;document.querySelector('.promo-banner p').textContent=d.pp;
 const nl=document.querySelectorAll('.menu nav > a:not(.submenu-trigger)');document.getElementById('openPartnerMenu').textContent=d.m[0];nl[0].textContent=d.m[1];nl[1].textContent=d.m[2];nl[2].textContent=d.m[3];nl[3].textContent=d.m[4];
@@ -178,4 +198,4 @@ afficherProduitsFirestore(curCat)}
 langFr.onclick=()=>setLanguage('fr');langEn.onclick=()=>setLanguage('en');
 </script>
 </body>
-</html>
+</html> 
