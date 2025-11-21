@@ -17,7 +17,34 @@
   *{box-sizing:border-box}
   .wrap{max-width:800px;margin:0 auto;padding:20px;}
   
-  .topbar{position:sticky;top:0;z-index:100;backdrop-filter:blur(15px);background:rgba(20,0,45,0.85);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(15px);
+    background: rgba(20,0,45,0.85);
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: grid;
+    grid-template-columns: auto 1fr auto; 
+    align-items: center;
+    gap: 15px;
+  }
+  .topbar-logo {
+      width: 45px; height: 45px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      object-fit: cover;
+  }
+  .topbar-title {
+      text-align: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.3em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
   .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
   .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
@@ -29,6 +56,18 @@
   input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f9f9f9;}
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
   
+  .capacity-msg {
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(107, 35, 255, 0.1);
+      border-left: 4px solid var(--violet);
+      border-radius: 8px;
+      color: var(--violet-dark);
+      font-weight: bold;
+      font-size: 0.95em;
+      animation: fadeIn 0.3s ease;
+  }
+
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
   .btn-primary{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 5px 15px rgba(107,35,255,0.3);transition:0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
   .btn-primary:hover{transform:translateY(-2px);}
@@ -51,7 +90,8 @@
 <body>
 
 <div class="topbar">
-  <div style="color:#fff;font-weight:bold;font-size:1.2em;"><span class="emoji-anim">🚴‍♂️</span> AlexLivraison Riders</div>
+  <img src="logo.jpg" alt="Logo" class="topbar-logo">
+  <div class="topbar-title">🚴🏻‍♂️ Alexlivraison🚗</div>
   <a href="index.html" class="btn-back"><span class="emoji-anim">🏠</span> Retour</a>
 </div>
 
@@ -90,16 +130,19 @@
 
     <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
 
-    <h2>Informations Pro</h2>
+    <h2>Informations Pro & Véhicule</h2>
     <div class="grid2">
       <div class="input-group"><label><span class="emoji-anim">🏢</span> Numéro SIREN (9 chiffres)</label><input id="c_siren" maxlength="9"></div>
-      <div class="input-group"><label><span class="emoji-anim">🛵</span> Véhicule</label>
+      
+      <div class="input-group">
+        <label><span class="emoji-anim">🛵</span> Véhicule</label>
         <select id="c_vehicle">
           <option value="Velo">Vélo 🚲</option>
           <option value="Scooter">Scooter 🛵</option>
           <option value="Voiture">Voiture 🚗</option>
           <option value="Trotinette">Trotinette 🛴</option>
         </select>
+        <div id="vehicle-capacity-msg" class="capacity-msg hidden"></div>
       </div>
     </div>
 
@@ -147,6 +190,28 @@ const CHAT = "7129872491";
 const s1 = document.getElementById('step1');
 const s2 = document.getElementById('step2');
 const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren'];
+
+const vehicleSelect = document.getElementById('c_vehicle');
+const capacityMsg = document.getElementById('vehicle-capacity-msg');
+
+const vehicleCapacities = {
+  'Velo': '🚴‍♂️ Vélo : Capacité max = Taille S (Petits colis)',
+  'Trotinette': '🛴 Trotinette : Capacité max = Taille S (Petits colis)',
+  'Scooter': '🛵 Scooter : Capacité max = Taille M (Colis moyens)',
+  'Voiture': '🚗 Voiture : Capacité max = Taille XL (Tous colis)'
+};
+
+function updateCapacity() {
+  const selected = vehicleSelect.value;
+  if (vehicleCapacities[selected]) {
+    capacityMsg.innerText = vehicleCapacities[selected];
+    capacityMsg.classList.remove('hidden');
+  } else {
+    capacityMsg.classList.add('hidden');
+  }
+}
+vehicleSelect.addEventListener('change', updateCapacity);
+updateCapacity();
 
 document.getElementById('btn_step1').onclick = () => {
   for(let i of inputs) if(!document.getElementById(i).value.trim()) return alert("Veuillez remplir tous les champs obligatoires.");
@@ -261,7 +326,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   addL(`2. M./Mme ${fullName}`);
   addL(`   SIREN : ${siren}`);
   addL(`   Adresse : ${addr}`);
-  addL(`   Véhicule déclaré : ${vehicle}`);
+  addL(`   Véhicule déclaré : ${vehicle} (${vehicleCapacities[vehicle] || ''})`);
   addL("Ci-après dénommé « Le Prestataire ».");
   
   y+=8;
