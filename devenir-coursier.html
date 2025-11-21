@@ -4,215 +4,345 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>Devenir Coursier - AlexLivraison</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--ring:#ffffff35;--glass:rgba(255,255,255,0.95);}
+  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);}
   html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
   body{
-    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial;
-    color:#222;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);
-    background-size:200% 200%;
-    animation:anim-bg 15s ease-in-out infinite;
-    background-attachment:fixed;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-  }
-  @keyframes anim-bg {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+    color:#222;
+    min-height:100vh;
   }
   *{box-sizing:border-box}
-  .wrap{width:100%;max-width:800px;margin:0 auto;padding:16px;}
+  .wrap{max-width:800px;margin:0 auto;padding:20px;}
   
-  .topbar{position:sticky;top:0;z-index:100;width:100%;backdrop-filter:blur(15px);background:rgba(20,0,45,0.85);border-bottom:1px solid var(--ring);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
-  .back-btn{color:#fff;text-decoration:none;font-weight:bold;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);padding:8px 16px;border-radius:20px;transition:0.3s;}
-  .back-btn:hover{background:rgba(255,255,255,0.25);}
-
-  .hero{text-align:center;color:#fff;padding:40px 0;}
-  .h2{font-size:2.5em;margin-bottom:10px;text-shadow:0 4px 15px rgba(0,0,0,0.3);}
-  .desc{font-size:1.2em;opacity:0.9;max-width:600px;margin:0 auto;}
-
-  .card{background:var(--glass);border-radius:24px;padding:30px;box-shadow:0 20px 50px rgba(0,0,0,0.2);width:100%;margin-bottom:25px;backdrop-filter:blur(10px);animation:slideUp 0.6s ease-out;}
-  @keyframes slideUp {from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-
-  label{display:block;margin-bottom:8px;font-weight:700;color:#32006b;font-size:1.1em;}
-  input,select,textarea{width:100%;padding:16px;margin-bottom:20px;border-radius:12px;border:1px solid #ddd;outline:none;font-size:1em;background:#fff;transition:0.3s;}
-  input:focus,select:focus,textarea:focus{border-color:#6b23ff;box-shadow:0 0 0 4px rgba(107,35,255,0.1);}
+  .topbar{position:sticky;top:0;z-index:100;backdrop-filter:blur(15px);background:rgba(20,0,45,0.85);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
-  input[type="file"]{padding:10px;background:#f0f0f0;border:2px dashed #bbb;cursor:pointer;}
-  input[type="file"]:hover{background:#e0e0e0;border-color:#6b23ff;}
-
-  .emoji-label{display:inline-block;margin-right:8px;animation:bounce 2s infinite;}
-  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  @media(max-width:600px){.grid2{grid-template-columns:1fr;gap:0;}}
-
-  button{width:100%;padding:18px;border:none;border-radius:14px;font-size:1.2em;font-weight:800;cursor:pointer;transition:.2s;background:linear-gradient(135deg,#6b23ff,#8968fb);color:#fff;box-shadow:0 10px 25px rgba(107,35,255,0.4);display:flex;align-items:center;justify-content:center;gap:10px;}
-  button:hover{transform:translateY(-2px);box-shadow:0 15px 35px rgba(107,35,255,0.5);}
-  button:active{transform:scale(0.98);}
+  .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
+  h1{color:#fff;text-align:center;margin-bottom:30px;text-shadow:0 2px 10px rgba(0,0,0,0.3);font-size:2.2em}
+  h2{color:#32006b;margin-top:0;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;}
+  
+  .input-group{margin-bottom:15px;}
+  label{display:block;margin-bottom:8px;font-weight:600;color:#555;}
+  input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f9f9f9;}
+  input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
+  
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+  .btn-primary{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 5px 15px rgba(107,35,255,0.3);transition:0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
+  .btn-primary:hover{transform:translateY(-2px);}
+  
+  canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair;}
+  .hidden{display:none;}
+  .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px;background:#fff;}
 
   .benefits{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-bottom:30px;}
-  .ben-item{background:rgba(255,255,255,0.15);padding:20px;border-radius:16px;color:#fff;text-align:center;border:1px solid rgba(255,255,255,0.2);}
-  .ben-icon{font-size:2.5em;margin-bottom:10px;display:block;}
-
-  #status-msg{display:none;margin-top:20px;padding:15px;border-radius:12px;text-align:center;font-weight:bold;}
-  .success{background:#d1fae5;color:#065f46;border:1px solid #34d399;}
-  .error{background:#fee2e2;color:#991b1b;border:1px solid #f87171;}
+  .ben-item{background:rgba(255,255,255,0.15);padding:20px;border-radius:16px;color:#fff;text-align:center;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(5px)}
+  
+  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(5deg)}}
+  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
+  .ben-icon{font-size:2.5em;margin-bottom:10px;display:block;animation:stickerFloat 3s ease-in-out infinite}
+  
+  @media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <a href="index.html" class="back-btn">← Retour Accueil</a>
-  <div style="color:#fff;font-weight:bold;">AlexLivraison Partners</div>
+  <div style="color:#fff;font-weight:bold;font-size:1.2em;"><span class="emoji-anim">🚴‍♂️</span> AlexLivraison Riders</div>
+  <a href="index.html" class="btn-back"><span class="emoji-anim">🏠</span> Retour</a>
 </div>
 
-<div class="wrap">
-  <div class="hero">
-    <h1 class="h2">Devenir Coursier 🚀</h1>
-    <p class="desc">Rejoignez notre flotte ! Horaires flexibles, revenus attractifs et paiements rapides.</p>
-  </div>
+<main class="wrap">
+  <h1>Devenir Coursier Indépendant <span class="emoji-anim">🚀</span></h1>
 
   <div class="benefits">
     <div class="ben-item">
       <span class="ben-icon">💸</span>
       <h3>Revenus</h3>
-      <p>Gagnez de l'argent à chaque course effectuée.</p>
+      <p>Gagnez de l'argent à chaque course.</p>
     </div>
     <div class="ben-item">
       <span class="ben-icon">⏰</span>
       <h3>Liberté</h3>
-      <p>Choisissez quand vous voulez travailler.</p>
+      <p>Horaires 100% flexibles.</p>
     </div>
     <div class="ben-item">
       <span class="ben-icon">🚲</span>
-      <h3>Transport</h3>
-      <p>Vélo, scooter ou voiture, c'est vous qui voyez.</p>
+      <h3>Tous Véhicules</h3>
+      <p>Vélo, scooter, voiture ou trottinette.</p>
     </div>
   </div>
 
-  <div class="card">
-    <form id="courierForm">
-      <div class="grid2">
-        <div>
-            <label><span class="emoji-label">👤</span>Prénom et Nom</label>
-            <input type="text" id="c_name" placeholder="Votre nom complet" required>
-        </div>
-        <div>
-            <label><span class="emoji-label">📱</span>Téléphone</label>
-            <input type="tel" id="c_phone" placeholder="06 12 34 56 78" required>
-        </div>
+  <section id="step1" class="card">
+    <h2>1. Informations Personnelles</h2>
+    <div class="grid2">
+      <div class="input-group"><label><span class="emoji-anim">👤</span> Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
+      <div class="input-group"><label><span class="emoji-anim">👤</span> Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
+    </div>
+    
+    <div class="grid2">
+      <div class="input-group"><label><span class="emoji-anim">📱</span> Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
+      <div class="input-group"><label><span class="emoji-anim">📧</span> E-mail</label><input id="c_email" type="email"></div>
+    </div>
+
+    <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
+
+    <h2>Informations Pro</h2>
+    <div class="grid2">
+      <div class="input-group"><label><span class="emoji-anim">🏢</span> Numéro SIREN (9 chiffres)</label><input id="c_siren" maxlength="9"></div>
+      <div class="input-group"><label><span class="emoji-anim">🛵</span> Véhicule</label>
+        <select id="c_vehicle">
+          <option value="Velo">Vélo 🚲</option>
+          <option value="Scooter">Scooter 🛵</option>
+          <option value="Voiture">Voiture 🚗</option>
+          <option value="Trotinette">Trotinette 🛴</option>
+        </select>
       </div>
+    </div>
 
-      <label><span class="emoji-label">📍</span>Ville de résidence</label>
-      <input type="text" id="c_city" placeholder="Ex: Toulon, La Seyne..." required>
+    <div class="input-group">
+      <label><span class="emoji-anim">🆔</span> Pièce d'identité / Titre de séjour (Photo)</label>
+      <input type="file" id="c_doc" accept="image/*,application/pdf" style="background:#f0f0f0;cursor:pointer">
+    </div>
 
-      <div class="grid2">
-        <div>
-            <label><span class="emoji-label">🏢</span>Numéro SIREN (9 chiffres)</label>
-            <input type="text" id="c_siren" placeholder="123 456 789" maxlength="9" required>
-        </div>
-        <div>
-            <label><span class="emoji-label">🔢</span>Numéro SIRET (14 chiffres)</label>
-            <input type="text" id="c_siret" placeholder="123 456 789 00012" maxlength="14" required>
-        </div>
-      </div>
+    <button id="btn_step1" class="btn-primary">Suivant <span class="emoji-anim">➡️</span></button>
+  </section>
 
-      <label><span class="emoji-label">🛵</span>Type de véhicule</label>
-      <select id="c_vehicle">
-        <option value="Velo">Vélo 🚲</option>
-        <option value="Scooter">Scooter 🛵</option>
-        <option value="Voiture">Voiture 🚗</option>
-        <option value="Autre">Autre / Trotinette 🛴</option>
-      </select>
+  <section id="step2" class="card hidden">
+    <h2>2. Contrat de Prestation</h2>
+    <p style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.5;">
+      En signant ce document, vous confirmez exercer en tant que prestataire indépendant (Auto-entrepreneur) et vous engagez à respecter la charte de qualité AlexLivraison.
+    </p>
+    
+    <div class="grid2">
+      <div class="input-group"><label>Lieu de signature</label><input id="sign_place" value="Toulon"></div>
+      <div class="input-group"><label>Date</label><input id="sign_date" type="date"></div>
+    </div>
 
-      <label><span class="emoji-label">🆔</span>Pièce d'identité / Titre de séjour (Photo/PDF)</label>
-      <input type="file" id="c_id_doc" accept="image/*,application/pdf" required>
+    <label>Votre signature :</label>
+    <canvas id="signature"></canvas>
+    <button onclick="clearSig()" style="margin-top:10px;padding:8px;background:#eee;border:none;border-radius:5px;cursor:pointer">Effacer</button>
 
-      <label><span class="emoji-label">📅</span>Disponibilités</label>
-      <input type="text" id="c_avail" placeholder="Ex: Tous les soirs + Weekend" required>
+    <div style="margin-top:20px;display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="agree" style="width:auto">
+      <label for="agree" style="margin:0">Je certifie l'exactitude des informations et accepte le contrat.</label>
+    </div>
 
-      <label><span class="emoji-label">📝</span>Message (Optionnel)</label>
-      <textarea id="c_msg" rows="3" placeholder="Avez-vous de l'expérience ?"></textarea>
+    <button id="gen_pdf" class="btn-primary"><span class="emoji-anim">✍️</span> Signer et Envoyer la Candidature</button>
+    <div id="final-status" class="status-msg hidden"></div>
+  </section>
+</main>
 
-      <button type="submit" id="submitBtn">Envoyer ma candidature 📤</button>
-    </form>
-    <div id="status-msg"></div>
-  </div>
-</div>
+<img src="logo.jpg" id="img-logo" style="display:none">
+<img src="alex444.jpg" id="img-stamp" style="display:none">
+<img src="sinature-alex.jpg" id="img-alex-sig" style="display:none">
 
 <script>
-  const TELEGRAM_BOT_TOKEN = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
-  const TELEGRAM_CHAT_ID = "7129872491";
+const BOT = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
+const CHAT = "7129872491";
 
-  document.getElementById('courierForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+const s1 = document.getElementById('step1');
+const s2 = document.getElementById('step2');
+const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren'];
+
+document.getElementById('btn_step1').onclick = () => {
+  for(let i of inputs) if(!document.getElementById(i).value.trim()) return alert("Veuillez remplir tous les champs obligatoires.");
+  if(!document.getElementById('c_doc').files[0]) return alert("Veuillez ajouter votre pièce d'identité.");
+  
+  s1.classList.add('hidden');
+  s2.classList.remove('hidden');
+  window.scrollTo(0,0);
+};
+
+const cvs = document.getElementById('signature');
+const ctx = cvs.getContext('2d');
+let dr = false;
+
+function resizeCanvas(){
+  const r = cvs.getBoundingClientRect();
+  cvs.width = r.width;
+  cvs.height = 200;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,cvs.width,cvs.height);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function getPos(e){
+  const r = cvs.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return {x: t.clientX - r.left, y: t.clientY - r.top};
+}
+
+cvs.addEventListener('mousedown', e => {dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
+cvs.addEventListener('mousemove', e => {if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
+cvs.addEventListener('mouseup', () => dr=false);
+
+cvs.addEventListener('touchstart', e => {e.preventDefault(); dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
+cvs.addEventListener('touchmove', e => {e.preventDefault(); if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
+cvs.addEventListener('touchend', () => dr=false);
+
+window.clearSig = () => {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,cvs.width,cvs.height);
+  ctx.beginPath();
+};
+
+document.getElementById('sign_date').valueAsDate = new Date();
+
+function makeCircle(imgId) {
+    const img = document.getElementById(imgId);
+    const c = document.createElement('canvas');
+    const s = Math.min(img.width, img.height);
+    c.width = s; c.height = s;
+    const x = c.getContext('2d');
+    x.fillStyle = '#ffffff';
+    x.fillRect(0, 0, s, s);
+    x.beginPath();
+    x.arc(s/2, s/2, s/2, 0, Math.PI*2);
+    x.closePath();
+    x.save();
+    x.clip();
+    x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, s, s);
+    x.restore();
+    return c.toDataURL('image/jpeg', 0.95);
+}
+
+document.getElementById('gen_pdf').onclick = async () => {
+  if(!document.getElementById('agree').checked) return alert("Veuillez accepter les conditions.");
+  
+  const btn = document.getElementById('gen_pdf');
+  const status = document.getElementById('final-status');
+  btn.disabled = true;
+  btn.innerText = "Envoi en cours...";
+  status.classList.remove('hidden');
+  status.innerText = "Génération du contrat...";
+
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF();
+  
+  const fname = document.getElementById('c_firstname').value;
+  const lname = document.getElementById('c_lastname').value;
+  const fullName = fname + " " + lname;
+  const siren = document.getElementById('c_siren').value;
+  const addr = document.getElementById('c_addr').value;
+  const vehicle = document.getElementById('c_vehicle').value;
+  const date = document.getElementById('sign_date').value;
+  const place = document.getElementById('sign_place').value;
+
+  try {
+    const logoData = makeCircle('img-logo');
+    doc.addImage(logoData,'JPEG',160,10,30,30);
+  } catch(e){}
+
+  doc.setFontSize(18); doc.setFont("helvetica","bold");
+  doc.text("CONTRAT DE PRESTATION DE SERVICES",20,30);
+  doc.text("COURSIER INDÉPENDANT",20,38);
+  doc.setLineWidth(0.5); doc.line(20,45,190,45);
+
+  doc.setFontSize(11); doc.setFont("helvetica","normal");
+  let y = 55;
+  const addL = (txt, bold=false) => {
+    doc.setFont("helvetica", bold?"bold":"normal");
+    doc.text(txt, 20, y);
+    y += 6;
+  };
+
+  addL("ENTRE LES SOUSSIGNÉS :", true);
+  y+=2;
+  addL("1. La plateforme AlexLivraison (Représentée par Atabek Zakirov).");
+  addL("Ci-après dénommée « La Plateforme ».");
+  y+=4;
+  addL("ET :", true);
+  y+=2;
+  addL(`2. M./Mme ${fullName}`);
+  addL(`   SIREN : ${siren}`);
+  addL(`   Adresse : ${addr}`);
+  addL(`   Véhicule déclaré : ${vehicle}`);
+  addL("Ci-après dénommé « Le Prestataire ».");
+  
+  y+=8;
+  doc.setFontSize(12); doc.setFont("helvetica","bold");
+  doc.text("CONDITIONS GÉNÉRALES :", 20, y); y+=6;
+  doc.setFontSize(10); doc.setFont("helvetica","normal");
+  
+  const clauses = [
+    "Article 1 - Objet : Le Prestataire s'engage à effectuer des livraisons pour le compte",
+    "des clients de la Plateforme en toute indépendance.",
+    "",
+    "Article 2 - Statut : Le Prestataire déclare être travailleur indépendant (Auto-entrepreneur)",
+    "et être à jour de ses obligations sociales et fiscales. Ce contrat n'est pas un contrat de travail.",
+    "",
+    "Article 3 - Obligations : Le Prestataire s'engage à respecter le code de la route,",
+    "à disposer d'un véhicule en bon état et d'une assurance responsabilité civile professionnelle.",
+    "",
+    "Article 4 - Rémunération : Le Prestataire perçoit le montant de la livraison indiqué",
+    "avant l'acceptation de la course, moins la commission de la Plateforme.",
+    "",
+    "Article 5 - Confidentialité : Le Prestataire s'engage à ne pas divulguer les données clients."
+  ];
+
+  clauses.forEach(line => addL(line));
+
+  y+=15;
+  doc.setFontSize(11);
+  doc.text(`Fait à ${place}, le ${date}`, 20, y);
+  y+=10;
+  
+  doc.text("Le Prestataire :", 20, y);
+  doc.text("La Plateforme (AlexLivraison) :", 120, y);
+  y+=10;
+  
+  try {
+    doc.addImage(cvs.toDataURL('image/jpeg'), 'JPEG', 20, y, 50, 30);
+    doc.text(fullName, 20, y+35);
+  } catch(e){}
+
+  try {
+    const sigAlex = document.getElementById('img-alex-sig');
+    doc.addImage(sigAlex, 'JPEG', 120, y, 50, 30);
+    const stamp = makeCircle('img-stamp');
+    doc.addImage(stamp, 'JPEG', 150, y, 30, 30);
+  } catch(e){}
+
+  doc.text("Validé", 140, y+40);
+
+  const pdfBlob = doc.output('blob');
+  const idFile = document.getElementById('c_doc').files[0];
+
+  status.innerText = "Envoi des documents...";
+
+  const fd1 = new FormData();
+  fd1.append('chat_id', CHAT);
+  fd1.append('caption', `🆔 PIÈCE D'IDENTITÉ\n👤 ${fullName}\n🏢 SIREN: ${siren}`);
+  fd1.append('document', idFile);
+
+  const fd2 = new FormData();
+  fd2.append('chat_id', CHAT);
+  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${fullName}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
+  fd2.append('document', new File([pdfBlob], `Contrat_${lname}_${fname}.pdf`, {type: 'application/pdf'}));
+
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`, {method: 'POST', body: fd1});
+    await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`, {method: 'POST', body: fd2});
     
-    const btn = document.getElementById('submitBtn');
-    const statusDiv = document.getElementById('status-msg');
-    const fileInput = document.getElementById('c_id_doc');
+    doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    if(fileInput.files.length === 0){
-        alert("Veuillez ajouter votre pièce d'identité.");
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Envoi du dossier en cours...";
-
-    const name = document.getElementById('c_name').value;
-    const phone = document.getElementById('c_phone').value;
-    const city = document.getElementById('c_city').value;
-    const siren = document.getElementById('c_siren').value;
-    const siret = document.getElementById('c_siret').value;
-    const vehicle = document.getElementById('c_vehicle').value;
-    const avail = document.getElementById('c_avail').value;
-    const msg = document.getElementById('c_msg').value || "-";
-
-    const caption = `🚴‍♂️ *NOUVELLE CANDIDATURE* 🚴‍♂️\n\n` +
-                 `👤 *Nom:* ${name}\n` +
-                 `📱 *Tél:* ${phone}\n` +
-                 `📍 *Ville:* ${city}\n` +
-                 `🏢 *SIREN:* \`${siren}\`\n` +
-                 `🔢 *SIRET:* \`${siret}\`\n` +
-                 `🛵 *Véhicule:* ${vehicle}\n` +
-                 `📅 *Dispo:* ${avail}\n` +
-                 `📝 *Note:* ${msg}`;
-
-    const formData = new FormData();
-    formData.append('chat_id', TELEGRAM_CHAT_ID);
-    formData.append('caption', caption);
-    formData.append('parse_mode', 'Markdown');
-    formData.append('document', fileInput.files[0]);
-
-    try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        statusDiv.textContent = "✅ Dossier envoyé avec succès ! Nous vérifions vos documents.";
-        statusDiv.className = "success";
-        statusDiv.style.display = "block";
-        document.getElementById('courierForm').reset();
-      } else {
-        throw new Error("Erreur Telegram");
-      }
-    } catch (error) {
-      console.error(error);
-      statusDiv.textContent = "❌ Erreur d'envoi. Vérifiez votre connexion ou la taille du fichier.";
-      statusDiv.className = "error";
-      statusDiv.style.display = "block";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Envoyer ma candidature 📤";
-    }
-  });
+    status.innerText = "✅ Candidature envoyée avec succès !";
+    status.style.color = "green";
+    btn.innerText = "Envoyé !";
+    setTimeout(() => window.location.href = 'index.html', 3000);
+  } catch(e) {
+    console.error(e);
+    status.innerText = "❌ Erreur d'envoi. Vérifiez votre connexion.";
+    status.style.color = "red";
+    btn.disabled = false;
+    btn.innerText = "Réessayer";
+  }
+};
 </script>
-
 </body>
 </html> 
