@@ -424,7 +424,7 @@ document.getElementById('gen_pdf').onclick = async () => {
     status.innerText = "✅ Candidature envoyée avec succès !";
     status.style.color = "green";
     btn.innerText = "Envoyé !";
-    setTimeout(() => window.location.href = 'index.html', 3000);
+    setTimeout(() => window.location.href = 'login-coursier.html', 3000);
   } catch(e) {
     console.error(e);
     status.innerText = "❌ Erreur d'envoi. Vérifiez votre connexion.";
