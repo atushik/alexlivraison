@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>App Coursier - AlexLivraison</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  :root{--primary:#6b23ff;--dark:#1a1a2e;--green:#00c853;--red:#ff4d4d;--bg:#f4f6f8;--glass:rgba(255,255,255,0.95);}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;padding:0;padding-bottom:90px;color:#333;overflow-x:hidden;user-select:none;}
+  .app-header{background:linear-gradient(135deg,#32006b,#6b23ff);color:#fff;padding:20px;border-radius:0 0 25px 25px;box-shadow:0 5px 20px rgba(107,35,255,0.3);position:sticky;top:0;z-index:1000;}
+  .header-top{display:flex;justify-content:space-between;align-items:center;}
+  .courier-info{display:flex;align-items:center;gap:10px;}
+  .avatar{width:45px;height:45px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;border:2px solid #fff;}
+  .status-switch{background:rgba(0,0,0,0.3);padding:5px 15px;border-radius:20px;font-size:0.9em;display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .status-dot{width:10px;height:10px;background:#00c853;border-radius:50%;box-shadow:0 0 5px #00c853;}
+  .status-dot.offline{background:#ff4d4d;box-shadow:0 0 5px #ff4d4d;}
+  .stats-bar{display:flex;justify-content:space-between;margin-top:20px;background:rgba(255,255,255,0.1);padding:15px;border-radius:15px;backdrop-filter:blur(5px);}
+  .stat{text-align:center;}
+  .stat-val{font-size:1.4em;font-weight:800;display:block;}
+  .stat-lbl{font-size:0.75em;opacity:0.8;text-transform:uppercase;}
+  .view{display:none;animation:fadeIn 0.3s ease;}
+  .view.active{display:block;}
+  #map-container{height:35vh;width:100%;margin-top:-20px;position:relative;z-index:1;}
+  #map{height:100%;width:100%;}
+  .section-title{padding:15px 20px 5px;font-size:1.2em;color:#555;font-weight:800;}
+  .order-card{background:#fff;margin:15px 20px;padding:20px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.05);position:relative;transition:0.2s;border-left:5px solid var(--primary);}
+  .order-card:active{transform:scale(0.98);}
+  .order-header{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .price-tag{background:#e8f5e9;color:#2e7d32;padding:5px 12px;border-radius:10px;font-weight:800;font-size:1.1em;}
+  .dist-tag{background:#f3e5f5;color:#6b23ff;padding:5px 10px;border-radius:10px;font-size:0.9em;font-weight:bold;}
+  .route-info{margin:15px 0;position:relative;padding-left:25px;}
+  .route-info::before{content:'';position:absolute;left:7px;top:5px;bottom:25px;width:2px;background:#ddd;}
+  .point{margin-bottom:15px;position:relative;}
+  .point::after{content:'';position:absolute;left:-24px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:0 0 0 2px var(--primary);}
+  .point.dest::after{background:var(--red);box-shadow:0 0 0 2px var(--red);}
+  .point b{display:block;font-size:1em;}
+  .point span{font-size:0.9em;color:#666;}
+  .req-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
+  .req{font-size:0.8em;padding:4px 8px;border-radius:6px;background:#eee;font-weight:600;}
+  .req.hot{background:#fff3e0;color:#ef6c00;}
+  .req.cold{background:#e1f5fe;color:#0277bd;}
+  .btn-accept{width:100%;padding:15px;background:var(--primary);color:#fff;border:none;border-radius:15px;font-size:1.1em;font-weight:bold;cursor:pointer;box-shadow:0 5px 15px rgba(107,35,255,0.3);}
+  .step-progress{display:flex;justify-content:space-between;margin:20px;position:relative;}
+  .step-progress::before{content:'';position:absolute;top:15px;left:0;right:0;height:3px;background:#ddd;z-index:-1;}
+  .step-node{width:35px;height:35px;background:#fff;border:3px solid #ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#aaa;}
+  .step-node.active{border-color:var(--primary);background:var(--primary);color:#fff;box-shadow:0 0 10px rgba(107,35,255,0.5);}
+  .timer-big{text-align:center;font-size:3em;font-weight:900;color:#333;margin:10px 0;font-variant-numeric:tabular-nums;}
+  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
+  .act-btn{padding:20px;border-radius:15px;border:none;color:#fff;font-weight:bold;font-size:1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .wallet-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;margin:20px;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
+  .balance-title{opacity:0.7;font-size:0.9em;}
+  .balance-amount{font-size:2.5em;font-weight:bold;margin:10px 0;}
+  .history-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;}
+  .review-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;border-left:4px solid #ffd700;}
+  .nav-bar{position:fixed;bottom:0;left:0;width:100%;background:#fff;display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid #eee;z-index:2000;padding-bottom:25px;}
+  .nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;color:#ccc;cursor:pointer;width:25%;}
+  .nav-btn.active{color:var(--primary);}
+  .nav-icon{font-size:1.4em;}
+  .nav-label{font-size:0.7em;font-weight:bold;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;z-index:3000;display:none;}
+</style>
+</head>
+<body>
+
+<div id="view-home" class="view active">
+  <div class="app-header">
+    <div class="header-top">
+      <div class="courier-info">
+        <div class="avatar">🚴</div>
+        <div>
+          <div style="font-weight:bold;font-size:1.1em" id="courierName">Coursier</div>
+          <div class="status-switch" onclick="toggleStatus()">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">En ligne</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:0.8em;opacity:0.8">Gains du jour</div>
+        <div style="font-weight:bold;font-size:1.2em" id="dailyEarnings">0.00 €</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="map-container"><div id="map"></div></div>
+
+  <div class="section-title">Commandes disponibles (<span id="orderCount">0</span>)</div>
+  <div id="orders-list" style="padding-bottom:20px">
+    <div style="text-align:center;padding:40px;color:#999">Recherche de commandes...</div>
+  </div>
+</div>
+
+<div id="view-mission" class="view">
+  <div class="app-header" style="border-radius:0;padding-bottom:10px">
+    <div class="header-top">
+      <h2>Commande en cours</h2>
+      <div class="price-tag" style="background:#fff;color:var(--primary)">#<span id="mission-id">--</span></div>
+    </div>
+  </div>
+  
+  <div class="step-progress">
+    <div class="step-node active">1</div>
+    <div class="step-node">2</div>
+    <div class="step-node">3</div>
+  </div>
+
+  <div class="timer-big" id="mission-timer">00:00</div>
+
+  <div class="order-card" style="margin-top:0">
+    <h3 id="mission-shop">Restaurant/Boutique</h3>
+    <p id="mission-address" style="color:#666;margin-bottom:15px">Adresse de récupération...</p>
+    
+    <div class="req-tags" id="mission-tags"></div>
+
+    <div class="action-grid">
+      <button class="act-btn" style="background:#039be5" onclick="openGPS()">🗺️<br>GPS</button>
+      <button class="act-btn" style="background:#00c853" onclick="callClient()">📞<br>Appeler</button>
+    </div>
+
+    <button id="btn-action-main" class="btn-accept" style="margin-top:20px" onclick="advanceStep()">J'arrive au restaurant</button>
+  </div>
+</div>
+
+<div id="view-wallet" class="view">
+  <div class="app-header"><h2>Mon Portefeuille</h2></div>
+  <div class="wallet-card">
+    <div class="balance-title">Solde disponible</div>
+    <div class="balance-amount" id="totalBalance">0.00 €</div>
+    <div style="font-size:0.9em;opacity:0.8">Prochain virement : Lundi</div>
+  </div>
+  
+  <div class="section-title">Historique récent</div>
+  <div id="history-list"></div>
+</div>
+
+<div id="view-profile" class="view">
+  <div class="app-header"><h2>Mon Profil</h2></div>
+  
+  <div class="stats-bar" style="margin:20px;background:#fff;color:#333">
+    <div class="stat"><span class="stat-val">4.9</span><span class="stat-lbl">Note</span></div>
+    <div class="stat"><span class="stat-val">142</span><span class="stat-lbl">Courses</span></div>
+    <div class="stat"><span class="stat-val">98%</span><span class="stat-lbl">Accept.</span></div>
+  </div>
+
+  <div class="section-title">Avis Clients</div>
+  <div id="reviews-list">
+    <div class="review-item">
+      <div style="color:#ffd700">⭐⭐⭐⭐⭐</div>
+      <p>"Super rapide et poli, merci !"</p>
+      <small style="color:#999">Il y a 2 heures</small>
+    </div>
+    <div class="review-item">
+      <div style="color:#ffd700">⭐⭐⭐⭐⭐</div>
+      <p>"Commande arrivée chaude, parfait."</p>
+      <small style="color:#999">Hier</small>
+    </div>
+  </div>
+  
+  <button onclick="logout()" style="margin:20px;width:calc(100% - 40px);padding:15px;background:#ff4d4d;color:#fff;border:none;border-radius:15px;font-weight:bold">Déconnexion</button>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn active" onclick="nav('home')"><span class="nav-icon">⚡</span><span class="nav-label">Courses</span></button>
+  <button class="nav-btn" onclick="nav('mission')"><span class="nav-icon">🎒</span><span class="nav-label">En cours</span></button>
+  <button class="nav-btn" onclick="nav('wallet')"><span class="nav-icon">💰</span><span class="nav-label">Gains</span></button>
+  <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></button>
+</div>
+
+<div class="notification" id="notif">Nouvelle commande disponible !</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+if(!localStorage.getItem('alex_courier_logged')) window.location.href='login-coursier.html';
+document.getElementById('courierName').innerText = localStorage.getItem('alex_courier_name') || 'Coursier';
+
+let currentMission = null;
+let map = null;
+let isOnline = true;
+let missionStep = 0;
+let earnings = 0;
+
+function initMap(){
+    if(document.getElementById('view-home').style.display !== 'none' && !map){
+        map = L.map('map').setView([43.1242, 5.928], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+        L.marker([43.1242, 5.928]).addTo(map).bindPopup("Vous êtes ici").openPopup();
+    }
+}
+
+window.nav = function(viewName){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+viewName).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    if(viewName === 'home') setTimeout(initMap, 100);
+}
+
+db.collection('orders').where('status','==','pending').onSnapshot(snap => {
+    const list = document.getElementById('orders-list');
+    const count = document.getElementById('orderCount');
+    list.innerHTML = '';
+    count.innerText = snap.size;
+    
+    if(snap.size > 0 && isOnline) showNotif();
+
+    if(snap.empty){
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#999">Aucune commande pour le moment...</div>';
+    }
+
+    snap.forEach(doc => {
+        const o = doc.data();
+        const dist = (Math.random() * 5 + 1).toFixed(1); 
+        const card = `
+        <div class="order-card">
+            <div class="order-header">
+                <div><b>${o.shopName || 'Client'}</b></div>
+                <div class="price-tag">${o.price} €</div>
+            </div>
+            <div class="route-info">
+                <div class="point"><b>Retrait:</b> <span>${o.from || 'Adresse magasin'}</span></div>
+                <div class="point dest"><b>Livraison:</b> <span>${o.to || 'Adresse client'}</span></div>
+            </div>
+            <div class="req-tags">
+                <span class="dist-tag">🛵 ${dist} km</span>
+                ${o.tags ? o.tags.map(t=>`<span class="req">${t}</span>`).join('') : ''}
+            </div>
+            <button class="btn-accept" onclick="acceptOrder('${doc.id}', ${o.price}, '${o.shopName}', '${o.from}')">ACCEPTER LA COURSE</button>
+        </div>`;
+        list.innerHTML += card;
+    });
+});
+
+window.acceptOrder = function(id, price, shop, addr){
+    if(!isOnline) return alert("Passez en ligne pour accepter !");
+    
+    currentMission = {id, price, shop, addr, step: 1};
+    db.collection('orders').doc(id).update({status: 'accepted', courier: localStorage.getItem('alex_courier_name')});
+    
+    setupMissionUI();
+    nav('mission');
+    startTimer(30);
+}
+
+function setupMissionUI(){
+    document.getElementById('mission-id').innerText = currentMission.id.substr(0,4);
+    document.getElementById('mission-shop').innerText = currentMission.shop || "Magasin";
+    document.getElementById('mission-address').innerText = currentMission.addr || "Adresse masquée";
+    updateStepUI(1);
+}
+
+window.advanceStep = function(){
+    missionStep++;
+    updateStepUI(missionStep);
+    
+    const btn = document.getElementById('btn-action-main');
+    
+    if(missionStep === 2){
+        btn.innerText = "Confirmer le retrait (Code: 1234)";
+        btn.style.background = "#ff9800";
+    } else if(missionStep === 3){
+        btn.innerText = "Confirmer la livraison";
+        btn.style.background = "#00c853";
+    } else if(missionStep === 4){
+        finishMission();
+    }
+}
+
+function updateStepUI(step){
+    const nodes = document.querySelectorAll('.step-node');
+    nodes.forEach((n, i) => {
+        if(i < step) n.classList.add('active');
+        else n.classList.remove('active');
+    });
+}
+
+function finishMission(){
+    alert(`Bravo ! Course terminée. +${currentMission.price}€ ajoutés.`);
+    earnings += currentMission.price;
+    updateEarningsUI();
+    
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = `
+        <div class="history-item">
+            <div>
+                <div style="font-weight:bold">${currentMission.shop}</div>
+                <div style="font-size:0.8em;color:#999">Aujourd'hui</div>
+            </div>
+            <div style="font-weight:bold;color:var(--green)">+${currentMission.price}€</div>
+        </div>
+    ` + historyList.innerHTML;
+
+    currentMission = null;
+    missionStep = 0;
+    nav('home');
+}
+
+function updateEarningsUI(){
+    document.getElementById('dailyEarnings').innerText = earnings.toFixed(2) + " €";
+    document.getElementById('totalBalance').innerText = earnings.toFixed(2) + " €";
+}
+
+let timerInterval;
+function startTimer(minutes){
+    let seconds = minutes * 60;
+    const el = document.getElementById('mission-timer');
+    clearInterval(timerInterval);
+    timerInterval = setInterval(()=>{
+        const m = Math.floor(seconds/60);
+        const s = seconds % 60;
+        el.innerText = `${m}:${s < 10 ? '0'+s : s}`;
+        if(seconds > 0) seconds--;
+        else { clearInterval(timerInterval); el.style.color = "red"; }
+    }, 1000);
+}
+
+window.toggleStatus = function(){
+    isOnline = !isOnline;
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    if(isOnline){
+        dot.classList.remove('offline');
+        txt.innerText = "En ligne";
+        document.getElementById('orders-list').style.opacity = "1";
+    } else {
+        dot.classList.add('offline');
+        txt.innerText = "Hors ligne";
+        document.getElementById('orders-list').style.opacity = "0.5";
+    }
+}
+
+function showNotif(){
+    const n = document.getElementById('notif');
+    n.style.display = 'block';
+    setTimeout(()=>n.style.display='none', 3000);
+}
+
+window.logout = function(){
+    if(confirm("Se déconnecter ?")){
+        localStorage.removeItem('alex_courier_logged');
+        window.location.href = 'login-coursier.html';
+    }
+}
+
+setTimeout(initMap, 500);
+</script>
+</body>
+</html>
