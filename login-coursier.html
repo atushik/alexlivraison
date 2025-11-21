@@ -35,7 +35,7 @@
   button{width:100%;padding:16px;background:linear-gradient(90deg,#6b23ff,#8e5aff);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;transition:0.3s}
   button:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(107,35,255,0.3)}
   .back-link{display:block;margin-top:20px;text-decoration:none;color:#666;font-size:0.9em}
-  .error-msg{color:red;margin-bottom:15px;font-weight:bold;display:none}
+  .error-msg{background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;margin-bottom:15px;font-weight:bold;display:none;border:1px solid #fca5a5}
 </style>
 </head>
 <body>
@@ -58,8 +58,8 @@
 
   document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
-    const email = document.getElementById('email').value.toLowerCase();
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value.toLowerCase().trim();
+    const password = document.getElementById('password').value.trim();
     const btn = e.target.querySelector('button');
     const errDiv = document.getElementById('error');
     
