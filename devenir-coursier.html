@@ -201,6 +201,13 @@ const vehicleCapacities = {
   'Voiture': '🚗 Voiture : Capacité max = Taille XL (Tous colis)'
 };
 
+const pdfVehicleInfos = {
+  'Velo': 'Velo - Capacité max: Taille S',
+  'Trotinette': 'Trotinette - Capacité max: Taille S',
+  'Scooter': 'Scooter - Capacité max: Taille M',
+  'Voiture': 'Voiture - Capacité max: Taille XL'
+};
+
 function updateCapacity() {
   const selected = vehicleSelect.value;
   if (vehicleCapacities[selected]) {
@@ -326,7 +333,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   addL(`2. M./Mme ${fullName}`);
   addL(`   SIREN : ${siren}`);
   addL(`   Adresse : ${addr}`);
-  addL(`   Véhicule déclaré : ${vehicle} (${vehicleCapacities[vehicle] || ''})`);
+  addL(`   Véhicule déclaré : ${pdfVehicleInfos[vehicle] || vehicle}`);
   addL("Ci-après dénommé « Le Prestataire ».");
   
   y+=8;
