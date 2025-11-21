@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Admin Panel - AlexLivraison</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  body{font-family:'Segoe UI',sans-serif;background:#f4f6f8;margin:0;padding:20px;color:#333}
+  h1{text-align:center;color:#333}
+  .container{max-width:800px;margin:0 auto}
+  .courier-card{background:#fff;padding:20px;border-radius:12px;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .info h3{margin:0 0 5px 0;color:#6b23ff}
+  .info p{margin:0;color:#666;font-size:0.9em}
+  .actions button{padding:10px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;color:#fff;transition:0.2s}
+  .btn-approve{background:#4caf50}
+  .btn-approve:hover{background:#43a047}
+  .btn-reject{background:#f44336;margin-left:10px}
+  .empty{text-align:center;color:#999;margin-top:50px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Gestion des Coursiers</h1>
+  <div id="list">Chargement...</div>
+</div>
+
+<script>
+  const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function loadCouriers() {
+    db.collection('couriers').where('status', '==', 'pending').onSnapshot(snap => {
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        
+        if (snap.empty) {
+            list.innerHTML = '<div class="empty">Aucune demande en attente.</div>';
+            return;
+        }
+
+        snap.forEach(doc => {
+            const c = doc.data();
+            const div = document.createElement('div');
+            div.className = 'courier-card';
+            div.innerHTML = `
+                <div class="info">
+                    <h3>${c.fullName}</h3>
+                    <p>📧 ${c.email}</p>
+                    <p>🏢 SIREN: ${c.siren}</p>
+                    <p>🛵 Véhicule: ${c.vehicle}</p>
+                </div>
+                <div class="actions">
+                    <button class="btn-approve" onclick="approve('${doc.id}', '${c.fullName}')">Approuver ✅</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    });
+  }
+
+  window.approve = async (id, name) => {
+    if(confirm(`Valider le compte de ${name} ?`)){
+        await db.collection('couriers').doc(id).update({status: 'approved'});
+        alert("Compte validé !");
+    }
+  };
+
+  loadCouriers();
+</script>
+</body>
+</html>
