@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Connexion Coursier - AlexLivraison</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<style>
+  :root{--violet:#6b23ff;--violet-dark:#32006b;--green:#4caf50;--glass:rgba(255,255,255,0.95);}
+  html,body{height:100%;margin:0;padding:0;overflow-x:hidden}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(135deg,#32006b 0%,#7a2cf5 50%,#43dfb8 100%);
+    background-size:200% 200%;
+    animation:anim-bg 15s ease-in-out infinite;
+    color:#222;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  @keyframes anim-bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  *{box-sizing:border-box}
+  
+  .login-card{
+    background:var(--glass);
+    padding:40px 30px;
+    border-radius:24px;
+    width:90%;
+    max-width:400px;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.5);
+    animation:fadeInUp 0.8s ease;
+  }
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  
+  .logo-img{width:90px;height:90px;object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 5px 15px rgba(0,0,0,0.2);margin-bottom:20px}
+  
+  h1{color:#32006b;margin-bottom:5px;font-size:1.8em}
+  p{color:#666;margin-bottom:30px;font-size:0.95em}
+  
+  .input-group{margin-bottom:20px;text-align:left}
+  label{display:block;margin-bottom:8px;font-weight:bold;color:#555;font-size:0.9em}
+  input{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;font-size:16px;background:#f9f9f9;transition:0.3s}
+  input:focus{border-color:#6b23ff;box-shadow:0 0 0 4px rgba(107,35,255,0.1);background:#fff;outline:none}
+  
+  .btn-login{
+    width:100%;
+    padding:16px;
+    background:linear-gradient(90deg,#6b23ff,#8e5aff);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 8px 20px rgba(107,35,255,0.3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(107,35,255,0.4)}
+  .btn-login:active{transform:scale(0.98)}
+  
+  .footer-link{margin-top:20px;font-size:0.9em;color:#666}
+  .footer-link a{color:#6b23ff;text-decoration:none;font-weight:bold}
+  
+  .emoji-anim{display:inline-block;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <img src="logo.jpg" alt="Logo" class="logo-img">
+  <h1>Espace Riders <span class="emoji-anim">🚴‍♂️</span></h1>
+  <p>Connectez-vous pour commencer vos livraisons</p>
+  
+  <form id="loginForm">
+    <div class="input-group">
+      <label>Identifiant / E-mail</label>
+      <input type="email" id="email" placeholder="coursier@alexlivraison.com" required>
+    </div>
+    
+    <div class="input-group">
+      <label>Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+    </div>
+    
+    <button type="submit" class="btn-login">
+      Se connecter <span class="emoji-anim">🚀</span>
+    </button>
+  </form>
+
+  <div class="footer-link">
+    Pas encore inscrit ? <a href="devenir-coursier.html">Rejoindre l'équipe</a>
+  </div>
+</div>
+
+<script>
+  const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
+  firebase.initializeApp(firebaseConfig);
+  
+  document.getElementById('loginForm').onsubmit = (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const btn = document.querySelector('.btn-login');
+    
+    btn.disabled = true;
+    btn.innerHTML = "Connexion...";
+
+    setTimeout(() => {
+        localStorage.setItem('alex_courier_logged', 'true');
+        localStorage.setItem('alex_courier_email', email);
+        window.location.href = 'dashboard-coursier.html';
+    }, 1500);
+  };
+</script>
+</body>
+</html>
