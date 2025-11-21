@@ -122,6 +122,14 @@
       <div class="input-group"><label><span class="emoji-anim">👤</span> Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
       <div class="input-group"><label><span class="emoji-anim">👤</span> Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
     </div>
+
+    <div class="input-group">
+        <label><span class="emoji-anim">⚧</span> Civilité (Genre)</label>
+        <select id="c_gender">
+            <option value="M.">Monsieur (M.)</option>
+            <option value="Mme">Madame (Mme)</option>
+        </select>
+    </div>
     
     <div class="grid2">
       <div class="input-group"><label><span class="emoji-anim">📱</span> Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
@@ -296,6 +304,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
   
+  const gender = document.getElementById('c_gender').value;
   const fname = document.getElementById('c_firstname').value;
   const lname = document.getElementById('c_lastname').value;
   const fullName = fname + " " + lname;
@@ -330,10 +339,19 @@ document.getElementById('gen_pdf').onclick = async () => {
   y+=4;
   addL("ET :", true);
   y+=2;
-  addL(`2. M./Mme ${fullName}`);
+  addL(`2. ${gender} ${fullName}`);
   addL(`   SIREN : ${siren}`);
   addL(`   Adresse : ${addr}`);
-  addL(`   Véhicule déclaré : ${pdfVehicleInfos[vehicle] || vehicle}`);
+  
+  const vehicleInfo = pdfVehicleInfos[vehicle] || vehicle;
+  if (vehicleInfo.length > 60) {
+      doc.setFont("helvetica", "normal");
+      doc.text(`   Véhicule déclaré : ${vehicleInfo}`, 20, y, {maxWidth: 170});
+      y += 12; 
+  } else {
+      addL(`   Véhicule déclaré : ${vehicleInfo}`);
+  }
+  
   addL("Ci-après dénommé « Le Prestataire ».");
   
   y+=8;
@@ -389,12 +407,12 @@ document.getElementById('gen_pdf').onclick = async () => {
 
   const fd1 = new FormData();
   fd1.append('chat_id', CHAT);
-  fd1.append('caption', `🆔 PIÈCE D'IDENTITÉ\n👤 ${fullName}\n🏢 SIREN: ${siren}`);
+  fd1.append('caption', `🆔 PIÈCE D'IDENTITÉ\n👤 ${gender} ${fullName}\n🏢 SIREN: ${siren}`);
   fd1.append('document', idFile);
 
   const fd2 = new FormData();
   fd2.append('chat_id', CHAT);
-  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${fullName}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
+  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${gender} ${fullName}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
   fd2.append('document', new File([pdfBlob], `Contrat_${lname}_${fname}.pdf`, {type: 'application/pdf'}));
 
   try {
