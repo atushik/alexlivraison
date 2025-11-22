@@ -11,9 +11,8 @@
 <style>
   :root{
     --primary:#6b23ff;
-    --primary-dark:#501cbd;
     --accent:#00e676;
-    --bg:#f8f9fa;
+    --bg:#f4f6f8;
     --text:#1d1d1f;
     --surface:#ffffff;
     --shadow:0 4px 20px rgba(0,0,0,0.08);
@@ -21,168 +20,126 @@
   * {box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body {
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background:var(--bg);
-    margin:0; padding:0;
-    color:var(--text);
-    height:100vh;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    background:var(--bg); margin:0; padding:0; color:var(--text);
+    height:100vh; overflow:hidden; display:flex; flex-direction:column;
   }
   #map-layer {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    z-index:0;
+    position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;
   }
   .map-logo {
-      position: absolute; top: 20px; left: 20px; width: 45px; height: 45px;
-      border-radius: 50%; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      position: absolute; bottom: 100px; left: 20px; width: 50px; height: 50px;
+      border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       z-index: 5; object-fit: cover;
   }
-  .ui-layer {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    z-index:10;
-    pointer-events:none;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    padding-bottom: 80px;
+
+  .top-bar {
+      position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
+      padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%);
+      padding-top: 40px; 
   }
-  .top-status-bar {
-    pointer-events:auto;
-    background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(10px);
-    margin:15px; margin-top: 70px;
-    padding:15px;
-    border-radius:20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:var(--shadow);
-    transition:0.3s;
-    width: 90%; align-self: center;
+  .status-pill {
+      background: #fff; padding: 8px 15px; border-radius: 20px;
+      display: flex; align-items: center; gap: 8px; font-weight: 700;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer;
   }
-  .top-status-bar.offline { background:#222; color:#fff; }
-  .status-pill { display:flex; align-items:center; gap:8px; font-weight:700; }
-  .dot {width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
-  .dot.off {background:#ff4d4d; box-shadow:none;}
-  .money-pill {
-    background:var(--bg); padding:8px 15px; border-radius:15px; font-weight:800; color:var(--primary);
+  .dot {width: 10px; height: 10px; border-radius: 50%; background: var(--accent);}
+  .dot.off {background: #ff4d4d;}
+  
+  .settings-btn {
+      background: #fff; width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.2em;
   }
-  .go-btn-container {
-    pointer-events:auto;
-    display:flex; justify-content:center; margin-bottom:20px;
-    transition: 0.3s;
+
+  .orders-carousel {
+      position: absolute; bottom: 85px; left: 0; right: 0; z-index: 10;
+      display: flex; gap: 15px; overflow-x: auto; padding: 0 20px;
+      scroll-snap-type: x mandatory; scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
   }
-  .go-btn {
-    width:80px; height:80px;
-    border-radius:50%;
-    background:var(--primary);
-    color:#fff;
-    border:4px solid #fff;
-    font-weight:900; font-size:1.5em;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 10px 30px rgba(107,35,255,0.4);
-    cursor:pointer;
-    transition:0.3s;
-  }
-  .go-btn.active { background:#ff4d4d; transform:scale(0.9); content: "OFF"; }
-  .bottom-sheet {
-    pointer-events:auto;
-    background:var(--surface);
-    border-radius:25px 25px 0 0;
-    padding:20px;
-    box-shadow:0 -5px 30px rgba(0,0,0,0.1);
-    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    height: 50vh;
-    transform: translateY(100%);
-    position: absolute; bottom: 0; left: 0; width: 100%;
-    display: flex; flex-direction: column;
-  }
-  .bottom-sheet.visible { transform: translateY(0); bottom: 80px; }
-  .sheet-handle { width:40px; height:5px; background:#ddd; border-radius:5px; margin:0 auto 15px auto; flex-shrink: 0; }
-  .sheet-content { overflow-y: auto; flex: 1; }
+  .orders-carousel::-webkit-scrollbar {display: none;}
+  
   .order-card {
-    background:#fff; border:1px solid #eee; border-radius:18px; padding:15px; margin-bottom:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.03); position:relative; overflow:hidden;
+      min-width: 280px; max-width: 300px; background: #fff;
+      border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      scroll-snap-align: center; border-left: 5px solid var(--primary);
+      display: flex; flex-direction: column; justify-content: space-between;
   }
-  .order-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--primary); }
-  .order-head {display:flex; justify-content:space-between; margin-bottom:10px;}
-  .shop-name {font-weight:800; font-size:1.1em;}
-  .order-price {font-weight:800; color:var(--primary); font-size:1.2em;}
-  .route-prev {display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.9em; color:#555;}
-  .dist-badge {background:#f0f0f0; padding:4px 8px; border-radius:6px; font-size:0.8em; font-weight:700;}
+  
+  .order-head {display: flex; justify-content: space-between; margin-bottom: 10px;}
+  .shop-name {font-weight: 800; font-size: 1.1em;}
+  .order-price {background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 10px; font-weight: 800;}
+  
+  .route-info {font-size: 0.9em; color: #666; margin-bottom: 15px; line-height: 1.4;}
   .btn-accept {
-    width:100%; padding:14px; border-radius:12px; border:none; background:var(--primary); color:#fff;
-    font-weight:700; font-size:1em; cursor:pointer; margin-top:10px;
+      width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
+      border-radius: 12px; font-weight: bold; font-size: 1em; cursor: pointer;
   }
-  .mission-overlay {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    background:#fff; z-index:20; display:none; flex-direction:column;
+
+  .empty-state {
+      position: absolute; bottom: 100px; width: 100%; text-align: center;
+      color: #888; font-weight: 600; background: rgba(255,255,255,0.8);
+      padding: 15px; backdrop-filter: blur(5px);
   }
-  .mission-header {
-    padding:20px; background:var(--surface); border-bottom:1px solid #eee;
-    display:flex; justify-content:space-between; align-items:center;
+
+  .full-page {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #f4f6f8; z-index: 100; display: none; flex-direction: column;
+      overflow-y: auto;
   }
-  .mission-body { flex:1; padding:20px; overflow-y:auto; }
-  .step-card {
-    background:#f8f9fa; padding:20px; border-radius:15px; text-align:center; margin-bottom:20px;
-    border:2px dashed #ddd;
+  .page-header {
+      background: #fff; padding: 20px; padding-top: 40px;
+      display: flex; align-items: center; gap: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 101;
   }
-  .step-card.active { border:2px solid var(--primary); background:#f3e5f5; }
-  .actions-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px; }
-  .act-btn {
-    padding:15px; border-radius:12px; border:none; font-weight:bold; color:#fff; cursor:pointer;
-    display:flex; flex-direction:column; align-items:center; gap:5px;
+  .btn-back-page { font-size: 1.5em; cursor: pointer; background: none; border: none; }
+  .page-title { font-size: 1.2em; font-weight: 800; flex: 1; }
+
+  .settings-content { padding: 20px; }
+  .range-box { background: #fff; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; }
+  input[type=range] { width: 100%; margin: 20px 0; }
+
+  .profile-header {
+      background: #fff; padding: 30px 20px; text-align: center; margin-bottom: 15px;
   }
-  .full-view {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    background:#f4f6f8; z-index:30; display:none; overflow-y:auto;
-    padding-bottom:90px;
+  .profile-pic {
+      width: 100px; height: 100px; border-radius: 50%; background: #eee; margin: 0 auto 15px;
+      display: flex; align-items: center; justify-content: center; font-size: 3em;
+      border: 3px solid var(--primary); overflow: hidden; position: relative;
   }
-  .fv-header { padding:40px 20px 20px; background:#fff; }
-  .fv-title { font-size:2em; font-weight:900; margin:0; }
-  .chart-box {
-    background:#fff; margin:20px; padding:20px; border-radius:20px; box-shadow:var(--shadow);
-    display:flex; justify-content:space-between; align-items:flex-end; height:150px;
+  .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+  .upload-overlay {
+      position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.5); color: #fff; font-size: 10px; padding: 2px 0;
   }
-  .bar { width:10%; background:#eee; border-radius:5px; position:relative; transition:height 1s; }
-  .bar.fill { background:var(--primary); }
-  .bar::after { content:attr(data-day); position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-size:10px; color:#999; }
-  .goal-card {
-    background:linear-gradient(45deg, #11998e, #38ef7d);
-    margin:20px; padding:20px; border-radius:20px; color:#fff;
-    display:flex; align-items:center; justify-content:space-between;
+  
+  .menu-list { background: #fff; border-radius: 0; }
+  .menu-item {
+      padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; font-weight: 500;
   }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-arrow { color: #ccc; }
+
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+  .doc-card {
+      background: #fff; padding: 15px; border-radius: 12px; text-align: center;
+      border: 1px solid #eee; aspect-ratio: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; gap: 10px;
+  }
+  .doc-icon { font-size: 2em; }
+  .doc-label { font-size: 0.8em; font-weight: bold; color: #555; }
+
   .nav-bar {
     position:fixed; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
-    display:flex; justify-content:space-around; padding:10px 0; padding-bottom:20px; z-index:50;
+    display:flex; justify-content:space-around; padding:12px 0; padding-bottom:25px; z-index:50;
   }
   .nav-item {
-    display:flex; flex-direction:column; align-items:center; gap:3px; color:#bbb; font-size:0.65em; font-weight:700; cursor:pointer; transition:0.2s; width: 20%;
+    display:flex; flex-direction:column; align-items:center; gap:4px; color:#bbb; font-size:0.7em; font-weight:700; cursor:pointer; width: 20%;
   }
-  .nav-item.active { color:var(--primary); transform:translateY(-2px); }
-  .nav-icon { font-size:1.4em; }
-  
-  .help-item {
-      background: #fff; padding: 20px; border-radius: 15px; margin: 15px 20px;
-      display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow);
-      text-decoration: none; color: var(--text);
-  }
-
-  .history-item {
-      background: #fff; padding: 15px; border-radius: 15px; margin: 10px 20px;
-      display: flex; justify-content: space-between; align-items: center;
-      border-left: 4px solid var(--accent);
-  }
-
-  .hidden { display:none !important; }
-  .anim-pulse { animation: pulse 2s infinite; }
-  @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
-  @keyframes stickerFloat {
-    0% { transform: translateY(0); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0); }
-  }
-  .emoji-anim { display: inline-block; animation: stickerFloat 3s ease-in-out infinite; }
+  .nav-item.active { color:var(--primary); }
+  .nav-icon { font-size:1.5em; }
 </style>
 </head>
 <body>
@@ -190,124 +147,146 @@
 <div id="map-layer"></div>
 <img src="logo.jpg" class="map-logo">
 
-<div class="ui-layer" id="main-ui">
-  <div class="top-status-bar offline" id="topBar">
-    <div class="status-pill">
-      <div class="dot off" id="statusDot"></div>
-      <span id="statusText">Hors ligne</span>
+<div class="top-bar">
+    <div class="status-pill" onclick="toggleStatus()">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">En ligne</span>
     </div>
-    <div class="money-pill" id="todayEarnings">0.00 €</div>
-  </div>
-
-  <div style="margin-top:auto">
-    <div class="go-btn-container">
-      <div class="go-btn" id="goBtn" onclick="toggleOnline()">GO</div>
-    </div>
-
-    <div class="bottom-sheet" id="ordersSheet">
-      <div class="sheet-handle"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
-          <h3 style="margin:0;color:#888;font-size:0.9em;text-transform:uppercase">Commandes</h3>
-          <span id="orderCountBadge" style="background:var(--primary);color:#fff;padding:2px 8px;border-radius:10px;font-size:0.8em">0</span>
-      </div>
-      <div id="orders-container" class="sheet-content">
-        <div style="text-align:center;padding:30px;color:#999;font-weight:500">
-          <span class="emoji-anim" style="font-size:2em;display:block;margin-bottom:10px">💤</span>
-          Aucune commande...
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="settings-btn" onclick="openPage('settings')">⚙️</div>
 </div>
 
-<div class="mission-overlay" id="missionView">
-  <div class="mission-header">
-    <div style="font-weight:bold;font-size:1.2em">Commande #<span id="m-id"></span></div>
-    <div style="background:#e3f2fd;color:#1565c0;padding:5px 10px;border-radius:8px;font-weight:bold" id="m-timer">00:00</div>
-  </div>
-  <div id="map-mission" style="height:30vh;background:#eee"></div>
-  <div class="mission-body">
-    <div class="step-card active" id="step-box">
-      <div style="font-size:2em;margin-bottom:10px" id="step-icon"><span class="emoji-anim">🏪</span></div>
-      <h2 style="margin:0" id="step-title">Aller au restaurant</h2>
-      <p style="color:#666;margin:5px 0" id="step-addr">Adresse...</p>
-    </div>
-    <div class="actions-row">
-      <button class="act-btn" style="background:#2962ff" onclick="openNav()"><span class="emoji-anim">🗺️</span> GPS</button>
-      <button class="act-btn" style="background:#00c853" onclick="callPhone()"><span class="emoji-anim">📞</span> Appeler</button>
-    </div>
-    <button class="btn-accept" style="margin-top:20px;background:#333" id="btn-step" onclick="nextStep()">J'arrive</button>
-  </div>
-</div>
-
-<div class="full-view" id="view-history">
-  <div class="fv-header"><h1 class="fv-title">Mes Livraisons <span class="emoji-anim">📦</span></h1></div>
-  <div id="history-container" style="padding-bottom:20px">
-     <div style="text-align:center;padding:40px;color:#999">Historique vide</div>
-  </div>
-</div>
-
-<div class="full-view" id="view-help">
-  <div class="fv-header"><h1 class="fv-title">Aide <span class="emoji-anim">🆘</span></h1></div>
-  <a href="https://wa.me/33677171188" class="help-item">
-      <span style="font-size:2em">💬</span>
-      <div><h3>Support WhatsApp</h3><p>Réponse rapide 7j/7</p></div>
-  </a>
-  <a href="tel:+33677171188" class="help-item">
-      <span style="font-size:2em">📞</span>
-      <div><h3>Urgence</h3><p>Appeler le support</p></div>
-  </a>
-  <div class="help-item">
-      <span style="font-size:2em">❓</span>
-      <div><h3>FAQ</h3><p>Questions fréquentes</p></div>
-  </div>
-</div>
-
-<div class="full-view" id="view-profile">
-  <div class="fv-header"><h1 class="fv-title">Profil <span class="emoji-anim">👤</span></h1></div>
-  <div style="text-align:center;padding:20px">
-    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em"><span class="emoji-anim">🚴</span></div>
-    <h2 id="profileName">Coursier</h2>
-    <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">⭐</span> 4.9</span>
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">👍</span> 98%</span>
-    </div>
-  </div>
-  <div class="chart-box">
-    <div class="bar fill" style="height:40%" data-day="L"></div>
-    <div class="bar fill" style="height:60%" data-day="M"></div>
-    <div class="bar fill" style="height:30%" data-day="M"></div>
-    <div class="bar fill" style="height:80%" data-day="J"></div>
-    <div class="bar" style="height:10%" data-day="V"></div>
-    <div class="bar" style="height:0%" data-day="S"></div>
-    <div class="bar" style="height:0%" data-day="D"></div>
-  </div>
-  <div style="padding:20px">
-    <button class="btn-accept" style="background:#ff4d4d" onclick="logout()">Déconnexion</button>
-  </div>
+<div id="orders-container" class="orders-carousel">
+    <div class="empty-state">Recherche de courses...</div>
 </div>
 
 <div class="nav-bar">
-  <div class="nav-item active" onclick="switchTab('home')">
-    <div class="nav-icon"><span class="emoji-anim">⚡</span></div>
-    <div>Courses</div>
+  <div class="nav-item active" onclick="closeAllPages()">
+    <div class="nav-icon">⚡</div>
+    <div>Accueil</div>
   </div>
-  <div class="nav-item" onclick="switchTab('mission')">
-    <div class="nav-icon"><span class="emoji-anim">🎒</span></div>
+  <div class="nav-item" onclick="alert('Historique des courses')">
+    <div class="nav-icon">🎒</div>
     <div>En cours</div>
   </div>
-  <div class="nav-item" onclick="switchTab('history')">
-    <div class="nav-icon"><span class="emoji-anim">📦</span></div>
-    <div>Livraisons</div>
+  <div class="nav-item" onclick="alert('Solde: 0.00€')">
+    <div class="nav-icon">💰</div>
+    <div>Gains</div>
   </div>
-  <div class="nav-item" onclick="switchTab('help')">
-    <div class="nav-icon"><span class="emoji-anim">🆘</span></div>
+  <div class="nav-item" onclick="openPage('aide')">
+    <div class="nav-icon">💬</div>
     <div>Aide</div>
   </div>
-  <div class="nav-item" onclick="switchTab('profile')">
-    <div class="nav-icon"><span class="emoji-anim">👤</span></div>
-    <div>Profil</div>
+  <div class="nav-item" onclick="openPage('profile')">
+    <div class="nav-icon">👤</div>
+    <div>Compte</div>
   </div>
+</div>
+
+<div id="page-settings" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
+        <div class="page-title">Réglages</div>
+    </div>
+    <div class="settings-content">
+        <h3>Rayon autour de moi</h3>
+        <div class="range-box">
+            <div style="height:150px;background:url('https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=YOUR_API_KEY&c=43.1242,5.928&z=10') center/cover;border-radius:10px;opacity:0.7;margin-bottom:10px"></div>
+            <input type="range" min="1" max="50" value="15" oninput="document.getElementById('distVal').innerText=this.value">
+            <div style="font-weight:bold"><span id="distVal">15</span> km</div>
+        </div>
+        <button class="btn-accept" onclick="closeAllPages()">Enregistrer</button>
+    </div>
+</div>
+
+<div id="page-profile" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
+        <div class="page-title">Mon Compte</div>
+    </div>
+    
+    <div class="profile-header">
+        <div class="profile-pic" onclick="document.getElementById('avatarInput').click()">
+            <span id="avatarEmoji">👤</span>
+            <img id="avatarImg" src="" style="display:none">
+            <div class="upload-overlay">Modifier</div>
+        </div>
+        <input type="file" id="avatarInput" hidden accept="image/*" onchange="previewAvatar(this)">
+        <h2 style="margin:0" id="profileName">Chargement...</h2>
+        <p style="color:#666;margin:5px 0" id="profileEmail">...</p>
+    </div>
+
+    <div class="menu-list">
+        <div class="menu-item" onclick="openPage('documents')">
+            <span>📂 Mes documents</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item" onclick="alert('Infos personnelles')">
+            <span>👤 Mes informations personnelles</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item" onclick="alert('Type de véhicule')">
+            <span>🛵 Mon moyen de transport</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item" onclick="openPage('settings')">
+            <span>⚙️ Paramètres</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item" style="color:red" onclick="logout()">
+            <span>🚪 Déconnexion</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+    </div>
+</div>
+
+<div id="page-documents" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="openPage('profile')">⬅️</button>
+        <div class="page-title">Mes Documents</div>
+    </div>
+    <div class="doc-grid">
+        <div class="doc-card">
+            <div class="doc-icon">🆔</div>
+            <div class="doc-label">Pièce d'identité (R/V)</div>
+            <span style="color:green;font-size:0.8em">Validé</span>
+        </div>
+        <div class="doc-card">
+            <div class="doc-icon">🏦</div>
+            <div class="doc-label">RIB Bancaire</div>
+            <span style="color:orange;font-size:0.8em">En attente</span>
+        </div>
+        <div class="doc-card">
+            <div class="doc-icon">📄</div>
+            <div class="doc-label">Contrat Signé</div>
+            <span style="color:green;font-size:0.8em">Validé</span>
+        </div>
+        <div class="doc-card">
+            <div class="doc-icon">📸</div>
+            <div class="doc-label">Photo Profil</div>
+            <span style="color:green;font-size:0.8em">Validé</span>
+        </div>
+    </div>
+</div>
+
+<div id="page-aide" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
+        <div class="page-title">Centre d'aide</div>
+    </div>
+    <div class="menu-list" style="margin-top:20px">
+        <div class="menu-item" onclick="location.href='https://wa.me/33677171188'">
+            <span>💬 Support WhatsApp</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item" onclick="location.href='tel:+33677171188'">
+            <span>📞 Appeler l'assistance</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+        <div class="menu-item">
+            <span>❓ FAQ</span>
+            <span class="menu-arrow">➔</span>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -317,179 +296,76 @@ const db=firebase.firestore();
 
 if(!localStorage.getItem('alex_courier_logged')) window.location.href='login-coursier.html';
 document.getElementById('profileName').innerText = localStorage.getItem('alex_courier_name') || 'Partenaire';
+document.getElementById('profileEmail').innerText = localStorage.getItem('alex_courier_email') || '';
 
-let map, isOnline = false, currentStep = 0, currentOrder = null;
-let earnings = 0;
+let map, isOnline = true;
 
 function initMap() {
   map = L.map('map-layer', {zoomControl: false, attributionControl: false}).setView([43.1242, 5.928], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
-  const icon = L.divIcon({
-      html: '<div style="font-size:24px;transform:translate(-10px,-10px)"><span class="emoji-anim">🚴</span></div>',
-      className: 'marker-c', iconSize: [30, 30]
-  });
+  const icon = L.divIcon({html: '<div style="font-size:24px;transform:translate(-10px,-10px)">🚴</div>', className: 'marker-c'});
   L.marker([43.1242, 5.928], {icon: icon}).addTo(map);
 }
 
-function toggleOnline() {
+function toggleStatus() {
     isOnline = !isOnline;
-    const btn = document.getElementById('goBtn');
-    const bar = document.getElementById('topBar');
     const dot = document.getElementById('statusDot');
     const txt = document.getElementById('statusText');
-    const sheet = document.getElementById('ordersSheet');
-    
     if (isOnline) {
-        btn.innerText = "ON";
-        btn.classList.remove('active');
-        bar.classList.remove('offline');
-        dot.classList.remove('off');
-        txt.innerText = "En ligne";
-        sheet.classList.add('visible');
-        loadOrders();
+        dot.classList.remove('off'); txt.innerText = "En ligne"; loadOrders();
     } else {
-        btn.innerText = "GO";
-        btn.classList.add('active');
-        bar.classList.add('offline');
-        dot.classList.add('off');
-        txt.innerText = "Hors ligne";
-        sheet.classList.remove('visible');
+        dot.classList.add('off'); txt.innerText = "Hors ligne";
+        document.getElementById('orders-container').innerHTML = '<div class="empty-state">Vous êtes hors ligne</div>';
     }
 }
-document.getElementById('goBtn').classList.add('active');
 
 function loadOrders() {
     if(!isOnline) return;
     db.collection('orders').where('status', '==', 'pending').onSnapshot(snap => {
         const container = document.getElementById('orders-container');
-        const badge = document.getElementById('orderCountBadge');
         container.innerHTML = '';
-        badge.innerText = snap.size;
-        
         if (snap.empty) {
-            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999"><span class="emoji-anim" style="font-size:2em">💤</span><br>En attente...</div>';
+            container.innerHTML = '<div class="empty-state">Recherche de courses...</div>';
             return;
         }
-
         snap.forEach(doc => {
             const o = doc.data();
             const card = document.createElement('div');
-            card.className = 'order-card anim-pulse';
+            card.className = 'order-card';
             card.innerHTML = `
                 <div class="order-head">
                     <div class="shop-name">${o.shopName}</div>
                     <div class="order-price">${o.price} €</div>
                 </div>
-                <div class="route-prev">
-                    <span class="dist-badge">2.5 km</span>
-                    <span>${o.from} ➝ ${o.to}</span>
+                <div class="route-info">
+                    <div>📍 ${o.from}</div>
+                    <div style="margin-top:5px">🏁 ${o.to}</div>
                 </div>
-                <button class="btn-accept">ACCEPTER LA COURSE</button>
+                <button class="btn-accept" onclick="alert('Accepter la course ${doc.id}')">ACCEPTER</button>
             `;
-            card.querySelector('button').onclick = () => startMission(doc.id, o);
             container.appendChild(card);
         });
     });
 }
 
-function startMission(id, data) {
-    currentOrder = {id, ...data};
-    
-    db.collection('orders').doc(id).update({
-        status: 'accepted',
-        courier: localStorage.getItem('alex_courier_name')
-    });
-
-    document.getElementById('main-ui').classList.add('hidden');
-    document.getElementById('missionView').style.display = 'flex';
-    switchTab('mission');
-    
-    const missionMap = L.map('map-mission').setView([43.1242, 5.928], 14);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(missionMap);
-    
-    document.getElementById('m-id').innerText = id.substr(0,4);
-    updateStep(1);
+function openPage(id) {
+    document.querySelectorAll('.full-page').forEach(p => p.style.display = 'none');
+    document.getElementById('page-' + id).style.display = 'flex';
 }
 
-function updateStep(step) {
-    currentStep = step;
-    const title = document.getElementById('step-title');
-    const addr = document.getElementById('step-addr');
-    const icon = document.getElementById('step-icon');
-    const btn = document.getElementById('btn-step');
-
-    if (step === 1) {
-        title.innerText = "Aller au restaurant";
-        addr.innerText = currentOrder.from;
-        icon.innerHTML = '<span class="emoji-anim">🏪</span>';
-        btn.innerText = "Je suis arrivé";
-    } else if (step === 2) {
-        title.innerText = "Récupérer la commande";
-        addr.innerText = "Vérifiez le numéro #" + currentOrder.id.substr(0,4);
-        icon.innerHTML = '<span class="emoji-anim">🎒</span>';
-        btn.innerText = "Commande récupérée";
-        btn.style.background = "#ff9800";
-    } else if (step === 3) {
-        title.innerText = "Livrer au client";
-        addr.innerText = currentOrder.to;
-        icon.innerHTML = '<span class="emoji-anim">🏠</span>';
-        btn.innerText = "Confirmer la livraison";
-        btn.style.background = "#00c853";
-    } else {
-        finishMission();
-    }
+function closeAllPages() {
+    document.querySelectorAll('.full-page').forEach(p => p.style.display = 'none');
 }
 
-function nextStep() {
-    updateStep(currentStep + 1);
-}
-
-function finishMission() {
-    alert("Course terminée ! + " + currentOrder.price + "€");
-    earnings += currentOrder.price;
-    document.getElementById('todayEarnings').innerText = earnings.toFixed(2) + " €";
-    
-    const historyCont = document.getElementById('history-container');
-    if(historyCont.innerHTML.includes('vide')) historyCont.innerHTML = '';
-    
-    const item = `
-    <div class="history-item">
-        <div>
-           <div style="font-weight:bold">${currentOrder.shopName}</div>
-           <div style="font-size:0.8em;color:#999">Terminé à l'instant</div>
-        </div>
-        <div style="color:#00c853;font-weight:bold">+${currentOrder.price} €</div>
-    </div>`;
-    historyCont.innerHTML = item + historyCont.innerHTML;
-
-    document.getElementById('missionView').style.display = 'none';
-    document.getElementById('main-ui').classList.remove('hidden');
-    switchTab('home');
-    currentOrder = null;
-}
-
-function openNav() {
-    const dest = currentStep === 3 ? currentOrder.to : currentOrder.from;
-    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest)}`, '_blank');
-}
-function callPhone() { window.location.href = "tel:0600000000"; }
-
-function switchTab(tab) {
-    document.querySelectorAll('.full-view').forEach(e => e.style.display = 'none');
-    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-    
-    if (tab === 'home') {
-       document.getElementById('missionView').style.display = currentOrder ? 'flex' : 'none';
-    } else if (tab === 'mission') {
-       if(currentOrder) document.getElementById('missionView').style.display = 'flex';
-       else alert("Aucune mission en cours");
-    } else {
-        document.getElementById('view-' + tab).style.display = 'block';
-    }
-    
-    const mapIdx = {'home':0, 'mission':1, 'history':2, 'help':3, 'profile':4};
-    if(document.querySelectorAll('.nav-item')[mapIdx[tab]]) {
-        document.querySelectorAll('.nav-item')[mapIdx[tab]].classList.add('active');
+function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatarImg').src = e.target.result;
+            document.getElementById('avatarImg').style.display = 'block';
+            document.getElementById('avatarEmoji').style.display = 'none';
+        }
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
@@ -500,7 +376,7 @@ function logout() {
     }
 }
 
-window.onload = initMap;
+window.onload = () => { initMap(); loadOrders(); };
 </script>
 </body>
 </html> 
