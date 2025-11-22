@@ -30,12 +30,10 @@
     display:flex;
     flex-direction:column;
   }
-
   #map-layer {
     position:absolute; top:0; left:0; width:100%; height:100%;
     z-index:0;
   }
-
   .ui-layer {
     position:absolute; top:0; left:0; width:100%; height:100%;
     z-index:10;
@@ -44,7 +42,6 @@
     flex-direction:column;
     justify-content:space-between;
   }
-
   .top-status-bar {
     pointer-events:auto;
     background:rgba(255,255,255,0.95);
@@ -59,18 +56,15 @@
     transition:0.3s;
   }
   .top-status-bar.offline { background:#333; color:#fff; }
-  
   .status-pill {
     display:flex; align-items:center; gap:8px;
     font-weight:700; font-size:1em;
   }
   .dot {width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
   .dot.off {background:#ff4d4d; box-shadow:none;}
-  
   .money-pill {
     background:var(--bg); padding:8px 15px; border-radius:15px; font-weight:800; color:var(--primary);
   }
-
   .go-btn-container {
     pointer-events:auto;
     display:flex; justify-content:center; margin-bottom:20px;
@@ -88,7 +82,6 @@
     transition:0.3s;
   }
   .go-btn.active { background:#ff4d4d; transform:scale(0.9); }
-
   .bottom-sheet {
     pointer-events:auto;
     background:var(--surface);
@@ -103,7 +96,6 @@
   .sheet-handle {
     width:40px; height:5px; background:#ddd; border-radius:5px; margin:0 auto 15px auto;
   }
-
   .order-card {
     background:#fff; border:1px solid #eee; border-radius:18px; padding:15px; margin-bottom:15px;
     box-shadow:0 2px 10px rgba(0,0,0,0.03); position:relative; overflow:hidden;
@@ -114,15 +106,12 @@
   .order-head {display:flex; justify-content:space-between; margin-bottom:10px;}
   .shop-name {font-weight:800; font-size:1.1em;}
   .order-price {font-weight:800; color:var(--primary); font-size:1.2em;}
-  
   .route-prev {display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.9em; color:#555;}
   .dist-badge {background:#f0f0f0; padding:4px 8px; border-radius:6px; font-size:0.8em; font-weight:700;}
-
   .btn-accept {
     width:100%; padding:14px; border-radius:12px; border:none; background:var(--primary); color:#fff;
     font-weight:700; font-size:1em; cursor:pointer; margin-top:10px;
   }
-
   .mission-overlay {
     position:absolute; top:0; left:0; width:100%; height:100%;
     background:#fff; z-index:20; display:none; flex-direction:column;
@@ -137,13 +126,11 @@
     border:2px dashed #ddd;
   }
   .step-card.active { border:2px solid var(--primary); background:#f3e5f5; }
-  
   .actions-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px; }
   .act-btn {
     padding:15px; border-radius:12px; border:none; font-weight:bold; color:#fff; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:5px;
   }
-
   .full-view {
     position:absolute; top:0; left:0; width:100%; height:100%;
     background:#f4f6f8; z-index:30; display:none; overflow-y:auto;
@@ -151,7 +138,6 @@
   }
   .fv-header { padding:40px 20px 20px; background:#fff; }
   .fv-title { font-size:2em; font-weight:900; margin:0; }
-  
   .chart-box {
     background:#fff; margin:20px; padding:20px; border-radius:20px; box-shadow:var(--shadow);
     display:flex; justify-content:space-between; align-items:flex-end; height:150px;
@@ -159,13 +145,11 @@
   .bar { width:10%; background:#eee; border-radius:5px; position:relative; transition:height 1s; }
   .bar.fill { background:var(--primary); }
   .bar::after { content:attr(data-day); position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-size:10px; color:#999; }
-
   .goal-card {
     background:linear-gradient(45deg, #11998e, #38ef7d);
     margin:20px; padding:20px; border-radius:20px; color:#fff;
     display:flex; align-items:center; justify-content:space-between;
   }
-
   .nav-bar {
     position:absolute; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
@@ -176,10 +160,22 @@
   }
   .nav-item.active { color:var(--primary); transform:translateY(-2px); }
   .nav-icon { font-size:1.6em; }
-
   .hidden { display:none !important; }
   .anim-pulse { animation: pulse 2s infinite; }
   @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
+  @keyframes stickerFloat {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    50% { transform: translateY(-4px) rotate(5deg) scale(1.1); }
+    100% { transform: translateY(0) rotate(0deg) scale(1); }
+  }
+  .emoji-anim {
+    display: inline-block;
+    animation: stickerFloat 3s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+  .nav-bar .nav-item:nth-child(1) .emoji-anim { animation-delay: 0s; }
+  .nav-bar .nav-item:nth-child(2) .emoji-anim { animation-delay: 0.2s; }
+  .nav-bar .nav-item:nth-child(3) .emoji-anim { animation-delay: 0.4s; }
 </style>
 </head>
 <body>
@@ -205,7 +201,7 @@
       <h3 style="margin:0 0 15px 0;color:#888;font-size:0.9em;text-transform:uppercase">Commandes disponibles</h3>
       <div id="orders-container">
         <div style="text-align:center;padding:30px;color:#999;font-weight:500">
-          <span style="font-size:2em;display:block;margin-bottom:10px">💤</span>
+          <span class="emoji-anim" style="font-size:2em;display:block;margin-bottom:10px">💤</span>
           En attente de commandes...
         </div>
       </div>
@@ -221,17 +217,17 @@
   <div id="map-mission" style="height:30vh;background:#eee"></div>
   <div class="mission-body">
     <div class="step-card active" id="step-box">
-      <div style="font-size:2em;margin-bottom:10px" id="step-icon">🏪</div>
+      <div style="font-size:2em;margin-bottom:10px" id="step-icon"><span class="emoji-anim">🏪</span></div>
       <h2 style="margin:0" id="step-title">Aller au restaurant</h2>
       <p style="color:#666;margin:5px 0" id="step-addr">Adresse...</p>
     </div>
 
     <div class="actions-row">
       <button class="act-btn" style="background:#2962ff" onclick="openNav()">
-        <span>🗺️</span> GPS
+        <span class="emoji-anim">🗺️</span> GPS
       </button>
       <button class="act-btn" style="background:#00c853" onclick="callPhone()">
-        <span>📞</span> Appeler
+        <span class="emoji-anim">📞</span> Appeler
       </button>
     </div>
     
@@ -250,7 +246,7 @@
       <div style="font-size:0.9em;opacity:0.9">Objectif du jour</div>
       <div style="font-size:1.5em;font-weight:800">85€ / 100€</div>
     </div>
-    <div style="font-size:2.5em">🎯</div>
+    <div style="font-size:2.5em"><span class="emoji-anim">🎯</span></div>
   </div>
   <div class="chart-box">
     <div class="bar fill" style="height:40%" data-day="L"></div>
@@ -272,19 +268,24 @@
     <h1 class="fv-title">Profil</h1>
   </div>
   <div style="text-align:center;padding:20px">
-    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em">🚴</div>
+    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em">
+        <span class="emoji-anim">🚴</span>
+    </div>
     <h2 id="profileName">Coursier</h2>
     <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold">⭐ 4.9</span>
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold">👍 98%</span>
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">⭐</span> 4.9</span>
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">👍</span> 98%</span>
     </div>
   </div>
   <div style="padding:20px">
     <div class="order-card">
-      <div class="order-head"><span>Véhicule</span><span>🛵 Scooter</span></div>
+      <div class="order-head"><span>Véhicule</span><span><span class="emoji-anim">🛵</span> Scooter</span></div>
     </div>
     <div class="order-card">
       <div class="order-head"><span>Documents</span><span style="color:green">Validés</span></div>
+    </div>
+    <div class="order-card" onclick="alert('Support: +33677171188')">
+        <div class="order-head"><span>Aide</span><span><span class="emoji-anim">📞</span></span></div>
     </div>
     <button class="btn-accept" style="background:#ff4d4d" onclick="logout()">Déconnexion</button>
   </div>
@@ -292,15 +293,15 @@
 
 <div class="nav-bar">
   <div class="nav-item active" onclick="switchTab('home')">
-    <div class="nav-icon">⚡</div>
+    <div class="nav-icon"><span class="emoji-anim">⚡</span></div>
     <div>Mission</div>
   </div>
   <div class="nav-item" onclick="switchTab('wallet')">
-    <div class="nav-icon">📊</div>
+    <div class="nav-icon"><span class="emoji-anim">📊</span></div>
     <div>Gains</div>
   </div>
   <div class="nav-item" onclick="switchTab('profile')">
-    <div class="nav-icon">👤</div>
+    <div class="nav-icon"><span class="emoji-anim">👤</span></div>
     <div>Profil</div>
   </div>
 </div>
@@ -320,7 +321,7 @@ function initMap() {
   map = L.map('map-layer', {zoomControl: false}).setView([43.1242, 5.928], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
   const icon = L.divIcon({
-      html: '<div style="font-size:24px;transform:translate(-10px,-10px)">🚴</div>',
+      html: '<div style="font-size:24px;transform:translate(-10px,-10px)"><span class="emoji-anim">🚴</span></div>',
       className: 'marker-c', iconSize: [30, 30]
   });
   L.marker([43.1242, 5.928], {icon: icon}).addTo(map);
@@ -410,18 +411,18 @@ function updateStep(step) {
     if (step === 1) {
         title.innerText = "Aller au restaurant";
         addr.innerText = currentOrder.from;
-        icon.innerText = "🏪";
+        icon.innerHTML = '<span class="emoji-anim">🏪</span>';
         btn.innerText = "Je suis arrivé";
     } else if (step === 2) {
         title.innerText = "Récupérer la commande";
         addr.innerText = "Vérifiez le numéro #" + currentOrder.id.substr(0,4);
-        icon.innerText = "🎒";
+        icon.innerHTML = '<span class="emoji-anim">🎒</span>';
         btn.innerText = "Commande récupérée";
         btn.style.background = "#ff9800";
     } else if (step === 3) {
         title.innerText = "Livrer au client";
         addr.innerText = currentOrder.to;
-        icon.innerText = "🏠";
+        icon.innerHTML = '<span class="emoji-anim">🏠</span>';
         btn.innerText = "Confirmer la livraison";
         btn.style.background = "#00c853";
     } else {
@@ -448,7 +449,7 @@ function finishMission() {
 
 function openNav() {
     const dest = currentStep === 3 ? currentOrder.to : currentOrder.from;
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`, '_blank');
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest)}`, '_blank');
 }
 function callPhone() { window.location.href = "tel:0600000000"; }
 
