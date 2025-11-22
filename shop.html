@@ -166,7 +166,6 @@
     padding: 12px 0; border-bottom: 1px solid #f9f9f9;
   }
   .opt-label { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-  .opt-img { width: 35px; height: 35px; object-fit: contain; }
   .custom-cb {
     width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
@@ -204,6 +203,7 @@
   .loader { text-align: center; padding: 40px; color: #888; }
   .anim-back { display: inline-block; animation: backBounce 1.5s infinite; }
   @keyframes backBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -240,51 +240,53 @@
         <div class="modal-base-price" id="m-price">0,00 €</div>
 
         <form id="optionsForm">
-            <div class="option-section">
-                <div class="opt-header">Seul ou en menu ? <span class="tag">OBLIGATOIRE</span></div>
-                <label class="opt-item">
-                    <span class="opt-label"><img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="opt-img"> Seul</span>
-                    <input type="radio" name="type" value="0" checked onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
-                <label class="opt-item">
-                    <span class="opt-label"><img src="https://cdn-icons-png.flaticon.com/512/2738/2738730.png" class="opt-img"> Menu (+2.50€)</span>
-                    <input type="radio" name="type" value="2.50" onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
-            </div>
+            <div id="food-options">
+                <div class="option-section">
+                    <div class="opt-header">Seul ou en menu ? <span class="tag">OBLIGATOIRE</span></div>
+                    <label class="opt-item">
+                        <span class="opt-label">🍔 Seul</span>
+                        <input type="radio" name="type" value="0" checked onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                    <label class="opt-item">
+                        <span class="opt-label">🍟🥤 Menu (+2.50€)</span>
+                        <input type="radio" name="type" value="2.50" onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                </div>
 
-            <div class="option-section">
-                <div class="opt-header">Choisis ta sauce 🌶️ <span class="tag">1 à 2 MAX</span></div>
-                <div id="sauces-list"></div>
-            </div>
+                <div class="option-section">
+                    <div class="opt-header">Choisis ta sauce 🌶️ <span class="tag">1 à 2 MAX</span></div>
+                    <div id="sauces-list"></div>
+                </div>
 
-            <div class="option-section">
-                <div class="opt-header">Enlever un ingrédient ? 🥗 <span class="tag">OPTIONNEL</span></div>
-                <label class="opt-item">
-                    <span class="opt-label">🚫 Sans Oignons</span>
-                    <input type="checkbox" class="opt-ing" onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
-                <label class="opt-item">
-                    <span class="opt-label">🚫 Sans Tomate</span>
-                    <input type="checkbox" class="opt-ing" onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
-            </div>
+                <div class="option-section">
+                    <div class="opt-header">Enlever un ingrédient ? 🥗 <span class="tag">OPTIONNEL</span></div>
+                    <label class="opt-item">
+                        <span class="opt-label">🚫 Sans Oignons</span>
+                        <input type="checkbox" class="opt-ing" onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                    <label class="opt-item">
+                        <span class="opt-label">🚫 Sans Tomate</span>
+                        <input type="checkbox" class="opt-ing" onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                </div>
 
-             <div class="option-section">
-                <div class="opt-header">Envie d'un supplément ? 🧀 <span class="tag">OPTIONNEL</span></div>
-                <label class="opt-item">
-                    <span class="opt-label"><img src="https://cdn-icons-png.flaticon.com/512/4507/4507593.png" class="opt-img"> Cheddar (+1.00€)</span>
-                    <input type="checkbox" class="opt-sup" value="1.00" onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
-                <label class="opt-item">
-                    <span class="opt-label"><img src="https://cdn-icons-png.flaticon.com/512/7293/7293295.png" class="opt-img"> Bacon (+1.50€)</span>
-                    <input type="checkbox" class="opt-sup" value="1.50" onchange="calcTotal()">
-                    <div class="custom-cb"></div>
-                </label>
+                 <div class="option-section">
+                    <div class="opt-header">Envie d'un supplément ? 🧀 <span class="tag">OPTIONNEL</span></div>
+                    <label class="opt-item">
+                        <span class="opt-label">🧀 Cheddar (+1.00€)</span>
+                        <input type="checkbox" class="opt-sup" value="1.00" onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                    <label class="opt-item">
+                        <span class="opt-label">🥓 Bacon (+1.50€)</span>
+                        <input type="checkbox" class="opt-sup" value="1.50" onchange="calcTotal()">
+                        <div class="custom-cb"></div>
+                    </label>
+                </div>
             </div>
         </form>
     </div>
@@ -313,15 +315,15 @@ let currentProduct = null;
 let quantity = 1;
 let basePrice = 0;
 
-// Sauces with better icons
 const sauces = [
-    {name: "Mayonnaise", img: "https://cdn-icons-png.flaticon.com/128/11460/11460235.png"},
-    {name: "Ketchup", img: "https://cdn-icons-png.flaticon.com/128/706/706164.png"},
-    {name: "Algérienne", img: "https://cdn-icons-png.flaticon.com/128/858/858354.png"},
-    {name: "Blanche", img: "https://cdn-icons-png.flaticon.com/128/3082/3082042.png"},
-    {name: "Curry", img: "https://cdn-icons-png.flaticon.com/128/415/415738.png"},
-    {name: "Biggy", img: "https://cdn-icons-png.flaticon.com/128/3075/3075977.png"},
-    {name: "Fish", img: "https://cdn-icons-png.flaticon.com/128/3062/3062634.png"}
+    {name: "Mayonnaise", icon: "⚪️"},
+    {name: "Ketchup", icon: "🍅"},
+    {name: "Algérienne", icon: "🧅"},
+    {name: "Blanche", icon: "🥛"},
+    {name: "Curry", icon: "🍛"},
+    {name: "Biggy", icon: "🍔"},
+    {name: "Fish", icon: "🐟"},
+    {name: "Samouraï", icon: "🌶️"}
 ];
 
 async function init(){
@@ -330,8 +332,7 @@ async function init(){
         sauceCont.innerHTML += `
         <label class="opt-item">
             <div class="opt-label">
-                <img src="${s.img}" class="opt-img">
-                ${s.name}
+                <span style="font-size:1.2em">${s.icon}</span> ${s.name}
             </div>
             <input type="checkbox" name="sauce" class="opt-sauce">
             <div class="custom-cb"></div>
@@ -376,8 +377,16 @@ function openProduct(name, desc, price, img){
     document.getElementById('m-price').innerText = price + " €";
     document.getElementById('m-img').src = img;
     document.getElementById('qtyVal').innerText = "1";
-    
     document.getElementById('optionsForm').reset();
+    
+    const isFood = !name.toLowerCase().includes('boisson') && !name.toLowerCase().includes('coca') && !name.toLowerCase().includes('eau') && !name.toLowerCase().includes('pepsi') && !name.toLowerCase().includes('schweppes') && !name.toLowerCase().includes('dessert') && !name.toLowerCase().includes('tiramisu');
+    
+    const foodOptions = document.getElementById('food-options');
+    if(isFood) {
+        foodOptions.classList.remove('hidden');
+    } else {
+        foodOptions.classList.add('hidden');
+    }
     
     calcTotal();
     document.getElementById('productModal').style.display = 'flex';
@@ -397,12 +406,15 @@ function changeQty(delta){
 
 function calcTotal(){
     let total = basePrice;
-    const type = document.querySelector('input[name="type"]:checked');
-    if(type) total += parseFloat(type.value);
+    
+    if(!document.getElementById('food-options').classList.contains('hidden')) {
+        const type = document.querySelector('input[name="type"]:checked');
+        if(type) total += parseFloat(type.value);
 
-    document.querySelectorAll('.opt-sup:checked').forEach(cb => {
-        total += parseFloat(cb.value);
-    });
+        document.querySelectorAll('.opt-sup:checked').forEach(cb => {
+            total += parseFloat(cb.value);
+        });
+    }
 
     total = total * quantity;
     document.getElementById('totalBtn').innerText = total.toFixed(2) + " €";
@@ -410,15 +422,23 @@ function calcTotal(){
 
 function addToCart(){
     const total = document.getElementById('totalBtn').innerText;
-    const type = document.querySelector('input[name="type"]:checked').value > 0 ? "MENU" : "SEUL";
-    
-    let opts = [];
-    document.querySelectorAll('input:checked').forEach(i => {
-        const label = i.closest('label').querySelector('.opt-label').innerText;
-        if(!label.includes("Seul") && !label.includes("Menu")) opts.push(label.trim());
-    });
+    let details = "";
 
-    const msg = `Commande: ${quantity}x ${currentProduct.name} (${type})\nOptions: ${opts.join(', ')}\nTotal: ${total}`;
+    if(!document.getElementById('food-options').classList.contains('hidden')) {
+        const typeVal = document.querySelector('input[name="type"]:checked').value;
+        const typeName = typeVal > 0 ? "MENU (+2.50€)" : "SEUL";
+        details += `\nType: ${typeName}`;
+        
+        let sauces = [];
+        document.querySelectorAll('.opt-sauce:checked').forEach(i => sauces.push(i.closest('label').innerText.trim()));
+        if(sauces.length > 0) details += `\nSauces: ${sauces.join(', ')}`;
+
+        let sups = [];
+        document.querySelectorAll('.opt-sup:checked').forEach(i => sups.push(i.closest('label').innerText.trim()));
+        if(sups.length > 0) details += `\nSuppléments: ${sups.join(', ')}`;
+    }
+
+    const msg = `Nouvelle Commande:\n${quantity}x ${currentProduct.name} (${basePrice}€)${details}\n\nTotal à payer: ${total}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     closeModal();
 }
