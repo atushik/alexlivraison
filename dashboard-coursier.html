@@ -15,7 +15,6 @@
     --accent:#00e676;
     --bg:#f8f9fa;
     --text:#1d1d1f;
-    --gray:#8e8e93;
     --surface:#ffffff;
     --shadow:0 4px 20px rgba(0,0,0,0.08);
   }
@@ -157,13 +156,26 @@
   .nav-bar {
     position:fixed; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
-    display:flex; justify-content:space-around; padding:12px 0; padding-bottom:25px; z-index:50;
+    display:flex; justify-content:space-around; padding:10px 0; padding-bottom:20px; z-index:50;
   }
   .nav-item {
-    display:flex; flex-direction:column; align-items:center; gap:4px; color:#bbb; font-size:0.7em; font-weight:700; cursor:pointer; transition:0.2s;
+    display:flex; flex-direction:column; align-items:center; gap:3px; color:#bbb; font-size:0.65em; font-weight:700; cursor:pointer; transition:0.2s; width: 20%;
   }
   .nav-item.active { color:var(--primary); transform:translateY(-2px); }
-  .nav-icon { font-size:1.6em; }
+  .nav-icon { font-size:1.4em; }
+  
+  .help-item {
+      background: #fff; padding: 20px; border-radius: 15px; margin: 15px 20px;
+      display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow);
+      text-decoration: none; color: var(--text);
+  }
+
+  .history-item {
+      background: #fff; padding: 15px; border-radius: 15px; margin: 10px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-left: 4px solid var(--accent);
+  }
+
   .hidden { display:none !important; }
   .anim-pulse { animation: pulse 2s infinite; }
   @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
@@ -201,7 +213,7 @@
       <div id="orders-container" class="sheet-content">
         <div style="text-align:center;padding:30px;color:#999;font-weight:500">
           <span class="emoji-anim" style="font-size:2em;display:block;margin-bottom:10px">💤</span>
-          Aucune commande pour l'instant...
+          Aucune commande...
         </div>
       </div>
     </div>
@@ -220,30 +232,46 @@
       <h2 style="margin:0" id="step-title">Aller au restaurant</h2>
       <p style="color:#666;margin:5px 0" id="step-addr">Adresse...</p>
     </div>
-
     <div class="actions-row">
-      <button class="act-btn" style="background:#2962ff" onclick="openNav()">
-        <span class="emoji-anim">🗺️</span> GPS
-      </button>
-      <button class="act-btn" style="background:#00c853" onclick="callPhone()">
-        <span class="emoji-anim">📞</span> Appeler
-      </button>
+      <button class="act-btn" style="background:#2962ff" onclick="openNav()"><span class="emoji-anim">🗺️</span> GPS</button>
+      <button class="act-btn" style="background:#00c853" onclick="callPhone()"><span class="emoji-anim">📞</span> Appeler</button>
     </div>
-    
-    <button class="btn-accept" style="margin-top:20px;background:#333" id="btn-step" onclick="nextStep()">
-      J'arrive au restaurant
-    </button>
+    <button class="btn-accept" style="margin-top:20px;background:#333" id="btn-step" onclick="nextStep()">J'arrive</button>
   </div>
 </div>
 
-<div class="full-view" id="view-wallet">
-  <div class="fv-header"><h1 class="fv-title">Gains <span class="emoji-anim">💰</span></h1></div>
-  <div class="goal-card">
-    <div>
-      <div style="font-size:0.9em;opacity:0.9">Objectif du jour</div>
-      <div style="font-size:1.5em;font-weight:800">85€ / 100€</div>
+<div class="full-view" id="view-history">
+  <div class="fv-header"><h1 class="fv-title">Mes Livraisons <span class="emoji-anim">📦</span></h1></div>
+  <div id="history-container" style="padding-bottom:20px">
+     <div style="text-align:center;padding:40px;color:#999">Historique vide</div>
+  </div>
+</div>
+
+<div class="full-view" id="view-help">
+  <div class="fv-header"><h1 class="fv-title">Aide <span class="emoji-anim">🆘</span></h1></div>
+  <a href="https://wa.me/33677171188" class="help-item">
+      <span style="font-size:2em">💬</span>
+      <div><h3>Support WhatsApp</h3><p>Réponse rapide 7j/7</p></div>
+  </a>
+  <a href="tel:+33677171188" class="help-item">
+      <span style="font-size:2em">📞</span>
+      <div><h3>Urgence</h3><p>Appeler le support</p></div>
+  </a>
+  <div class="help-item">
+      <span style="font-size:2em">❓</span>
+      <div><h3>FAQ</h3><p>Questions fréquentes</p></div>
+  </div>
+</div>
+
+<div class="full-view" id="view-profile">
+  <div class="fv-header"><h1 class="fv-title">Profil <span class="emoji-anim">👤</span></h1></div>
+  <div style="text-align:center;padding:20px">
+    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em"><span class="emoji-anim">🚴</span></div>
+    <h2 id="profileName">Coursier</h2>
+    <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">⭐</span> 4.9</span>
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">👍</span> 98%</span>
     </div>
-    <div style="font-size:2.5em"><span class="emoji-anim">🎯</span></div>
   </div>
   <div class="chart-box">
     <div class="bar fill" style="height:40%" data-day="L"></div>
@@ -255,33 +283,6 @@
     <div class="bar" style="height:0%" data-day="D"></div>
   </div>
   <div style="padding:20px">
-    <h3>Historique</h3>
-    <div id="wallet-history"></div>
-  </div>
-</div>
-
-<div class="full-view" id="view-profile">
-  <div class="fv-header"><h1 class="fv-title">Profil <span class="emoji-anim">👤</span></h1></div>
-  <div style="text-align:center;padding:20px">
-    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em">
-        <span class="emoji-anim">🚴</span>
-    </div>
-    <h2 id="profileName">Coursier</h2>
-    <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">⭐</span> 4.9</span>
-      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold"><span class="emoji-anim">👍</span> 98%</span>
-    </div>
-  </div>
-  <div style="padding:20px">
-    <div class="order-card">
-      <div class="order-head"><span>Véhicule</span><span><span class="emoji-anim">🛵</span> Scooter</span></div>
-    </div>
-    <div class="order-card">
-      <div class="order-head"><span>Documents</span><span style="color:green">Validés</span></div>
-    </div>
-    <div class="order-card" onclick="alert('Support 24/7: +33 6 77 17 11 88')" style="cursor:pointer">
-        <div class="order-head"><span>Aide & Support</span><span><span class="emoji-anim">📞</span></span></div>
-    </div>
     <button class="btn-accept" style="background:#ff4d4d" onclick="logout()">Déconnexion</button>
   </div>
 </div>
@@ -289,11 +290,19 @@
 <div class="nav-bar">
   <div class="nav-item active" onclick="switchTab('home')">
     <div class="nav-icon"><span class="emoji-anim">⚡</span></div>
-    <div>Mission</div>
+    <div>Courses</div>
   </div>
-  <div class="nav-item" onclick="switchTab('wallet')">
-    <div class="nav-icon"><span class="emoji-anim">📊</span></div>
-    <div>Gains</div>
+  <div class="nav-item" onclick="switchTab('mission')">
+    <div class="nav-icon"><span class="emoji-anim">🎒</span></div>
+    <div>En cours</div>
+  </div>
+  <div class="nav-item" onclick="switchTab('history')">
+    <div class="nav-icon"><span class="emoji-anim">📦</span></div>
+    <div>Livraisons</div>
+  </div>
+  <div class="nav-item" onclick="switchTab('help')">
+    <div class="nav-icon"><span class="emoji-anim">🆘</span></div>
+    <div>Aide</div>
   </div>
   <div class="nav-item" onclick="switchTab('profile')">
     <div class="nav-icon"><span class="emoji-anim">👤</span></div>
@@ -347,7 +356,6 @@ function toggleOnline() {
         sheet.classList.remove('visible');
     }
 }
-
 document.getElementById('goBtn').classList.add('active');
 
 function loadOrders() {
@@ -359,7 +367,7 @@ function loadOrders() {
         badge.innerText = snap.size;
         
         if (snap.empty) {
-            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999"><span class="emoji-anim" style="font-size:2em">📡</span><br>Recherche de commandes...</div>';
+            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999"><span class="emoji-anim" style="font-size:2em">💤</span><br>En attente...</div>';
             return;
         }
 
@@ -394,6 +402,7 @@ function startMission(id, data) {
 
     document.getElementById('main-ui').classList.add('hidden');
     document.getElementById('missionView').style.display = 'flex';
+    switchTab('mission');
     
     const missionMap = L.map('map-mission').setView([43.1242, 5.928], 14);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(missionMap);
@@ -440,11 +449,22 @@ function finishMission() {
     earnings += currentOrder.price;
     document.getElementById('todayEarnings').innerText = earnings.toFixed(2) + " €";
     
-    const list = document.getElementById('wallet-history');
-    list.innerHTML = `<div class="history-item"><span>${currentOrder.shopName}</span><b>+${currentOrder.price}€</b></div>` + list.innerHTML;
+    const historyCont = document.getElementById('history-container');
+    if(historyCont.innerHTML.includes('vide')) historyCont.innerHTML = '';
+    
+    const item = `
+    <div class="history-item">
+        <div>
+           <div style="font-weight:bold">${currentOrder.shopName}</div>
+           <div style="font-size:0.8em;color:#999">Terminé à l'instant</div>
+        </div>
+        <div style="color:#00c853;font-weight:bold">+${currentOrder.price} €</div>
+    </div>`;
+    historyCont.innerHTML = item + historyCont.innerHTML;
 
     document.getElementById('missionView').style.display = 'none';
     document.getElementById('main-ui').classList.remove('hidden');
+    switchTab('home');
     currentOrder = null;
 }
 
@@ -459,11 +479,18 @@ function switchTab(tab) {
     document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
     
     if (tab === 'home') {
+       document.getElementById('missionView').style.display = currentOrder ? 'flex' : 'none';
+    } else if (tab === 'mission') {
+       if(currentOrder) document.getElementById('missionView').style.display = 'flex';
+       else alert("Aucune mission en cours");
     } else {
         document.getElementById('view-' + tab).style.display = 'block';
     }
-    const idx = ['home','wallet','profile'].indexOf(tab);
-    document.querySelectorAll('.nav-item')[idx].classList.add('active');
+    
+    const mapIdx = {'home':0, 'mission':1, 'history':2, 'help':3, 'profile':4};
+    if(document.querySelectorAll('.nav-item')[mapIdx[tab]]) {
+        document.querySelectorAll('.nav-item')[mapIdx[tab]].classList.add('active');
+    }
 }
 
 function logout() {
