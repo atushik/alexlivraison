@@ -12,10 +12,11 @@
   :root{
     --primary:#6b23ff;
     --accent:#00e676;
-    --bg:#f4f6f8;
+    --bg:#f0f2f5;
     --text:#1d1d1f;
     --surface:#ffffff;
-    --shadow:0 4px 20px rgba(0,0,0,0.08);
+    --blue-slider:#007bff;
+    --shadow:0 8px 30px rgba(0,0,0,0.12);
   }
   * {box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body {
@@ -27,119 +28,176 @@
     position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;
   }
   .map-logo {
-      position: absolute; bottom: 100px; left: 20px; width: 50px; height: 50px;
-      border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 5; object-fit: cover;
+      position: absolute; bottom: 110px; left: 20px; width: 55px; height: 55px;
+      border-radius: 50%; border: 3px solid #fff; box-shadow: var(--shadow);
+      z-index: 5; object-fit: cover; animation: floatLogo 4s ease-in-out infinite;
   }
+  @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
   .top-bar {
       position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
-      padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%);
-      padding-top: 40px; 
+      padding: 50px 20px 20px; display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
   }
+  
   .status-pill {
-      background: #fff; padding: 8px 15px; border-radius: 20px;
-      display: flex; align-items: center; gap: 8px; font-weight: 700;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer;
+      background: #fff; padding: 8px 16px; border-radius: 30px;
+      display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.95em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15); cursor: pointer; transition: 0.3s;
   }
-  .dot {width: 10px; height: 10px; border-radius: 50%; background: var(--accent);}
-  .dot.off {background: #ff4d4d;}
+  .status-pill:active { transform: scale(0.95); }
+  .dot {width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent);}
+  .dot.off {background: #ff4d4d; box-shadow: 0 0 10px #ff4d4d;}
   
   .settings-btn {
-      background: #fff; width: 40px; height: 40px; border-radius: 50%;
+      background: #fff; width: 45px; height: 45px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.2em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15); cursor: pointer; font-size: 1.4em;
+      transition: 0.3s;
   }
+  .settings-btn:hover { transform: rotate(90deg); }
 
   .orders-carousel {
-      position: absolute; bottom: 85px; left: 0; right: 0; z-index: 10;
+      position: absolute; bottom: 90px; left: 0; right: 0; z-index: 10;
       display: flex; gap: 15px; overflow-x: auto; padding: 0 20px;
       scroll-snap-type: x mandatory; scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling: touch; padding-bottom: 20px;
   }
   .orders-carousel::-webkit-scrollbar {display: none;}
   
   .order-card {
-      min-width: 280px; max-width: 300px; background: #fff;
-      border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      scroll-snap-align: center; border-left: 5px solid var(--primary);
+      min-width: 290px; max-width: 310px; background: #fff;
+      border-radius: 24px; padding: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      scroll-snap-align: center; border-left: 6px solid var(--primary);
       display: flex; flex-direction: column; justify-content: space-between;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
+  @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
   
-  .order-head {display: flex; justify-content: space-between; margin-bottom: 10px;}
-  .shop-name {font-weight: 800; font-size: 1.1em;}
-  .order-price {background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 10px; font-weight: 800;}
+  .order-head {display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
+  .shop-name {font-weight: 900; font-size: 1.2em; color: #333;}
+  .order-price {background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 12px; font-weight: 900; font-size: 1.1em;}
   
-  .route-info {font-size: 0.9em; color: #666; margin-bottom: 15px; line-height: 1.4;}
+  .route-info {font-size: 0.95em; color: #555; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 12px;}
   .btn-accept {
-      width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
-      border-radius: 12px; font-weight: bold; font-size: 1em; cursor: pointer;
+      width: 100%; padding: 15px; background: linear-gradient(90deg, #6b23ff, #8e5aff); color: #fff; border: none;
+      border-radius: 16px; font-weight: 800; font-size: 1.1em; cursor: pointer;
+      box-shadow: 0 5px 15px rgba(107,35,255,0.4); transition: 0.2s;
   }
+  .btn-accept:active { transform: scale(0.98); }
 
   .empty-state {
-      position: absolute; bottom: 100px; width: 100%; text-align: center;
-      color: #888; font-weight: 600; background: rgba(255,255,255,0.8);
-      padding: 15px; backdrop-filter: blur(5px);
+      position: absolute; bottom: 120px; width: 90%; left: 5%; text-align: center;
+      color: #555; font-weight: 700; background: rgba(255,255,255,0.95);
+      padding: 20px; border-radius: 20px; box-shadow: var(--shadow); backdrop-filter: blur(10px);
   }
 
   .full-page {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #f4f6f8; z-index: 100; display: none; flex-direction: column;
+      background: #f2f2f7; z-index: 100; display: none; flex-direction: column;
       overflow-y: auto;
   }
   .page-header {
-      background: #fff; padding: 20px; padding-top: 40px;
+      background: #fff; padding: 20px; padding-top: 50px;
       display: flex; align-items: center; gap: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 101;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 101;
   }
-  .btn-back-page { font-size: 1.5em; cursor: pointer; background: none; border: none; }
-  .page-title { font-size: 1.2em; font-weight: 800; flex: 1; }
+  .btn-back-page { 
+      width: 40px; height: 40px; border-radius: 50%; border: none; background: #f5f5f5; 
+      font-size: 1.2em; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .page-title { font-size: 1.4em; font-weight: 900; flex: 1; color: #1c1c1e; }
 
-  .settings-content { padding: 20px; }
-  .range-box { background: #fff; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; }
-  input[type=range] { width: 100%; margin: 20px 0; }
+  .settings-content { padding: 25px; }
+  .range-box { 
+      background: #fff; padding: 25px; border-radius: 24px; text-align: center; margin-top: 20px; 
+      box-shadow: var(--shadow);
+  }
+  .map-preview-box {
+      height: 180px; background: #eee; border-radius: 16px; margin-bottom: 20px;
+      overflow: hidden; position: relative; border: 2px solid #fff; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+  }
+  .slider-container { position: relative; width: 100%; padding: 10px 0; }
+  input[type=range] { 
+      width: 100%; -webkit-appearance: none; background: transparent; 
+  }
+  input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; height: 28px; width: 28px; border-radius: 50%; 
+      background: #ffffff; border: 4px solid var(--blue-slider); cursor: pointer; margin-top: -12px; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+      width: 100%; height: 6px; cursor: pointer; background: var(--blue-slider); border-radius: 3px;
+  }
+  .range-val { font-size: 1.2em; font-weight: 800; color: var(--blue-slider); margin-top: 10px; display: block; }
 
   .profile-header {
-      background: #fff; padding: 30px 20px; text-align: center; margin-bottom: 15px;
+      background: #fff; padding: 40px 20px; text-align: center; margin-bottom: 20px;
+      border-radius: 0 0 30px 30px; box-shadow: var(--shadow);
   }
   .profile-pic {
-      width: 100px; height: 100px; border-radius: 50%; background: #eee; margin: 0 auto 15px;
-      display: flex; align-items: center; justify-content: center; font-size: 3em;
-      border: 3px solid var(--primary); overflow: hidden; position: relative;
+      width: 110px; height: 110px; border-radius: 50%; background: #f0f2f5; margin: 0 auto 15px;
+      display: flex; align-items: center; justify-content: center; font-size: 3.5em;
+      border: 4px solid var(--primary); overflow: hidden; position: relative;
+      box-shadow: 0 10px 20px rgba(107,35,255,0.2); cursor: pointer;
   }
   .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
   .upload-overlay {
-      position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.5); color: #fff; font-size: 10px; padding: 2px 0;
+      position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.6); color: #fff; 
+      font-size: 11px; padding: 4px 0; font-weight: bold;
   }
   
-  .menu-list { background: #fff; border-radius: 0; }
+  .menu-list { background: #fff; border-radius: 20px; margin: 0 20px; overflow: hidden; box-shadow: var(--shadow); }
   .menu-item {
-      padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;
-      align-items: center; cursor: pointer; font-weight: 500;
+      padding: 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; font-weight: 600; font-size: 1.05em; color: #333;
+      transition: 0.2s;
   }
+  .menu-item:active { background: #f9f9f9; }
   .menu-item:last-child { border-bottom: none; }
-  .menu-arrow { color: #ccc; }
+  .menu-arrow { color: #ccc; font-weight: bold; font-size: 1.2em; }
 
   .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
   .doc-card {
-      background: #fff; padding: 15px; border-radius: 12px; text-align: center;
-      border: 1px solid #eee; aspect-ratio: 1; display: flex; flex-direction: column;
-      justify-content: center; align-items: center; gap: 10px;
+      background: #fff; padding: 20px; border-radius: 16px; text-align: center;
+      box-shadow: var(--shadow); aspect-ratio: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
   }
-  .doc-icon { font-size: 2em; }
-  .doc-label { font-size: 0.8em; font-weight: bold; color: #555; }
+  .doc-card:active { transform: scale(0.98); }
+  .doc-icon { font-size: 2.5em; }
+  .doc-label { font-size: 0.85em; font-weight: 700; color: #555; }
+  .doc-status { font-size: 0.75em; font-weight: 800; color: #00c853; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; }
+
+  .data-box { background: #fff; border-radius: 16px; padding: 20px; margin: 20px; box-shadow: var(--shadow); }
+  .data-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+  .data-row:last-child { border: none; margin: 0; padding: 0; }
+  .data-label { color: #888; font-size: 0.9em; font-weight: 600; }
+  .data-value { font-weight: 700; color: #333; }
 
   .nav-bar {
-    position:fixed; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
-    display:flex; justify-content:space-around; padding:12px 0; padding-bottom:25px; z-index:50;
+    position:fixed; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.98);
+    backdrop-filter:blur(20px); border-top:1px solid rgba(0,0,0,0.05);
+    display:flex; justify-content:space-around; padding:12px 0; padding-bottom:30px; z-index:50;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
   }
   .nav-item {
-    display:flex; flex-direction:column; align-items:center; gap:4px; color:#bbb; font-size:0.7em; font-weight:700; cursor:pointer; width: 20%;
+    display:flex; flex-direction:column; align-items:center; gap:5px; color:#aaa; font-size:0.75em; font-weight:700; cursor:pointer; width: 20%; transition: 0.3s;
   }
-  .nav-item.active { color:var(--primary); }
-  .nav-icon { font-size:1.5em; }
+  .nav-item.active { color:var(--primary); transform: translateY(-4px); }
+  .nav-icon { font-size:1.7em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+
+  .emoji-anim { display: inline-block; animation: stickerFloat 3s ease-in-out infinite; }
+  @keyframes stickerFloat {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  .btn-save {
+      width: 100%; padding: 16px; background: #007bff; color: #fff; border: none;
+      border-radius: 50px; font-weight: 800; font-size: 1.1em; margin-top: 20px; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+  }
 </style>
 </head>
 <body>
@@ -152,32 +210,37 @@
         <div class="dot" id="statusDot"></div>
         <span id="statusText">En ligne</span>
     </div>
-    <div class="settings-btn" onclick="openPage('settings')">⚙️</div>
+    <div class="settings-btn" onclick="openPage('settings')">
+        <span class="emoji-anim">⚙️</span>
+    </div>
 </div>
 
 <div id="orders-container" class="orders-carousel">
-    <div class="empty-state">Recherche de courses...</div>
+    <div class="empty-state">
+        <span class="emoji-anim" style="font-size:2em">📡</span><br>
+        Recherche de courses...
+    </div>
 </div>
 
 <div class="nav-bar">
   <div class="nav-item active" onclick="closeAllPages()">
-    <div class="nav-icon">⚡</div>
+    <div class="nav-icon"><span class="emoji-anim">⚡</span></div>
     <div>Accueil</div>
   </div>
-  <div class="nav-item" onclick="alert('Historique des courses')">
-    <div class="nav-icon">🎒</div>
+  <div class="nav-item" onclick="openPage('encours')">
+    <div class="nav-icon"><span class="emoji-anim">🎒</span></div>
     <div>En cours</div>
   </div>
-  <div class="nav-item" onclick="alert('Solde: 0.00€')">
-    <div class="nav-icon">💰</div>
+  <div class="nav-item" onclick="openPage('wallet')">
+    <div class="nav-icon"><span class="emoji-anim">💰</span></div>
     <div>Gains</div>
   </div>
   <div class="nav-item" onclick="openPage('aide')">
-    <div class="nav-icon">💬</div>
+    <div class="nav-icon"><span class="emoji-anim">💬</span></div>
     <div>Aide</div>
   </div>
   <div class="nav-item" onclick="openPage('profile')">
-    <div class="nav-icon">👤</div>
+    <div class="nav-icon"><span class="emoji-anim">👤</span></div>
     <div>Compte</div>
   </div>
 </div>
@@ -185,16 +248,19 @@
 <div id="page-settings" class="full-page">
     <div class="page-header">
         <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
-        <div class="page-title">Réglages</div>
+        <div class="page-title">Rayon de livraison</div>
     </div>
     <div class="settings-content">
-        <h3>Rayon autour de moi</h3>
+        <div style="text-align:center;color:#666;margin-bottom:15px">Définissez votre zone d'activité</div>
         <div class="range-box">
-            <div style="height:150px;background:url('https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=YOUR_API_KEY&c=43.1242,5.928&z=10') center/cover;border-radius:10px;opacity:0.7;margin-bottom:10px"></div>
-            <input type="range" min="1" max="50" value="15" oninput="document.getElementById('distVal').innerText=this.value">
-            <div style="font-weight:bold"><span id="distVal">15</span> km</div>
+            <div class="map-preview-box" id="settingMap"></div>
+            <div class="slider-container">
+                <input type="range" min="5" max="50" value="15" oninput="updateRadius(this.value)">
+            </div>
+            <span class="range-val"><span id="distVal">15</span> km</span>
         </div>
-        <button class="btn-accept" onclick="closeAllPages()">Enregistrer</button>
+        <button class="btn-save" onclick="closeAllPages()">Afficher <span id="countVal">1</span> livraison</button>
+        <div style="text-align:center;margin-top:20px;color:#007bff;font-weight:bold;cursor:pointer">Réinitialiser</div>
     </div>
 </div>
 
@@ -206,36 +272,64 @@
     
     <div class="profile-header">
         <div class="profile-pic" onclick="document.getElementById('avatarInput').click()">
-            <span id="avatarEmoji">👤</span>
+            <span id="avatarEmoji" class="emoji-anim">📸</span>
             <img id="avatarImg" src="" style="display:none">
             <div class="upload-overlay">Modifier</div>
         </div>
         <input type="file" id="avatarInput" hidden accept="image/*" onchange="previewAvatar(this)">
-        <h2 style="margin:0" id="profileName">Chargement...</h2>
-        <p style="color:#666;margin:5px 0" id="profileEmail">...</p>
+        <h2 style="margin:0;color:#333" id="profileName">Chargement...</h2>
+        <p style="color:#888;margin:5px 0;font-weight:500" id="profileEmail">...</p>
+        <div style="color:#ff9800;font-weight:bold;margin-top:10px;background:#fff3e0;display:inline-block;padding:5px 15px;border-radius:15px">En attente de validation</div>
     </div>
 
     <div class="menu-list">
+        <div class="menu-item" onclick="openPage('perso')">
+            <span>👤 Mes coordonnées</span>
+            <span class="menu-arrow">›</span>
+        </div>
         <div class="menu-item" onclick="openPage('documents')">
             <span>📂 Mes documents</span>
-            <span class="menu-arrow">➔</span>
+            <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="alert('Infos personnelles')">
-            <span>👤 Mes informations personnelles</span>
-            <span class="menu-arrow">➔</span>
-        </div>
-        <div class="menu-item" onclick="alert('Type de véhicule')">
+        <div class="menu-item" onclick="openPage('transport')">
             <span>🛵 Mon moyen de transport</span>
-            <span class="menu-arrow">➔</span>
+            <span class="menu-arrow">›</span>
         </div>
         <div class="menu-item" onclick="openPage('settings')">
             <span>⚙️ Paramètres</span>
-            <span class="menu-arrow">➔</span>
+            <span class="menu-arrow">›</span>
         </div>
         <div class="menu-item" style="color:red" onclick="logout()">
-            <span>🚪 Déconnexion</span>
-            <span class="menu-arrow">➔</span>
+            <span>🔴 Déconnexion</span>
+            <span class="menu-arrow">›</span>
         </div>
+    </div>
+</div>
+
+<div id="page-perso" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="openPage('profile')">⬅️</button>
+        <div class="page-title">Mes coordonnées</div>
+    </div>
+    <div class="data-box">
+        <div class="data-row"><span class="data-label">Nom complet</span><span class="data-value" id="infoName">-</span></div>
+        <div class="data-row"><span class="data-label">Téléphone</span><span class="data-value" id="infoPhone">-</span></div>
+        <div class="data-row"><span class="data-label">Email</span><span class="data-value" id="infoEmail">-</span></div>
+        <div class="data-row"><span class="data-label">Adresse</span><span class="data-value" id="infoAddr">-</span></div>
+        <div class="data-row"><span class="data-label">SIREN</span><span class="data-value" id="infoSiren">-</span></div>
+    </div>
+</div>
+
+<div id="page-transport" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="openPage('profile')">⬅️</button>
+        <div class="page-title">Mon Véhicule</div>
+    </div>
+    <div style="text-align:center;padding:40px">
+        <div style="font-size:5em;margin-bottom:20px" class="emoji-anim" id="vehIcon">🛵</div>
+        <h2 id="vehName">Scooter</h2>
+        <p style="color:#666">Véhicule déclaré pour les livraisons.</p>
+        <button class="btn-save" style="background:#eee;color:#333;margin-top:30px">Changer de véhicule</button>
     </div>
 </div>
 
@@ -246,24 +340,24 @@
     </div>
     <div class="doc-grid">
         <div class="doc-card">
-            <div class="doc-icon">🆔</div>
-            <div class="doc-label">Pièce d'identité (R/V)</div>
-            <span style="color:green;font-size:0.8em">Validé</span>
+            <div class="doc-icon emoji-anim">🆔</div>
+            <div class="doc-label">Identité (R/V)</div>
+            <span class="doc-status">Reçu</span>
         </div>
         <div class="doc-card">
-            <div class="doc-icon">🏦</div>
-            <div class="doc-label">RIB Bancaire</div>
-            <span style="color:orange;font-size:0.8em">En attente</span>
+            <div class="doc-icon emoji-anim">🏦</div>
+            <div class="doc-label">RIB / IBAN</div>
+            <span class="doc-status" style="background:#fff3e0;color:#e65100">À ajouter</span>
         </div>
         <div class="doc-card">
-            <div class="doc-icon">📄</div>
+            <div class="doc-icon emoji-anim">📄</div>
             <div class="doc-label">Contrat Signé</div>
-            <span style="color:green;font-size:0.8em">Validé</span>
+            <span class="doc-status">Signé</span>
         </div>
         <div class="doc-card">
-            <div class="doc-icon">📸</div>
-            <div class="doc-label">Photo Profil</div>
-            <span style="color:green;font-size:0.8em">Validé</span>
+            <div class="doc-icon emoji-anim">📸</div>
+            <div class="doc-label">Selfie</div>
+            <span class="doc-status">Validé</span>
         </div>
     </div>
 </div>
@@ -273,19 +367,51 @@
         <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
         <div class="page-title">Centre d'aide</div>
     </div>
-    <div class="menu-list" style="margin-top:20px">
-        <div class="menu-item" onclick="location.href='https://wa.me/33677171188'">
-            <span>💬 Support WhatsApp</span>
-            <span class="menu-arrow">➔</span>
+    <div style="padding:20px">
+        <h3 style="color:#333;margin-bottom:15px">Nous sommes là pour vous aider</h3>
+        <div class="menu-list" style="margin:0;box-shadow:none;border:1px solid #eee">
+            <div class="menu-item" onclick="location.href='https://wa.me/33677171188'">
+                <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">💬</span> Support WhatsApp</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="location.href='tel:+33677171188'">
+                <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">📞</span> Appeler l'assistance</span>
+                <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item">
+                <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">❓</span> Toute la FAQ</span>
+                <span class="menu-arrow">›</span>
+            </div>
         </div>
-        <div class="menu-item" onclick="location.href='tel:+33677171188'">
-            <span>📞 Appeler l'assistance</span>
-            <span class="menu-arrow">➔</span>
+    </div>
+</div>
+
+<div id="page-wallet" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
+        <div class="page-title">Ma Cagnotte</div>
+    </div>
+    <div style="padding:20px">
+        <div style="background:linear-gradient(45deg,#ff6b6b,#ee5253);padding:30px;border-radius:20px;color:#fff;text-align:center;box-shadow:0 10px 30px rgba(238,82,83,0.3)">
+            <div style="opacity:0.8;font-weight:600">Solde actuel</div>
+            <div style="font-size:2.5em;font-weight:900;margin:10px 0">0,00 €</div>
         </div>
-        <div class="menu-item">
-            <span>❓ FAQ</span>
-            <span class="menu-arrow">➔</span>
-        </div>
+        <button class="btn-save" style="background:#fff;color:#333;border:1px solid #ddd;margin-top:15px">🏦 Effectuer un virement</button>
+        
+        <h3 style="margin-top:30px;color:#32006b">Dernières transactions</h3>
+        <div style="text-align:center;color:#999;margin-top:20px;font-style:italic">Aucune transaction récente</div>
+    </div>
+</div>
+
+<div id="page-encours" class="full-page">
+    <div class="page-header">
+        <button class="btn-back-page" onclick="closeAllPages()">⬅️</button>
+        <div class="page-title">Mes livraisons</div>
+    </div>
+    <div style="padding:40px;text-align:center">
+        <span class="emoji-anim" style="font-size:5em;display:block;margin-bottom:20px">🤷‍♂️</span>
+        <h3 style="color:#333">Aucune livraison en cours</h3>
+        <p style="color:#666">Activez le mode "En ligne" pour recevoir des commandes.</p>
     </div>
 </div>
 
@@ -295,16 +421,37 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
 
 if(!localStorage.getItem('alex_courier_logged')) window.location.href='login-coursier.html';
-document.getElementById('profileName').innerText = localStorage.getItem('alex_courier_name') || 'Partenaire';
-document.getElementById('profileEmail').innerText = localStorage.getItem('alex_courier_email') || '';
 
 let map, isOnline = true;
+let settingMap;
 
 function initMap() {
   map = L.map('map-layer', {zoomControl: false, attributionControl: false}).setView([43.1242, 5.928], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+  
   const icon = L.divIcon({html: '<div style="font-size:24px;transform:translate(-10px,-10px)">🚴</div>', className: 'marker-c'});
   L.marker([43.1242, 5.928], {icon: icon}).addTo(map);
+  
+  const savedAvatar = localStorage.getItem('alex_avatar');
+  if(savedAvatar) {
+      document.getElementById('avatarImg').src = savedAvatar;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarEmoji').style.display = 'none';
+  }
+
+  loadUserData();
+}
+
+function loadUserData() {
+    const name = localStorage.getItem('alex_courier_name') || 'Coursier';
+    document.getElementById('profileName').innerText = name;
+    
+    document.getElementById('profileEmail').innerText = "coursier@alex.com";
+    document.getElementById('infoName').innerText = name;
+    document.getElementById('infoEmail').innerText = "coursier@alex.com";
+    document.getElementById('infoPhone').innerText = "06 12 34 56 78";
+    document.getElementById('infoAddr').innerText = "Toulon, France";
+    document.getElementById('infoSiren').innerText = "En attente";
 }
 
 function toggleStatus() {
@@ -350,20 +497,40 @@ function loadOrders() {
 
 function openPage(id) {
     document.querySelectorAll('.full-page').forEach(p => p.style.display = 'none');
-    document.getElementById('page-' + id).style.display = 'flex';
+    const page = document.getElementById('page-' + id);
+    if(page) {
+        page.style.display = 'flex';
+        if(id === 'settings') initSettingsMap();
+    }
 }
 
 function closeAllPages() {
     document.querySelectorAll('.full-page').forEach(p => p.style.display = 'none');
 }
 
+function initSettingsMap() {
+    if(!settingMap) {
+        setTimeout(() => {
+            settingMap = L.map('settingMap', {zoomControl:false, attributionControl:false}).setView([43.1242, 5.928], 10);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(settingMap);
+            L.circle([43.1242, 5.928], {color: '#007bff', fillColor: '#007bff', fillOpacity: 0.2, radius: 15000}).addTo(settingMap);
+        }, 100);
+    }
+}
+
+function updateRadius(val) {
+    document.getElementById('distVal').innerText = val;
+}
+
 function previewAvatar(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('avatarImg').src = e.target.result;
+            const res = e.target.result;
+            document.getElementById('avatarImg').src = res;
             document.getElementById('avatarImg').style.display = 'block';
             document.getElementById('avatarEmoji').style.display = 'none';
+            localStorage.setItem('alex_avatar', res); 
         }
         reader.readAsDataURL(input.files[0]);
     }
