@@ -11,6 +11,7 @@
 <style>
   :root{--primary:#6b23ff;--dark:#1a1a2e;--green:#00c853;--red:#ff4d4d;--bg:#f4f6f8;--glass:rgba(255,255,255,0.95);}
   body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;padding:0;padding-bottom:90px;color:#333;overflow-x:hidden;user-select:none;}
+  
   .app-header{background:linear-gradient(135deg,#32006b,#6b23ff);color:#fff;padding:20px;border-radius:0 0 25px 25px;box-shadow:0 5px 20px rgba(107,35,255,0.3);position:sticky;top:0;z-index:1000;}
   .header-top{display:flex;justify-content:space-between;align-items:center;}
   .courier-info{display:flex;align-items:center;gap:10px;}
@@ -18,14 +19,35 @@
   .status-switch{background:rgba(0,0,0,0.3);padding:5px 15px;border-radius:20px;font-size:0.9em;display:flex;align-items:center;gap:5px;cursor:pointer;}
   .status-dot{width:10px;height:10px;background:#00c853;border-radius:50%;box-shadow:0 0 5px #00c853;}
   .status-dot.offline{background:#ff4d4d;box-shadow:0 0 5px #ff4d4d;}
-  .stats-bar{display:flex;justify-content:space-between;margin-top:20px;background:rgba(255,255,255,0.1);padding:15px;border-radius:15px;backdrop-filter:blur(5px);}
-  .stat{text-align:center;}
-  .stat-val{font-size:1.4em;font-weight:800;display:block;}
-  .stat-lbl{font-size:0.75em;opacity:0.8;text-transform:uppercase;}
+  
   .view{display:none;animation:fadeIn 0.3s ease;}
   .view.active{display:block;}
-  #map-container{height:35vh;width:100%;margin-top:-20px;position:relative;z-index:1;}
-  #map{height:100%;width:100%;}
+
+  #map-container {
+    height: 60vh; 
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    border-radius: 25px 25px 0 0;
+    overflow: hidden;
+    margin-top: -20px; 
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+  }
+  #map { height: 100%; width: 100%; }
+  
+  .map-logo {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1000; 
+      object-fit: cover;
+  }
+
   .section-title{padding:15px 20px 5px;font-size:1.2em;color:#555;font-weight:800;}
   .order-card{background:#fff;margin:15px 20px;padding:20px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.05);position:relative;transition:0.2s;border-left:5px solid var(--primary);}
   .order-card:active{transform:scale(0.98);}
@@ -44,26 +66,36 @@
   .req.hot{background:#fff3e0;color:#ef6c00;}
   .req.cold{background:#e1f5fe;color:#0277bd;}
   .btn-accept{width:100%;padding:15px;background:var(--primary);color:#fff;border:none;border-radius:15px;font-size:1.1em;font-weight:bold;cursor:pointer;box-shadow:0 5px 15px rgba(107,35,255,0.3);}
+  
   .step-progress{display:flex;justify-content:space-between;margin:20px;position:relative;}
   .step-progress::before{content:'';position:absolute;top:15px;left:0;right:0;height:3px;background:#ddd;z-index:-1;}
   .step-node{width:35px;height:35px;background:#fff;border:3px solid #ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#aaa;}
   .step-node.active{border-color:var(--primary);background:var(--primary);color:#fff;box-shadow:0 0 10px rgba(107,35,255,0.5);}
+  
   .timer-container{text-align:center;margin:15px 0;}
   .timer-label{font-size:0.9em;color:#666;text-transform:uppercase;letter-spacing:1px;}
   .timer-big{font-size:3.5em;font-weight:900;color:#333;margin:5px 0;font-variant-numeric:tabular-nums;line-height:1;}
   .timer-total{font-size:0.9em;color:#888;font-weight:bold;}
+  
   .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
   .act-btn{padding:20px;border-radius:15px;border:none;color:#fff;font-weight:bold;font-size:1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;}
+  
   .wallet-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;margin:20px;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
   .balance-title{opacity:0.7;font-size:0.9em;}
   .balance-amount{font-size:2.5em;font-weight:bold;margin:10px 0;}
   .history-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;}
   .review-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;border-left:4px solid #ffd700;}
+  .stats-bar{display:flex;justify-content:space-between;margin-top:20px;background:rgba(255,255,255,0.1);padding:15px;border-radius:15px;backdrop-filter:blur(5px);}
+  .stat{text-align:center;}
+  .stat-val{font-size:1.4em;font-weight:800;display:block;}
+  .stat-lbl{font-size:0.75em;opacity:0.8;text-transform:uppercase;}
+
   .nav-bar{position:fixed;bottom:0;left:0;width:100%;background:#fff;display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid #eee;z-index:2000;padding-bottom:25px;}
   .nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;color:#ccc;cursor:pointer;width:25%;}
   .nav-btn.active{color:var(--primary);}
   .nav-icon{font-size:1.4em;}
   .nav-label{font-size:0.7em;font-weight:bold;}
+  
   @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;z-index:3000;display:none;}
   @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
@@ -92,7 +124,10 @@
     </div>
   </div>
 
-  <div id="map-container"><div id="map"></div></div>
+  <div id="map-container">
+      <div id="map"></div>
+      <img src="logo.jpg" alt="Logo" class="map-logo">
+  </div>
 
   <div class="section-title">Commandes disponibles (<span id="orderCount">0</span>)</div>
   <div id="orders-list" style="padding-bottom:20px">
