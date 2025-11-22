@@ -34,6 +34,11 @@
     position:absolute; top:0; left:0; width:100%; height:100%;
     z-index:0;
   }
+  .map-logo {
+      position: absolute; top: 20px; left: 20px; width: 45px; height: 45px;
+      border-radius: 50%; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 5; object-fit: cover;
+  }
   .ui-layer {
     position:absolute; top:0; left:0; width:100%; height:100%;
     z-index:10;
@@ -41,12 +46,13 @@
     display:flex;
     flex-direction:column;
     justify-content:space-between;
+    padding-bottom: 80px;
   }
   .top-status-bar {
     pointer-events:auto;
     background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px);
-    margin:15px;
+    margin:15px; margin-top: 70px;
     padding:15px;
     border-radius:20px;
     display:flex;
@@ -54,12 +60,10 @@
     align-items:center;
     box-shadow:var(--shadow);
     transition:0.3s;
+    width: 90%; align-self: center;
   }
-  .top-status-bar.offline { background:#333; color:#fff; }
-  .status-pill {
-    display:flex; align-items:center; gap:8px;
-    font-weight:700; font-size:1em;
-  }
+  .top-status-bar.offline { background:#222; color:#fff; }
+  .status-pill { display:flex; align-items:center; gap:8px; font-weight:700; }
   .dot {width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
   .dot.off {background:#ff4d4d; box-shadow:none;}
   .money-pill {
@@ -68,6 +72,7 @@
   .go-btn-container {
     pointer-events:auto;
     display:flex; justify-content:center; margin-bottom:20px;
+    transition: 0.3s;
   }
   .go-btn {
     width:80px; height:80px;
@@ -75,34 +80,33 @@
     background:var(--primary);
     color:#fff;
     border:4px solid #fff;
-    font-weight:900; font-size:1.2em;
+    font-weight:900; font-size:1.5em;
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 10px 30px rgba(107,35,255,0.4);
     cursor:pointer;
     transition:0.3s;
   }
-  .go-btn.active { background:#ff4d4d; transform:scale(0.9); }
+  .go-btn.active { background:#ff4d4d; transform:scale(0.9); content: "OFF"; }
   .bottom-sheet {
     pointer-events:auto;
     background:var(--surface);
     border-radius:25px 25px 0 0;
     padding:20px;
-    padding-bottom:90px; 
     box-shadow:0 -5px 30px rgba(0,0,0,0.1);
-    transition:transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    max-height:60vh;
-    overflow-y:auto;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    height: 50vh;
+    transform: translateY(100%);
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    display: flex; flex-direction: column;
   }
-  .sheet-handle {
-    width:40px; height:5px; background:#ddd; border-radius:5px; margin:0 auto 15px auto;
-  }
+  .bottom-sheet.visible { transform: translateY(0); bottom: 80px; }
+  .sheet-handle { width:40px; height:5px; background:#ddd; border-radius:5px; margin:0 auto 15px auto; flex-shrink: 0; }
+  .sheet-content { overflow-y: auto; flex: 1; }
   .order-card {
     background:#fff; border:1px solid #eee; border-radius:18px; padding:15px; margin-bottom:15px;
     box-shadow:0 2px 10px rgba(0,0,0,0.03); position:relative; overflow:hidden;
   }
-  .order-card::before {
-    content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--primary);
-  }
+  .order-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--primary); }
   .order-head {display:flex; justify-content:space-between; margin-bottom:10px;}
   .shop-name {font-weight:800; font-size:1.1em;}
   .order-price {font-weight:800; color:var(--primary); font-size:1.2em;}
@@ -134,7 +138,7 @@
   .full-view {
     position:absolute; top:0; left:0; width:100%; height:100%;
     background:#f4f6f8; z-index:30; display:none; overflow-y:auto;
-    padding-bottom:80px;
+    padding-bottom:90px;
   }
   .fv-header { padding:40px 20px 20px; background:#fff; }
   .fv-title { font-size:2em; font-weight:900; margin:0; }
@@ -151,7 +155,7 @@
     display:flex; align-items:center; justify-content:space-between;
   }
   .nav-bar {
-    position:absolute; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
+    position:fixed; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
     display:flex; justify-content:space-around; padding:12px 0; padding-bottom:25px; z-index:50;
   }
@@ -164,29 +168,21 @@
   .anim-pulse { animation: pulse 2s infinite; }
   @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
   @keyframes stickerFloat {
-    0% { transform: translateY(0) rotate(0deg) scale(1); }
-    50% { transform: translateY(-4px) rotate(5deg) scale(1.1); }
-    100% { transform: translateY(0) rotate(0deg) scale(1); }
+    0% { transform: translateY(0); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0); }
   }
-  .emoji-anim {
-    display: inline-block;
-    animation: stickerFloat 3s ease-in-out infinite;
-    transform-origin: center bottom;
-  }
-  .nav-bar .nav-item:nth-child(1) .emoji-anim { animation-delay: 0s; }
-  .nav-bar .nav-item:nth-child(2) .emoji-anim { animation-delay: 0.2s; }
-  .nav-bar .nav-item:nth-child(3) .emoji-anim { animation-delay: 0.4s; }
+  .emoji-anim { display: inline-block; animation: stickerFloat 3s ease-in-out infinite; }
 </style>
 </head>
 <body>
 
 <div id="map-layer"></div>
+<img src="logo.jpg" class="map-logo">
 
 <div class="ui-layer" id="main-ui">
-  <div class="top-status-bar" id="topBar">
+  <div class="top-status-bar offline" id="topBar">
     <div class="status-pill">
-      <div class="dot" id="statusDot"></div>
-      <span id="statusText">En ligne</span>
+      <div class="dot off" id="statusDot"></div>
+      <span id="statusText">Hors ligne</span>
     </div>
     <div class="money-pill" id="todayEarnings">0.00 €</div>
   </div>
@@ -198,11 +194,14 @@
 
     <div class="bottom-sheet" id="ordersSheet">
       <div class="sheet-handle"></div>
-      <h3 style="margin:0 0 15px 0;color:#888;font-size:0.9em;text-transform:uppercase">Commandes disponibles</h3>
-      <div id="orders-container">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+          <h3 style="margin:0;color:#888;font-size:0.9em;text-transform:uppercase">Commandes</h3>
+          <span id="orderCountBadge" style="background:var(--primary);color:#fff;padding:2px 8px;border-radius:10px;font-size:0.8em">0</span>
+      </div>
+      <div id="orders-container" class="sheet-content">
         <div style="text-align:center;padding:30px;color:#999;font-weight:500">
           <span class="emoji-anim" style="font-size:2em;display:block;margin-bottom:10px">💤</span>
-          En attente de commandes...
+          Aucune commande pour l'instant...
         </div>
       </div>
     </div>
@@ -238,9 +237,7 @@
 </div>
 
 <div class="full-view" id="view-wallet">
-  <div class="fv-header">
-    <h1 class="fv-title">Gains</h1>
-  </div>
+  <div class="fv-header"><h1 class="fv-title">Gains <span class="emoji-anim">💰</span></h1></div>
   <div class="goal-card">
     <div>
       <div style="font-size:0.9em;opacity:0.9">Objectif du jour</div>
@@ -264,9 +261,7 @@
 </div>
 
 <div class="full-view" id="view-profile">
-  <div class="fv-header">
-    <h1 class="fv-title">Profil</h1>
-  </div>
+  <div class="fv-header"><h1 class="fv-title">Profil <span class="emoji-anim">👤</span></h1></div>
   <div style="text-align:center;padding:20px">
     <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em">
         <span class="emoji-anim">🚴</span>
@@ -284,8 +279,8 @@
     <div class="order-card">
       <div class="order-head"><span>Documents</span><span style="color:green">Validés</span></div>
     </div>
-    <div class="order-card" onclick="alert('Support: +33677171188')">
-        <div class="order-head"><span>Aide</span><span><span class="emoji-anim">📞</span></span></div>
+    <div class="order-card" onclick="alert('Support 24/7: +33 6 77 17 11 88')" style="cursor:pointer">
+        <div class="order-head"><span>Aide & Support</span><span><span class="emoji-anim">📞</span></span></div>
     </div>
     <button class="btn-accept" style="background:#ff4d4d" onclick="logout()">Déconnexion</button>
   </div>
@@ -314,11 +309,11 @@ const db=firebase.firestore();
 if(!localStorage.getItem('alex_courier_logged')) window.location.href='login-coursier.html';
 document.getElementById('profileName').innerText = localStorage.getItem('alex_courier_name') || 'Partenaire';
 
-let map, isOnline = true, currentStep = 0, currentOrder = null;
+let map, isOnline = false, currentStep = 0, currentOrder = null;
 let earnings = 0;
 
 function initMap() {
-  map = L.map('map-layer', {zoomControl: false}).setView([43.1242, 5.928], 13);
+  map = L.map('map-layer', {zoomControl: false, attributionControl: false}).setView([43.1242, 5.928], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
   const icon = L.divIcon({
       html: '<div style="font-size:24px;transform:translate(-10px,-10px)"><span class="emoji-anim">🚴</span></div>',
@@ -333,32 +328,38 @@ function toggleOnline() {
     const bar = document.getElementById('topBar');
     const dot = document.getElementById('statusDot');
     const txt = document.getElementById('statusText');
+    const sheet = document.getElementById('ordersSheet');
     
     if (isOnline) {
-        btn.innerText = "GO";
+        btn.innerText = "ON";
         btn.classList.remove('active');
         bar.classList.remove('offline');
         dot.classList.remove('off');
         txt.innerText = "En ligne";
+        sheet.classList.add('visible');
         loadOrders();
     } else {
-        btn.innerText = "OFF";
+        btn.innerText = "GO";
         btn.classList.add('active');
         bar.classList.add('offline');
         dot.classList.add('off');
         txt.innerText = "Hors ligne";
-        document.getElementById('orders-container').innerHTML = '<div style="text-align:center;padding:30px;opacity:0.5">Vous êtes hors ligne</div>';
+        sheet.classList.remove('visible');
     }
 }
+
+document.getElementById('goBtn').classList.add('active');
 
 function loadOrders() {
     if(!isOnline) return;
     db.collection('orders').where('status', '==', 'pending').onSnapshot(snap => {
         const container = document.getElementById('orders-container');
+        const badge = document.getElementById('orderCountBadge');
         container.innerHTML = '';
+        badge.innerText = snap.size;
         
         if (snap.empty) {
-            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999">Recherche de commandes...<br>Rapprochez-vous du centre.</div>';
+            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999"><span class="emoji-anim" style="font-size:2em">📡</span><br>Recherche de commandes...</div>';
             return;
         }
 
@@ -375,7 +376,7 @@ function loadOrders() {
                     <span class="dist-badge">2.5 km</span>
                     <span>${o.from} ➝ ${o.to}</span>
                 </div>
-                <button class="btn-accept">ACCEPTER</button>
+                <button class="btn-accept">ACCEPTER LA COURSE</button>
             `;
             card.querySelector('button').onclick = () => startMission(doc.id, o);
             container.appendChild(card);
