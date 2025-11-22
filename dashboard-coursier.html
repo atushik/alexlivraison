@@ -12,10 +12,9 @@
   :root{
     --primary:#6b23ff;
     --accent:#00e676;
-    --bg:#f0f2f5;
+    --bg:#f2f2f7;
     --text:#1d1d1f;
     --surface:#ffffff;
-    --blue-slider:#007bff;
     --shadow:0 8px 30px rgba(0,0,0,0.12);
   }
   * {box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -28,34 +27,34 @@
     position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;
   }
   .map-logo {
-      position: absolute; bottom: 110px; left: 20px; width: 55px; height: 55px;
+      position: absolute; bottom: 110px; left: 20px; width: 50px; height: 50px;
       border-radius: 50%; border: 3px solid #fff; box-shadow: var(--shadow);
       z-index: 5; object-fit: cover; animation: floatLogo 4s ease-in-out infinite;
   }
-  @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+  @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
 
   .top-bar {
       position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
-      padding: 50px 20px 20px; display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+      padding: 50px 20px 10px; display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%);
   }
   
   .status-pill {
-      background: #fff; padding: 8px 16px; border-radius: 30px;
-      display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.95em;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15); cursor: pointer; transition: 0.3s;
+      background: #fff; padding: 10px 20px; border-radius: 50px;
+      display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.95em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s;
   }
   .status-pill:active { transform: scale(0.95); }
-  .dot {width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent);}
-  .dot.off {background: #ff4d4d; box-shadow: 0 0 10px #ff4d4d;}
+  .dot {width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent);}
+  .dot.off {background: #ff4d4d; box-shadow: 0 0 8px #ff4d4d;}
   
   .settings-btn {
       background: #fff; width: 45px; height: 45px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15); cursor: pointer; font-size: 1.4em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.4em;
       transition: 0.3s;
   }
-  .settings-btn:hover { transform: rotate(90deg); }
+  .settings-btn:active { transform: scale(0.9); }
 
   .orders-carousel {
       position: absolute; bottom: 90px; left: 0; right: 0; z-index: 10;
@@ -66,29 +65,29 @@
   .orders-carousel::-webkit-scrollbar {display: none;}
   
   .order-card {
-      min-width: 290px; max-width: 310px; background: #fff;
-      border-radius: 24px; padding: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-      scroll-snap-align: center; border-left: 6px solid var(--primary);
+      min-width: 300px; max-width: 320px; background: #fff;
+      border-radius: 24px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      scroll-snap-align: center; border-left: 5px solid var(--primary);
       display: flex; flex-direction: column; justify-content: space-between;
       animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
   
   .order-head {display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
-  .shop-name {font-weight: 900; font-size: 1.2em; color: #333;}
-  .order-price {background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 12px; font-weight: 900; font-size: 1.1em;}
+  .shop-name {font-weight: 800; font-size: 1.1em; color: #333;}
+  .order-price {background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 1.1em;}
   
   .route-info {font-size: 0.95em; color: #555; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 12px;}
   .btn-accept {
       width: 100%; padding: 15px; background: linear-gradient(90deg, #6b23ff, #8e5aff); color: #fff; border: none;
-      border-radius: 16px; font-weight: 800; font-size: 1.1em; cursor: pointer;
-      box-shadow: 0 5px 15px rgba(107,35,255,0.4); transition: 0.2s;
+      border-radius: 16px; font-weight: 700; font-size: 1.1em; cursor: pointer;
+      box-shadow: 0 5px 15px rgba(107,35,255,0.3); transition: 0.2s;
   }
   .btn-accept:active { transform: scale(0.98); }
 
   .empty-state {
-      position: absolute; bottom: 120px; width: 90%; left: 5%; text-align: center;
-      color: #555; font-weight: 700; background: rgba(255,255,255,0.95);
+      position: absolute; bottom: 130px; width: 90%; left: 5%; text-align: center;
+      color: #666; font-weight: 600; background: rgba(255,255,255,0.9);
       padding: 20px; border-radius: 20px; box-shadow: var(--shadow); backdrop-filter: blur(10px);
   }
 
@@ -98,7 +97,7 @@
       overflow-y: auto;
   }
   .page-header {
-      background: #fff; padding: 20px; padding-top: 50px;
+      background: #fff; padding: 15px 20px; padding-top: 50px;
       display: flex; align-items: center; gap: 15px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 101;
   }
@@ -106,9 +105,9 @@
       width: 40px; height: 40px; border-radius: 50%; border: none; background: #f5f5f5; 
       font-size: 1.2em; cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
-  .page-title { font-size: 1.4em; font-weight: 900; flex: 1; color: #1c1c1e; }
+  .page-title { font-size: 1.3em; font-weight: 800; flex: 1; color: #1c1c1e; }
 
-  .settings-content { padding: 25px; }
+  .settings-content { padding: 25px; padding-bottom: 100px; }
   .range-box { 
       background: #fff; padding: 25px; border-radius: 24px; text-align: center; margin-top: 20px; 
       box-shadow: var(--shadow);
@@ -118,57 +117,55 @@
       overflow: hidden; position: relative; border: 2px solid #fff; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
   }
   .slider-container { position: relative; width: 100%; padding: 10px 0; }
-  input[type=range] { 
-      width: 100%; -webkit-appearance: none; background: transparent; 
-  }
+  input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; }
   input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none; height: 28px; width: 28px; border-radius: 50%; 
-      background: #ffffff; border: 4px solid var(--blue-slider); cursor: pointer; margin-top: -12px; 
+      background: #ffffff; border: 4px solid #007bff; cursor: pointer; margin-top: -12px; 
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   input[type=range]::-webkit-slider-runnable-track {
-      width: 100%; height: 6px; cursor: pointer; background: var(--blue-slider); border-radius: 3px;
+      width: 100%; height: 6px; cursor: pointer; background: #007bff; border-radius: 3px;
   }
-  .range-val { font-size: 1.2em; font-weight: 800; color: var(--blue-slider); margin-top: 10px; display: block; }
+  .range-val { font-size: 1.2em; font-weight: 800; color: #007bff; margin-top: 10px; display: block; }
 
   .profile-header {
       background: #fff; padding: 40px 20px; text-align: center; margin-bottom: 20px;
       border-radius: 0 0 30px 30px; box-shadow: var(--shadow);
   }
   .profile-pic {
-      width: 110px; height: 110px; border-radius: 50%; background: #f0f2f5; margin: 0 auto 15px;
-      display: flex; align-items: center; justify-content: center; font-size: 3.5em;
+      width: 100px; height: 100px; border-radius: 50%; background: #f0f2f5; margin: 0 auto 15px;
+      display: flex; align-items: center; justify-content: center; font-size: 3em;
       border: 4px solid var(--primary); overflow: hidden; position: relative;
       box-shadow: 0 10px 20px rgba(107,35,255,0.2); cursor: pointer;
   }
   .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
   .upload-overlay {
       position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.6); color: #fff; 
-      font-size: 11px; padding: 4px 0; font-weight: bold;
+      font-size: 10px; padding: 3px 0; font-weight: bold;
   }
   
-  .menu-list { background: #fff; border-radius: 20px; margin: 0 20px; overflow: hidden; box-shadow: var(--shadow); }
+  .menu-list { background: #fff; border-radius: 20px; margin: 0 20px 20px 20px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 120px; }
   .menu-item {
-      padding: 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;
-      align-items: center; cursor: pointer; font-weight: 600; font-size: 1.05em; color: #333;
+      padding: 18px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; font-weight: 600; font-size: 1em; color: #333;
       transition: 0.2s;
   }
   .menu-item:active { background: #f9f9f9; }
   .menu-item:last-child { border-bottom: none; }
-  .menu-arrow { color: #ccc; font-weight: bold; font-size: 1.2em; }
+  .menu-arrow { width: 24px; height: 24px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; }
 
-  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; padding-bottom: 120px; }
   .doc-card {
-      background: #fff; padding: 20px; border-radius: 16px; text-align: center;
+      background: #fff; padding: 15px; border-radius: 16px; text-align: center;
       box-shadow: var(--shadow); aspect-ratio: 1; display: flex; flex-direction: column;
-      justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
+      justify-content: center; align-items: center; gap: 8px; transition: 0.2s;
   }
   .doc-card:active { transform: scale(0.98); }
-  .doc-icon { font-size: 2.5em; }
-  .doc-label { font-size: 0.85em; font-weight: 700; color: #555; }
-  .doc-status { font-size: 0.75em; font-weight: 800; color: #00c853; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; }
+  .doc-icon { font-size: 2.2em; }
+  .doc-label { font-size: 0.8em; font-weight: 700; color: #555; }
+  .doc-status { font-size: 0.7em; font-weight: 800; color: #00c853; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; }
 
-  .data-box { background: #fff; border-radius: 16px; padding: 20px; margin: 20px; box-shadow: var(--shadow); }
+  .data-box { background: #fff; border-radius: 16px; padding: 20px; margin: 20px; box-shadow: var(--shadow); margin-bottom: 120px; }
   .data-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
   .data-row:last-child { border: none; margin: 0; padding: 0; }
   .data-label { color: #888; font-size: 0.9em; font-weight: 600; }
@@ -181,7 +178,7 @@
     box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
   }
   .nav-item {
-    display:flex; flex-direction:column; align-items:center; gap:5px; color:#aaa; font-size:0.75em; font-weight:700; cursor:pointer; width: 20%; transition: 0.3s;
+    display:flex; flex-direction:column; align-items:center; gap:5px; color:#aaa; font-size:0.75em; font-weight: 700; cursor:pointer; width: 20%; transition: 0.3s;
   }
   .nav-item.active { color:var(--primary); transform: translateY(-4px); }
   .nav-icon { font-size:1.7em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
@@ -197,6 +194,10 @@
       width: 100%; padding: 16px; background: #007bff; color: #fff; border: none;
       border-radius: 50px; font-weight: 800; font-size: 1.1em; margin-top: 20px; cursor: pointer;
       box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+  }
+  
+  .banner-alert {
+      background: #fff3e0; color: #ef6c00; padding: 10px; border-radius: 12px; margin: 15px; text-align: center; font-weight: 700; font-size: 0.9em;
   }
 </style>
 </head>
@@ -259,8 +260,7 @@
             </div>
             <span class="range-val"><span id="distVal">15</span> km</span>
         </div>
-        <button class="btn-save" onclick="closeAllPages()">Afficher <span id="countVal">1</span> livraison</button>
-        <div style="text-align:center;margin-top:20px;color:#007bff;font-weight:bold;cursor:pointer">Réinitialiser</div>
+        <button class="btn-save" onclick="closeAllPages()">Enregistrer</button>
     </div>
 </div>
 
@@ -279,29 +279,29 @@
         <input type="file" id="avatarInput" hidden accept="image/*" onchange="previewAvatar(this)">
         <h2 style="margin:0;color:#333" id="profileName">Chargement...</h2>
         <p style="color:#888;margin:5px 0;font-weight:500" id="profileEmail">...</p>
-        <div style="color:#ff9800;font-weight:bold;margin-top:10px;background:#fff3e0;display:inline-block;padding:5px 15px;border-radius:15px">En attente de validation</div>
+        <div class="banner-alert"><span class="emoji-anim">⏳</span> En attente de validation</div>
     </div>
 
     <div class="menu-list">
         <div class="menu-item" onclick="openPage('perso')">
-            <span>👤 Mes coordonnées</span>
-            <span class="menu-arrow">›</span>
+            <span><span class="emoji-anim">👤</span> Mes coordonnées</span>
+            <span class="menu-arrow">❯</span>
         </div>
         <div class="menu-item" onclick="openPage('documents')">
-            <span>📂 Mes documents</span>
-            <span class="menu-arrow">›</span>
+            <span><span class="emoji-anim">📂</span> Mes documents</span>
+            <span class="menu-arrow">❯</span>
         </div>
         <div class="menu-item" onclick="openPage('transport')">
-            <span>🛵 Mon moyen de transport</span>
-            <span class="menu-arrow">›</span>
+            <span><span class="emoji-anim">🛵</span> Mon moyen de transport</span>
+            <span class="menu-arrow">❯</span>
         </div>
         <div class="menu-item" onclick="openPage('settings')">
-            <span>⚙️ Paramètres</span>
-            <span class="menu-arrow">›</span>
+            <span><span class="emoji-anim">⚙️</span> Paramètres</span>
+            <span class="menu-arrow">❯</span>
         </div>
         <div class="menu-item" style="color:red" onclick="logout()">
-            <span>🔴 Déconnexion</span>
-            <span class="menu-arrow">›</span>
+            <span><span class="emoji-anim">🔴</span> Déconnexion</span>
+            <span class="menu-arrow">❯</span>
         </div>
     </div>
 </div>
@@ -351,7 +351,7 @@
         </div>
         <div class="doc-card">
             <div class="doc-icon emoji-anim">📄</div>
-            <div class="doc-label">Contrat Signé</div>
+            <div class="doc-label">Contrat</div>
             <span class="doc-status">Signé</span>
         </div>
         <div class="doc-card">
@@ -372,15 +372,15 @@
         <div class="menu-list" style="margin:0;box-shadow:none;border:1px solid #eee">
             <div class="menu-item" onclick="location.href='https://wa.me/33677171188'">
                 <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">💬</span> Support WhatsApp</span>
-                <span class="menu-arrow">›</span>
+                <span class="menu-arrow">❯</span>
             </div>
             <div class="menu-item" onclick="location.href='tel:+33677171188'">
                 <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">📞</span> Appeler l'assistance</span>
-                <span class="menu-arrow">›</span>
+                <span class="menu-arrow">❯</span>
             </div>
             <div class="menu-item">
                 <span style="display:flex;align-items:center;gap:10px"><span class="emoji-anim">❓</span> Toute la FAQ</span>
-                <span class="menu-arrow">›</span>
+                <span class="menu-arrow">❯</span>
             </div>
         </div>
     </div>
@@ -397,7 +397,6 @@
             <div style="font-size:2.5em;font-weight:900;margin:10px 0">0,00 €</div>
         </div>
         <button class="btn-save" style="background:#fff;color:#333;border:1px solid #ddd;margin-top:15px">🏦 Effectuer un virement</button>
-        
         <h3 style="margin-top:30px;color:#32006b">Dernières transactions</h3>
         <div style="text-align:center;color:#999;margin-top:20px;font-style:italic">Aucune transaction récente</div>
     </div>
@@ -427,7 +426,7 @@ let settingMap;
 
 function initMap() {
   map = L.map('map-layer', {zoomControl: false, attributionControl: false}).setView([43.1242, 5.928], 13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
   
   const icon = L.divIcon({html: '<div style="font-size:24px;transform:translate(-10px,-10px)">🚴</div>', className: 'marker-c'});
   L.marker([43.1242, 5.928], {icon: icon}).addTo(map);
@@ -438,14 +437,12 @@ function initMap() {
       document.getElementById('avatarImg').style.display = 'block';
       document.getElementById('avatarEmoji').style.display = 'none';
   }
-
   loadUserData();
 }
 
 function loadUserData() {
     const name = localStorage.getItem('alex_courier_name') || 'Coursier';
     document.getElementById('profileName').innerText = name;
-    
     document.getElementById('profileEmail').innerText = "coursier@alex.com";
     document.getElementById('infoName').innerText = name;
     document.getElementById('infoEmail').innerText = "coursier@alex.com";
@@ -530,7 +527,7 @@ function previewAvatar(input) {
             document.getElementById('avatarImg').src = res;
             document.getElementById('avatarImg').style.display = 'block';
             document.getElementById('avatarEmoji').style.display = 'none';
-            localStorage.setItem('alex_avatar', res); 
+            localStorage.setItem('alex_avatar', res);
         }
         reader.readAsDataURL(input.files[0]);
     }
