@@ -2,220 +2,308 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>App Coursier - AlexLivraison</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+<title>AlexLivraison Pro</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-  :root{--primary:#6b23ff;--dark:#1a1a2e;--green:#00c853;--red:#ff4d4d;--bg:#f4f6f8;--glass:rgba(255,255,255,0.95);}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;padding:0;padding-bottom:90px;color:#333;overflow-x:hidden;user-select:none;}
-  
-  .app-header{background:linear-gradient(135deg,#32006b,#6b23ff);color:#fff;padding:20px;border-radius:0 0 25px 25px;box-shadow:0 5px 20px rgba(107,35,255,0.3);position:sticky;top:0;z-index:1000;}
-  .header-top{display:flex;justify-content:space-between;align-items:center;}
-  .courier-info{display:flex;align-items:center;gap:10px;}
-  .avatar{width:45px;height:45px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;border:2px solid #fff;}
-  .status-switch{background:rgba(0,0,0,0.3);padding:5px 15px;border-radius:20px;font-size:0.9em;display:flex;align-items:center;gap:5px;cursor:pointer;}
-  .status-dot{width:10px;height:10px;background:#00c853;border-radius:50%;box-shadow:0 0 5px #00c853;}
-  .status-dot.offline{background:#ff4d4d;box-shadow:0 0 5px #ff4d4d;}
-  
-  .view{display:none;animation:fadeIn 0.3s ease;}
-  .view.active{display:block;}
-
-  #map-container {
-    height: 60vh; 
-    width: 100%;
-    position: relative;
-    z-index: 1;
-    border-radius: 25px 25px 0 0;
-    overflow: hidden;
-    margin-top: -20px; 
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+  :root{
+    --primary:#6b23ff;
+    --primary-dark:#501cbd;
+    --accent:#00e676;
+    --bg:#f8f9fa;
+    --text:#1d1d1f;
+    --gray:#8e8e93;
+    --surface:#ffffff;
+    --shadow:0 4px 20px rgba(0,0,0,0.08);
   }
-  #map { height: 100%; width: 100%; }
-  
-  .map-logo {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 1000; 
-      object-fit: cover;
+  * {box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body {
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:var(--bg);
+    margin:0; padding:0;
+    color:var(--text);
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
   }
 
-  .section-title{padding:15px 20px 5px;font-size:1.2em;color:#555;font-weight:800;}
-  .order-card{background:#fff;margin:15px 20px;padding:20px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.05);position:relative;transition:0.2s;border-left:5px solid var(--primary);}
-  .order-card:active{transform:scale(0.98);}
-  .order-header{display:flex;justify-content:space-between;margin-bottom:10px;}
-  .price-tag{background:#e8f5e9;color:#2e7d32;padding:5px 12px;border-radius:10px;font-weight:800;font-size:1.1em;}
-  .dist-tag{background:#f3e5f5;color:#6b23ff;padding:5px 10px;border-radius:10px;font-size:0.9em;font-weight:bold;}
-  .route-info{margin:15px 0;position:relative;padding-left:25px;}
-  .route-info::before{content:'';position:absolute;left:7px;top:5px;bottom:25px;width:2px;background:#ddd;}
-  .point{margin-bottom:15px;position:relative;}
-  .point::after{content:'';position:absolute;left:-24px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:0 0 0 2px var(--primary);}
-  .point.dest::after{background:var(--red);box-shadow:0 0 0 2px var(--red);}
-  .point b{display:block;font-size:1em;}
-  .point span{font-size:0.9em;color:#666;}
-  .req-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
-  .req{font-size:0.8em;padding:4px 8px;border-radius:6px;background:#eee;font-weight:600;}
-  .req.hot{background:#fff3e0;color:#ef6c00;}
-  .req.cold{background:#e1f5fe;color:#0277bd;}
-  .btn-accept{width:100%;padding:15px;background:var(--primary);color:#fff;border:none;border-radius:15px;font-size:1.1em;font-weight:bold;cursor:pointer;box-shadow:0 5px 15px rgba(107,35,255,0.3);}
-  
-  .step-progress{display:flex;justify-content:space-between;margin:20px;position:relative;}
-  .step-progress::before{content:'';position:absolute;top:15px;left:0;right:0;height:3px;background:#ddd;z-index:-1;}
-  .step-node{width:35px;height:35px;background:#fff;border:3px solid #ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#aaa;}
-  .step-node.active{border-color:var(--primary);background:var(--primary);color:#fff;box-shadow:0 0 10px rgba(107,35,255,0.5);}
-  
-  .timer-container{text-align:center;margin:15px 0;}
-  .timer-label{font-size:0.9em;color:#666;text-transform:uppercase;letter-spacing:1px;}
-  .timer-big{font-size:3.5em;font-weight:900;color:#333;margin:5px 0;font-variant-numeric:tabular-nums;line-height:1;}
-  .timer-total{font-size:0.9em;color:#888;font-weight:bold;}
-  
-  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
-  .act-btn{padding:20px;border-radius:15px;border:none;color:#fff;font-weight:bold;font-size:1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;}
-  
-  .wallet-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;margin:20px;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
-  .balance-title{opacity:0.7;font-size:0.9em;}
-  .balance-amount{font-size:2.5em;font-weight:bold;margin:10px 0;}
-  .history-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;}
-  .review-item{background:#fff;padding:15px;margin:10px 20px;border-radius:12px;border-left:4px solid #ffd700;}
-  .stats-bar{display:flex;justify-content:space-between;margin-top:20px;background:rgba(255,255,255,0.1);padding:15px;border-radius:15px;backdrop-filter:blur(5px);}
-  .stat{text-align:center;}
-  .stat-val{font-size:1.4em;font-weight:800;display:block;}
-  .stat-lbl{font-size:0.75em;opacity:0.8;text-transform:uppercase;}
+  #map-layer {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    z-index:0;
+  }
 
-  .nav-bar{position:fixed;bottom:0;left:0;width:100%;background:#fff;display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid #eee;z-index:2000;padding-bottom:25px;}
-  .nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;color:#ccc;cursor:pointer;width:25%;}
-  .nav-btn.active{color:var(--primary);}
-  .nav-icon{font-size:1.4em;}
-  .nav-label{font-size:0.7em;font-weight:bold;}
+  .ui-layer {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    z-index:10;
+    pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .top-status-bar {
+    pointer-events:auto;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(10px);
+    margin:15px;
+    padding:15px;
+    border-radius:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+  }
+  .top-status-bar.offline { background:#333; color:#fff; }
   
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;z-index:3000;display:none;}
-  @keyframes stickerFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(5deg)}}
-  .emoji-anim{display:inline-block;animation:stickerFloat 2s ease-in-out infinite;transform-origin:center bottom;}
+  .status-pill {
+    display:flex; align-items:center; gap:8px;
+    font-weight:700; font-size:1em;
+  }
+  .dot {width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
+  .dot.off {background:#ff4d4d; box-shadow:none;}
+  
+  .money-pill {
+    background:var(--bg); padding:8px 15px; border-radius:15px; font-weight:800; color:var(--primary);
+  }
+
+  .go-btn-container {
+    pointer-events:auto;
+    display:flex; justify-content:center; margin-bottom:20px;
+  }
+  .go-btn {
+    width:80px; height:80px;
+    border-radius:50%;
+    background:var(--primary);
+    color:#fff;
+    border:4px solid #fff;
+    font-weight:900; font-size:1.2em;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 30px rgba(107,35,255,0.4);
+    cursor:pointer;
+    transition:0.3s;
+  }
+  .go-btn.active { background:#ff4d4d; transform:scale(0.9); }
+
+  .bottom-sheet {
+    pointer-events:auto;
+    background:var(--surface);
+    border-radius:25px 25px 0 0;
+    padding:20px;
+    padding-bottom:90px; 
+    box-shadow:0 -5px 30px rgba(0,0,0,0.1);
+    transition:transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-height:60vh;
+    overflow-y:auto;
+  }
+  .sheet-handle {
+    width:40px; height:5px; background:#ddd; border-radius:5px; margin:0 auto 15px auto;
+  }
+
+  .order-card {
+    background:#fff; border:1px solid #eee; border-radius:18px; padding:15px; margin-bottom:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.03); position:relative; overflow:hidden;
+  }
+  .order-card::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--primary);
+  }
+  .order-head {display:flex; justify-content:space-between; margin-bottom:10px;}
+  .shop-name {font-weight:800; font-size:1.1em;}
+  .order-price {font-weight:800; color:var(--primary); font-size:1.2em;}
+  
+  .route-prev {display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.9em; color:#555;}
+  .dist-badge {background:#f0f0f0; padding:4px 8px; border-radius:6px; font-size:0.8em; font-weight:700;}
+
+  .btn-accept {
+    width:100%; padding:14px; border-radius:12px; border:none; background:var(--primary); color:#fff;
+    font-weight:700; font-size:1em; cursor:pointer; margin-top:10px;
+  }
+
+  .mission-overlay {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:#fff; z-index:20; display:none; flex-direction:column;
+  }
+  .mission-header {
+    padding:20px; background:var(--surface); border-bottom:1px solid #eee;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .mission-body { flex:1; padding:20px; overflow-y:auto; }
+  .step-card {
+    background:#f8f9fa; padding:20px; border-radius:15px; text-align:center; margin-bottom:20px;
+    border:2px dashed #ddd;
+  }
+  .step-card.active { border:2px solid var(--primary); background:#f3e5f5; }
+  
+  .actions-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px; }
+  .act-btn {
+    padding:15px; border-radius:12px; border:none; font-weight:bold; color:#fff; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+  }
+
+  .full-view {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:#f4f6f8; z-index:30; display:none; overflow-y:auto;
+    padding-bottom:80px;
+  }
+  .fv-header { padding:40px 20px 20px; background:#fff; }
+  .fv-title { font-size:2em; font-weight:900; margin:0; }
+  
+  .chart-box {
+    background:#fff; margin:20px; padding:20px; border-radius:20px; box-shadow:var(--shadow);
+    display:flex; justify-content:space-between; align-items:flex-end; height:150px;
+  }
+  .bar { width:10%; background:#eee; border-radius:5px; position:relative; transition:height 1s; }
+  .bar.fill { background:var(--primary); }
+  .bar::after { content:attr(data-day); position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-size:10px; color:#999; }
+
+  .goal-card {
+    background:linear-gradient(45deg, #11998e, #38ef7d);
+    margin:20px; padding:20px; border-radius:20px; color:#fff;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .nav-bar {
+    position:absolute; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.05);
+    display:flex; justify-content:space-around; padding:12px 0; padding-bottom:25px; z-index:50;
+  }
+  .nav-item {
+    display:flex; flex-direction:column; align-items:center; gap:4px; color:#bbb; font-size:0.7em; font-weight:700; cursor:pointer; transition:0.2s;
+  }
+  .nav-item.active { color:var(--primary); transform:translateY(-2px); }
+  .nav-icon { font-size:1.6em; }
+
+  .hidden { display:none !important; }
+  .anim-pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
 </style>
 </head>
 <body>
 
-<div id="view-home" class="view active">
-  <div class="app-header">
-    <div class="header-top">
-      <div class="courier-info">
-        <div class="avatar"><span class="emoji-anim">🚴</span></div>
-        <div>
-          <div style="font-weight:bold;font-size:1.1em" id="courierName">Coursier</div>
-          <div class="status-switch" onclick="toggleStatus()">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">En ligne</span>
-          </div>
+<div id="map-layer"></div>
+
+<div class="ui-layer" id="main-ui">
+  <div class="top-status-bar" id="topBar">
+    <div class="status-pill">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">En ligne</span>
+    </div>
+    <div class="money-pill" id="todayEarnings">0.00 €</div>
+  </div>
+
+  <div style="margin-top:auto">
+    <div class="go-btn-container">
+      <div class="go-btn" id="goBtn" onclick="toggleOnline()">GO</div>
+    </div>
+
+    <div class="bottom-sheet" id="ordersSheet">
+      <div class="sheet-handle"></div>
+      <h3 style="margin:0 0 15px 0;color:#888;font-size:0.9em;text-transform:uppercase">Commandes disponibles</h3>
+      <div id="orders-container">
+        <div style="text-align:center;padding:30px;color:#999;font-weight:500">
+          <span style="font-size:2em;display:block;margin-bottom:10px">💤</span>
+          En attente de commandes...
         </div>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:0.8em;opacity:0.8">Gains du jour</div>
-        <div style="font-weight:bold;font-size:1.2em" id="dailyEarnings">0.00 €</div>
-      </div>
     </div>
-  </div>
-
-  <div id="map-container">
-      <div id="map"></div>
-      <img src="logo.jpg" alt="Logo" class="map-logo">
-  </div>
-
-  <div class="section-title">Commandes disponibles (<span id="orderCount">0</span>)</div>
-  <div id="orders-list" style="padding-bottom:20px">
-    <div style="text-align:center;padding:40px;color:#999">Recherche de commandes...</div>
   </div>
 </div>
 
-<div id="view-mission" class="view">
-  <div class="app-header" style="border-radius:0;padding-bottom:10px">
-    <div class="header-top">
-      <h2>Commande en cours <span class="emoji-anim">⚡</span></h2>
-      <div class="price-tag" style="background:#fff;color:var(--primary)">#<span id="mission-id">--</span></div>
+<div class="mission-overlay" id="missionView">
+  <div class="mission-header">
+    <div style="font-weight:bold;font-size:1.2em">Commande #<span id="m-id"></span></div>
+    <div style="background:#e3f2fd;color:#1565c0;padding:5px 10px;border-radius:8px;font-weight:bold" id="m-timer">00:00</div>
+  </div>
+  <div id="map-mission" style="height:30vh;background:#eee"></div>
+  <div class="mission-body">
+    <div class="step-card active" id="step-box">
+      <div style="font-size:2em;margin-bottom:10px" id="step-icon">🏪</div>
+      <h2 style="margin:0" id="step-title">Aller au restaurant</h2>
+      <p style="color:#666;margin:5px 0" id="step-addr">Adresse...</p>
     </div>
-  </div>
-  
-  <div class="step-progress">
-    <div class="step-node active">1</div>
-    <div class="step-node">2</div>
-    <div class="step-node">3</div>
-  </div>
 
-  <div class="timer-container">
-    <div class="timer-label" id="timer-label">VERS RESTAURANT</div>
-    <div class="timer-big" id="mission-timer">15:00</div>
-    <div class="timer-total">Total estimé: ~<span id="total-time">40</span> min</div>
-  </div>
-
-  <div class="order-card" style="margin-top:0">
-    <h3 id="mission-shop">Restaurant</h3>
-    <p id="mission-address" style="color:#666;margin-bottom:15px">Adresse...</p>
+    <div class="actions-row">
+      <button class="act-btn" style="background:#2962ff" onclick="openNav()">
+        <span>🗺️</span> GPS
+      </button>
+      <button class="act-btn" style="background:#00c853" onclick="callPhone()">
+        <span>📞</span> Appeler
+      </button>
+    </div>
     
-    <div class="req-tags" id="mission-tags"></div>
-
-    <div class="action-grid">
-      <a id="btn-gps" href="#" target="_blank" class="act-btn" style="background:#039be5"><span class="emoji-anim">🗺️</span><br>GPS</a>
-      <button class="act-btn" style="background:#00c853" onclick="callClient()"><span class="emoji-anim">📞</span><br>Appeler</button>
-    </div>
-
-    <button id="btn-action-main" class="btn-accept" style="margin-top:20px" onclick="advanceStep()">J'arrive au restaurant</button>
+    <button class="btn-accept" style="margin-top:20px;background:#333" id="btn-step" onclick="nextStep()">
+      J'arrive au restaurant
+    </button>
   </div>
 </div>
 
-<div id="view-wallet" class="view">
-  <div class="app-header"><h2>Mon Portefeuille <span class="emoji-anim">💰</span></h2></div>
-  <div class="wallet-card">
-    <div class="balance-title">Solde disponible</div>
-    <div class="balance-amount" id="totalBalance">0.00 €</div>
-    <div style="font-size:0.9em;opacity:0.8">Prochain virement : Lundi</div>
+<div class="full-view" id="view-wallet">
+  <div class="fv-header">
+    <h1 class="fv-title">Gains</h1>
   </div>
-  
-  <div class="section-title">Historique récent</div>
-  <div id="history-list"></div>
+  <div class="goal-card">
+    <div>
+      <div style="font-size:0.9em;opacity:0.9">Objectif du jour</div>
+      <div style="font-size:1.5em;font-weight:800">85€ / 100€</div>
+    </div>
+    <div style="font-size:2.5em">🎯</div>
+  </div>
+  <div class="chart-box">
+    <div class="bar fill" style="height:40%" data-day="L"></div>
+    <div class="bar fill" style="height:60%" data-day="M"></div>
+    <div class="bar fill" style="height:30%" data-day="M"></div>
+    <div class="bar fill" style="height:80%" data-day="J"></div>
+    <div class="bar" style="height:10%" data-day="V"></div>
+    <div class="bar" style="height:0%" data-day="S"></div>
+    <div class="bar" style="height:0%" data-day="D"></div>
+  </div>
+  <div style="padding:20px">
+    <h3>Historique</h3>
+    <div id="wallet-history"></div>
+  </div>
 </div>
 
-<div id="view-profile" class="view">
-  <div class="app-header"><h2>Mon Profil <span class="emoji-anim">👤</span></h2></div>
-  
-  <div class="stats-bar" style="margin:20px;background:#fff;color:#333">
-    <div class="stat"><span class="stat-val">4.9</span><span class="stat-lbl">Note</span></div>
-    <div class="stat"><span class="stat-val">142</span><span class="stat-lbl">Courses</span></div>
-    <div class="stat"><span class="stat-val">98%</span><span class="stat-lbl">Accept.</span></div>
+<div class="full-view" id="view-profile">
+  <div class="fv-header">
+    <h1 class="fv-title">Profil</h1>
   </div>
-
-  <div class="section-title">Avis Clients</div>
-  <div id="reviews-list">
-    <div class="review-item">
-      <div style="color:#ffd700">⭐⭐⭐⭐⭐</div>
-      <p>"Super rapide et poli, merci !"</p>
-      <small style="color:#999">Il y a 2 heures</small>
-    </div>
-    <div class="review-item">
-      <div style="color:#ffd700">⭐⭐⭐⭐⭐</div>
-      <p>"Commande arrivée chaude, parfait."</p>
-      <small style="color:#999">Hier</small>
+  <div style="text-align:center;padding:20px">
+    <div style="width:80px;height:80px;background:#ddd;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2em">🚴</div>
+    <h2 id="profileName">Coursier</h2>
+    <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold">⭐ 4.9</span>
+      <span style="background:#fff;padding:5px 10px;border-radius:8px;font-weight:bold">👍 98%</span>
     </div>
   </div>
-  
-  <button onclick="logout()" style="margin:20px;width:calc(100% - 40px);padding:15px;background:#ff4d4d;color:#fff;border:none;border-radius:15px;font-weight:bold">Déconnexion</button>
+  <div style="padding:20px">
+    <div class="order-card">
+      <div class="order-head"><span>Véhicule</span><span>🛵 Scooter</span></div>
+    </div>
+    <div class="order-card">
+      <div class="order-head"><span>Documents</span><span style="color:green">Validés</span></div>
+    </div>
+    <button class="btn-accept" style="background:#ff4d4d" onclick="logout()">Déconnexion</button>
+  </div>
 </div>
 
 <div class="nav-bar">
-  <button class="nav-btn active" onclick="nav('home')"><span class="nav-icon emoji-anim">⚡</span><span class="nav-label">Courses</span></button>
-  <button class="nav-btn" onclick="nav('mission')"><span class="nav-icon emoji-anim">🎒</span><span class="nav-label">En cours</span></button>
-  <button class="nav-btn" onclick="nav('wallet')"><span class="nav-icon emoji-anim">💰</span><span class="nav-label">Gains</span></button>
-  <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon emoji-anim">👤</span><span class="nav-label">Profil</span></button>
+  <div class="nav-item active" onclick="switchTab('home')">
+    <div class="nav-icon">⚡</div>
+    <div>Mission</div>
+  </div>
+  <div class="nav-item" onclick="switchTab('wallet')">
+    <div class="nav-icon">📊</div>
+    <div>Gains</div>
+  </div>
+  <div class="nav-item" onclick="switchTab('profile')">
+    <div class="nav-icon">👤</div>
+    <div>Profil</div>
+  </div>
 </div>
-
-<div class="notification" id="notif"><span class="emoji-anim">🔔</span> Nouvelle commande disponible !</div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWagPwv5Skh_EHfdcnFTYeG-xltRM7yPc",authDomain:"alex-livraison.firebaseapp.com",projectId:"alex-livraison",storageBucket:"alex-livraison.firebasestorage.app",messagingSenderId:"937475497279",appId:"1:937475497279:web:62dc9eba8e77a5113ec78a"};
@@ -223,192 +311,167 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
 
 if(!localStorage.getItem('alex_courier_logged')) window.location.href='login-coursier.html';
-document.getElementById('courierName').innerText = localStorage.getItem('alex_courier_name') || 'Coursier';
+document.getElementById('profileName').innerText = localStorage.getItem('alex_courier_name') || 'Partenaire';
 
-let currentMission = null;
-let map = null;
-let isOnline = true;
-let missionStep = 0;
+let map, isOnline = true, currentStep = 0, currentOrder = null;
 let earnings = 0;
 
-function initMap(){
-    if(document.getElementById('view-home').style.display !== 'none' && !map){
-        map = L.map('map').setView([43.1242, 5.928], 13);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
-        L.marker([43.1242, 5.928]).addTo(map).bindPopup("Vous êtes ici").openPopup();
+function initMap() {
+  map = L.map('map-layer', {zoomControl: false}).setView([43.1242, 5.928], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+  const icon = L.divIcon({
+      html: '<div style="font-size:24px;transform:translate(-10px,-10px)">🚴</div>',
+      className: 'marker-c', iconSize: [30, 30]
+  });
+  L.marker([43.1242, 5.928], {icon: icon}).addTo(map);
+}
+
+function toggleOnline() {
+    isOnline = !isOnline;
+    const btn = document.getElementById('goBtn');
+    const bar = document.getElementById('topBar');
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    
+    if (isOnline) {
+        btn.innerText = "GO";
+        btn.classList.remove('active');
+        bar.classList.remove('offline');
+        dot.classList.remove('off');
+        txt.innerText = "En ligne";
+        loadOrders();
+    } else {
+        btn.innerText = "OFF";
+        btn.classList.add('active');
+        bar.classList.add('offline');
+        dot.classList.add('off');
+        txt.innerText = "Hors ligne";
+        document.getElementById('orders-container').innerHTML = '<div style="text-align:center;padding:30px;opacity:0.5">Vous êtes hors ligne</div>';
     }
 }
 
-window.nav = function(viewName){
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById('view-'+viewName).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    
-    if(viewName === 'home') setTimeout(initMap, 100);
-}
+function loadOrders() {
+    if(!isOnline) return;
+    db.collection('orders').where('status', '==', 'pending').onSnapshot(snap => {
+        const container = document.getElementById('orders-container');
+        container.innerHTML = '';
+        
+        if (snap.empty) {
+            container.innerHTML = '<div style="text-align:center;padding:30px;color:#999">Recherche de commandes...<br>Rapprochez-vous du centre.</div>';
+            return;
+        }
 
-db.collection('orders').where('status','==','pending').onSnapshot(snap => {
-    const list = document.getElementById('orders-list');
-    const count = document.getElementById('orderCount');
-    list.innerHTML = '';
-    count.innerText = snap.size;
-    
-    if(snap.size > 0 && isOnline) showNotif();
-
-    if(snap.empty){
-        list.innerHTML = '<div style="text-align:center;padding:40px;color:#999">Aucune commande pour le moment...</div>';
-    }
-
-    snap.forEach(doc => {
-        const o = doc.data();
-        const dist = (Math.random() * 5 + 1).toFixed(1); 
-        const card = `
-        <div class="order-card">
-            <div class="order-header">
-                <div><b>${o.shopName || 'Client'}</b></div>
-                <div class="price-tag">${o.price} €</div>
-            </div>
-            <div class="route-info">
-                <div class="point"><b>Retrait:</b> <span>${o.from || 'Adresse magasin'}</span></div>
-                <div class="point dest"><b>Livraison:</b> <span>${o.to || 'Adresse client'}</span></div>
-            </div>
-            <div class="req-tags">
-                <span class="dist-tag"><span class="emoji-anim">🛵</span> ${dist} km</span>
-            </div>
-            <button class="btn-accept" onclick="acceptOrder('${doc.id}', ${o.price}, '${o.shopName}', '${o.from}', '${o.to}')">ACCEPTER LA COURSE</button>
-        </div>`;
-        list.innerHTML += card;
+        snap.forEach(doc => {
+            const o = doc.data();
+            const card = document.createElement('div');
+            card.className = 'order-card anim-pulse';
+            card.innerHTML = `
+                <div class="order-head">
+                    <div class="shop-name">${o.shopName}</div>
+                    <div class="order-price">${o.price} €</div>
+                </div>
+                <div class="route-prev">
+                    <span class="dist-badge">2.5 km</span>
+                    <span>${o.from} ➝ ${o.to}</span>
+                </div>
+                <button class="btn-accept">ACCEPTER</button>
+            `;
+            card.querySelector('button').onclick = () => startMission(doc.id, o);
+            container.appendChild(card);
+        });
     });
-});
-
-window.acceptOrder = function(id, price, shop, fromAddr, toAddr){
-    if(!isOnline) return alert("Passez en ligne pour accepter !");
-    
-    currentMission = {id, price, shop, from: fromAddr, to: toAddr, step: 1};
-    db.collection('orders').doc(id).update({status: 'accepted', courier: localStorage.getItem('alex_courier_name')});
-    
-    setupMissionUI();
-    nav('mission');
-    startTimer(15); 
-    updateGPSLink(fromAddr); 
-    document.getElementById('timer-label').innerText = "VERS RESTAURANT";
-    document.getElementById('btn-action-main').innerText = "J'arrive au restaurant";
 }
 
-function setupMissionUI(){
-    document.getElementById('mission-id').innerText = currentMission.id.substr(0,4);
-    document.getElementById('mission-shop').innerText = currentMission.shop || "Magasin";
-    document.getElementById('mission-address').innerText = currentMission.from || "Adresse masquée";
-    updateStepUI(1);
+function startMission(id, data) {
+    currentOrder = {id, ...data};
+    
+    db.collection('orders').doc(id).update({
+        status: 'accepted',
+        courier: localStorage.getItem('alex_courier_name')
+    });
+
+    document.getElementById('main-ui').classList.add('hidden');
+    document.getElementById('missionView').style.display = 'flex';
+    
+    const missionMap = L.map('map-mission').setView([43.1242, 5.928], 14);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(missionMap);
+    
+    document.getElementById('m-id').innerText = id.substr(0,4);
+    updateStep(1);
 }
 
-function updateGPSLink(destination){
-    const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(destination);
-    document.getElementById('btn-gps').href = url;
-}
+function updateStep(step) {
+    currentStep = step;
+    const title = document.getElementById('step-title');
+    const addr = document.getElementById('step-addr');
+    const icon = document.getElementById('step-icon');
+    const btn = document.getElementById('btn-step');
 
-window.advanceStep = function(){
-    missionStep++;
-    updateStepUI(missionStep);
-    
-    const btn = document.getElementById('btn-action-main');
-    const lbl = document.getElementById('timer-label');
-    const addr = document.getElementById('mission-address');
-    
-    if(missionStep === 2){
-        btn.innerText = "Commande récupérée - Aller chez le client";
+    if (step === 1) {
+        title.innerText = "Aller au restaurant";
+        addr.innerText = currentOrder.from;
+        icon.innerText = "🏪";
+        btn.innerText = "Je suis arrivé";
+    } else if (step === 2) {
+        title.innerText = "Récupérer la commande";
+        addr.innerText = "Vérifiez le numéro #" + currentOrder.id.substr(0,4);
+        icon.innerText = "🎒";
+        btn.innerText = "Commande récupérée";
         btn.style.background = "#ff9800";
-        lbl.innerText = "VERS CLIENT";
-        addr.innerText = currentMission.to;
-        startTimer(25); 
-        updateGPSLink(currentMission.to); 
-    } else if(missionStep === 3){
+    } else if (step === 3) {
+        title.innerText = "Livrer au client";
+        addr.innerText = currentOrder.to;
+        icon.innerText = "🏠";
         btn.innerText = "Confirmer la livraison";
         btn.style.background = "#00c853";
-        lbl.innerText = "ARRIVÉE";
-    } else if(missionStep === 4){
+    } else {
         finishMission();
     }
 }
 
-function updateStepUI(step){
-    const nodes = document.querySelectorAll('.step-node');
-    nodes.forEach((n, i) => {
-        if(i < step) n.classList.add('active');
-        else n.classList.remove('active');
-    });
+function nextStep() {
+    updateStep(currentStep + 1);
 }
 
-function finishMission(){
-    alert(`Bravo ! Course terminée. +${currentMission.price}€ ajoutés.`);
-    earnings += currentMission.price;
-    updateEarningsUI();
+function finishMission() {
+    alert("Course terminée ! + " + currentOrder.price + "€");
+    earnings += currentOrder.price;
+    document.getElementById('todayEarnings').innerText = earnings.toFixed(2) + " €";
     
-    const historyList = document.getElementById('history-list');
-    historyList.innerHTML = `
-        <div class="history-item">
-            <div>
-                <div style="font-weight:bold">${currentMission.shop}</div>
-                <div style="font-size:0.8em;color:#999">Aujourd'hui</div>
-            </div>
-            <div style="font-weight:bold;color:var(--green)">+${currentMission.price}€</div>
-        </div>
-    ` + historyList.innerHTML;
+    const list = document.getElementById('wallet-history');
+    list.innerHTML = `<div class="history-item"><span>${currentOrder.shopName}</span><b>+${currentOrder.price}€</b></div>` + list.innerHTML;
 
-    currentMission = null;
-    missionStep = 0;
-    nav('home');
+    document.getElementById('missionView').style.display = 'none';
+    document.getElementById('main-ui').classList.remove('hidden');
+    currentOrder = null;
 }
 
-function updateEarningsUI(){
-    document.getElementById('dailyEarnings').innerText = earnings.toFixed(2) + " €";
-    document.getElementById('totalBalance').innerText = earnings.toFixed(2) + " €";
+function openNav() {
+    const dest = currentStep === 3 ? currentOrder.to : currentOrder.from;
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`, '_blank');
 }
+function callPhone() { window.location.href = "tel:0600000000"; }
 
-let timerInterval;
-function startTimer(minutes){
-    clearInterval(timerInterval);
-    let time = minutes * 60;
-    const el = document.getElementById('mission-timer');
-    timerInterval = setInterval(()=>{
-        const m = Math.floor(time/60);
-        let s = time%60;
-        s = s<10?'0'+s:s;
-        el.innerText = `${m}:${s}`;
-        if(time>0) time--;
-    },1000);
-}
-
-window.toggleStatus = function(){
-    isOnline = !isOnline;
-    const dot = document.getElementById('statusDot');
-    const txt = document.getElementById('statusText');
-    if(isOnline){
-        dot.classList.remove('offline');
-        txt.innerText = "En ligne";
-        document.getElementById('orders-list').style.opacity = "1";
+function switchTab(tab) {
+    document.querySelectorAll('.full-view').forEach(e => e.style.display = 'none');
+    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+    
+    if (tab === 'home') {
     } else {
-        dot.classList.add('offline');
-        txt.innerText = "Hors ligne";
-        document.getElementById('orders-list').style.opacity = "0.5";
+        document.getElementById('view-' + tab).style.display = 'block';
     }
+    const idx = ['home','wallet','profile'].indexOf(tab);
+    document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
 
-function showNotif(){
-    const n = document.getElementById('notif');
-    n.style.display = 'block';
-    setTimeout(()=>n.style.display='none', 3000);
-}
-
-window.logout = function(){
-    if(confirm("Se déconnecter ?")){
+function logout() {
+    if(confirm("Déconnexion ?")) {
         localStorage.removeItem('alex_courier_logged');
         window.location.href = 'login-coursier.html';
     }
 }
 
-setTimeout(initMap, 500);
+window.onload = initMap;
 </script>
 </body>
 </html> 
