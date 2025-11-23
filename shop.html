@@ -166,6 +166,7 @@
     padding: 12px 0; border-bottom: 1px solid #f9f9f9;
   }
   .opt-label { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+  .opt-img { width: 35px; height: 35px; object-fit: contain; }
   .custom-cb {
     width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
@@ -216,11 +217,11 @@
   </div>
   
   <div class="categories" id="catTabs">
-    <div class="cat-link active" onclick="filterCat('all')">Tous</div>
-    <div class="cat-link" onclick="filterCat('best')">Best sellers</div>
+    <div class="cat-link active" onclick="filterCat('all')">Tout</div>
+    <div class="cat-link" onclick="filterCat('best')">Meilleures Ventes</div>
     <div class="cat-link" onclick="filterCat('menus')">Nos Menus</div>
-    <div class="cat-link" onclick="filterCat('burgers')">Burgers</div>
-    <div class="cat-link" onclick="filterCat('sandwichs')">Sandwichs</div>
+    <div class="cat-link" onclick="filterCat('burgers')">Nos Burgers</div>
+    <div class="cat-link" onclick="filterCat('sandwichs')">Nos Sandwichs</div>
   </div>
 </div>
 
@@ -277,12 +278,12 @@
                  <div class="option-section">
                     <div class="opt-header">Envie d'un supplément ? 🧀 <span class="tag">OPTIONNEL</span></div>
                     <label class="opt-item">
-                        <span class="opt-label">🧀 Cheddar (+1.00€)</span>
+                        <span class="opt-label"><img src="https://img.icons8.com/color/48/cheese.png" class="opt-img"> Cheddar (+1.00€)</span>
                         <input type="checkbox" class="opt-sup" value="1.00" onchange="calcTotal()">
                         <div class="custom-cb"></div>
                     </label>
                     <label class="opt-item">
-                        <span class="opt-label">🥓 Bacon (+1.50€)</span>
+                        <span class="opt-label"><img src="https://img.icons8.com/color/48/bacon.png" class="opt-img"> Bacon (+1.50€)</span>
                         <input type="checkbox" class="opt-sup" value="1.50" onchange="calcTotal()">
                         <div class="custom-cb"></div>
                     </label>
@@ -316,14 +317,14 @@ let quantity = 1;
 let basePrice = 0;
 
 const sauces = [
-    {name: "Mayonnaise", icon: "⚪️"},
-    {name: "Ketchup", icon: "🍅"},
-    {name: "Algérienne", icon: "🧅"},
-    {name: "Blanche", icon: "🥛"},
-    {name: "Curry", icon: "🍛"},
-    {name: "Biggy", icon: "🍔"},
-    {name: "Fish", icon: "🐟"},
-    {name: "Samouraï", icon: "🌶️"}
+    {name: "Mayonnaise", img: "https://img.icons8.com/color/48/mayonnaise.png"},
+    {name: "Ketchup", img: "https://img.icons8.com/color/48/ketchup.png"},
+    {name: "Algérienne", img: "https://img.icons8.com/color/48/onion.png"},
+    {name: "Blanche", img: "https://img.icons8.com/color/48/sour-cream.png"},
+    {name: "Curry", img: "https://img.icons8.com/color/48/curry.png"},
+    {name: "Biggy", img: "https://img.icons8.com/color/48/hamburger.png"},
+    {name: "Fish", img: "https://img.icons8.com/color/48/whole-fish.png"},
+    {name: "Samouraï", img: "https://img.icons8.com/color/48/chili-pepper.png"}
 ];
 
 async function init(){
@@ -332,7 +333,8 @@ async function init(){
         sauceCont.innerHTML += `
         <label class="opt-item">
             <div class="opt-label">
-                <span style="font-size:1.2em">${s.icon}</span> ${s.name}
+                <img src="${s.img}" class="opt-img">
+                ${s.name}
             </div>
             <input type="checkbox" name="sauce" class="opt-sauce">
             <div class="custom-cb"></div>
@@ -379,7 +381,7 @@ function openProduct(name, desc, price, img){
     document.getElementById('qtyVal').innerText = "1";
     document.getElementById('optionsForm').reset();
     
-    const isFood = !name.toLowerCase().includes('boisson') && !name.toLowerCase().includes('coca') && !name.toLowerCase().includes('eau') && !name.toLowerCase().includes('pepsi') && !name.toLowerCase().includes('schweppes') && !name.toLowerCase().includes('dessert') && !name.toLowerCase().includes('tiramisu');
+    const isFood = !name.toLowerCase().includes('boisson') && !name.toLowerCase().includes('coca') && !name.toLowerCase().includes('eau') && !name.toLowerCase().includes('pepsi') && !name.toLowerCase().includes('schweppes') && !name.toLowerCase().includes('dessert') && !name.toLowerCase().includes('tiramisu') && !name.toLowerCase().includes('jus');
     
     const foodOptions = document.getElementById('food-options');
     if(isFood) {
